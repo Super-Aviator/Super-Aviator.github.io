@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>工作总结-第一周 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">工作总结-第一周</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-03-16&nbsp;&nbsp;20:53:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Career/">Career</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在军训结束之后，我顺利的度过了实习的第一周，这一周总的来说很寂寞，很空虚，也很慌，一方面是人际关系的慌，一方面是能力不足引起的恐慌，但是我觉得人的成长总是需要时间的，一切都会慢慢好起来，第一周的收货还是有很多滴，我决定工作的接下来每一周都把上一周遇到的不会的、不熟悉的技术总结一下，犯过的错误坚决不能犯第二次，还有一些比较重要的需要单独总结一下比较好,写到一起也没有关系，因为可以使用博客的搜索功能。废话不多说，开始吧。</p>
+<h1 id="MySQL中JOIN的用法"><a href="#MySQL中JOIN的用法" class="headerlink" title="MySQL中JOIN的用法"></a>MySQL中JOIN的用法</h1><p>在弄毕业实际的时候，使用到了Mybatis，其中含有一对多的映射关系，其实做好只有回想起来也没有很复杂，但是我却零零散散想了有个把星期，其中的关键就是JOIN的用法以及<collection>标签的用法。首先记录一下JOIN的用法，<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join">StackOverflow</a>上有非常详细的解答，我就直接总结一下吧（偷一下懒先）：<br><img src="https://s2.ax1x.com/2019/03/16/AZYGKf.png" alt="AZYGKf.png"></p>
+<p><img src="https://s2.ax1x.com/2019/03/16/AZY6qU.png" alt="AZY6qU.png"></p>
+<ul>
+<li><p>INNER JOIN:返回两个表都的部分。如图所示：<img src="https://s2.ax1x.com/2019/03/16/AZJyAH.png" alt="AZJyAH.png"></p>
+</li>
+<li><p>OUTER JOIN:返回两个表中都有的部分，然后加上左边和右边特有的部分<br><img src="https://s2.ax1x.com/2019/03/16/AZY7qO.png" alt="AZY7qO.png"></p>
+</li>
+<li><p>LEFT OUTER JOIN ：返回两个表中都有的部分，然后加上左边特有的部分。<br><img src="https://s2.ax1x.com/2019/03/16/AZYjJA.png" alt="AZYjJA.png"></p>
+</li>
+<li><p>RIGHT OUTER JOIN ：返回两个表中都有的部分，然后加上右边特有的部分。</p>
+</li>
+</ul>
+<p>JOIN还有很多特殊的用法，上面图中已经涉及到了，这里就不一一写了，脑阔有点疼。</p>
+<h1 id="FastJSON中的-JSONFiled注解"><a href="#FastJSON中的-JSONFiled注解" class="headerlink" title="FastJSON中的@JSONFiled注解"></a>FastJSON中的@JSONFiled注解</h1><p>FastJSON库的功能十分强大，导师说以后使用的时间也会非常多，那就先看一下非常常用的一个注解@JSONField的部分功能吧，更多的用法可以看看<a href="(https://www.w3cschool.cn/fastjson/fastjson-jsonfield.html)">文档</a></p>
+<h2 id="自定义属性序列化的顺序"><a href="#自定义属性序列化的顺序" class="headerlink" title="自定义属性序列化的顺序"></a>自定义属性序列化的顺序</h2><p>有时候前台的JSON字符串的格式是固定的，所以后台就需要对POJO序列化的顺序进行控制，可以在成员变量上使用@JSONField(ordinal = 1)来对属性的序列化进行控制。</p>
+<h2 id="将数值类型序列化为字符类型"><a href="#将数值类型序列化为字符类型" class="headerlink" title="将数值类型序列化为字符类型"></a>将数值类型序列化为字符类型</h2><p>数字类型在传递到前台时可能会出现溢出，导致出错，所以一般可以把数值类型序列化为字符类型，可以在数值类型的成员变量上使用@JSONField(serializeUsing = ToStringSerializer.class)来控制</p>
+<blockquote>
+<p>serializeUsing 这个属性是在fastjson 1.2.16后才有的。要检查下fastJson的版本</p>
+</blockquote>
+<h2 id="将对象属性序列化为指定的名称"><a href="#将对象属性序列化为指定的名称" class="headerlink" title="将对象属性序列化为指定的名称"></a>将对象属性序列化为指定的名称</h2><p>有时对象的属性并不能序列化为指定的名字，此时就需要使用注解来指定序列化之后的名字，可以使用@JSONField(name=”name”),同样此注解可以使用在geter或者seter方法上，也可以使用在成员变量上，对序列化进行不同控制。</p>
+<h2 id="对时间进行格式化"><a href="#对时间进行格式化" class="headerlink" title="对时间进行格式化"></a>对时间进行格式化</h2><p>对于Data时间格式，可以使用@JSONField(format=”yyyyMMdd”)来格式化时间</p>
+<p>##使用serialize/deserialize指定字段不序列化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">      <span class="meta">@JSONField(serialize=false)</span></span><br><span class="line">      <span class="keyword">public</span> Date date;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">      <span class="meta">@JSONField(deserialize=false)</span></span><br><span class="line">      <span class="keyword">public</span> Date date;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>更多的用法可以<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/fastjson/fastjson-jsonfield.html">查看文档</a></p>
+<h1 id="Mybatis中JavaType和JDBCType的对应"><a href="#Mybatis中JavaType和JDBCType的对应" class="headerlink" title="Mybatis中JavaType和JDBCType的对应"></a>Mybatis中JavaType和JDBCType的对应</h1><p>在弄毕设的时候，数据库中的BIGINT会被映射为Java的Long类型，但是在今天做映射的时候，BIGINT且被映射为Integer类型，具体的原因我还没弄清除，可能是BIGINT（20）由于数字太小进行了自动转换，等下次遇到的时候再去研究一下，先记录下JDBCType和JavaType数据类型的对应关系：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">JDBCType            JavaType</span><br><span class="line">  CHAR                String</span><br><span class="line">  VARCHAR             String</span><br><span class="line">  LONGVARCHAR         String</span><br><span class="line">  NUMERIC             java.math.BigDecimal</span><br><span class="line">  DECIMAL             java.math.BigDecimal</span><br><span class="line">  BIT                 <span class="keyword">boolean</span></span><br><span class="line">  BOOLEAN             <span class="keyword">boolean</span></span><br><span class="line">  TINYINT             <span class="keyword">byte</span></span><br><span class="line">  SMALLINT            <span class="keyword">short</span></span><br><span class="line">  INTEGER             <span class="keyword">int</span></span><br><span class="line">  BIGINT              <span class="keyword">long</span></span><br><span class="line">  REAL                <span class="keyword">float</span></span><br><span class="line">  FLOAT               <span class="keyword">double</span></span><br><span class="line">  DOUBLE              <span class="keyword">double</span></span><br><span class="line">  BINARY              <span class="keyword">byte</span>[]</span><br><span class="line">  VARBINARY           <span class="keyword">byte</span>[]</span><br><span class="line">  LONGVARBINARY       <span class="keyword">byte</span>[]</span><br><span class="line">  DATE                java.sql.Date</span><br><span class="line">  TIME                java.sql.Time</span><br><span class="line">  TIMESTAMP           java.sql.Timestamp</span><br><span class="line">  CLOB                Clob</span><br><span class="line">  BLOB                Blob</span><br><span class="line">  ARRAY               Array</span><br><span class="line">  DISTINCT            mapping of underlying type</span><br><span class="line">  STRUCT              Struct</span><br><span class="line">  REF                 Ref</span><br><span class="line">  DATALINK            java.net.URL[color=red][/color]</span><br></pre></td></tr></table></figure>
+<h1 id="Mybatis中-lt-collection-gt-标签的使用"><a href="#Mybatis中-lt-collection-gt-标签的使用" class="headerlink" title="Mybatis中&lt; collection &gt;标签的使用"></a>Mybatis中&lt; collection &gt;标签的使用</h1><p>在做课设处理映射时，使用到了一对多的映射，先还原场景，然后看一看&lt; collection &gt;标签的用法。</p>
+<h2 id="表结构："><a href="#表结构：" class="headerlink" title="表结构："></a>表结构：</h2><p>user_info(用户信息表)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUPfJ.png" alt="AeUPfJ.png"><br>packet_info(用户分组信息，每个分组保存了用户的好友)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUMfH.png" alt="AeUMfH.png"><br>user_packet_info(用户所建的分组)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUt78.png" alt="AeUt78.png"><br>packet_user_info(分组中保存的好友)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUdhQ.png" alt="AeUdhQ.png"></p>
+<h2 id="所要是实现的功能"><a href="#所要是实现的功能" class="headerlink" title="所要是实现的功能"></a>所要是实现的功能</h2><p>项目中所要实现的功能是查询某一个user_id的所有分组下的好友，返回的主要部分JSON格式需要如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;	//好友列表</span><br><span class="line">    &quot;friend&quot;: [&#123;</span><br><span class="line">      &quot;groupname&quot;: &quot;前端码屌&quot; //好友分组名</span><br><span class="line">      ,&quot;id&quot;: 1 //分组ID</span><br><span class="line">      ,&quot;list&quot;: [&#123; //分组下的好友列表</span><br><span class="line">        &quot;username&quot;: &quot;贤心&quot; //好友昵称</span><br><span class="line">        ,&quot;id&quot;: &quot;100001&quot; //好友ID</span><br><span class="line">        ,&quot;avatar&quot;: &quot;a.jpg&quot; //好友头像</span><br><span class="line">        ,&quot;sign&quot;: &quot;这些都是测试数据，实际使用请严格按照该格式返回&quot; //好友签名</span><br><span class="line">        ,&quot;status&quot;: &quot;online&quot; //若值为offline代表离线，online或者不填为在线</span><br><span class="line">      &#125;, …… ]</span><br><span class="line">    &#125;, …… ]</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>ResultMap:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;SelectFriendInfo&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;FriendInfoResultMap&quot;</span>&gt;</span></span><br><span class="line">        SELECT packet_name  ,C.packet_id</span><br><span class="line">        FROM user_packet_info AS A</span><br><span class="line">        INNER JOIN packet_info AS C ON A.packet_id=C.packet_id</span><br><span class="line">        WHERE A.user_id=#&#123;id&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;SelectUserFriend&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;FriendInfo&quot;</span>&gt;</span></span><br><span class="line">        SELECT E.user_id AS id,username,sign,avatar,status</span><br><span class="line">        FROM user_packet_info AS A</span><br><span class="line">        INNER JOIN packet_user_info AS E ON A.packet_id=E.packet_id</span><br><span class="line">        INNER JOIN user_info AS B ON E.user_id=B.user_id AND B.user_id!=A.user_id</span><br><span class="line">        WHERE E.packet_id=#&#123;id&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;FriendInfoResultMap&quot;</span> <span class="attr">type</span>=<span class="string">&quot;PacketInfo&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">idArg</span> <span class="attr">column</span>=<span class="string">&quot;packet_id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Long&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">arg</span> <span class="attr">column</span>=<span class="string">&quot;packet_name&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;list&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;FriendInfo&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;ArrayList&quot;</span> <span class="attr">column</span>=<span class="string">&quot;packet_id&quot;</span> <span class="attr">select</span>=<span class="string">&quot;SelectUserFriend&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Long&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;username&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;sign&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;status&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;avatar&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中的&lt; collection &gt;中，需要使用一个column属性，将上层的packet_id传递给下层的查询语句作为参数，association同样也需要。而且不能将两个SELECT合并为一个查询语句。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/">https://super-aviator.github.io/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/"># 工作总结</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/03/16/IDEA%E4%B8%AD%E9%85%8D%E7%BD%AETomcat/">Windows系统下配置Tomcat</a>
+            
+            
+            <a class="next" rel="next" href="/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/">JUnit基础用法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

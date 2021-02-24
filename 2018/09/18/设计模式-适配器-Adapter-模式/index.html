@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>设计模式-适配器(Adapter)模式 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">设计模式-适配器(Adapter)模式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-09-18&nbsp;&nbsp;07:59:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/DesignPattern/">DesignPattern</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在日常生活中，常常可以看见一种手机充电器的转换器，可以把三口的充电器插头转换为两口的充电器插口，这个转换器就是今天的主角：适配器。</p>
+<p>编程中，对于两个不兼容的接口，一个接口由厂商提供，一个接口由客户提供，此时就需要提供一个适配器，将厂商接口转换为用户接口。</p>
+<hr>
+<h2 id="适配器模式定义"><a href="#适配器模式定义" class="headerlink" title="适配器模式定义"></a>适配器模式定义</h2><blockquote>
+<p>适配器模式 将一个类的接口，转换成客户期望的另一个接口，适配器让原本接口不兼容的类可以合作。</p>
+</blockquote>
+<p>适配器模式进行接口的转换，让不兼容的接口变得兼容，还可以让客户从厂商接口解耦，一段时间之后，如果厂商接口发生改动，适配器可以将改动进行封装。</p>
+<p>适配器类图如下所示：<br><img src="data:image/png;base64,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" alt="适配器模式"></p>
+<p>由于适配器类组合了被适配者的接口，所以适配器类可以适配被适配接口的任何子类，比较灵活。</p>
+<h2 id="适配器类的实例"><a href="#适配器类的实例" class="headerlink" title="适配器类的实例"></a>适配器类的实例</h2><p>假设有一个鸭子类（Dcuk）接口，拥有两个方法,quack()(呱呱叫)和fly()(飞翔):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Duck</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">quack</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有一个火鸡类，可以咯咯叫和短距离飞行,其接口如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Turkey</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">gobble</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设此时需要一个鸭子，但是手里此时只有一个火鸡，那么就需要使用火鸡来冒充鸭子，我们需要创建一个适配器将火鸡适配到鸭子，那么，写一个适配器吧：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TurkeyAdapter</span> <span class="keyword">implements</span> <span class="title">Duck</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Turkey turkey;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TurkeyAdapter</span><span class="params">(Turkey turkey)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.turkey = turkey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        turkey.gobble();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        turkey.fly();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，火鸡适配器类实现的的接口是想要转换的类型的接口，即客户端接口，而组合的接口是想要被适配的类型，即厂商的接口。</p>
+<p>对适配器进行测试,首先创建一个火鸡接口的实现类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TurkeyTemp</span> <span class="keyword">implements</span> <span class="title">Turkey</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">gobble</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       	System.out.println(<span class="string">&quot;TurkeyTemp gobble&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;TurkeyTemp fly&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后创建火鸡适配器并进行测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TurkeyAdapterTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TurkeyTemp turkeyTemp=<span class="keyword">new</span> TurkeyTemp();</span><br><span class="line">        TurkeyAdapter turkeyAdapter=<span class="keyword">new</span> TurkeyAdapter(turkeyTemp);</span><br><span class="line">        turkeyAdapter.quack();</span><br><span class="line">        turkeyAdapter.fly();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output</span></span><br><span class="line">TurkeyTemp gobble</span><br><span class="line">TurkeyTemp fly</span><br></pre></td></tr></table></figure>
+<p>如上，我们在测试类中调用的是鸭子才有的方法，而得到的确实火鸡的行为，即客户与被适配者(厂商)是解耦的，客户不需要知道被适配者的具体实现。</p>
+<h2 id="类适配器和对象适配器"><a href="#类适配器和对象适配器" class="headerlink" title="类适配器和对象适配器"></a>类适配器和对象适配器</h2><p>上面介绍的适配器被称为对象适配器，还有一种适配器称为类是类适配器，类适配器不使用组合的方式而是使用继承的方式，适配器类继承了客户类和厂商类，由于Java中不支持多继承，所以在Java中不能实现类适配器。</p>
+<p>类类适配器没有对象适配器灵活，因为继承将适配器与被适配者绑定。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/09/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8-Adapter-%E6%A8%A1%E5%BC%8F/">https://super-aviator.github.io/2018/09/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8-Adapter-%E6%A8%A1%E5%BC%8F/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/09/18/%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%A4%96%E8%A7%82-Facade-%E6%A8%A1%E5%BC%8F/">设计模式-外观(Facade)模式和最少知识原则</a>
+            
+            
+            <a class="next" rel="next" href="/2018/09/17/Spring%E4%B8%AD%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/">GET和POST请求Spring中文乱码问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

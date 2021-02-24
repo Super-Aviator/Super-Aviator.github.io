@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>初级排序算法(java实现) | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">初级排序算法(java实现)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-04-07&nbsp;&nbsp;17:16:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Algorithm/">Algorithm</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>初级排序算法主要包括选择排序，插入排序，希尔排序，三种算法，其中希尔排序算法是对插入排序算法的改进，初级排序算法的特点是代码量少，但是运行时间比高级排序算法多，性能最好的初级排序算法是希尔排序希尔排序对于大数组也适用，选择排序运行时间最高，而插入排序适用于部分有序或者全部有序的数组。</p>
+<hr>
+<h2 id="研究算法的基本框架"><a href="#研究算法的基本框架" class="headerlink" title="研究算法的基本框架"></a>研究算法的基本框架</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Example</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(Comparable a,Comparable b)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.compareTo(b)&lt;<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//如果a&lt;b,就返回真</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(Comparable[] a,<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">        Comparable temp=a[i];a[i]=a[j];a[j]=temp;</span><br><span class="line">        <span class="comment">//交换数组中第i和第j个数的顺序</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.length;i++)</span><br><span class="line">            System.out.print(a[i]+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        System.out.println();</span><br><span class="line">        <span class="comment">//打印数组内容</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSorted</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;a.length;i++)</span><br><span class="line">        <span class="keyword">if</span>(less(a[i],a[i-<span class="number">1</span>]))   <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">//测试数组是否有序。</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//测试用例</span></span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题解析：<br>&emsp;&emsp;对于特定情况例如：int[]数组，在编写特定的exch()方法时，如果使用这种方式实现：a[i]+=a[j],a[j]=a[i]-a[j],a[i]=a[i]-a[j],当i和j的下标相同时，会得到一个0的结果，具体的原因只需按步骤一步步执行就能发现问题所在。</p>
+<hr>
+<h2 id="排序算法的成本模型（时间消耗点）"><a href="#排序算法的成本模型（时间消耗点）" class="headerlink" title="排序算法的成本模型（时间消耗点）"></a>排序算法的成本模型（时间消耗点）</h2><p>&emsp;&emsp;对于交换元素的排序算法，排序算法的成本模型是比较和交换的次数，对于不交换元素的排序算法，我们研究的是访问数组的次数。</p>
+<hr>
+<h2 id="Comparable接口的含义"><a href="#Comparable接口的含义" class="headerlink" title="Comparable接口的含义"></a>Comparable接口的含义</h2><blockquote>
+<p>Comparable接口实现了主键抽象—它给出了实现该接口的任意数据类型的对象的大小顺序的定义  </p>
+</blockquote>
+<ul>
+<li>如果a.comparTo(b)&lt;0说明a&lt;b</li>
+<li>如果a.comparTo(b)=0说明a=b</li>
+<li>如果a.comparTo(b)&gt;0说明a&gt;b</li>
+</ul>
+<p>Comparable接口的代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">interface Comparable&lt;T&gt;&#123;</span><br><span class="line">    public int compareTo(T o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="计算算法的时间-Stopwatch"><a href="#计算算法的时间-Stopwatch" class="headerlink" title="计算算法的时间(Stopwatch)"></a>计算算法的时间(Stopwatch)</h2><p>该类用于计算算法所需的时间</p>
+<ul>
+<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stopwatch</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> start;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Stopwatch</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		start=System.currentTimeMillis();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">elapsedTimeMillis</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">long</span> now=System.currentTimeMillis();</span><br><span class="line">		<span class="keyword">return</span> (now-start)/<span class="number">1000.0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h2 id="各种基本排序算法"><a href="#各种基本排序算法" class="headerlink" title="各种基本排序算法"></a>各种基本排序算法</h2><p>介绍几种常用的排序算法:</p>
+<h3 id="选择排序-Selection-Sort"><a href="#选择排序-Selection-Sort" class="headerlink" title="选择排序(Selection Sort)"></a>选择排序(Selection Sort)</h3><ul>
+<li>执行方式:<br>&emsp;&emsp;每次从右边未排序的数组中选择最小元素,将其插入到左边已排序的数组中的最后位,直到整个数组已经有序.</li>
+<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; i++) &#123;   </span><br><span class="line">            <span class="comment">//该循环控制交换的次数,N个元素交换N-1此</span></span><br><span class="line">            <span class="keyword">int</span> min = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; N; j++)</span><br><span class="line">                <span class="comment">//该循环用于查找剩下数据中最小的那一个</span></span><br><span class="line">                <span class="keyword">if</span> (less(a[j], a[min])) min = j;</span><br><span class="line">                <span class="comment">//如果a[j]比a[min]小,就将j赋值给min</span></span><br><span class="line">            exch(a, i, min);        </span><br><span class="line">            <span class="comment">//交换最小的值和第i个数.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<li>时间复杂度分析<br>&emsp;&emsp;代码中exch(交换)方法执行的次数为N次,所以时间复杂度决定为比较的次数.第二个<br>for循环中,比的次数为 $ (N-1)+(N-2)+…+2+1=N(N-1)/2=N^2/2 $</li>
+</ul>
+<hr>
+<h3 id="插入排序-Insertion-Sort"><a href="#插入排序-Insertion-Sort" class="headerlink" title="插入排序(Insertion Sort)"></a>插入排序(Insertion Sort)</h3><ul>
+<li><p>执行方式:<br>在右边未排序的数组中选择第一个,将其插入到左边已经排序的数组中去,必要时需要将左边数组中的部分数据向右移动移一位.</p>
+</li>
+<li><p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; less(a[j], a[j - <span class="number">1</span>]); j--)</span><br><span class="line">                <span class="comment">//如果后一个数小于它的前一个数</span></span><br><span class="line">                exch(a, j, j - <span class="number">1</span>);<span class="comment">//就将他们交换.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>时间复杂度分析:  </p>
+</li>
+</ul>
+<p>&emsp;&emsp;该算法对于一个有序或者接近有序的数组跑需所需的时间(线性级)远远小于对相同大小的无序数组所需的时间(平方级)；所以该算法通常用来检查数组是否是有序的,当数组中的元素有序或者接近有序时或者主键都相同时,它的时间复杂度比选择排序快很多.<br>&emsp;&emsp;和选择排序一样，最坏情况插入排序需要比较和交换次数为：$ (N-1)+(N-2)+…+2+1=N(N-1)/2=N^2/2 $<br>&emsp;&emsp;插入排序算法平均情况下插入排序需要比较和交换$ N^2/4 $(因为平均每个元素都需要移动和比较一半左边已经排序的元素的数)<br>&emsp;&emsp;最好情况下需要N-1次比较和0次交换.（数据已经有序）</p>
+<blockquote>
+<p>插入排序需要交换的次数为数组中元素倒置的数量相同,比较的次数大于等于倒置数量，小于等于倒置的数量加上数据的大小再减一。</p>
+</blockquote>
+<hr>
+<h3 id="插入排序的改进-improvement"><a href="#插入排序的改进-improvement" class="headerlink" title="插入排序的改进(improvement)"></a>插入排序的改进(improvement)</h3><p>&emsp;&emsp;在常规的插入排序算法中，我们每次遇到一个逆序对，总是将他和后面的数交换，如果我们将内循环中比a[j]小的数直接向后移动，这样可以将访问数组元素的次数减小一半。</p>
+<ul>
+<li>代码实现：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = a[i], j;</span><br><span class="line">            <span class="keyword">for</span> (j = i; j &gt; <span class="number">0</span> &amp;&amp; temp &lt; a[j - <span class="number">1</span>]; j--)</span><br><span class="line">                a[j] = a[j - <span class="number">1</span>];</span><br><span class="line">            a[j] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="插入排序和选择排序的比较"><a href="#插入排序和选择排序的比较" class="headerlink" title="插入排序和选择排序的比较"></a>插入排序和选择排序的比较</h3><p>&emsp;&emsp;对于无重复主键的大量数据，插入排序和选择排序的运行时间都是平方级别的，两者之间应该是一个较小的常数。<br>&emsp;&emsp;对于部分有序或者小规模数组时，插入排序的效率很高，此算法也会在高级排序算法中使用。<br>&emsp;&emsp;对于数组有序或者大量重复主键的数组，插入排序可能比任何算法都要快，这是它独有的特性。而选择排序则是平方级别的。    </p>
+<hr>
+<h3 id="希尔排序-Shell"><a href="#希尔排序-Shell" class="headerlink" title="希尔排序(Shell)"></a>希尔排序(Shell)</h3><ul>
+<li>执行方式<br>&emsp;&emsp;希尔排序也是插入排序的另一种优化算法,它克服了插入排序想要移动一个元素到正确的位置所需要的最多N-1次移动的缺点,它为了加快排序速度,交换不相邻的元素以对数组的局部进行排序,并最终用插入排序将局部有序的数组排序.</li>
+<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortShellIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用希尔增量(较慢，较简单)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> Increment = N / <span class="number">2</span>; Increment &gt; <span class="number">0</span>; Increment /= <span class="number">2</span>)<span class="comment">//希尔增量</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp;</span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortHibbardIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用Hibbard增量(更快)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">int</span> Increment = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">while</span> (Increment &lt; N) Increment = Increment * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">for</span> (Increment /= <span class="number">2</span>; Increment &gt; <span class="number">0</span>; Increment /= <span class="number">2</span>)<span class="comment">//Hibbard增量</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp; </span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortBookIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用书上的增量(最快)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">int</span> Increment = <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">while</span> (Increment &lt; N / <span class="number">3</span>) Increment = Increment * <span class="number">3</span> + <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">for</span> (; Increment &gt;= <span class="number">1</span>; Increment /= <span class="number">3</span>)</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp; </span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+<li>时间复杂度分析:<br>上面的代码采用了三种增量序列(Increment).   </li>
+</ul>
+<p>第一种为希尔增量(最坏时间复杂度为$ N^2 $):<br>$ 1,2,4,…,N/2 $</p>
+<p>第二种为Hibbard增量(最坏时间复杂度为$ N^(3/2) $):<br>$ 1,3,7,…,2^k-1 $</p>
+<p>第三种为书上给出的增量():<br>$ 1,4,13,…,1/2*(3^k-1) $</p>
+<p>所以希尔排序最好的时间复杂度为$N^{1.3}$，最坏时间复杂度为$N^2$</p>
+<ul>
+<li>希尔排序算法特点<br>&emsp;&emsp;希尔排序的运行时间比选择和插入排序低得多，数组越大对比越明显。<br>&emsp;&emsp;对于中等大小的数组，希尔排序的运行时间是可以接受的，他的代码量少。而且不需要使用额外的内存空间。<br>&emsp;&emsp;对于高级排序算法，它们也只比希尔排序快两倍（可能达不到），并且高级排序算法更加复杂，代码更多。在没有高级算法时，可以先使用希尔排序代替，然后再使用更加优秀的算法。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/04/07/%E5%88%9D%E7%BA%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-java%E5%AE%9E%E7%8E%B0/">https://super-aviator.github.io/2018/04/07/%E5%88%9D%E7%BA%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-java%E5%AE%9E%E7%8E%B0/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%8E%92%E5%BA%8F/"># 排序</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/08/%E5%BD%92%E5%B9%B6%E7%AE%97%E6%B3%95%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/">归并排序（java实现）</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/05/Java%E7%AC%A6%E5%8F%B7%E8%A1%A8%EF%BC%88SymbolTable%EF%BC%89/">Java符号表（SymbolTable）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

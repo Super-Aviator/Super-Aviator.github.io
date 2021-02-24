@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>Intellij IDEA中添加JUnit单元测试 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Intellij IDEA中添加JUnit单元测试</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-01-17&nbsp;&nbsp;14:01:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>JUnit是一个很出名的单元测试测试框架，在非常多的项目中被使用，这几天想学习一下JUnit 4。目前广泛使用的是 JUnit 4 版本，同时JUnit 5也可以使用，JUnit 5 在增加了很多的新特性的同时，又保持了对 JUnit 4 的向后兼容性。等具体学习的时候再来看，首先学习在IDEA中添加JUint。</p>
+<h1 id="下载jar包"><a href="#下载jar包" class="headerlink" title="下载jar包"></a>下载jar包</h1><p>首先需要去下载JUnit的jar包以及一个依赖包hamcrest.core，他们的下载地址如下：<br><a target="_blank" rel="noopener" href="https://search.maven.org/artifact/junit/junit/4.13-beta-1/jar">junit:junit:4.13-beta-1</a><br><a target="_blank" rel="noopener" href="https://search.maven.org/artifact/org.ops4j.pax.tipi/org.ops4j.pax.tipi.hamcrest.core/1.3.0.1/bundle">hamcrest.core:1.3.0.1</a><br>需要注意的是hamcrest.core包不能使用2.1版本的，因为4.13版本的JUnit和它不兼容，会抛出<code>ClassNotFoundException</code>异常。</p>
+<h1 id="在Intellij-IDEA项目中添加jar包"><a href="#在Intellij-IDEA项目中添加jar包" class="headerlink" title="在Intellij IDEA项目中添加jar包"></a>在Intellij IDEA项目中添加jar包</h1><p>首先需要在IDEA中添加刚才下载好的包：<br><img src="https://s2.ax1x.com/2019/01/18/k99r3F.png" alt="k99r3F.png"></p>
+<p>记得勾选Export选项。</p>
+<h1 id="下载插件并进行设置"><a href="#下载插件并进行设置" class="headerlink" title="下载插件并进行设置"></a>下载插件并进行设置</h1><p>然后需要下载一个名为JUnitGeneratorV2.0的插件：<br><img src="https://s2.ax1x.com/2019/01/18/k99sc4.png" alt="k99sc4.png"></p>
+<p>然后对其进行设置：<br><img src="https://s2.ax1x.com/2019/01/18/k99yjJ.png" alt="k99yjJ.png"></p>
+<p>输出路径可以更改为想要的路径</p>
+<p><img src="https://s2.ax1x.com/2019/01/18/k99cu9.png" alt="k99cu9.png"></p>
+<p>将图片中的<code>$data</code>改为<code>$today</code>是为了防止生成的测试类产生乱码。</p>
+<h1 id="使用JUnit"><a href="#使用JUnit" class="headerlink" title="使用JUnit"></a>使用JUnit</h1><p>当想要为当前类添加测试代码，只需要在当前类中使用Alt+inset（或者导航栏中点击Code-Generator）快捷键，选择JUnit-JUnit4，就会自动生成当前类的测试类：<br><img src="https://s2.ax1x.com/2019/01/18/k992H1.png" alt="k992H1.png"></p>
+<p>插件默认会测试所有方法，使用快捷键<code>Ctrl+Shift+T</code>可以选择性的测试部分方法，非常的方便：<br><img src="https://s2.ax1x.com/2019/01/18/k99WAx.png" alt="k99WAx.png"></p>
+<p>在输出路径中就可以看到自动生成的测试类，含有需要测试的方法，接下来就可以编写代码对类进行测试啦 QAQ.</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">https://super-aviator.github.io/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JUnit/"># JUnit</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/">JUnit基础用法</a>
+            
+            
+            <a class="next" rel="next" href="/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/">Ubuntu17系统环境下配置JDK</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

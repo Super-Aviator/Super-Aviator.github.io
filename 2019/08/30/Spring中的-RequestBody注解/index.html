@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>Spring中的@RequestBody注解与常规的HTTP方法的传值方式 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring中的@RequestBody注解与常规的HTTP方法的传值方式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-08-30&nbsp;&nbsp;10:31:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Spring/">Spring</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>上周进行项目开发的时候，发现前端的含有文件的表单数据时后台接收报错，异常的大致意思是表单类型不支持，我也是有点蒙逼，以前也遇到过这种问题，加上@RequestBody就可以，所以这次我也加上了@RequestBody注解，结果还是报错，这时前端发消息过来，告诉我不能加@RequestBody,我去掉之后果然好了，好吧。一直没弄明白什么时候要加@RequestBody什么时候不要加，趁着这个迭代的任务很轻松，学习一下Spring中@RequestBody注解和后端如何接收常用的HTTP方法传过来的数据，结合PostMan对结果进行测试。</p>
+<h1 id="RequestBody注解"><a href="#RequestBody注解" class="headerlink" title="@RequestBody注解"></a>@RequestBody注解</h1><blockquote>
+<p>@RequestBody注解常用来处理POST请求，并且content-type不是默认的application/x-www-form-urlcoded编码的内容，比如说：application/json或者是application/xml等。一般情况下来说常用其来处理application/json类型。</p>
+</blockquote>
+<blockquote>
+<p>@RequestMapping注解的方法的参数中包含了@RequestBody注解，那么Spring会首先查看请求中的Content-Type头部，然后根据Content-Type头部去查找合适的HttpMessageConverter        </p>
+</blockquote>
+<blockquote>
+<p>例如，如果客户端发送的Spittle数据是JSON表述形式，那 么Content-Type头部信息可能就会是“application/json”。在 这种情况下，DispatcherServlet会查找能够将JSON转换为Java 对象的消息转换器。如果Jackson 2库在类路径中，那 么MappingJackson2HttpMessageConverter将会担此重任，将 JSON表述转换为Spittle，然后传递到saveSpittle()方法中。 这个方法还使用了@ResponseBody注解，因此方法返回的Spittle 对象将会转换为某种资源表述，发送给客户端。</p>
+</blockquote>
+<p>在《Spring 实战》中，表明了@RequestBody注解的含义和使用方式：<strong>用来解析请求体（可能是POST,PUT,DELETE,GET请求）中Content-Type为application/json类型的请求，利用消息转换器将其转换为对应的java对象</strong>（必须使用VO对象去接收），那么什么类型的消息能够加上@RequestBody，什么类型的消息不能加呢？</p>
+<h2 id="表单类型"><a href="#表单类型" class="headerlink" title="表单类型"></a>表单类型</h2><blockquote>
+<p>MediaType，即是Internet Media Type，互联网媒体类型；也叫做MIME类型，在Http协议消息头中，使用Content-Type来表示具体请求中的媒体类型信息。Content-Type头部后面可以追加<code>;charset=UTF-8</code>指定编码格式,例如：<code>Content-Type:x-www-from-urlencoded;charset=UTF-8</code></p>
+</blockquote>
+<p>Content-Type字段表明了请求的请求体类型，可以是如下几种常见的类型：<br>常见媒体格式如下:</p>
+<ul>
+<li>text/html ： HTML格式</li>
+<li>text/plain ：纯文本格式</li>
+<li>text/xml ：  XML格式</li>
+<li>image/gif ：gif图片格式</li>
+<li>image/jpeg ：jpg图片格式</li>
+<li>image/png：png图片格式</li>
+<li>multipart/form-data：（体数据被编码为一条消息，页上的每个控件对应消息中的一个部分，这个一般文件上传时用）</li>
+</ul>
+<p>以application开头的媒体格式类型：</p>
+<ul>
+<li>application/xhtml+xml ：XHTML格式</li>
+<li>application/xml     ： XML数据格式</li>
+<li>application/atom+xml  ：Atom XML聚合格式</li>
+<li>application/json    ： JSON数据格式</li>
+<li>application/pdf       ：pdf格式</li>
+<li>application/msword  ： Word文档格式</li>
+<li>application/octet-stream ： 二进制流数据（如常见的文件下载）</li>
+<li>application/x-www-form-urlencoded ： 中默认的encType,form表单数据被编码为key/value格式发送到服务器（表单默认的提交数据的格式）</li>
+</ul>
+<p>下面是常见的表单提交的Content-Type的取值：</p>
+<h3 id="application-x-www-form-urlencoded"><a href="#application-x-www-form-urlencoded" class="headerlink" title="application/x-www-form-urlencoded"></a>application/x-www-form-urlencoded</h3><ul>
+<li><p>如果使用的是GET请求，浏览器用<code>x-www-form-urlencoded</code>的编码方式把form数据转换成一个字串（name1=value1&amp;name2=value2…），然后把这个字串append到url后面，用?分割，加载这个新的url。</p>
+</li>
+<li><p>如果使用的是POST请求，会采用类似GET的字符串拼接的方式，<strong>将拼接的key-value字段放到body里面，而非url的后面</strong>,所以POST请求的url长度是没有限制的，因为拼接的url请求参数都存放在body里面,如下</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   POST  HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8000</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: e8c31d7a-fd52-cbf2-2741-07d73cb1101b</span><br><span class="line"></span><br><span class="line">keyword=panda&amp;author=zane</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：使用<code>application/x-www-form-urlencoded</code>编码方式的请求会对所有非ASCII的字符使用%HH的方式进行转换，所以一个非ASCII字符会由三个字符去表示，当非ASCII非常多时，会增加大约三倍的带宽，这无疑是一种浪费。</p>
+<h3 id="multipart-form-data"><a href="#multipart-form-data" class="headerlink" title="multipart/form-data"></a>multipart/form-data</h3><p>如果没有type=file的控件，用默认的<code>application/x-www-form-urlencoded</code>就可以了。 但是如果有type=file的话，Content-Type就会升级使用<code>multipart/form-data</code>类型。浏览器会把整个表单以控件为单位分割，**并为每个部分加上Content-Disposition(form-data或者file),Content-Type(默认为text/plain),name(控件的name，即字段名)等信息，并加上分割符(boundary)**，例如：    </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8000</span><br><span class="line">Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: 090df52c-d103-279b-1479-50e6a7fef58b</span><br><span class="line"></span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Content-Disposition: form-data; name=&quot;keyword&quot;</span><br><span class="line"></span><br><span class="line">panda</span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Content-Disposition: form-data; name=&quot;author&quot;</span><br><span class="line"></span><br><span class="line">zane</span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>上面的请求中，keyword键对应的值为panda,author键对应的值为zane。</p>
+<p>  首先我们看请求头的 Content-Type 它除了正常的 multipart/form-data 外还多了一个 boundary ，这个 boundary 的意思和字面意思一样就是分界线，通过分界线将每个键值对用 boundary 分割开来以示区别,<strong>这个分界线是特殊选择出来的，以便该boundary不会出现在任何有效负载中</strong>。现在我们看请求体，我们注意到boundary 将键值对分割后的每一部分都有 Content-Disposition 字段，实际上该字段的值必须为 form-data 而且后面必须加上 name 指定这部分的键名，然后是一行空行，空行之后便是提交数据的内容。 之所以要弄的这么复杂是因为 multipart/form-data 要支持文件上传。</p>
+<p>  <strong>注意</strong>：使用<code>multipart/form-data</code>编码方式的请求不会对非ASCII字符进行转码，所以也就不会有消耗，但是对于简短的字母数字值(与大多数web表单一样)，添加所有MIME头的开销将大大超过更有效的二进制编码所节省的开销。</p>
+<h3 id="application-json"><a href="#application-json" class="headerlink" title="application/json"></a>application/json</h3><p>数据以纯文本形式(text/json/xml/html)进行编码，POST方法使用这种方式会把表单的键值对以一个JSON字符串的方式放到HTTP的body里面。例如如下的postman中的请求示例：<br>?<br><img src="/images/applicationjsonrequestdemo.png" alt="upload successful"></p>
+<p><strong>注意</strong>：当非post请求的请求体中也含有JSON字符串时，依旧可以使用@RequestBody拿到请求体中的数据。</p>
+<h2 id="Postman测试"><a href="#Postman测试" class="headerlink" title="Postman测试"></a>Postman测试</h2><p>下面使用Postman来测试一下什么时候要加@Requestbody，什么时候不用加@RequestBody注解：<br>首先是Controller中的代码，有个方法，一个使用了@RequestBody注解，一个没有使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/requestBody&quot;)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestBodyController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@NoArgsConstructor</span></span><br><span class="line">    <span class="meta">@AllArgsConstructor</span></span><br><span class="line">    <span class="meta">@Getter</span></span><br><span class="line">    <span class="meta">@Setter</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Request</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">        <span class="keyword">private</span> Integer age;</span><br><span class="line">        <span class="meta">@JSONField(serialize = false,deserialize = false)</span></span><br><span class="line">        <span class="keyword">private</span> MultipartFile avatar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/request&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HttpEntity&lt;Request&gt; <span class="title">generalRequest</span><span class="params">(Request request)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;generalRequest-&#123;&#125;&quot;</span>,JSON.toJSONString(request));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HttpEntity&lt;&gt;(request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/requestBody&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HttpEntity&lt;Request&gt; <span class="title">generalRequestBody</span><span class="params">(<span class="meta">@RequestBody</span> Request request)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;generalRequest-&#123;&#125;&quot;</span>,JSON.toJSONString(request));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HttpEntity&lt;&gt;(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当请求中的ContentType分别为一下三种类型时，结果如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">否加上注解\ContentType</th>
+<th align="center">x-www-form-urlencoded</th>
+<th align="center">form-data</th>
+<th align="center">application/json</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">不加@RequestBody注解</td>
+<td align="center">能接收</td>
+<td align="center">能接收</td>
+<td align="center">不能接收</td>
+</tr>
+<tr>
+<td align="center">加上@RequestBody注解</td>
+<td align="center">不能接收</td>
+<td align="center">不能接收</td>
+<td align="center">能接收</td>
+</tr>
+</tbody></table>
+<h2 id="RequestBody使用总结"><a href="#RequestBody使用总结" class="headerlink" title="@RequestBody使用总结"></a>@RequestBody使用总结</h2><p>@RequestBody用于需要触发HttpMessageConverter的场景：</p>
+<ul>
+<li>当HTTP请求的Content-Type头部为application/json时，需要加上@RequestBody注解，并使用默认的<code>HttpMessageConverter</code>或者自定义的<code>HttpMessageConverter</code>对请求的body中的json字符串转换为java对象。</li>
+<li>当Content-Type头部的值为application/x-www-form-urlencoded或者multipart/form-data时，表名此请求是一个常规的表单请求，不能使用@RequestBody注解。</li>
+</ul>
+<p><strong>注意</strong>：使用@RequestBody注解的参数必须使用VO对象的方式去接收，否则会接收不到参数</p>
+<p><strong>参考地址:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5b5efff0e51d45198469acea">Spring之RequestBody的使用姿势小结</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.0php.net/posts/HTML-%E8%A1%A8%E5%8D%95%E4%B9%8B%E4%B8%8D%E5%BE%97%E4%B8%8D%E7%9F%A5-enctype.html">HTML 表单之不得不知 ENCTYPE</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data">Stackoverflow上大神的回答</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/08/30/Spring%E4%B8%AD%E7%9A%84-RequestBody%E6%B3%A8%E8%A7%A3/">https://super-aviator.github.io/2019/08/30/Spring%E4%B8%AD%E7%9A%84-RequestBody%E6%B3%A8%E8%A7%A3/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java-Web/"># Java Web</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/01/%E4%B8%80%E6%AC%A1%E5%AE%81%E4%BA%BA%E5%B4%A9%E6%BA%83%E7%9A%84%E7%A7%9F%E6%88%BF%E7%BB%8F%E5%8E%86/">一次令人崩溃的租房经历</a>
+            
+            
+            <a class="next" rel="next" href="/2019/08/24/Untitled/">在云服务器上搭建Hexo之一顿百度加谷歌</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

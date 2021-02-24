@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>第一个一年计划-Springboot表单校验 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">第一个一年计划-Springboot表单校验</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-11-02&nbsp;&nbsp;15:08:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在几个月的工作中，发现表单校验是非常重要并且是必不可少的，但是对于Spring提供的几个表单校验的使用方法总是没有好好系统的学习一下，今天来看一看Spring中的几个表单校验的直接的详细使用方法：</p>
+<h1 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h1><h2 id="Null"><a href="#Null" class="headerlink" title="@Null"></a>@Null</h2><p>此注解表示VO类中的字段必须为null,和@NotNull字段是相反的。</p>
+<h2 id="NotNull"><a href="#NotNull" class="headerlink" title="@NotNull"></a>@NotNull</h2><p>这个注解是最常用的，在VO类中使用的话，标识这个字段前端必须传递，如果该字段没有传值，则Spring会将VO类的字段值默认为null，此时表单校验就会不通过。<br><strong>注意</strong>：使用此注解，前端传递的空字符串是可以通过校验的。</p>
+<h2 id="NotBlank"><a href="#NotBlank" class="headerlink" title="@NotBlank"></a>@NotBlank</h2><p>此注解表示后台接收的字符串类型的数据不能为null并且不能为空字符串。</p>
+<h2 id="NotEmpty"><a href="#NotEmpty" class="headerlink" title="@NotEmpty"></a>@NotEmpty</h2><p>次注解标识接收的集合必须不为null，并且集合的长度不能为0，即集合的isEmpty必须为false。</p>
+<h2 id="Size"><a href="#Size" class="headerlink" title="@Size"></a>@Size</h2><p>次注解指定CharSequence、Map、Collection、Array类型的元素个数咋指定范围内，但是可以为null。</p>
+<h2 id="PositiveOrZero"><a href="#PositiveOrZero" class="headerlink" title="@PositiveOrZero"></a>@PositiveOrZero</h2><p>此注解指定BigDecimal，BigInteger，byte，short，int，long，float，double以及其包类型,必须为正数或者0。但是可以为null。</p>
+<h2 id="NegativeOrZero"><a href="#NegativeOrZero" class="headerlink" title="@NegativeOrZero"></a>@NegativeOrZero</h2><p>此注解指定BigDecimal，BigInteger，byte，short，int，long，float，double以及其包类型,必须为负数或者0。但是可以为null。</p>
+<h2 id="Negative"><a href="#Negative" class="headerlink" title="Negative"></a>Negative</h2><p>此注解指定字段必须为负数</p>
+<h2 id="Positive"><a href="#Positive" class="headerlink" title="Positive"></a>Positive</h2><p>此注解指定字段必须为正数</p>
+<h2 id="Digit"><a href="#Digit" class="headerlink" title="@Digit"></a>@Digit</h2><h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>在开发过程中，常常会遇到这么一种使用场景：两个接口复用的一个VO类，但是不同的是，其中一个接口只需要校验VO类的部分字段，而另外一个接口则需要教养另外部分字段，对于这种动态校验字段的情况，可以使用分组校验的方式来解决，避免编写重复的代码：<br>首先，在VO类中使用注解对表单字段进行校验,并为注解指定一个分组，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">GroupValidVO</span> </span>&#123;</span><br><span class="line">    <span class="meta">@NotBlank(groups = TEST1.class,message = &quot;name不能为空&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Max(value =100,groups = TEST2.class,message = &quot;年龄大于100岁&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long age;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Size(min = 1,groups = TEST2.class,message = &quot;朋友id不能为空&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Long&gt; friendIds;</span><br><span class="line">    </span><br><span class="line">        <span class="comment">//不指定分组</span></span><br><span class="line">        <span class="meta">@NotNull(message=&quot;性别不能为空&quot;)</span></span><br><span class="line">        <span class="keyword">private</span> Integer gender;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">interface</span> <span class="title">TEST1</span></span>&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">interface</span> <span class="title">TEST2</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意VO类的最下面定义的接口，一个接口对应一个分组。</p>
+<p>在Controller层，使用Spring提供的@Validated注解来对表单对象进行校验，并指定分组：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/formValid&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FormValidController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@GetMapping(&quot;/test2&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseMessage <span class="title">validTest2</span><span class="params">(<span class="meta">@Validated(GroupValidVO.TEST1.class)</span> FormValidController.GroupValidVO groupValidVO, BindingResult bindingResult)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(bindingResult.hasErrors())&#123;</span><br><span class="line">            <span class="keyword">return</span> ResponseMessage.error(bindingResult.getFieldError().getDefaultMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ResponseMessage.ok(<span class="string">&quot;表单校验通过&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/test3&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseMessage <span class="title">validTest3</span><span class="params">(<span class="meta">@Validated(&#123;GroupValidVO.TEST2.class&#125;)</span> FormValidController.GroupValidVO groupValidVO, BindingResult bindingResult)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(bindingResult.hasErrors())&#123;</span><br><span class="line">            <span class="keyword">return</span> ResponseMessage.error(bindingResult.getFieldError().getDefaultMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ResponseMessage.ok(<span class="string">&quot;表单校验通过&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，第一个接口只会校验GroupValidVO类的name字段，而第二个接口只会校验GroupValidVO类的age和friendIds字段。测试结果如下：</p>
+<p><img src="/images/formValidated1.png" alt="upload successful"></p>
+<p><img src="/images/FormValidated2.png" alt="upload successful"><br>可以看出test2接口只对name字段进行了校验。</p>
+<p><img src="/images/FormValidator3.png" alt="upload successful"></p>
+<p><img src="/images/FormValidator4.png" alt="upload successful"><br>可以看出test3接口只对age字段进行了校验。</p>
+<p><strong>注意</strong> 对于未加分组的字段gender，在@Validated注解指定分组时，不会进行校验。故上面的test2和test3接口都不会对gender进行校验。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/11/02/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Springboot%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C/">https://super-aviator.github.io/2019/11/02/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Springboot%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/11/04/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Arrays%E5%B7%A5%E5%85%B7%E7%B1%BB/">第一个一年计划-Arrays工具类</a>
+            
+            
+            <a class="next" rel="next" href="/2019/10/23/%E4%BB%8E%E8%8F%9C%E9%B8%9F%E5%88%B0%E8%8F%9C%E9%80%BC-ArrayList%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">第一个一年计划-ArrayList集合</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

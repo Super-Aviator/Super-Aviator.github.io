@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>吸血鬼数字的两种解法 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">吸血鬼数字的两种解法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-04-09&nbsp;&nbsp;17:45:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Algorithm/">Algorithm</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>吸血鬼数字的解法</p>
+<span id="more"></span>
+<h3 id="基础解法"><a href="#基础解法" class="headerlink" title="基础解法"></a>基础解法</h3><p>&emsp;&emsp;根据吸血鬼数字的特点，将a*b=c中的a+b的每一位数字和c中每一位数字排序之后进行比较，如果排序之后的字符串相等，则认为c是一个吸血鬼数字。</p>
+<ul>
+<li>代码实现：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Vampire</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        StopWatch stopWatch=<span class="keyword">new</span> StopWatch();</span><br><span class="line">        <span class="keyword">int</span> counter=<span class="number">0</span>,time=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">10</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;<span class="number">100</span>;j++)&#123;</span><br><span class="line">                <span class="keyword">int</span> sum=i*j;</span><br><span class="line">                <span class="keyword">if</span>(sum&lt;=<span class="number">1000</span>||sum&gt;<span class="number">9999</span>)  <span class="keyword">continue</span>;</span><br><span class="line">                time++;</span><br><span class="line">                <span class="keyword">char</span>[] num1=String.valueOf(i+<span class="string">&quot;&quot;</span>+j).toCharArray();</span><br><span class="line">                <span class="keyword">char</span>[] num2=String.valueOf(sum).toCharArray();</span><br><span class="line">                Arrays.sort(num1);</span><br><span class="line">                Arrays.sort(num2);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(Arrays.equals(num1,num2)) &#123;</span><br><span class="line">                    counter++;</span><br><span class="line">                    System.out.println(i+<span class="string">&quot;:&quot;</span>+j+<span class="string">&quot;=&quot;</span>+sum+<span class="string">&quot;是吸血鬼数字！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;总共找到&quot;</span>+counter+<span class="string">&quot;组vampireNumber；\n&quot;</span>+<span class="string">&quot;此程序总共进行了&quot;</span>+time+<span class="string">&quot;次比较，&quot;</span>+<span class="string">&quot;运行时间为：&quot;</span>+stopWatch.elapsedTime()+<span class="string">&quot;s&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//output</span></span><br><span class="line"><span class="number">15</span>:<span class="number">93</span>=<span class="number">1395</span>是吸血鬼数字！</span><br><span class="line"><span class="number">21</span>:<span class="number">60</span>=<span class="number">1260</span>是吸血鬼数字！</span><br><span class="line"><span class="number">21</span>:<span class="number">87</span>=<span class="number">1827</span>是吸血鬼数字！</span><br><span class="line"><span class="number">27</span>:<span class="number">81</span>=<span class="number">2187</span>是吸血鬼数字！</span><br><span class="line"><span class="number">30</span>:<span class="number">51</span>=<span class="number">1530</span>是吸血鬼数字！</span><br><span class="line"><span class="number">35</span>:<span class="number">41</span>=<span class="number">1435</span>是吸血鬼数字！</span><br><span class="line"><span class="number">80</span>:<span class="number">86</span>=<span class="number">6880</span>是吸血鬼数字！</span><br><span class="line">总共找到<span class="number">7</span>组vampireNumber；</span><br><span class="line">此程序总共进行了<span class="number">3269</span>次比较，运行时间为：<span class="number">0.</span>02s</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="改进算法"><a href="#改进算法" class="headerlink" title="改进算法"></a>改进算法</h3><p>在前面的算法中，比较的次数大约为4000次。但是根据下面的方法，可以将比较次数缩减到大约300次：<br>&emsp;&emsp;令sum=1000*a+100*b+10*c+d,我们假设他的两个因子(大小肯定为两位数)为：num1=10*a+b;num2=10*c+d;那么通过sum-num1-num2我们可以得到sum-num1-num2=990*a+9*b=9*(110a+b).所以sum-num1-num2肯定可以被9整除。<br>&emsp;&emsp;在i确定时，我们可以确定j开始循环的范围。所以可以使用start和end来确定j的范围。<br>&emsp;&emsp;这告诉我们学好数学的重要性。o_o…</p>
+<ul>
+<li>代码实现<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VampireNumber</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        StopWatch stopWatch=<span class="keyword">new</span> StopWatch();</span><br><span class="line">        <span class="keyword">int</span> counter=<span class="number">0</span>,time=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">10</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> start=Math.max(<span class="number">1000</span>/i,i+<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">int</span> end=Math.min(<span class="number">10000</span>/i,<span class="number">100</span>);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=start;j&lt;end;j++)&#123;</span><br><span class="line">                <span class="keyword">int</span> sum=i*j;</span><br><span class="line">                <span class="keyword">if</span>(sum%<span class="number">100</span>==<span class="number">0</span>||(sum-i-j)%<span class="number">9</span>!=<span class="number">0</span>)  <span class="keyword">continue</span>;</span><br><span class="line">                time++;</span><br><span class="line">                <span class="keyword">char</span>[] num1=String.valueOf(i+<span class="string">&quot;&quot;</span>+j).toCharArray();</span><br><span class="line">                <span class="keyword">char</span>[] num2=String.valueOf(sum).toCharArray();</span><br><span class="line">                Arrays.sort(num1);</span><br><span class="line">                Arrays.sort(num2);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(Arrays.equals(num1,num2)) &#123;</span><br><span class="line">                    counter++;</span><br><span class="line">                    System.out.println(i+<span class="string">&quot;:&quot;</span>+j+<span class="string">&quot;=&quot;</span>+sum+<span class="string">&quot;是吸血鬼数字！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;总共找到&quot;</span>+counter+<span class="string">&quot;组vampireNumber；\n&quot;</span>+<span class="string">&quot;此程序总共进行了&quot;</span>+time+<span class="string">&quot;次比较，&quot;</span>+<span class="string">&quot;运行时间为：&quot;</span>+stopWatch.elapsedTime()+<span class="string">&quot;s&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output</span></span><br><span class="line"><span class="number">15</span>:<span class="number">93</span>=<span class="number">1395</span>是吸血鬼数字！</span><br><span class="line"><span class="number">21</span>:<span class="number">60</span>=<span class="number">1260</span>是吸血鬼数字！</span><br><span class="line"><span class="number">21</span>:<span class="number">87</span>=<span class="number">1827</span>是吸血鬼数字！</span><br><span class="line"><span class="number">27</span>:<span class="number">81</span>=<span class="number">2187</span>是吸血鬼数字！</span><br><span class="line"><span class="number">30</span>:<span class="number">51</span>=<span class="number">1530</span>是吸血鬼数字！</span><br><span class="line"><span class="number">35</span>:<span class="number">41</span>=<span class="number">1435</span>是吸血鬼数字！</span><br><span class="line"><span class="number">80</span>:<span class="number">86</span>=<span class="number">6880</span>是吸血鬼数字！</span><br><span class="line">总共找到<span class="number">7</span>组vampireNumber；</span><br><span class="line">此程序总共进行了<span class="number">232</span>次比较，运行时间为：<span class="number">0.</span>009s</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/">https://super-aviator.github.io/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%AE%97%E6%B3%95%E7%96%91%E6%83%91%E8%A7%A3%E7%AD%94/"># 算法疑惑解答</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/11/Java%E4%B8%ADLinkedList%E7%9A%84%E5%AD%A6%E4%B9%A0/">Java中LinkedList的学习</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/09/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/">快速排序（java实现）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

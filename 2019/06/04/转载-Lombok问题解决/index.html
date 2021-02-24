@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>[转载]Lombok安装与常见的问题 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[转载]Lombok安装与常见的问题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-06-04&nbsp;&nbsp;11:26:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>原文地址：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuyuegb2312/p/9750462.html">lombok踩坑与思考</a></p>
+<p>在实习的时候公司的代码中用到了Lombok，主要是为了简化实体类的代码量，以前这些Getter和Setter方法都是用IDEA的ctrl+insert来生成的，但是为了代码风格的一致性，以后得改用Lombok了。在网上看到一篇关于Lombok踩坑的文章，抄袭一下。</p>
+<h1 id="Lombok安装"><a href="#Lombok安装" class="headerlink" title="Lombok安装"></a>Lombok安装</h1><p>想要使用Lombok，首先需要在maven中加入Lombok的依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后需要在IDEA中安装Lombok的插件，在IDEA中点击File-&gt;Settings-&gt;Plugins，然后所有Lombok插件进行安装并重启IDEA，</p>
+<p>最后，需要打开IDEA的Annotation Processors，在IDEA中选择File-&gt;Settings-&gt;Build,Execution,deployment-&gt;Compiler-&gt;Annotation Processors，然后勾选Enable annotation processing选项就OK啦。接下来就可以使用Lombok啦。</p>
+<h1 id="一些杂七杂八的问题"><a href="#一些杂七杂八的问题" class="headerlink" title="一些杂七杂八的问题"></a>一些杂七杂八的问题</h1><p>以下这些是最初我不喜欢lombok的原因。</p>
+<h2 id="额外的环境配置"><a href="#额外的环境配置" class="headerlink" title="额外的环境配置"></a>额外的环境配置</h2><p>作为IDE插件+jar包，需要对IDE进行一系列的配置。目前在idea中配置还算简单，几年前在eclipse下也配置过，会复杂不少。</p>
+<h2 id="传染性"><a href="#传染性" class="headerlink" title="传染性"></a>传染性</h2><p>一般来说，对外打的jar包最好尽可能地减少三方包依赖，这样可以加快编译速度，也能减少版本冲突。一旦在resource包里用了lombok，别人想看源码也不得不装插件。</p>
+<p>而这种不在对外jar包中使用lombok仅仅是约定俗成，当某一天lombok第一次被引入这个jar包时，新的感染者无法避免。</p>
+<h2 id="降低代码可读性"><a href="#降低代码可读性" class="headerlink" title="降低代码可读性"></a>降低代码可读性</h2><p>定位方法调用时，对于自动生成的代码，getter/setter还好说，找到成员变量后find usages，再根据上下文区分是哪种；equals()这种，想找就只能写段测试代码再去find usages了。</p>
+<p>目前主流ide基本都支持自动生成getter/setter代码，和lombok注解相比不过一次键入还是一次快捷键的区别，实际减轻的工作量十分微小。</p>
+<h1 id="EqualsAndHashCode和equals"><a href="#EqualsAndHashCode和equals" class="headerlink" title="@EqualsAndHashCode和equals()"></a>@EqualsAndHashCode和equals()</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>当这个注解设置callSuper=true时，会调用父类的equlas()方法，对应编译后class文件代码片段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> BaseVO)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        BaseVO other = (BaseVO)o;</span><br><span class="line">        <span class="keyword">if</span> (!other.canEqual(<span class="keyword">this</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="keyword">super</span>.equals(o)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// 各项属性比较</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果一个类的父类是Object（java中默认没有继承关系的类父类都是Object），那么这里会调用Object的equals()方法，如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">this</span> == obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>对于父类是Object且使用了@EqualsAndHashCode(callSuper = true) 注解的类，这个类由lombok生成的equals()方法只有在两个对象是同一个对象时，才会返回true，否则总为false，无论它们的属性是否相同。这个行为在大部分时间是不符合预期的，equals()失去了其意义。即使我们期望equals()是这样工作的，那么其余的属性比较代码便是累赘，会大幅度降低代码的分支覆盖率。以一个近6000行代码的业务系统举例，是否修复该问题并编写对应测试用例，可以使整体的jacoco分支覆盖率提高10%~15%。</p>
+<p>相反地，由于这个注解在jacoco下只算一行代码，未覆盖行数倒不会太多。</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>有几种解决方法可以参考：</p>
+<ul>
+<li>不使用该注解。大部分pojo我们是不会调用equals进行比较的，实际用到时再重写即可。</li>
+<li>去掉callSuper = true。如果父类是Object，推荐使用。</li>
+<li>重写父类的equals()方法，确保父类不会调用或使用类似实现的Ojbect的equals()。</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>@data注解包含@EqualsAndHashCode注解，由于不调用父类equals()，避免了Object.equals()的坑，但可能带来另一个坑。详见@data章节。</p>
+<h1 id="data"><a href="#data" class="headerlink" title="@data"></a>@data</h1><h2 id="从一个坑出来掉到另一个大坑"><a href="#从一个坑出来掉到另一个大坑" class="headerlink" title="从一个坑出来掉到另一个大坑"></a>从一个坑出来掉到另一个大坑</h2><p>上文提到@EqualsAndHashCode(callSuper = true) 注解的坑，那么 @data 是否可以避免呢？很不幸的是，这里也有个坑。<br>由于 @data 实际上就是用的 @EqualsAndHashCode，没有调用父类的equals()，当我们需要比较父类属性时，是无法比较的。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ABO</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> a;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BBO</span> <span class="keyword">extends</span> <span class="title">ABO</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> b;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        BBO bbo1 = <span class="keyword">new</span> BBO();</span><br><span class="line">        BBO bbo2 = <span class="keyword">new</span> BBO();</span><br><span class="line"></span><br><span class="line">        bbo1.setA(<span class="number">1</span>);</span><br><span class="line">        bbo2.setA(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        bbo1.setB(<span class="number">1</span>);</span><br><span class="line">        bbo2.setB(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        System.out.print(bbo1.equals(bbo2)); <span class="comment">// true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很显然，两个子类忽略了父类属性比较。这并不是因为父类的属性对于子类是不可见——即使把父类private属性改成protected，结果也是一样——而是因为lombok自动生成的equals()只比较子类特有的属性。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><ul>
+<li>用了 @data 就不要有继承关系，类似kotlin的做法，具体探讨见下一节</li>
+<li>自己重写equals()，lombok不会对显式重写的方法进行生成</li>
+<li>显式使用@EqualsAndHashCode(callSuper = true)。lombok会以显式指定的为准。</li>
+</ul>
+<h2 id="关于-data和data"><a href="#关于-data和data" class="headerlink" title="关于@data和data"></a>关于@data和data</h2><p>在了解了 @data 的行为后，会发现它和kotlin语言中的data修饰符有点像：都会自动生成一些方法，并且在继承上也有问题——前者一旦有继承关系就会踩坑，而后者修饰的类是final的，不允许继承。kotlin为什么要这样做，二者有没有什么联系呢？在一篇流传较广的文章(抛弃 Java 改用 Kotlin 的六个月后，我后悔了(译文))中，对于data修饰符，提到：</p>
+<p>Kotlin 对 equals()、hashCode()、toString() 以及 copy() 有很好的实现。在实现简单的DTO 时它非常有用。但请记住，数据类带有严重的局限性。你无法扩展数据类或者将其抽象化，所以你可能不会在核心模型中使用它们。</p>
+<p>这个限制不是 Kotlin 的错。在 equals() 没有违反 Liskov 原则的情况下，没有办法产生正确的基于值的数据。</p>
+<p>对于Liskov（里氏替换）原则，可以简单概括为：</p>
+<p>一个对象在其出现的任何地方，都可以用子类实例做替换，并且不会导致程序的错误。换句话说，当子类可以在任意地方替换基类且软件功能不受影响时，这种继承关系的建模才是合理的。</p>
+<p>根据上一章的讨论，equals()的实现实际上是受业务场景影响的，无论是否使用父类的属性做比较都是有可能的。但是kotlin无法决定equals()默认的行为，不使用父类属性就会违反了这个原则，使用父类属性有可能落入调用Object.equals()的陷阱，进入了两难的境地。</p>
+<p>kotlin的开发者回避了这个问题，不使用父类属性并且禁止继承即可。只是kotlin的使用者就会发现自己定义的data对象没法继承，不得不删掉这个关键字手写其对应的方法。</p>
+<p>回过头来再看 @data ，它并没有避免这些坑，只是把更多的选择权交给开发者决定，是另一种做法。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其他lombok注解实际使用较少，整体阅读了 官方文档暂时没有发现其他问题，遇到以后继续更新。<br>实际上官方文档中也提到了equals()的坑。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/06/04/%E8%BD%AC%E8%BD%BD-Lombok%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/">https://super-aviator.github.io/2019/06/04/%E8%BD%AC%E8%BD%BD-Lombok%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Lombok/"># Lombok</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/06/20/Spring-Data-JPA%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0/">Spring Data JPA进阶学习</a>
+            
+            
+            <a class="next" rel="next" href="/2019/06/02/SpringBoot%E5%B8%B8%E7%94%A8%E7%9A%84%E9%85%8D%E7%BD%AE%E9%A1%B9/">SpringBoot常用的配置项</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

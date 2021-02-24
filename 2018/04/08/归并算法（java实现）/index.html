@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>归并排序（java实现） | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">归并排序（java实现）</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-04-08&nbsp;&nbsp;17:02:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Algorithm/">Algorithm</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>归并算法的分析</p>
+<h2 id="自顶向下的归并排序"><a href="#自顶向下的归并排序" class="headerlink" title="自顶向下的归并排序"></a>自顶向下的归并排序</h2><h3 id="执行方法-先分再排"><a href="#执行方法-先分再排" class="headerlink" title="执行方法(先分再排)"></a>执行方法(先分再排)</h3><p>&emsp;&emsp;将一个数组排序，可以先将他的左边和右边分别排序，然后将结果归并起来。此算法吸引人的地方是它能够保证将任意长度为N的数组排序所需的时间和NlogN成正比。缺点是需要长度为N的附加空间。</p>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Merge</span> <span class="keyword">extends</span> <span class="title">Sortable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Comparable[] tmp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//驱动程序1</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        tmp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">//定义临时数组</span></span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//驱动程序2</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> low, <span class="keyword">int</span> up)</span> </span>&#123;<span class="comment">//将数组的low到up排序</span></span><br><span class="line">        <span class="keyword">if</span> (low &gt;= up) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> mid = (up + low) / <span class="number">2</span>;</span><br><span class="line">        sort(a, low, mid);<span class="comment">//递归的对左半边排序</span></span><br><span class="line">        sort(a, mid + <span class="number">1</span>, up);<span class="comment">//递归的对右半边排序</span></span><br><span class="line">        <span class="keyword">if</span> (a[mid].compareTo(a[mid + <span class="number">1</span>]) &gt; <span class="number">0</span>) merge(a, low, mid, up);</span><br><span class="line">        <span class="comment">//将两半边合并(排除数组已经有序的情况)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//算法核心</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mid, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = lo, j = mid + <span class="number">1</span>;</span><br><span class="line">        System.arraycopy(a, lo, tmp, lo, (hi - lo + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式1</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt;= hi; k++)</span><br><span class="line">            <span class="keyword">if</span> (i &gt; mid) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) a[k] = tmp[i++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式2</span></span><br><span class="line">        <span class="keyword">int</span> k = lo;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= hi)</span><br><span class="line">            <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k++] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k++] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid) a[k++] = tmp[i++];</span><br><span class="line">        <span class="keyword">while</span> (j &lt;= hi) a[k++] = tmp[j++];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//测试用例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Integer[] a = &#123;<span class="number">2</span>, <span class="number">31</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">34</span>, <span class="number">6</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">74</span>&#125;;</span><br><span class="line">        sort(a);</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h3><p>&emsp;&emsp;归并排序与基本的排序不一样,归并排序能够处理百万级别的数据,这是基本排序方法所不能做到的,但是他的缺点是排序时需要额外的与N成正比的空间开销.</p>
+<blockquote>
+<p>归并排序对于任意输入的数组,其需要$ 1/2*NlgN $次至$ NlgN $次比较.当N为16时，算法分析如图：</p>
+</blockquote>
+<p><img src="data:image/png;base64,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dY5L+omKltIZAABghw8otakPj8JJAgAA7HHDUjsVhO3fgOj+ngO24CQBAABecc/faoe/WsGvYV/ASQIAADztE/6uNgAAAPALKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4BSU2gAAAMApKLUBAACAU1BqAwAAAKeg1AYAAABOQakNAAAAnIJSGwAAADgFpTYAAABwCkptAAAA4AT/+9//ATuM2BNW8xEDAAAAAElFTkSuQmCC" alt="归并排序"></p>
+<blockquote>
+<p>归并排序对于任意输入的数组,其最多需要访问数组6NlgN.(2N次用来赋值元素,2N次用来将排好序的数组移动回去,2N次用来比较时的访问数组.)</p>
+</blockquote>
+<hr>
+<h3 id="一点改进"><a href="#一点改进" class="headerlink" title="一点改进"></a>一点改进</h3><ul>
+<li>使用插入排序</li>
+</ul>
+<p>&emsp;&emsp;在处理小规模的排序时(例如15时),使用插入排序将更快.(快10%~15%). 这是因为在小规模数组中，插入排序的时间复杂度比归并排序要好。   </p>
+<ul>
+<li><p>判断是否有序<br>&emsp;&emsp;如果数组已经有序,那么可以通过判断a[mid]&lt;a [mid+1] (a[mid].comparteTo(a[mid+1])&lt;=0)来跳过执行merge函数，这样当数组有序时就能够以线性时间运行.   </p>
+</li>
+<li><p>避免辅助数组的拷贝<br>&emsp;&emsp;在归并排序时,可以避免数组赋值的时间(空间不行).需要巧妙的交换输入数组和输出数组的角色.</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//优化代码的代码实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Merge</span> <span class="keyword">extends</span> <span class="title">Sortable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Comparable[] tmp;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        tmp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">// 定义临时数组</span></span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> low, <span class="keyword">int</span> up)</span> </span>&#123;<span class="comment">// 将数组的low到up排序</span></span><br><span class="line">        <span class="keyword">if</span> (up &lt;= low + <span class="number">10</span>) &#123; <span class="comment">// 如果是小数组(&lt;10),就执行插入排序.</span></span><br><span class="line">            Insertion.sort(a, low, up);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = (up + low) / <span class="number">2</span>;</span><br><span class="line">        sort(a, low, mid);<span class="comment">// 递归的对左半边排序</span></span><br><span class="line">        sort(a, mid + <span class="number">1</span>, up);<span class="comment">// 递归的对右半边排序</span></span><br><span class="line">        <span class="keyword">if</span> (a[mid].compareTo(a[mid + <span class="number">1</span>]) &lt;= <span class="number">0</span>) <span class="keyword">return</span>;<span class="comment">//当数组已经有序时，跳过下面的归并。</span></span><br><span class="line">        merge(a, low, mid, up);<span class="comment">// 将两半边合并</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//算法核心</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mid, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = lo, j = mid + <span class="number">1</span>;</span><br><span class="line">        System.arraycopy(a, lo, tmp, lo, (hi - lo + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式1</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt;= hi; k++)</span><br><span class="line">            <span class="keyword">if</span> (i &gt; mid) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) a[k] = tmp[i++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式2</span></span><br><span class="line">        <span class="keyword">int</span> k = lo;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= hi)</span><br><span class="line">            <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k++] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k++] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid) a[k++] = tmp[i++];</span><br><span class="line">        <span class="keyword">while</span> (j &lt;= hi) a[k++] = tmp[j++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="自底向上的排序"><a href="#自底向上的排序" class="headerlink" title="自底向上的排序"></a>自底向上的排序</h2><h3 id="执行方式"><a href="#执行方式" class="headerlink" title="执行方式"></a>执行方式</h3><p>&emsp;&emsp;自底向下的归并排序代码量较少,它依次排序1…2…4…8…个数据.</p>
+<h3 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现:"></a>代码实现:</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeUP</span> <span class="keyword">extends</span> <span class="title">Merge</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> Increment = <span class="number">1</span>; Increment &lt; N; Increment += Increment)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> start = <span class="number">0</span>; start &lt; N - Increment; start+=Increment*<span class="number">2</span>))</span><br><span class="line">        <span class="comment">//!注意!start&lt;N-Increment是由start+Increment-1&lt;N-1推导而出</span></span><br><span class="line">       merge(a, start, start + Increment - <span class="number">1</span>, Math.min(start + <span class="number">2</span> * Increment - <span class="number">1</span>, N - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//自底向上的排序方法中，在使用merge方法时,应当在merge方法中加上判断:</span></span><br><span class="line">	<span class="keyword">if</span> (temp == <span class="keyword">null</span>)</span><br><span class="line">            temp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">// 定义临时数组</span></span><br><span class="line">            System.arraycopy(a, low, temp, low, length);</span><br><span class="line"><span class="comment">// 拷贝temp因为temp数组在直接使用merge方法时并没有创建空间.</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="时间复杂度分析-1"><a href="#时间复杂度分析-1" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h4><p>&emsp;&emsp;自底向上的归并排序比较适合链表组织的数据结构，与数组中交换顺序不同，链表只要重新组织链接就能够排序子数组（不需要重新分配结点）。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/04/08/%E5%BD%92%E5%B9%B6%E7%AE%97%E6%B3%95%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/">https://super-aviator.github.io/2018/04/08/%E5%BD%92%E5%B9%B6%E7%AE%97%E6%B3%95%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%8E%92%E5%BA%8F/"># 排序</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/08/final%E5%85%B3%E9%94%AE%E5%AD%97/">final关键字</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/07/%E5%88%9D%E7%BA%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-java%E5%AE%9E%E7%8E%B0/">初级排序算法(java实现)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

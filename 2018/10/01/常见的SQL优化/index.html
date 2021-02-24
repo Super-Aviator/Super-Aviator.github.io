@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>常见的SQL优化 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">常见的SQL优化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-10-01&nbsp;&nbsp;20:14:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Database/">Database</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在使用sql语句对数据库中的数据进行操作时，相同功能的sql语句，采用不同的编写方式，执行的性能是不同的，既达性能不同的语句所达到的功能相同，那么就需要对性能差的sql语句进行优化了，优化分为两种重要的方式，即关于数据库索引的优化和sql语句的优化。</p>
+<p><strong>注意：</strong> 很多时候索引并不是最好的解决方案，对于数据量小的表，大部分情况下使用全局扫描更高效；对于中大型的表，索引就非常有效；对于特大型的表，建立和使用索引的代价将随之增长，这种情况情况下使用分区技术是最好的解决方案.</p>
+<h2 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h2><p>优化sql语句的非常重要的方式就是使用索引，索引是专门加快检索方式而建立的。创建语句为：<br><code>CREATE [UNIQUE|FULLTEXT|SPATIAL] INDEX index_name [USING index_type] ON table_name(index_col_name1[(pre_num)],...)</code>;</p>
+<h3 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h3><p>mysql中有以下几种索引类型：</p>
+<ul>
+<li><p>普通索引<br>是最基本的索引，它没有任何限制</p>
+</li>
+<li><p>主键索引<br>是一种特殊的唯一索引，一个表只能有一个主键，不允许有空值。一般是在建表的时候同时创建主键索引</p>
+</li>
+<li><p>唯一索引<br>与前面的普通索引类似，不同的就是：索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一</p>
+</li>
+<li><p>组合索引<br>指多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用组合索引时遵循最左前缀集合</p>
+</li>
+<li><p>全文本索引<br>主要用来查找文本中的关键字，而不是直接与索引中的值相比较。fulltext索引跟其它索引大不相同，它更像是一个搜索引擎，而不是简单的where语句的参数匹配。fulltext索引配合match against操作使用 <code>MATCH (columnName) AGAINST (&#39;string&#39;)</code> ，而不是一般的where语句加like。它可以在create table，alter table ，create index使用，不过目前只有char、varchar，text 列上可以创建全文索引。值得一提的是，在数据量较大时候，现将数据放入一个没有全局索引的表中，然后再用CREATE index创建fulltext索引，要比先为一张表建立fulltext然后再将数据写入的速度快很多</p>
+</li>
+<li><p>前缀索引<br>对索引字段的前N个字符创建索引</p>
+</li>
+</ul>
+<h3 id="索引的数据结构（存储方式）"><a href="#索引的数据结构（存储方式）" class="headerlink" title="索引的数据结构（存储方式）"></a>索引的数据结构（存储方式）</h3><p>索引是单独存储的，不同结构的索引使用的方式也不相同，mysql中有以下几种索引的存储方式</p>
+<ul>
+<li><p>B-Tree索引<br>常见的索引类型，大多数数据引擎都支持，使用B+树存储</p>
+</li>
+<li><p>HASH索引<br>Memory/Heap引擎支持，使用hash表存储 使用=，&lt;=&gt;才会使用此索引</p>
+</li>
+<li><p>R-Tree（空间索引）<br>MyISAM索引支持，很少使用</p>
+</li>
+<li><p>Full-text（全文本索引）<br>MyISAM和高版本MySQL的InnoDB引擎支持</p>
+</li>
+</ul>
+<p>不同常用引擎支持的索引类型如下表：</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>MyISAM引擎</th>
+<th>InnoDB引擎</th>
+<th>Memory引擎</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B-Tree索引</td>
+<td>支持（默认）</td>
+<td>支持（默认）</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>HASH索引</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持（默认）</td>
+</tr>
+<tr>
+<td>R-Tree索引</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>Full-text索引</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h3 id="SQL语句中使用到索引的典型场景"><a href="#SQL语句中使用到索引的典型场景" class="headerlink" title="SQL语句中使用到索引的典型场景"></a>SQL语句中使用到索引的典型场景</h3><p>使用<code>explain SLQ语句</code>命令，查看结果中的key字段可以直到查询使用了哪个索引。</p>
+<ul>
+<li><p>匹配全值<br>在组合索引<code>composite\_index(col1,col2,col3)</code>中，SQL语句中的where关键字后的条件对col1,col2,col3都进行精确匹配时，会使用到复合索引composite_index。例如<code>SELECT * FROM table_name WHERE col1=1 AND col2=2 AND col3=3;’</code>.</p>
+</li>
+<li><p>匹配值的范围查询<br>在查询时，如果索引列中值进行范围查找，可以使用到索引，例如<code>SELECT * FROM table_name WHERE col1&lt;10 AND col1&gt;20;</code></p>
+</li>
+<li><p>匹配最左前缀<br>在组合索引<code>composite\_index(col1,col2,col3)</code>中，where关键字后的列必须涉及到组合索引中最左边的列，例如：col1，col1+col2,col1+col3…;最左匹配原则是B-Tree索引最重要的使用原则。</p>
+</li>
+<li><p>仅仅对索引进行查询<br>当select语句想要查询的列都是索引列时，查询的效率非常高，因为只需要扫描索引表而不用回表查询。</p>
+</li>
+<li><p>匹配列前缀<br>对于前缀索引，使用索引列的前一部分进行查找也可以使用到索引，例如<code>SELECT * FROMM table_name WHERE col1 LIKE &#39;name%&#39;</code>;会使用到索引col1上的前缀索引。</p>
+</li>
+<li><p>能够实现索引匹配部分精确而其他部分进行范围匹配<br>可以对索引列进行精确查询而非索引列进行范围查询来加快查询速度，例如<code>SELECT * FROM table_name WHERE col1=1 AND col2&gt;100;</code>使用到了col1上的索引。</p>
+</li>
+<li><p>如果列名是索引，那么使用column_name is null 就会使用索引<br>对于索引列，使用<code>IS NULL</code>关键字也可以使用到索引，例如<code>SELECT * FROM table_name WHERE col1 IS NULL;</code></p>
+</li>
+</ul>
+<h3 id="SQL语句中不会使用到索引的典型场景"><a href="#SQL语句中不会使用到索引的典型场景" class="headerlink" title="SQL语句中不会使用到索引的典型场景"></a>SQL语句中不会使用到索引的典型场景</h3><ul>
+<li><p>以’%’开头的LIKE查询不会使用到B-Tree索引<br>语句<code>SELECT * FROM table_name WHERE col1 LIKE &#39;%ame%&#39;</code>不会使用到col1上的B-Tree索引，因为使用了%开头。可以使用全文本索引（FullText）来解决。</p>
+</li>
+<li><p>数据类型出现隐式转换时不会使用到索引<br>当数据类型在比较是发生隐式类型转换，也不会使用到索引，特别是字符串类型和其他类型的比较。例如<code>SELECT * FROM table_name col1=1</code>,由于col1是字符串类型，而1是整型，会发生隐式转换，不会使用到col1上的索引，而修改为<code>SELECT * FROM table_name col1=&#39;1&#39;</code>;</p>
+</li>
+<li><p>不满足最左匹配原则是不会使用到索引<br>复合索引中不包含最左边的列，不会使用到索引。</p>
+</li>
+<li><p>如果MySQL预计到使用索引比全表扫描更慢则不会使用到索引<br>例如语句<code>SELECT * FROM table_name WHERE col1 LIKE &#39;N%&#39;</code>查找所有N开头的行，MySQL判定使用索引比全表扫描更慢，则不使用索引。</p>
+</li>
+<li><p>使用or语句中，or前的列有索引而后面的列没有索引页不会用到索引<br>对于WHERE中使用OR连接的查询条件，如果前面的列含有索引而后面的列没有索引，则不会使用到任何索引，因为后面的查询肯定要使用到全表扫描，所以依旧会使用全表扫描。</p>
+</li>
+</ul>
+<h2 id="SQL语句的优化"><a href="#SQL语句的优化" class="headerlink" title="SQL语句的优化"></a>SQL语句的优化</h2><p>在mysql中，可以使用<code>explain extended SQL语句</code>命令然后执行<code>show warning</code>命令，来迅速获取一个更加清晰易读的sql语句，这是MySql优化过后的语句：</p>
+<p>同时可以使用<code>explain SQL语句</code>查看key字段明确查询使用的索引类型等详细信息。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/">https://super-aviator.github.io/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/"># 数据库优化</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/">Ubuntu17系统环境下配置JDK</a>
+            
+            
+            <a class="next" rel="next" href="/2018/10/01/TTP%E4%B8%ADGET%E5%92%8CPOST%E5%8C%BA%E5%88%AB/">HTTP中GET和POST区别（转）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

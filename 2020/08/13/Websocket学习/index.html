@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>第N个N年计划-Websocket学习 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">第N个N年计划-Websocket学习</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2020-08-13&nbsp;&nbsp;09:02:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JAVA/">JAVA</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="WebSocket协议帧"><a href="#WebSocket协议帧" class="headerlink" title="WebSocket协议帧"></a>WebSocket协议帧</h1><p>WebSocket请求由Http协议升级而来，在Http连接建立之后，会再次进行协议升级，具体发送的协议帧如下：</p>
+<p>客户端会发送如下头部的http请求：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GET /null HTTP/1.1\r\n</span><br><span class="line">Connection: Upgrade\r\n</span><br><span class="line">Host: 127.0.0.1:2346\r\n</span><br><span class="line">Sec-WebSocket-Key: xh2LW9mb1ZklWVH2gCUlHw==\r\n</span><br><span class="line">Sec-WebSocket-Version: 13\r\n</span><br><span class="line">Upgrade: websocket\r\n</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>GET</code> 请求标识符 Request-URI，用于识别 websocket 链接到不同的服务终结点。</li>
+<li><code>Connection</code> 告诉服务端对协议进行升级，具体升级内容取决于 Upgrade部分</li>
+<li><code>Host</code> 服务器地址以及service端口</li>
+<li><code>Sec-WebSocket-Key</code> 为了保证握手一致性，由客户端生成随机字符串并base64编码，发送给服务端</li>
+<li><code>Sec-WebSocket-Version</code> ws协议版本，常用13</li>
+<li><code>Upgrade</code> 升级至*协议</li>
+</ul>
+<p>服务端接收到协议升级的请求后，会给与如下的响应：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">101</span> Switching Protocols\r\n</span><br><span class="line"><span class="attribute">Upgrade</span><span class="punctuation">: </span>websocket\r\n</span><br><span class="line"><span class="attribute">Sec-WebSocket-Version</span><span class="punctuation">: </span>13\r\n</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>Upgrade\r\n</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>workerman/3.5.3\r\n</span><br><span class="line"><span class="attribute">Sec-WebSocket-Accept</span><span class="punctuation">: </span>47N20KYf6c6Qe2+UDp2BQfK0hkw=\r\n </span><br></pre></td></tr></table></figure>
+<ul>
+<li>状态码101 代表协议升级成功后的状态码</li>
+<li><code>Connection</code> 和 <code>Upgrade</code> 内容代表协议成功升级为ws</li>
+<li><code>Sec-WebSocket-Version</code> 和 Server 内容代表 ws协议版本 以及 服务端服务软件信息</li>
+<li><code>Sec-WebSocket-Accept</code> 重点在此，证明服务端接受了客户端的请求，然后客户端对accept值进行验证，任何 为空或者不符合验证规则的都视为服务器拒绝了请求。<br>服务端生成 Sec-WebSocket-Accept 规则：服务端将客户端传递的key进行去除首尾空白，然后和一段固定的GUID（258EAFA5-E914-47DA-95CA-C5AB0DC85B11）进行连接，连接后的结果使用 SHA-1（160数位）进行哈希操作，对哈希后的字符串进行base64编码，即为 Accept 内容。</li>
+<li>客户端验证规则 仿上述规则对 Sec-WebSocket-Key 进行加密，跟服务端返回 Sec-WebSocket-Accept 值进行对比即可。</li>
+</ul>
+<h1 id="WebSocket服务端"><a href="#WebSocket服务端" class="headerlink" title="WebSocket服务端"></a>WebSocket服务端</h1><p>对于Springboot，支持SockJS或者STOMP两种方式建立WebSocket，基本的配置类如下：</p>
+<h2 id="服务配置"><a href="#服务配置" class="headerlink" title="服务配置"></a>服务配置</h2><p>首先需要在项目中加入如下依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--websocket--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-websocket<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这会自动引入spring-websockt以及spring-message两个模块。</p>
+<p>然后需要在配置类中配置服务的端点和代理Broker：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.messaging.simp.config.MessageBrokerRegistry;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.socket.config.annotation.StompEndpointRegistry;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-08-14 10:35</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebSocketMessageBroker</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySTOMPWebSocketConfigurer</span> <span class="keyword">implements</span> <span class="title">WebSocketMessageBrokerConfigurer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//开启一个WebSocket端点，客户端可以直接连接到此端点（在转发和订阅中，都需要首先连接到此端点）</span></span><br><span class="line">        registry.addEndpoint(<span class="string">&quot;/stomp/test&quot;</span>)</span><br><span class="line">                .setAllowedOrigins(<span class="string">&quot;*&quot;</span>);</span><br><span class="line">        <span class="comment">//如果使用Stomp的方式，则不能指定withSockJS，否则会连不上，前端报异常</span></span><br><span class="line">        <span class="comment">//.withSockJS();</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//指定所有Broker的前缀</span></span><br><span class="line">        registry.setApplicationDestinationPrefixes(<span class="string">&quot;/web-socket&quot;</span>)</span><br><span class="line">                <span class="comment">//开启一个broker消息代理（如果不开启消息代理，则无法使用broker，消息将无法转发）</span></span><br><span class="line">                .enableSimpleBroker(<span class="string">&quot;/topic&quot;</span>,<span class="string">&quot;/web-socket/subscribe&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上的配置有如下几个要点:</p>
+<ul>
+<li><code>addEndpoint(&quot;/stomp/test&quot;)</code>为WebSocket客户端首先需要连接的地址，所有的订阅和取消订阅等操作都是需要客户端连接上此端点后进行的操作。</li>
+<li><code> .setAllowedOrigins(&quot;*&quot;)</code>此方法指定了后台跨域的配置。</li>
+<li><code>withSocketJS()</code>此方法指定了<code>/stomp/test</code>端点使用的协议，如果使用的sockjs，则必须要调用此方法以指定协议，否则不能指定。（例如当客户端指定使用stomp协议时，调用此方法前端会报出：握手期间非法的200响应码）</li>
+<li><code>setApplicationDestinationPrefixes(&quot;/web-socket&quot;)</code>此方法指定了前端请求的前缀，<strong>注意</strong>：在消息发送时此前缀必须携带。</li>
+<li><code>enableSimpleBroker()</code>方法指定了后端所有建立Broker的地址，这些地址用于用户的点对点模式或者发布订阅模式。<strong>注意</strong>：所有的发布订阅或者点对点的地址都需要再次进行注册，否则客户端将无法接收到消息。</li>
+</ul>
+<h2 id="接收客户端发送的消息"><a href="#接收客户端发送的消息" class="headerlink" title="接收客户端发送的消息"></a>接收客户端发送的消息</h2><p>Spring中，可以使用@MessageMapping注解来接收客户端发送的消息，他的用法和@RequestMapping类似，同样支持表达校验和路径参数、路径模糊匹配等:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注意：如果客户端的destination地址为web-socket/stomp/side时,</span></span><br><span class="line"><span class="comment"> 	则会自动映射到注解<span class="doctag">@MessageMapping</span>的value为stomp/side的方法中去（去掉前缀web-socket中）</span></span><br><span class="line"><span class="comment"> * 该方法的返回值会自动推送到了/topic/stomp/side的Broker中去，从而实现广播的功能。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 注意：1.<span class="doctag">@SendTO</span>注解会将方法的返回值重定向到指定的broker中，不使用默认的转发规则</span></span><br><span class="line"><span class="comment"> * 2.<span class="doctag">@MessageMapping</span>只会处理前端发送的SENG的请求，不会处理SUBSCRIBE请求</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> message 客户端发送的消息</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 想要广播的消息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@MessageMapping(&quot;stomp/side&quot;)</span></span><br><span class="line"><span class="meta">@SendTo(&quot;/web-socket/subscribe/1&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Message&lt;String&gt; <span class="title">getMessage</span><span class="params">(Message&lt;String&gt; message, MessageHeaders headers)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;stomp服务端接收到消息：&#123;&#125;，并将消息转发到destination：[&#123;&#125;]&quot;</span>, message.getPayload(), <span class="string">&quot;/subscribe/1&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> message;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正如注释中所说，所有注解接收到的消息都会推送至改路径的/topic前缀的消息代理中，并官广播方法的返回值至所有订阅了此topic的客户端。</p>
+<h2 id="向客户端发送消息"><a href="#向客户端发送消息" class="headerlink" title="向客户端发送消息"></a>向客户端发送消息</h2><p>向客户端发送消息可以使用@SendTo或者@SendToUser注解，用于重定向消息的目的地，或者使用SimpMessageTemplate提供的方法手动发送给某个用户或者消息代理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/send&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="meta">@Validated</span> <span class="meta">@RequestBody</span> WebSocketMessage message, BindingResult bindingResult)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bindingResult.hasErrors()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String destination = <span class="string">&quot;/web-socket/subscribe/&quot;</span> + message.getTopicSuffix();</span><br><span class="line">    log.info(<span class="string">&quot;向[&#123;&#125;]发送消息：[&#123;&#125;]&quot;</span>, destination, message.getMessage());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//手动将消息发送至指定的topic中去，路径必要匹配（客户端的订阅地址需要添加前缀web-socket）</span></span><br><span class="line">    simpMessagingTemplate.convertAndSend(destination, message.getMessage());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="WebSocket客户端"><a href="#WebSocket客户端" class="headerlink" title="WebSocket客户端"></a>WebSocket客户端</h1><h1 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h1><h1 id="心跳和握手"><a href="#心跳和握手" class="headerlink" title="心跳和握手"></a>心跳和握手</h1><h1 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h1><h1 id="点对点模式"><a href="#点对点模式" class="headerlink" title="点对点模式"></a>点对点模式</h1>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2020/08/13/Websocket%E5%AD%A6%E4%B9%A0/">https://super-aviator.github.io/2020/08/13/Websocket%E5%AD%A6%E4%B9%A0/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/WebSocket/"># WebSocket</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/08/24/%E7%AC%ACN%E4%B8%AAN%E5%B9%B4%E8%AE%A1%E5%88%92-Feign%E5%AD%A6%E4%B9%A0/">第N个N年计划-Feign学习</a>
+            
+            
+            <a class="next" rel="next" href="/2020/05/17/%E7%8E%AF%E4%BA%86%E4%B8%80%E5%A4%A9%E7%9A%84%E6%AD%8C/">循环了一天的歌</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

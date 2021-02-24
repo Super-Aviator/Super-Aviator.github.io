@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>Java中IO的几种常用组合 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java中IO的几种常用组合</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-07-03&nbsp;&nbsp;21:27:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>今天主要复习了thinking in java 中java中的io部分,以前看过一段时间，不过现在都忘得差不多了。T_T,学过之后不常用总是会忘得很快，不过一遍遍的学过和忘记,在每次重新学习的时候捡起来会比较快。<br>java中的io大致分为两类，字符流（Reader/Writer）和字节流(InputStream/OutPutStream)，涉及到的类也相当多，要真正精通应该是很困难滴，所以我准备记住几种常用的组合就ok啦（什么?你说我学习不认真？小心我顺着网线过去打你，哈哈哈），然后自己写一个非常大（我自己差点信了）的程序巩固一下。明天开始啃nio部分。</p>
+<h2 id="几种常见的组合"><a href="#几种常见的组合" class="headerlink" title="几种常见的组合"></a>几种常见的组合</h2><h3 id="通过BufferedReader类编写echo回显程序"><a href="#通过BufferedReader类编写echo回显程序" class="headerlink" title="通过BufferedReader类编写echo回显程序"></a>通过BufferedReader类编写echo回显程序</h3><p> 由于System.in是一个未经包装的InputStream，所以我们需要将他通过InputStreamReader包装成一个BufferedReader,然后通过BufferedReader中的readLine来读取用户的输入字符：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Echo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        String item;</span><br><span class="line">        <span class="keyword">while</span> ((item = reader.readLine()) != <span class="keyword">null</span> &amp;&amp; item.length() != <span class="number">0</span>)</span><br><span class="line">            System.out.println(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><br> 当不输入任何字符直接回车时，会退出程序，达到终止程序的目的。</p>
+<h3 id="读取文件内容到控制台"><a href="#读取文件内容到控制台" class="headerlink" title="读取文件内容到控制台"></a>读取文件内容到控制台</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.FileReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BufferedInputFile</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">read</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader reader=<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(path));</span><br><span class="line">        StringBuilder sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        String temp;</span><br><span class="line">        <span class="keyword">while</span>((temp=reader.readLine())!=<span class="keyword">null</span>)</span><br><span class="line">            sb.append(temp+<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        reader.close();</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader sb=<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        String path=sb.readLine();</span><br><span class="line">        System.out.println(read(path));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是BufferedReader中的readLine()方法会自动删除读取的一行的换行符，则在显示时需要手动加上\n进行换行</p>
+<h3 id="控制台字符输出到文件"><a href="#控制台字符输出到文件" class="headerlink" title="控制台字符输出到文件"></a>控制台字符输出到文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyFile</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        File out=<span class="keyword">new</span> File(<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\test.txt&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(!out.exists())</span><br><span class="line">            out.mkdir();</span><br><span class="line">        PrintWriter writer =<span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> OutputStreamWriter(</span><br><span class="line">        <span class="keyword">new</span> FileOutputStream(out,<span class="keyword">true</span>),<span class="string">&quot;utf-8&quot;</span>));<span class="comment">//指定utf8编码和进行追加</span></span><br><span class="line"></span><br><span class="line">        String item;</span><br><span class="line">        <span class="keyword">while</span> ((item = reader.readLine()) != <span class="keyword">null</span> &amp;&amp; item.length() != <span class="number">0</span>)</span><br><span class="line">            writer.println(item);</span><br><span class="line"></span><br><span class="line">        writer.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，在InputStream/OutputStream中第二个参数可以指定编码类型，将字节流通过指定字符集，编码为字符流，FileOutputStream/FileInputStream中的第二个参数指定是否为追加，为true则追加到文件末尾，为false或者不指定则为不追加。最后，如果不存在你说指定的文件夹中没有指定的文件，则会自动创建目标文件。test.txt,而文件夹则需要自己使用exsits 方法检查是否存在并mkdir方法进行创建。</p>
+<h3 id="合并两个文件"><a href="#合并两个文件" class="headerlink" title="合并两个文件"></a>合并两个文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.SequenceInputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeTwoFiles</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        FileInputStream f1=<span class="keyword">new</span> FileInputStream (<span class="string">&quot;path1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        FileInputStream f2=<span class="keyword">new</span> FileInputStream(<span class="string">&quot;path2&quot;</span>);</span><br><span class="line"></span><br><span class="line">        SequenceInputStream in=<span class="keyword">new</span> SequenceInputStream(f1,f2);</span><br><span class="line"></span><br><span class="line">        FileOutputStream out=<span class="keyword">new</span> FileOutputStream</span><br><span class="line">        (<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] temp=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> length;</span><br><span class="line">        <span class="keyword">while</span>((length=in.read(temp))!=-<span class="number">1</span>)</span><br><span class="line">            out.write(temp,<span class="number">0</span>,length);</span><br><span class="line"></span><br><span class="line">        out.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，SequenceInputStream类可以将两个或两个以上的流合并为一个流，在调用read方法时，会依次读取每一个流的内容，直到最后一个流的末尾时返回-1。读取结束。</p>
+<h3 id="文件的缓存"><a href="#文件的缓存" class="headerlink" title="文件的缓存"></a>文件的缓存</h3><p>使用DataInput/OutputStream类可以实现类似于缓存的读写方式。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StoringAndRecoveringData</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        DataOutputStream out=<span class="keyword">new</span> DataOutputStream	</span><br><span class="line">        (<span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream	</span><br><span class="line">        (<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>)));</span><br><span class="line"></span><br><span class="line">        out.writeUTF(<span class="string">&quot;this is a buffer for data&quot;</span>);</span><br><span class="line">        out.writeInt(<span class="number">222</span>);</span><br><span class="line">        out.writeUTF(<span class="string">&quot;ok next write a double&quot;</span>);</span><br><span class="line">        out.writeDouble(<span class="number">12.23</span>);</span><br><span class="line"></span><br><span class="line">        out.close();</span><br><span class="line"></span><br><span class="line">        DataInputStream in =<span class="keyword">new</span> DataInputStream(<span class="keyword">new</span> BufferedInputStream</span><br><span class="line">        (<span class="keyword">new</span> FileInputStream(<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>)));</span><br><span class="line"></span><br><span class="line">        System.out.println(in.readUTF());</span><br><span class="line">        System.out.println(in.readInt());</span><br><span class="line">        System.out.println(in.readUTF());</span><br><span class="line">        System.out.println(in.readDouble());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DataInputStream/DataOutputStream类拥有格式化输入输出的方法，能够对基本数据类型进行读写,每一个writeXXX都有对应的readXXX，而且是跨平台的方式进行，非常强大。<br>值得注意的是，如果要写入字符串，则应该使用writeUTF方法进行写入，同时使用对应的readUTF方法进行读取，这两个方法实际是使用的修改过的UTF编码进行读写，必须配套使用才能正确得到想要的信息。</p>
+<h3 id="文件夹拷贝（所谓的大程序）"><a href="#文件夹拷贝（所谓的大程序）" class="headerlink" title="文件夹拷贝（所谓的大程序）"></a>文件夹拷贝（所谓的大程序）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyDirectory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyDirectory</span><span class="params">(String inPath, String outPath)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        File fileIn = <span class="keyword">new</span> File(inPath);</span><br><span class="line">        <span class="keyword">if</span> (!fileIn.exists())</span><br><span class="line">            fileIn.mkdir();</span><br><span class="line">        <span class="keyword">if</span> (!fileIn.isDirectory()) &#123;</span><br><span class="line">            System.out.println(inPath + <span class="string">&quot; is not a directory &quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        File fileOut = <span class="keyword">new</span> File(outPath);</span><br><span class="line">        <span class="keyword">if</span> (!fileOut.exists())</span><br><span class="line">            fileOut.mkdir();</span><br><span class="line">        <span class="keyword">if</span> (!fileOut.isDirectory()) &#123;</span><br><span class="line">            System.out.println(inPath + <span class="string">&quot; is not a directory &quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        File[] files = fileIn.listFiles();</span><br><span class="line">        <span class="keyword">if</span> (files.length == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        List&lt;File&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Collections.addAll(list, files);</span><br><span class="line"></span><br><span class="line">        FileOutputStream out = <span class="keyword">null</span>;</span><br><span class="line">        FileInputStream in;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] item = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> length;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                File temp = list.get(i);</span><br><span class="line">                <span class="keyword">if</span> (temp.isDirectory()) &#123;</span><br><span class="line">                    copyDirectory(temp.getAbsolutePath(),</span><br><span class="line">                    outPath + <span class="string">&quot;\\&quot;</span> + temp.getName());<span class="comment">//当遇到文件夹时，递归进行拷贝。</span></span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                out = <span class="keyword">new</span> FileOutputStream(outPath + <span class="string">&quot;\\&quot;</span> + temp.getName());</span><br><span class="line"></span><br><span class="line">                in = <span class="keyword">new</span> FileInputStream(temp);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">while</span> ((length = in.read(item)) != -<span class="number">1</span>)</span><br><span class="line">                    out.write(item, <span class="number">0</span>, length);</span><br><span class="line">            &#125;</span><br><span class="line">            out.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;文件夹不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        System.out.print(<span class="string">&quot;请输入你想要拷贝的文件夹的路径：&quot;</span>);</span><br><span class="line">        String inPath = in.readLine();</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;\n请输入你想要存放的路径：&quot;</span>);</span><br><span class="line">        String outPath = in.readLine();</span><br><span class="line"></span><br><span class="line">        copyDirectory(inPath, outPath);</span><br><span class="line">        System.out.println(<span class="string">&quot;拷贝完成！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>特别重要的是，如果想要拷贝的文件夹中含有子文件夹，则需要对子文件夹进行拷贝。扩展程序的功能。</p>
+<h3 id="几种判断是否读取到文件末尾的方法"><a href="#几种判断是否读取到文件末尾的方法" class="headerlink" title="几种判断是否读取到文件末尾的方法"></a>几种判断是否读取到文件末尾的方法</h3><ul>
+<li>对于读取字节流，如果读入整数的结果为-1，则表示到达文件末尾: while((i=in.read())!=-1)</li>
+<li>对于读取字符流，如果读入的结果是null, 则表示到达文件末尾:while((str=in.read)!=null)</li>
+<li>对于使用按字节读取的方法readByte，可以使用whiel(in.available)方法判断是否到达文件末尾，不过在多线程中此方法不稳定</li>
+<li>对于每次读取byte数组的方法，可以通过安排判断读取到的byte数组的长度来判断是否到达了文件末尾while((length=in.read(bytes))!=0)</li>
+<li>对于会产生EOFException异常的操作，也可以使用捕获try块中的异常来判断是否读取到文件末尾</li>
+</ul>
+<h3 id="字符串的编码-encode-与解码-decode"><a href="#字符串的编码-encode-与解码-decode" class="headerlink" title="字符串的编码(encode)与解码(decode)"></a>字符串的编码(encode)与解码(decode)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"><span class="keyword">import</span> java.io.UnsupportedEncodingException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InCodeAndDeCode</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">        String str=<span class="string">&quot;熊乾坤&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] bytes=str.getBytes(<span class="string">&quot;GBK&quot;</span>);<span class="comment">//编码</span></span><br><span class="line"></span><br><span class="line">        String str1=<span class="keyword">new</span> String(bytes,<span class="string">&quot;GBK&quot;</span>);<span class="comment">//解码</span></span><br><span class="line">        System.out.println(str1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，通过String对象的getBytes(“编码类型”)将字符串进行编码，使用String类的构造方法将字符串进行解码。非常方便的。嗯。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/07/03/Java%E4%B8%ADIO%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88/">https://super-aviator.github.io/2018/07/03/Java%E4%B8%ADIO%E7%9A%84%E5%87%A0%E7%A7%8D%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java%E7%96%91%E6%83%91%E8%A7%A3%E7%AD%94/"># Java疑惑解答</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/07/04/%E6%88%91%EF%BC%8C%E7%86%8A%E8%80%81%E4%BA%8C%EF%BC%8C%E6%83%B3%E5%AD%A6%E6%89%93%E7%AF%AE%E7%90%83/">我，想学打篮球</a>
+            
+            
+            <a class="next" rel="next" href="/2018/07/02/%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E9%80%92%E5%BD%92%E5%AE%9E%E7%8E%B0/">字符串全排列的递归实现</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

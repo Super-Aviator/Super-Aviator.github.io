@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>散列表（HashTable） | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">散列表（HashTable）</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-05-10&nbsp;&nbsp;17:13:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/DataStructure/">DataStructure</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>散列表是符号表效率最高的一种实现，当散列表键的散列函数能够把键均匀的散列在数组中时，散列表的查找和插入操作时间复杂度几乎可以达到常数级别，但是当散列函数实现非常差时，散列表退化为链表，插入和查找操作时间复杂度会降低到线性级别。</p>
+<hr>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h2 id="散列表定义"><a href="#散列表定义" class="headerlink" title="散列表定义"></a>散列表定义</h2><p>&emsp;&emsp;在一种符号表的实现，可以通过键所对应的数组索引快速查找所对应的值，这就是散列表。<br>&emsp;&emsp;符号表的实现有两个步骤，第一步是编写散列函数，对于任意的键，需要计算出对应的索引，理想情况下键与索引是一一对应的，但是有时我们也需要处理一个键对应多个索引的情况，第二个步骤就是处理碰撞，有两种方法处理碰撞，即拉链法(SeparateChaining)和线性探测法(LinearProbing)。</p>
+<h2 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h2><p>&emsp;&emsp;对于符号表，一个好的散列函数非常重要。这关乎到散列表的性能。</p>
+<h4 id="整数"><a href="#整数" class="headerlink" title="整数"></a>整数</h4><p>&emsp;&emsp;对于整数最长中的方法是除留余数法，选择大小为素数M的数组，对于任意的k,k除以M的余数就是其索引，需要注意的是M必须是素数（特别的，不能是2的次幂），否则可能无法利用键中包含的所有信息。</p>
+<h4 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h4><p>&emsp;&emsp;如果是0-1之间的实数，我们可以将它乘以M并四舍五入到一个0~M-1之间的索引，但是这样有一个缺陷，因为这样方法中，浮点数中高位起的作用更大，修正的方法是将浮点数转换为二进制然后在对M使用除留余数法(java就是这么处理的)。</p>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>&emsp;&emsp;除留余数法也适用于较长的键，例如字符串，我们只需要将他们当作大整数即可。例如下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> hash=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)</span><br><span class="line">    hash=(R*hash+s.charAt(i))%M;</span><br></pre></td></tr></table></figure>
+<p>此方法将字符串当作一个N位的R进制值，只要R足够小，不造成溢出，那么就可以散列在0~M-1之间。java中使用了类似的方法。</p>
+<h4 id="组合键"><a href="#组合键" class="headerlink" title="组合键"></a>组合键</h4><p>&emsp;&emsp;当有组合键构成的键值时，可以使用字符串类似的方法,例如当有年月日的键时，可以使用下面的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> hash=(((day*R+month)%M)*R+year)%M;</span><br></pre></td></tr></table></figure>
+
+<h4 id="java的约定"><a href="#java的约定" class="headerlink" title="java的约定"></a>java的约定</h4><p>&emsp;&emsp;java对一些数据类型定义了默认的hashCode方法，我们可以使用下面的方法来利用java自带的方法编写自己的hashCode方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Key x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (x.hashCode()&amp;<span class="number">0x7fffffff</span>)%M;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为java默认的实现会返回一个int值，此int值可能会溢出为负值，与0x7fffffff可以将符号位屏蔽转换为正值。</p>
+<h2 id="处理碰撞"><a href="#处理碰撞" class="headerlink" title="处理碰撞"></a>处理碰撞</h2><h3 id="基于拉链法的散列表"><a href="#基于拉链法的散列表" class="headerlink" title="基于拉链法的散列表"></a>基于拉链法的散列表</h3><h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>&emsp;&emsp;此方法使用一个链表组成的数组实现，键对应的数组中的链表中存储的是有碰撞的键值对。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unit3_1_code.SequentialSearchBT;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SeparateChainingHashST</span> &lt;<span class="title">Key</span>, <span class="title">Value</span>&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> M,N;</span><br><span class="line">    <span class="keyword">private</span> SequentialSearchBT&lt;Key,Value&gt;[] bt;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SeparateChainingHashST</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">997</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SeparateChainingHashST</span><span class="params">(<span class="keyword">int</span> M)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.M=M;</span><br><span class="line">        bt=(SequentialSearchBT&lt;Key, Value&gt;[]) <span class="keyword">new</span> SequentialSearchBT[M];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;M;i++)</span><br><span class="line">            bt[i]=<span class="keyword">new</span> SequentialSearchBT&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (key.hashCode()&amp;<span class="number">0x7fffffff</span>)%M;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Key key,Value value)</span></span>&#123;</span><br><span class="line">        bt[hash(key)].put(key,value);</span><br><span class="line">        N++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Value <span class="title">delete</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        N--;</span><br><span class="line">        <span class="keyword">return</span> bt[hash(key)].delete(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Value <span class="title">get</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> bt[hash(key)].get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LinkedList&lt;Key&gt; list=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;bt.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(bt[i].isEmpty()) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">for</span>(Key key:bt[i].keys())</span><br><span class="line">                list.add(key);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SeparateChainingHashST&lt;String,Integer&gt; scst=<span class="keyword">new</span> SeparateChainingHashST&lt;&gt;();</span><br><span class="line">        scst.put(<span class="string">&quot;1&quot;</span>, <span class="number">1</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;2&quot;</span>, <span class="number">2</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;3&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;4&quot;</span>, <span class="number">4</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;5&quot;</span>, <span class="number">5</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;6&quot;</span>, <span class="number">6</span>);</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;2&quot;</span>));</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;5&quot;</span>));</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;4&quot;</span>));</span><br><span class="line">        scst.put(<span class="string">&quot;100&quot;</span>,<span class="number">99</span>);</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;100&quot;</span>));</span><br><span class="line">        System.out.println(scst.delete(<span class="string">&quot;100&quot;</span>));</span><br><span class="line">        System.out.println(scst.size());</span><br><span class="line">        <span class="keyword">for</span>(String s:scst.keys())</span><br><span class="line">            System.out.print(s+<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h4><p>&emsp;&emsp;删除操作可以调用线性链表的删除操作。</p>
+<h4 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h4><p>&emsp;&emsp;此方法的性能依赖于散列函数，设想，散列函数不能将键均匀的散列在数组中，那么查找时就相当于在链表中查找值了。性质：     </p>
+<blockquote>
+<p>在一张含有M条链表和N个键的散列表中，未命中查找和插入操作所需的比较次数为~N/M(N为键值对的数量，M为数组大小)。</p>
+</blockquote>
+<p>&emsp;&emsp;使用拉链法不能够高效的支持有序性的操作，因为采用的无序存储，有序性操作效率非常低。</p>
+<hr>
+<h3 id="基于线性探测法的散列表"><a href="#基于线性探测法的散列表" class="headerlink" title="基于线性探测法的散列表"></a>基于线性探测法的散列表</h3><h4 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h4><p>&emsp;&emsp;线性探测法是指如果数组中存在碰撞的键，就向后一次查找，直到找到空的点，并存入其中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinearProbingHashST</span>&lt;<span class="title">Key</span>,<span class="title">Value</span>&gt; </span>&#123;<span class="comment">//线性探测哈希符号表</span></span><br><span class="line">    <span class="keyword">private</span> Key[] keys;</span><br><span class="line">    <span class="keyword">private</span> Value[] values;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> M=<span class="number">16</span>;<span class="comment">//线性探测符号表的总大小</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N;<span class="comment">//键值对的大小</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinearProbingHashST</span><span class="params">()</span></span>&#123;</span><br><span class="line">        keys=(Key[]) <span class="keyword">new</span> Object[M];</span><br><span class="line">        values=(Value[])<span class="keyword">new</span> Object[M];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//计算键的哈希值</span></span><br><span class="line">        <span class="keyword">return</span> (key.hashCode()&amp;<span class="number">0x7fffffff</span>)%M;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Key key,Value value)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=hash(key);</span><br><span class="line">        <span class="keyword">while</span>(keys[i]!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(keys[i].equals(key)) &#123;</span><br><span class="line">                values[i]=value;<span class="comment">//命中则更新</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i=(i+<span class="number">1</span>)%M;</span><br><span class="line">        &#125;</span><br><span class="line">        keys[i]=key;<span class="comment">//未命中则插入</span></span><br><span class="line">        values[i]=value;</span><br><span class="line">        N++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Value <span class="title">get</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=hash(key);</span><br><span class="line">        <span class="keyword">while</span>(!keys[i].equals(key))</span><br><span class="line">            i=(i+<span class="number">1</span>)%M;</span><br><span class="line">        <span class="keyword">return</span> values[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Value <span class="title">delete</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        Value value;</span><br><span class="line">        <span class="keyword">int</span> i=hash(key);</span><br><span class="line">        <span class="keyword">while</span>(!keys[i].equals(key))</span><br><span class="line">            i=(i+<span class="number">1</span>)%M;</span><br><span class="line">        value=values[i];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k=i;keys[k]!=<span class="keyword">null</span>;k=(k+<span class="number">1</span>)%M)&#123;</span><br><span class="line">            keys[k]=keys[k+<span class="number">1</span>];</span><br><span class="line">            values[k]=values[k+<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        N--;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> () -&gt; <span class="keyword">new</span> Iterator&lt;Key&gt;() &#123;</span><br><span class="line">            <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> i!=keys.length;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Key <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> keys[i++];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        LinearProbingHashST&lt;String,Integer&gt; scst=<span class="keyword">new</span> LinearProbingHashST&lt;&gt;();</span><br><span class="line">        scst.put(<span class="string">&quot;1&quot;</span>, <span class="number">1</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;2&quot;</span>, <span class="number">2</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;3&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;4&quot;</span>, <span class="number">4</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;5&quot;</span>, <span class="number">5</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;6&quot;</span>, <span class="number">6</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;12&quot;</span>, <span class="number">1</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;23&quot;</span>, <span class="number">2</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;34&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;45&quot;</span>, <span class="number">4</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;56&quot;</span>, <span class="number">5</span>);</span><br><span class="line">        scst.put(<span class="string">&quot;67&quot;</span>, <span class="number">6</span>);</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;2&quot;</span>));</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;5&quot;</span>));</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;4&quot;</span>));</span><br><span class="line">        scst.put(<span class="string">&quot;100&quot;</span>,<span class="number">99</span>);</span><br><span class="line">        System.out.println(scst.get(<span class="string">&quot;100&quot;</span>));</span><br><span class="line">        <span class="comment">//System.out.println(scst.delete(&quot;100&quot;));</span></span><br><span class="line">        System.out.println(scst.size());</span><br><span class="line">        <span class="keyword">for</span>(String s:scst.keys())</span><br><span class="line">            System.out.print(s+<span class="string">&quot; &quot;</span>);</span><br><span class="line"></span><br><span class="line">        scst.delete(<span class="string">&quot;100&quot;</span>);</span><br><span class="line">        scst.delete(<span class="string">&quot;12&quot;</span>);</span><br><span class="line">        scst.delete(<span class="string">&quot;23&quot;</span>);</span><br><span class="line">        scst.delete(<span class="string">&quot;34&quot;</span>);</span><br><span class="line">        scst.delete(<span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(String s:scst.keys())</span><br><span class="line">            System.out.print(s+<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除操作-1"><a href="#删除操作-1" class="headerlink" title="删除操作"></a>删除操作</h4><p>&emsp;&emsp;此实现的删除比较特殊，当删除一个键值对时，不能简单的将需要删除的位置为null，因为置为null会导致后面的元素无法被访问到，正确的做法是将后面的元素从数组中删除，并将其使用put方法重新将其插入到数组中去。</p>
+<h4 id="性能分析-1"><a href="#性能分析-1" class="headerlink" title="性能分析"></a>性能分析</h4><p>&emsp;&emsp;此实现方法的性能决定于键簇的长度，键簇指得是连续的相邻的键的个数，如果键的长度太长， 删除和查找操作都比较费时，短小的键才能够有较好的时间复杂度，所以必须控制键和值的长度保证较好的长度。</p>
+<blockquote>
+<p>使用率a（元素个数/数组长度）指的是键值对所占用的总的数组的长度的比例，实验证明a小于1/2时，探测次数只在1.5~2.5之间。</p>
+</blockquote>
+<h4 id="调整数组的大小"><a href="#调整数组的大小" class="headerlink" title="调整数组的大小"></a>调整数组的大小</h4><p>&emsp;&emsp;线性探测法中，数组调整是必须的，并且数组的调整非常重要,因为当数组的长度和存储的元素相等时，会导致查找和插入操作进入死循环：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> viod <span class="title">resize</span><span class="params">(<span class="keyword">int</span> cap)</span></span>&#123;</span><br><span class="line">    LinearProbingHashSt&lt;Key,Vlaue&gt; t;</span><br><span class="line">    t=<span class="keyword">new</span> LinearProbingHashSt&lt;Key,Vlaue&gt;(cap);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;M;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(Keys[i]!=<span class="keyword">null</span>)</span><br><span class="line">        t.put(keys[i],vals[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    keys=t.keys;</span><br><span class="line">    vals=t.vals;</span><br><span class="line">    M=t.M;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检测是否需要改变容量可以使用以下的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(N&gt;<span class="number">0</span>&amp;&amp;N&lt;=M/<span class="number">8</span>) resize(M/<span class="number">2</span>);</span><br><span class="line"><span class="keyword">if</span>(N&lt;M&amp;&amp;N&gt;=M/<span class="number">2</span>) resize(M*<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="通过加载因子扩充数组"><a href="#通过加载因子扩充数组" class="headerlink" title="通过加载因子扩充数组"></a>通过加载因子扩充数组</h4><p>在构造函数中，可以传入一个加载因子（LoadFactor）,当<code>已经存在的元素个数大于数组长度*加载因子</code>时，就会发生数组扩充。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/05/10/%E7%AC%A6%E5%8F%B7%E8%A1%A8%EF%BC%88HashTable%EF%BC%89/">https://super-aviator.github.io/2018/05/10/%E7%AC%A6%E5%8F%B7%E8%A1%A8%EF%BC%88HashTable%EF%BC%89/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E7%AC%A6%E5%8F%B7%E8%A1%A8/"># 符号表</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/05/12/ListIterator%E5%88%86%E6%9E%90/">ListIterator分析</a>
+            
+            
+            <a class="next" rel="next" href="/2018/05/04/java%E5%AE%9E%E7%8E%B0Iterable%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/">java实现Iterable接口的几种方法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

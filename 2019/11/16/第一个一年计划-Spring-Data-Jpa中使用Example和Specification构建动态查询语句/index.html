@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>第一个一年计划-Spring Data Jpa中使用Example和Specification构建动态查询SQL语句 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">第一个一年计划-Spring Data Jpa中使用Example和Specification构建动态查询SQL语句</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-11-16&nbsp;&nbsp;18:39:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在知乎中看到了这样一篇关于Spring Data Jpa和Mybatis优缺点总结：Spring Data Jpa在查询时做的一塌糊涂，而Mybatis在插入时做的一塌糊涂；<br>今天晚上抽空来学习一下JPA中，如果去构建动态查询语句，看一看JPA如何去构建动态查询。正好下周的1.5版本的迭代任务会用到差不多7个查询参数的动态SQL查询的需求，为了到时候能够完美的完成开发任务，一定要好好了解一下惹。</p>
+<h1 id="定义实体类和Repository"><a href="#定义实体类和Repository" class="headerlink" title="定义实体类和Repository"></a>定义实体类和Repository</h1><p>学习的过程中，还是使用以前建立的User实体类，所有的测试都在User实体类上执行，对应的实体类和Repository代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonIgnoreProperties;</span><br><span class="line"><span class="keyword">import</span> com.xqk.learn.springboot.data.jpa.common.Gender;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The type User.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Aviator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;USER&quot;)</span></span><br><span class="line"><span class="meta">@NamedEntityGraph(</span></span><br><span class="line"><span class="meta">        name = &quot;UserEntity&quot;,</span></span><br><span class="line"><span class="meta">        attributeNodes = &#123;</span></span><br><span class="line"><span class="meta">                @NamedAttributeNode(&quot;userDetail&quot;),</span></span><br><span class="line"><span class="meta">                @NamedAttributeNode(&quot;userFriends&quot;),</span></span><br><span class="line"><span class="meta">                @NamedAttributeNode(&quot;teachers&quot;),</span></span><br><span class="line"><span class="meta">        &#125;</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用version字段实现乐观锁，乐观锁的测试代码在OptimisticLockTest类中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Version</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;version&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long version;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;NAME&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;EMAIL&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;ADDRESS&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;GENDER&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;SCORE&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer score;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;BIRTHDAY&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Date birthday;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的Repository就不展示了吧。</p>
+<h1 id="Example构建动态查询语句"><a href="#Example构建动态查询语句" class="headerlink" title="Example构建动态查询语句"></a>Example构建动态查询语句</h1><p>在了解Example之前，先学习一下其缺点，只有知道了能实现什么，不能实现什么，就能够进行有目标性的学习：</p>
+<ol>
+<li><p>支持动态查询。即支持查询条件个数不固定的情况，如：客户列表中有多个过滤条件，用户使用时在“地址”查询框中输入了值，就需要按地址进行过滤，如果没有输入值，就忽略这个过滤条件。对应的实现是，在构建查询条件Customer对象时，将address属性值设置为具体的条件值或设置为null。</p>
+</li>
+<li><p>不支持过滤条件分组。即不支持过滤条件用or（或）来连接，所有的过滤查件，都是简单一层的用and（并且）连接。如firstname = ?0 or (firstname = ?1 and lastname = ?2)。</p>
+</li>
+<li><p>仅支持字符串的开始/包含/结束/正则表达式匹配和其他属性类型的精确匹配。查询时，对一个要进行匹配的属性（如：姓名name），只能传入一个过滤条件值，如以Customer为例，要查询姓“刘”的客户，“刘”这个条件值就存储在表示条件对象的Customer对象的name属性中，针对于“姓名”的过滤也只有这么一个存储过滤值的位置，没办法同时传入两个过滤值。正是由于这个限制，有些查询是没办法支持的，例如要查询某个时间段内添加的客户，对应的属性是addTime，需要传入“开始时间”和“结束时间”两个条件值，而这种查询方式没有存两个值的位置，所以就没办法完成这样的查询。</p>
+</li>
+</ol>
+<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>一个Example对象由一个probe,一个ExampleMatcher构成。可以从下面Example的源码中知道：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Example</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new &#123;<span class="doctag">@link</span> Example&#125; including all non-null properties by default.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> probe must not be &#123;<span class="doctag">@literal</span> null&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">static</span> &lt;T&gt; <span class="function">Example&lt;T&gt; <span class="title">of</span><span class="params">(T probe)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> TypedExample&lt;&gt;(probe, ExampleMatcher.matching());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new &#123;<span class="doctag">@link</span> Example&#125; using the given &#123;<span class="doctag">@link</span> ExampleMatcher&#125;.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> probe must not be &#123;<span class="doctag">@literal</span> null&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> matcher must not be &#123;<span class="doctag">@literal</span> null&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">static</span> &lt;T&gt; <span class="function">Example&lt;T&gt; <span class="title">of</span><span class="params">(T probe, ExampleMatcher matcher)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> TypedExample&lt;&gt;(probe, matcher);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而probe就是数据库表对应的实体类，这个实体类中装载着我们想要配置的值。<br>而ExampleMatcher则定义了这些值对应的匹配规则，构建ExampleMatcher时需要考虑到如下几点：</p>
+<ol>
+<li><p>Null值的处理。当某个条件值为Null时，是应当忽略这个过滤条件呢，还是应当去匹配数据库表中该字段值是Null的记录？Null值处理方式：默认值是IGNORE（忽略），即当条件值为null时，则忽略此过滤条件，一般业务也是采用这种方式就可满足。当需100要查询数据库表中属性为null的记录时，可将值设为INCLUDE，这时，对于不需要参与查询的属性，都必须添加到忽略列表（ignoredPaths）中，否则会出现查不到数据的情况。</p>
+</li>
+<li><p>基本类型的处理。如客户Customer对象中的年龄age是int型的，当页面不传入条件值时，它默认是0，是有值的，那是否参与查询呢？关于基本数据类型处理方式：实体对象中，避免使用基本数据类型，采用包装器类型。如果已经采用了基本类型，而这个属性查询时不需要进行过滤，则把它添加到忽略列表（ignoredPaths）中。</p>
+</li>
+<li><p>忽略某些属性值。一个实体对象，有许多个属性，是否每个属性都参与过滤？是否可以忽略某些属性？ignoredPaths：虽然某些字段里面有值或者设置了其他匹配规则，只要放在ignoredPaths中，就会忽略此字段的，不作为过滤条件。</p>
+</li>
+<li><p>不同的过滤方式。同样是作为String值，可能“姓名”希望精确匹配，“地址”希望模糊匹配，如何做到？默认配置和特殊配置混合使用：默认创建匹配器时，字符串采用的是精确匹配、不忽略大小写，可以通过操作方法改变这种默认匹配，以满足大多数查询条件的需要，如将“字符串匹配方式”改为CONTAINING（包含，模糊匹配），这是比较常用的情况。对于个别属性需要特定的查询方式，可以通过配置“属性特定查询方式”来满足要求，设置propertySpecifiers的值即可。</p>
+</li>
+<li><p>大小写匹配。字符串匹配时，有时可能希望忽略大小写，有时则不忽略，如何做到？defaultIgnoreCase：忽略大小写的生效与否，是依赖于数据库的。例如MySQL数据库中，默认创建表结构时，字段是已经忽略大小写的，所以这个配置与否，都是忽略的。如果业务需要严格区分大小写，可以改变数据库表结构属性来实现。</p>
+</li>
+</ol>
+<p>ExampleMatcher默认是忽略null值的，如果有想要查询值为null的情况，则需要使用ExampleMatcher.withNullHandler(ExampleMatcher.NullHandler.IGNORE)的方式开启null的匹配。<br>上面的方式是将实体类总的所有字段都开启null匹配。</p>
+<p>完整的示例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.xqk.learn.springboot.data.jpa.entity.User;</span><br><span class="line"><span class="keyword">import</span> com.xqk.learn.springboot.data.jpa.repository.UserJpaRepository;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.domain.Example;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.domain.ExampleMatcher;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Optional;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Aviator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;exam&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleController</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> UserJpaRepository userJpaRepository;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExampleController</span><span class="params">(UserJpaRepository userJpaRepository)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userJpaRepository = userJpaRepository;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;findUser&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findByExample</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        ExampleMatcher exampleMatcher = ExampleMatcher</span><br><span class="line">                <span class="comment">//查询条件之间使用and拼接</span></span><br><span class="line">                .matching()</span><br><span class="line">                <span class="comment">//查询条件之间使用or拼接</span></span><br><span class="line">                <span class="comment">//.matchingAny()</span></span><br><span class="line">                <span class="comment">//忽略null值，即为null的字段不参与查询</span></span><br><span class="line">                <span class="comment">//.withNullHandler(ExampleMatcher.NullHandler.IGNORE)</span></span><br><span class="line">                .withNullHandler(ExampleMatcher.NullHandler.IGNORE)</span><br><span class="line">                <span class="comment">//User类的字符串字段匹配规则为containing</span></span><br><span class="line">                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)</span><br><span class="line">                <span class="comment">//email字段使用全值匹配的方式进行匹配</span></span><br><span class="line">                .withMatcher(<span class="string">&quot;email&quot;</span>, ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.EXACT, <span class="keyword">true</span>))</span><br><span class="line">                <span class="comment">//.withMatcher(&quot;address&quot;,ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.EXACT,true ).transform(Optional::ofNullable))</span></span><br><span class="line">                <span class="comment">//忽略如下字段的匹配</span></span><br><span class="line">                .withIgnorePaths(<span class="string">&quot;version&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Example&lt;User&gt; userExample = Example.of(user, exampleMatcher);</span><br><span class="line">        <span class="keyword">return</span> userJpaRepository.findAll(userExample);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Specification构建动态查询语句"><a href="#Specification构建动态查询语句" class="headerlink" title="Specification构建动态查询语句"></a>Specification构建动态查询语句</h1><p>首先看一下Spring Data JPA中提供的Specification接口，接口中只有一个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Specification</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	<span class="function">Predicate <span class="title">toPredicate</span><span class="params">(Root&lt;T&gt; root, CriteriaQuery&lt;?&gt; query, `	 CriteriaBuilder criteriaBuilder)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Specification是Spring对JPA的封装，最终要的还是看一下构建动态查询语句会用到的三个对象：</p>
+<ul>
+<li>Root<T><br>Root对象保存了数据库表中的字段，可以理解为如果想要获取到某张表的字段，则需要首先构建一个这张表的Root对象，然后使用get方法，将实体列中的字段名作为参数，获取到该字段的Path对象。</li>
+</ul>
+<p>Root对象可以使用Criterial.from(Class)方法来获取，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Root&lt;User&gt; userRoot = query.from(User.class);</span><br><span class="line">query.groupBy(userRoot.get(<span class="string">&quot;score&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，groupBy需要User表中某个字段，可以使用get方法来获取到该字段。</p>
+<ul>
+<li>CriteriaQuery<T><br>CriteriaQuery对象可以理解为整个SQL语句的主体框架，可以使用此对象，来构建查询语句中例如SELECT、WHERE、ORDER BY、HAVING等，是构建查询语句最重要的对象。</li>
+</ul>
+<p>CriteriaQuery对象可以通过CriterialBuilder.createQuery方法来获取：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CriteriaQuery&lt;FindUser&gt; query = builder.createQuery(FindUser.class);</span><br></pre></td></tr></table></figure>
+<p>值得注意的是，CriterialQuery中的泛型参数不一定必须是实体类，如果想要SQL语句返回某种类型的对象，则其泛型参数就必须该对象。后面在实战的时候再去理解。
+  </p>
+<ul>
+<li>CriterialBuilder<br>CriterialBuilder对象用来构建查询语句中的谓词，对于SQL中的LIKE、=、&gt;=，&lt;=，此对象都有对象的方法来实现。</li>
+</ul>
+<p>CritierBuilder对象可以直接从EntityManager对象的getCriteriaBuilder方法获取，正因为他不是泛型的，表明它和对象或实体类没有关系，只是一个工具类，用来构建谓词或其他的Criterial对象。<br>         <br>为了加深对着三个对象的理解，可以看一下下面这个图，只需要记住对象在一个SQL语句中的职责，构建动态查询是非常简单的。<br><img src="/images/SpecificationImage.png" alt="upload successful"></p>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>在介绍完三个重要的对象后，来学习一下如何构建稍微复杂一点的SQL语句作为结束。更加深入的研究还得靠以后的使用过程中去慢慢进行。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span>   NAME,GROUP_CONCAT(ADDRESS) <span class="keyword">AS</span> ADDRESS_CONCAT,<span class="built_in">SUM</span>(SCORE) <span class="keyword">AS</span> SUM_SOCRE,ENROLLMENT_DATE</span><br><span class="line"><span class="keyword">FROM</span>     <span class="keyword">user</span> <span class="keyword">AS</span> A <span class="keyword">INNER</span> <span class="keyword">JOIN</span> user_detail <span class="keyword">AS</span> B <span class="keyword">ON</span> A.ID<span class="operator">=</span>B.ID</span><br><span class="line"><span class="keyword">WHERE</span>    NAME <span class="keyword">LIKE</span> <span class="string">&#x27;%1%&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span>    <span class="keyword">BY</span> SCORE</span><br><span class="line"><span class="keyword">HAVING</span>   SUM_SOCRE <span class="operator">&gt;</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>上面的SQL中，使用到了分组和过滤，同时使用到了两个聚合函数。和表连接，还算是比较的复杂。看一下如何去使用JPA去实现这样的SQL语句和自己在学习中的慢慢摸索的思路。</p>
+<p>首先SQL使用到了两张表，User和UserDetail，并且返回的列并不是一个完整的实体类，但是在Spring Data JPA中封装的Specificaion接口里面，三个Criterial对象的泛型参数都是统一的entity实体类，查询的结果也是单个实体类或集合，所以这时候不能够使用Spring Data JPA去实现，要使用原生的方式去做。</p>
+<p>在开始之前，首先需要创建一个类，用于接收查询参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lombok.AllArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> lombok.NoArgsConstructor;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019-11-24 13:41</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRequest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Long scoreSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后需要使用EntityManager对象创建一个CriterialBuider对象，此对象用于构建其他两个需要用到的查询对象CriteriaQuery、Root。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> EntityManager entityManager;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SpecificationController</span><span class="params">(EntityManager entityManager)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.entityManager = entityManager;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">CriteriaBuilder builder = entityManager.getCriteriaBuilder();</span><br></pre></td></tr></table></figure>
+
+<p>在上面说到，CriterialQuery中的泛型参数的类型是整个SQL语句返回的对象类型，可以是实体类或其他用于接收参数结果的类，所以，首先需要创建一个类，用于接收SQL语句中返回的参数，根据SQL中的元素类型，个数，顺序，创建下面这个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.xqk.learn.springboot.data.jpa.entity.User;</span><br><span class="line"><span class="keyword">import</span> lombok.AllArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> lombok.NoArgsConstructor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019-11-24 13:41</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FindUser</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Long sumScore;</span><br><span class="line">    <span class="keyword">private</span> Date enrollmentDate;</span><br><span class="line">    <span class="keyword">private</span> String addressConcat;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，该类的成员变量和SQL语句中返回的字段的名称，类型，顺序必须一致，并且创建一个对应的构造器去接收参数。</p>
+<p>然后使用这个对象构建一个CriterialQuery对象，使用此对象构建最终的查询语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CriteriaBuilder builder = entityManager.getCriteriaBuilder();</span><br><span class="line">CriteriaQuery&lt;FindUser&gt; query = builder.createQuery(FindUser.class);</span><br></pre></td></tr></table></figure>
+
+<p>其次，因为用到了User和UserDetail两个表的字段，所需要构建一个User的Root对象，然后去关联UserDetail对象，从而获取对应的字段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Root&lt;User&gt; userRoot = query.from(User.class);</span><br></pre></td></tr></table></figure>
+<p>因为用到了表连接，所以需要使用CriteriaQuery来将User表和UserDetail表进行连接：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Join&lt;User, UserDetail&gt; userDetailJoin = userRoot.join(<span class="string">&quot;userDetail&quot;</span>, JoinType.INNER);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完成上面的工作，最重要的就是函数和结果的封装，对于查询的结果，可以使用CriterialQuery中的multiSelect方法来进行接收：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">query</span><br><span class="line">   .multiselect(userRoot.get(<span class="string">&quot;name&quot;</span>), sumExpression , userDetailJoin.get(<span class="string">&quot;enrollmentDate&quot;</span>),groupConcatExpression)</span><br></pre></td></tr></table></figure>
+<p>因为CriterialQuery中的泛型参数是FindUser，select方法中字段值就会会被自动使用构造函数填充进FindUser对象中去。</p>
+<p>最后是函数的问题，SUM函数属于标准函数，不要进行特殊处理就可以直接在builder中使用，但是GROUP_CONCAT函数不是非标准函数，必须使用方言去注册后使用，方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.hibernate.dialect.MySQL8Dialect;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.dialect.function.SQLFunctionTemplate;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.type.StandardBasicTypes;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 配置数据库方言，目前使用的场景为新增函数，例如group_concat函数在JPA中需要使用方言去注册进去</span></span><br><span class="line"><span class="comment"> * 需要自定义类继承自MySQLXDialect类，X类为当前数据库使用的版本。</span></span><br><span class="line"><span class="comment"> * 然后在yml文件中spring.jpa.property.hibernate.dialect指定此处定义的类。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019-11-24 16:42</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unused&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDialect</span> <span class="keyword">extends</span> <span class="title">MySQL8Dialect</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDialect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        registerFunction(<span class="string">&quot;group_concat&quot;</span>, <span class="keyword">new</span> SQLFunctionTemplate(StandardBasicTypes.STRING, <span class="string">&quot;group_concat(?1)&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>值得注意的是，不同的版本有不同的Dialect，但是根据版本的提升都是继承关系，在自定义方言中，使用的不同版本的MySQL需要继承自不同的Dialect。</p>
+<p>然后在yml配置文件中，指定我们自己设定的Dialect类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  jpa:</span><br><span class="line">    show-sql: true #打印jpa的sql语句</span><br><span class="line">    properties:</span><br><span class="line">      hibernate:</span><br><span class="line">        dialect: com.xqk.learn.springboot.data.jpa.config.MyDialect</span><br></pre></td></tr></table></figure>
+<p>这样在注册完以后，就可以直接使用GROUP_CONCAT函数啦啦啦。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在下周迭代的精准打击模块中，涉及到7个查询参数的动态SQL语句的构建，同时涉及到MySQL中的标准和非标准的函数的使用，比较棘手，作为ORM框架的新手来说，上手难度还是比较大的，花了两天时间去学习了一下。但是你知道的，自制力比较差，每次学个几分钟就去干别的事情了，静下心来学习的时间可能不到几小时，这个问题一直存在，自己也很早就意识到了，但是一直没有去改变，在接下来的几周内准备改掉这个坏毛病，过程可能会很痛苦，但是带来的益处无疑会非常多。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/11/16/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Spring-Data-Jpa%E4%B8%AD%E4%BD%BF%E7%94%A8Example%E5%92%8CSpecification%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/">https://super-aviator.github.io/2019/11/16/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Spring-Data-Jpa%E4%B8%AD%E4%BD%BF%E7%94%A8Example%E5%92%8CSpecification%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Spring-Data-Jpa/"># Spring Data Jpa</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/12/07/2019-12-7/">2019-12-7</a>
+            
+            
+            <a class="next" rel="next" href="/2019/11/07/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-JDK%E6%BA%90%E7%A0%81%E4%B8%AD%E5%A4%A7%E6%95%B0%E6%AF%94%E8%BE%83%E7%9A%84%E7%BC%96%E7%A0%81%E6%8A%80%E5%B7%A7/">第一个一年计划-JDK源码中大数比较的编码技巧[转载]</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>MySQL常用的数据类型与表设计要点 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">MySQL常用的数据类型与表设计要点</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-07-23&nbsp;&nbsp;22:12:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Database/">Database</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>写这篇东西的起因是今天在公司的接口评审会时，组里的成员提了一个问，她看见组里开发人员设计的表中，有的主键使用的数据类型是INT(11)，而有的使用的是INT(15),有的使用的是BIGINT(16)啥的，所以她问可不可能存在数值溢出的情况，这是我想起来以前看的一篇博客，说括号里的数字并不是代表能够存储的范围，而是为了填充零，所以我和她说表示的数据范围是不变的，都是INT都是四字节，但是组里的大佬们一致认为INT（11）表示的是能够存储的最大数字位数为11位，能够满足业务需求，在大佬们的一再强调下我他喵的动摇了。。。开始自闭。</p>
+<p>所以只知识不能是一知半解滴，so，结合《深入浅出MySQL》这本书，来了解一下MySQL的数据类型吧，同时因为最近在写的接口需要自己设计表结构，所以结合前几天看的<code>孤独烟</code>的关于表设计要点的博客，总结一下设计表的一些要点。</p>
+<h1 id="MySQL常见的数据类型"><a href="#MySQL常见的数据类型" class="headerlink" title="MySQL常见的数据类型"></a>MySQL常见的数据类型</h1><h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><p>MySQL中的整型包括TINYINT,SMALLINT,MEDIUMINT,INT,BIGINT。他们各自表示的范围如下:<br><img src="https://s2.ax1x.com/2019/07/28/eQONan.png" alt="eQONan.png"><br>需要注意的是，<strong>整型也可以后面加上数据，例如int(10)，表示存储的数值小于多少10位时，在数值的左侧使用零填充，需要配合ZEROFILL和UNSIGNED关键字使用(ZEROFILL域自动是UNSIGNED的)，而不是表示能存储多少位的数字。</strong></p>
+<h2 id="小数类型"><a href="#小数类型" class="headerlink" title="小数类型"></a>小数类型</h2><p>MySQL中的小数类型包括浮点数和定点数，浮点数包括FLOAT（单精度浮点数）,DOUBLE（双精度浮点数），定点数包括DECIMAL(也叫作NUMERIC),他们对应的长度如下：<br><img src="https://s2.ax1x.com/2019/07/28/el8Z9A.png" alt="el8Z9A.png"><br>浮点数和定点数都可以使用非标准用法：<code>[FLOAT|DOUBLE|DECIMAL]（M,D）</code>的方式使用，M称为<strong>精度</strong>，D称为<strong>标度</strong>，表示的是可以存储M为数字，其中包括D位小数，所以在创建小数类型的字段时需要保证M&gt;=D（当M==D时，只能存储D位小数，数值大小不能大于1），值得注意的是，不使用精度和标度时，FLOAT和DOUBLE按存储的位数进行保存，而DECIMAL默认整数为10位，小数为0位，即（10,0）,同时非标准用法可移植性差，在需要迁移的数据库中不应该使用，当存入的数的小数部分的位数多于指定的标度D时，数据库会对数据进行自动四舍五入。</p>
+<p><strong>FLOAT和DOUBLE由于计算机存储方式的原因，精度会有损失，而DECIMAL不会，所以在存储货币等精度要求高的数据时需要使用DECIMAL类型</strong></p>
+<h2 id="时间类型"><a href="#时间类型" class="headerlink" title="时间类型"></a>时间类型</h2><p>MySQL中有以下四种时间类型，使用时需要根据业务区决定：<br><img src="https://s2.ax1x.com/2019/07/28/el25Of.png" alt="el25Of.png"></p>
+<p>当插入的时间超出给定的范围时，插入的数据会变成零值。</p>
+<p>其中，值得注意的是TIMESTAMP类型会跟着数据库的时区进行变化，所以不同时区多对应的TIMESTAMP类型的数据是不一样的。还需要注意的是，一张表中，最多可以有一列数据可以为CURRENT_TIMESTAMP类型，即如果该列插入null值，则数据库会自动将其设置为当前时间，<strong>注意，每个数据库最多只能有一列拥有CURRENT_TIMESTAMP属性。</strong></p>
+<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><h2 id="JSON类型"><a href="#JSON类型" class="headerlink" title="JSON类型"></a>JSON类型</h2><p>Mysql5.7中新增了JSON数据格式，专门用于保存JSON字符串，结合<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/json.html">官方文档</a>，来看一下这种数据格式相对于TEXT有什么优势以及几个常用的用于处理JSON字符串的JSON函数吧：</p>
+<p>上面的文字表名JSON格式存储的大小和LONGBOB、LONGTEXT格式的大小差不多，同时长度的最大保存大小为系统变量max_allowed_packet的值，当在内存操作时，可能会大于这个值。同时，<strong>JSON格式的数据不能是NOT-NULL的，经过我的测试证实了这一点，即JSON格式的数据默认是NULL的。</strong>，MySQL内部使用utf8mb4字符集和utf8mb4_bin排序规则处理JSON上下文中使用的字符串。 其他字符集中的字符串将根据需要转换为utf8mb4。（对于ascii或utf8字符集中的字符串，不需要转换，因为ascii和utf8是utf8mb4的子集。）</p>
+<p><strong>注意：</strong>当插入的JSON对象字符串的键重复时，只会保留最后一个该键的键值对，例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> t1 (c1 JSON);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> t1 <span class="keyword">VALUES</span>(<span class="string">&#x27;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;&#125;&#x27;</span>),(<span class="string">&#x27;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;, &quot;x&quot;: [3, 5, 7]&#125;&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> c1 <span class="keyword">FROM</span> t1;</span><br><span class="line"><span class="operator">&gt;</span><span class="operator">+</span><span class="comment">-----------+</span></span><br><span class="line"> <span class="operator">|</span> c1        <span class="operator">|</span></span><br><span class="line"> <span class="operator">+</span><span class="comment">-----------+</span></span><br><span class="line"> | &#123;&quot;x&quot;: 17&#125; |</span><br><span class="line"> | &#123;&quot;x&quot;: 17&#125; |</span><br><span class="line"> <span class="operator">+</span><span class="comment">-----------+</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Mysql中常用的JSON函数"><a href="#Mysql中常用的JSON函数" class="headerlink" title="Mysql中常用的JSON函数"></a>Mysql中常用的JSON函数</h3><ul>
+<li><p>JSON_VALID<br>JSON_VALID用于判断参数中的JSON字符串是否是合法的，如果合法返回1，如果非法，返回0，如果参数为空，则报错。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_VALID(<span class="string">&#x27;[&quot;KEY&quot;:1]&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">SELECT</span> JSON_VALID(<span class="string">&#x27;[&quot;KEY&quot;:1&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_VALID();</span><br><span class="line"><span class="operator">&gt;</span> error</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSON_TYPE<br>JSON_TYPE()函数返回参数中JSON字符串的类型，如果参数为空或者不是JSON类型的字符串，则报错：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(&quot;[1,2,3]&quot;);</span><br><span class="line"><span class="operator">&gt;</span> ARRRAY</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(<span class="string">&#x27;&#123;&quot;k1&quot;:23&#125;&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> OBJECT</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE();</span><br><span class="line"><span class="operator">&gt;</span> Error Code: <span class="number">1582.</span> Incorrect <span class="keyword">parameter</span> count <span class="keyword">in</span> the <span class="keyword">call</span> <span class="keyword">to</span> native <span class="keyword">function</span> <span class="string">&#x27;JSON_TYPE&#x27;</span>	<span class="number">0.000</span> sec</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(&quot;[1,2,3]&quot;)<span class="operator">=</span><span class="string">&#x27;ARRAY&#x27;</span>;</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSON_ARRAY<br>JSON_ARRAY会返回包含所有参数的JSON数组字符串，当参数为空时返回空JSON数组，当参数不为JSON字符串格式时报错。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_ARRAY</span>(<span class="string">&#x27;A&#x27;</span>,<span class="number">23</span>,<span class="number">45.3</span>);</span><br><span class="line"><span class="operator">&gt;</span> [&quot;A&quot;, <span class="number">23</span>, <span class="number">45.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_ARRAY</span>();</span><br><span class="line"><span class="operator">&gt;</span> []</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSON_OBJECT<br>JSON_OBJECT函数和JSON_ARRAY函数类似，返回参数对构成的JSON对象，<strong>JSON要求键必须是字符串类型。</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_OBJECT</span>(<span class="string">&#x27;key1&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;key2&#x27;</span>,<span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line">&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_OBJECT</span>();</span><br><span class="line">&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSON_MERGE<br>JSON_MERGE函数返回两个或多个JSON字符串拼接之后的字符串,当参数都是JSON对象时，拼接之后结果的JSON_TYPE为OBJECT,当参数含有JSON数组时，返回结果的JSON_TYPE为JSON数组。<strong>当拼接的JSON对象中包含有相同的键时，该键对应的值会以数组的形式保存。</strong>，<strong>当拼接的参数是单个数值而非JSON字符串或者单个字母时，该函数的结果相当于JSON_ARRAY。首先会将单个的数字用[]包围，然后对其进行合并</strong>    </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#x27;</span>,<span class="string">&#x27;[1,2,3]&#x27;</span>);</span><br><span class="line">&gt; [&#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;, 1, 2, 3]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#x27;</span>,<span class="string">&#x27;&#123;&quot;key3&quot;:123&#125;&#x27;</span>);</span><br><span class="line">&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;, &quot;key3&quot;: 123&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;a&quot;:1&#125;&#x27;</span>,<span class="string">&#x27;&#123;&quot;a&quot;:2&#125;&#x27;</span>,<span class="string">&#x27;[&quot;A&quot;]&#x27;</span>);</span><br><span class="line">&gt; [&#123;&quot;a&quot;: [1, 2]&#125;, &quot;A&quot;]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>所有的JSON函数的返回结果都可以使用变量进行保存，方便以后使用，例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="variable">@J</span> <span class="operator">=</span> JSON_MERGE(<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="variable">@J</span>;</span><br><span class="line"><span class="operator">&gt;</span> [<span class="number">1</span>, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<h1 id="MySQL表设计的要点"><a href="#MySQL表设计的要点" class="headerlink" title="MySQL表设计的要点"></a>MySQL表设计的要点</h1><p>日常的开发过程中需要自己设计表，但是自己太菜了，设计的时候毫不隐晦的说，都是瞎鸡儿设计的。。。（如果组长看到了，会不会过来捶我，哈哈哈）；今天下班比较早，根据知乎上的文章，学习一下MySQL表的设计要点，后面如果有新的知识点继续补充。</p>
+<h2 id="问题1-为什么一定要设一个主键？"><a href="#问题1-为什么一定要设一个主键？" class="headerlink" title="问题1:为什么一定要设一个主键？"></a>问题1:为什么一定要设一个主键？</h2><p><strong>回答:</strong><br>因为你不设主键的情况下，innodb也会帮你生成一个隐藏列，作为自增主键。所以啦，反正都要生成一个主键，那你还不如自己指定一个主键，在有些情况下，就能显式的用上主键索引，提高查询效率！</p>
+<h2 id="问题2-主键是用自增还是UUID"><a href="#问题2-主键是用自增还是UUID" class="headerlink" title="问题2:主键是用自增还是UUID?"></a>问题2:主键是用自增还是UUID?</h2><p><strong>回答:</strong><br>肯定答自增啊。innodb 中的主键是聚簇索引。如果主键是自增的，那么每次插入新的记录，记录就会顺序添加到当前索引节点的后续位置，当一页写满，就会自动开辟一个新的页。如果不是自增主键，那么可能会在中间插入，就会引发页的分裂，产生很多表碎片！。</p>
+<p>上面那句话看不懂没事，大白话一句就是:用自增插入性能好！<br>另外，附一个测试表给你们，表名带uuid的就是用uuid作为主键。大家看一下就知道性能差距了:<br><img src="/images/uuid.png" alt="upload successful"><br>如上图所示，当主键是UUID的时候，插入时间更长，而且占用空间更大！<br>额，大家千万不要忘了，当你回答自增主键后，想一下<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMDgzMjc3NA==&mid=2247484464&idx=1&sn=f783fc5f7fe3d7714247c3c21d0a93f6&chksm=96f66659a181ef4fa02303b4974031b3f40bc1bdd76bad31a60fbaa54f2e63e62fcede88e4cd&token=1510096404&lang=zh_CN#rd">自增主键用完该怎么办？</a>        </p>
+<p>ps：这个问题，你要是能把UUID讲出合理的理由也行。</p>
+<h2 id="问题3-主键为什么不推荐有业务含义"><a href="#问题3-主键为什么不推荐有业务含义" class="headerlink" title="问题3:主键为什么不推荐有业务含义?"></a>问题3:主键为什么不推荐有业务含义?</h2><p><strong>回答:</strong><br>有如下两个原因<br>(1)因为任何有业务含义的列都有改变的可能性,主键一旦带上了业务含义，那么主键就有可能发生变更。主键一旦发生变更，该数据在磁盘上的存储位置就会发生变更，有可能会引发页分裂，产生空间碎片。<br>(2)带有业务含义的主键，不一定是顺序自增的。那么就会导致数据的插入顺序，并不能保证后面插入数据的主键一定比前面的数据大。如果出现了，后面插入数据的主键比前面的小，就有可能引发页分裂，产生空间碎片。</p>
+<h2 id="问题4-表示枚举的字段为什么不用enum类型？"><a href="#问题4-表示枚举的字段为什么不用enum类型？" class="headerlink" title="问题4:表示枚举的字段为什么不用enum类型？"></a>问题4:表示枚举的字段为什么不用enum类型？</h2><p>回答:在工作中表示枚举的字段，一般用tinyint类型。</p>
+<p>那为什么不用enum类型呢？下面两个原因</p>
+<ol>
+<li>ENUM类型的ORDER BY操作效率低，需要额外操作</li>
+<li>语法中，查询枚举值应该是字符串类型，所以需要格外注意</li>
+</ol>
+<h2 id="问题5-货币字段用什么类型"><a href="#问题5-货币字段用什么类型" class="headerlink" title="问题5:货币字段用什么类型?"></a>问题5:货币字段用什么类型?</h2><p>回答:如果货币单位是分，可以用Int类型。如果坚持用元，用Decimal。</p>
+<p>千万不要答float和double，因为float和double是以二进制存储的，所以有一定的误差。 打个比方，你建一个列如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t` (</span><br><span class="line">  `price` <span class="type">float</span>(<span class="number">10</span>,<span class="number">2</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+<p>然后insert给price列一个数据为1234567.23，你会发现显示出来的数据变为1234567.25，精度失准！</p>
+<h2 id="问题6-时间字段用什么类型"><a href="#问题6-时间字段用什么类型" class="headerlink" title="问题6:时间字段用什么类型?"></a>问题6:时间字段用什么类型?</h2><p>回答:此题无固定答案，应结合自己项目背景来答！把理由讲清楚就行！</p>
+<ol>
+<li><p>varchar，如果用varchar类型来存时间，优点在于显示直观。但是坑的地方也是挺多的。比如，插入的数据没有校验，你可能某天就发现一条数据为2013111的数据，请问这是代表2013年1月11日，还是2013年11月1日？ 其次，做时间比较运算，你需要用STR_TO_DATE等函数将其转化为时间类型，你会发现这么写是无法命中索引的。数据量一大，是个坑！</p>
+</li>
+<li><p>timestamp，该类型是四个字节的整数，它能表示的时间范围为1970-01-01 08:00:01到2038-01-19 11:14:07。2038年以后的时间，是无法用timestamp类型存储的。 但是它有一个优势，timestamp类型是带有时区信息的。一旦你系统中的时区发生改变，例如你修改了时区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> TIME_ZONE <span class="operator">=</span> &quot;america/new_york&quot;;</span><br></pre></td></tr></table></figure>
+<p> 你会发现，项目中的该字段的值自己会发生变更。这个特性用来做一些国际化大项目，跨时区的应用时，特别注意！</p>
+</li>
+<li><p>datetime，datetime储存占用8个字节，它存储的时间范围为1000-01-01 00:00:00 ~ 9999-12-31 23:59:59。显然，存储时间范围更大。但是它坑的地方在于，他存储的是时间绝对值，不带有时区信息。如果你改变数据库的时区，该项的值不会自己发生变更！</p>
+</li>
+<li><p>bigint，也是8个字节，自己维护一个时间戳，表示范围比timestamp大多了，就是要自己维护，不大方便。</p>
+</li>
+</ol>
+<h2 id="问题7-为什么不直接存储图片、音频、视频等大容量内容"><a href="#问题7-为什么不直接存储图片、音频、视频等大容量内容" class="headerlink" title="问题7:为什么不直接存储图片、音频、视频等大容量内容?"></a>问题7:为什么不直接存储图片、音频、视频等大容量内容?</h2><p>回答:我们在实际应用中，都是用HDFS来存储文件。然后mysql中，只存文件的存放路径。mysql中有两个字段类型被用来设计存放大容量文件，也就是text和blob类型。但是，我们在生产中，基本不用这两个类型！</p>
+<p>主要原因有如下两点</p>
+<ol>
+<li><p>Mysql内存临时表不支持TEXT、BLOB这样的大数据类型，如果查询中包含这样的数据，在排序等操作时，就不能使用内存临时表，必须使用磁盘临时表进行。导致查询效率缓慢</p>
+</li>
+<li><p>binlog内容太多。因为你数据内容比较大，就会造成binlog内容比较多。大家也知道，主从同步是靠binlog进行同步，binlog太大了，就会导致主从同步效率问题！</p>
+</li>
+</ol>
+<p>因此，不推荐使用text和blob类型！</p>
+<h2 id="问题8-字段为什么要定义为NOT-NULL"><a href="#问题8-字段为什么要定义为NOT-NULL" class="headerlink" title="问题8:字段为什么要定义为NOT NULL?"></a>问题8:字段为什么要定义为NOT NULL?</h2><p>回答:OK，这问题从两个角度来答</p>
+<p>(1)索引性能不好</p>
+<blockquote>
+<p>Mysql难以优化引用可空列查询，它会使索引、索引统计和值更加复杂。可空列需要更多的存储空间，还需要mysql内部进行特殊处理。可空列被索引后，每条记录都需要一个额外的字节，还能导致MYisam 中固定大小的索引变成可变大小的索引。 —— 出自《高性能mysql第二版》</p>
+</blockquote>
+<p>(2)查询会出现一些不可预料的结果 这里举一个例子，大家就懂了。假设，表结构如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> table_2 (</span><br><span class="line">     `id` <span class="type">INT</span> (<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NULL</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>表数据是这样的<br><img src="/images/demo1.png" alt="upload successful"><br>你执行语句<code>select count(name) from table_2;</code><br>你会发现结果为2，但是实际上是有四条数据的！</p>
+<p>类似的查询问题，其实有很多，不一一列举。 记住，因为null列的存在，会出现很多出人意料的结果，从而浪费开发时间去排查Bug.</p>
+<h1 id="COUNT-1-、COUNT-、COUNT-FILE-的区别"><a href="#COUNT-1-、COUNT-、COUNT-FILE-的区别" class="headerlink" title="COUNT(1)、COUNT(*)、COUNT(FILE)的区别"></a>COUNT(1)、COUNT(*)、COUNT(FILE)的区别</h1><p>COUNT(1)与COUNT(*)的执行效果、性能是一样的，会统计数据库表中所有数据的函数（<strong>包括NULL的情况</strong>），而COUNT(FILE)则只会统计该字段的非NULL的数据的行数，执行效率上也会比前两者慢很多倍。</p>
+<p>参考地址：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73260510">MySQL表设计要点</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">https://super-aviator.github.io/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MySQL/"># MySQL</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/08/24/Untitled/">在云服务器上搭建Hexo之一顿百度加谷歌</a>
+            
+            
+            <a class="next" rel="next" href="/2019/07/08/%E6%9C%AC%E5%9C%B0Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8ESpringBoot%E4%B8%ADJedis%E9%9B%86%E7%BE%A4%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BD%BF%E7%94%A8/">本地Redis集群的搭建与SpringBoot中JedisCluster客户端的使用</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

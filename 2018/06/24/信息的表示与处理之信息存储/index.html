@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>信息的表示与处理之信息存储 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">信息的表示与处理之信息存储</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-06-24&nbsp;&nbsp;19:15:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/OperationSystem/">OperationSystem</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h2><p>&emsp;&emsp;6月22号左右所有的考试终于完成了，我也终于有时间静下心来弄自己的事了，花了两天时间看了《深入理解计算机系统》CSAPP这本书的第二章，受益匪浅，以前不太理解的位级运算现在有了清晰的定义，对于补码和浮点数的表示和运算也了解了一些。按照惯例，总结一下。方便以后回来瞅一瞅。</p>
+<h2 id="整数表示与运算"><a href="#整数表示与运算" class="headerlink" title="整数表示与运算"></a>整数表示与运算</h2><p>&emsp;&emsp;在c语言中整数有两种形式，即有符号和无符号整数，而在java中只有有符号表示方法，有符号表示方法统一使用补码表示，而无符号则使用原码的方式。我们首先来看一看进制相关的转换。</p>
+<h3 id="十六进制（hexadecimal）"><a href="#十六进制（hexadecimal）" class="headerlink" title="十六进制（hexadecimal）"></a>十六进制（hexadecimal）</h3><p>&emsp;&emsp;十六进制中，四位二进制表示一位十六进制的数字，所以如果二进制写法太冗余，不便于观察，就可以将其转换为十六进制，方便书写。他们之间的转换规则如下：</p>
+<table>
+<thead>
+<tr>
+<th>进制\位数</th>
+<th>高位</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th>低位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>十六进制数</td>
+<td>1</td>
+<td>7</td>
+<td>3</td>
+<td>a</td>
+<td>4</td>
+<td>c</td>
+</tr>
+<tr>
+<td>二进制数</td>
+<td>0001</td>
+<td>0111</td>
+<td>0011</td>
+<td>1010</td>
+<td>0100</td>
+<td>1100</td>
+</tr>
+</tbody></table>
+<ul>
+<li>注意，二进制转换为十六进制时，应该从低位到高位四位一组，不够补0。</li>
+</ul>
+<blockquote>
+<p>在将十进制转换为十六进制时，如果数是2的x次幂，那么可以写为：1后面跟x个0.</p>
+</blockquote>
+<h3 id="字节顺序之大小端之争（big-endian-little-endian）"><a href="#字节顺序之大小端之争（big-endian-little-endian）" class="headerlink" title="字节顺序之大小端之争（big endian/little endian）"></a>字节顺序之大小端之争（big endian/little endian）</h3><p>&emsp;&emsp;对于跨越多字节程序对象，我们需要知道如何排列这些字节，在计算机中有两种存放的方式，某些机器选择在内存中按照从最低有效字节到最高有效字节的顺序存储对象，这称之为小端法，某些机器从最高有效字节到最低有效字节的顺序存放，称之为大端法。<br>&emsp;&emsp;总的来说，小端法使用低地址存放数据的高有效字节，大端法使用低地址存放低有效字节。例如对于十六进制数0x01234567，存储方式如下(十六进制中01是高有效字节，67为低有效字节)：</p>
+<table>
+<thead>
+<tr>
+<th>存储方式\地址顺序</th>
+<th>0x100</th>
+<th>0x 101</th>
+<th>0x 102</th>
+<th>0x103</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小端法</td>
+<td>01</td>
+<td>23</td>
+<td>45</td>
+<td>67</td>
+</tr>
+<tr>
+<td>大端法</td>
+<td>67</td>
+<td>45</td>
+<td>23</td>
+<td>01</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>由于小端法的特性，当从内存中得到字节序列时，如果想到的到正确的序列，<br>需要对其进行翻转。</p>
+</blockquote>
+<p>有意思的是，大小端起源于《格列夫游记》中的应该从鸡蛋的大端还是小端敲开鸡蛋而来，哈哈哈的，蛋疼Y_Y。</p>
+<h3 id="布尔代数简介"><a href="#布尔代数简介" class="headerlink" title="布尔代数简介"></a>布尔代数简介</h3><p>使用逻辑异或，能够实现两个整型的数的交换操作，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">       b=a^b;</span><br><span class="line">       a=a^b;</span><br><span class="line">       b=a^b;</span><br><span class="line">       System.out.println(a+<span class="string">&quot;:&quot;</span>+b);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        swap(<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//output: 3,2</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其原理是基于这个式子：<code>a^(a^b)=b</code>,可以带入上式中进行化简，验证结果。</p>
+</blockquote>
+<p>&emsp;&emsp;我们知道，乘法对加法有分配率，即：<code>a*(b+c)=a*b+a*c</code>，而布尔代数中&amp;对|也有分配率，即：a&amp;(b|c)=a&amp;b|a&amp;c,而与加法和乘法不同的是，|对&amp;也有分配率。</p>
+<h3 id="移位运算简介"><a href="#移位运算简介" class="headerlink" title="移位运算简介"></a>移位运算简介</h3><p>&emsp;&emsp;移位操作一共有三种形式，&lt;&lt;逻辑左移（补0），&gt;&gt;算术右移（补符号位）,&gt;&gt;&gt;逻辑右移（补0），对于无符号数，应该使用逻辑左移或者逻辑右移，而对于有符号数，应该使用算术右移而不是逻辑右移.左移k位相当于乘以2的k次幂，右移相当于除以2的k次幂。<br>&emsp;&emsp;需要注意的是，如果x&lt;&lt;k中，k的值大于x的位数n，则实际上进行的是x&lt;&lt;(n%k),即，如果x为int型，则x&lt;&lt;33相当于x&lt;&lt;1。</p>
+<h3 id="无符号数与有符号数的编码"><a href="#无符号数与有符号数的编码" class="headerlink" title="无符号数与有符号数的编码"></a>无符号数与有符号数的编码</h3><ul>
+<li><p>无符号数使用普通的方式编码，例如：$110=1*2^2+1*2^1 +0*2^0$</p>
+</li>
+<li><p>有符号数使用的则是使用补码的方式编码，表示形式为：$110=-1*2^2 +1*2^1 +0*2^0$,即最高有效位符号为-，其余位为正。  </p>
+</li>
+</ul>
+<blockquote>
+<p>值得注意的是，有符号和无符号编码在其所能表示的范围中的每一个数都是唯一编码的。不存在重复性。</p>
+</blockquote>
+<h3 id="无符号数与补码之间的转换"><a href="#无符号数与补码之间的转换" class="headerlink" title="无符号数与补码之间的转换"></a>无符号数与补码之间的转换</h3><p>&emsp;&emsp;无符号数与补码之间的转换不涉及底层的运算，只是改变了某些位的解释方式。例如：无符号数53191，其二进制表示为：1100 1111 1100 0111，将其转化为有符号时产生溢出，代表的数是：-12345。其具体的运算规则如下：    </p>
+<blockquote>
+<p>需要注意的是，我们假设无符号数表示范围为0&lt;=x&lt;=UMax,有符号表示范围为TMin&lt;=x&lt;=TMax,字长为w；U2T()和T2U()为相应的转换函数。</p>
+</blockquote>
+<h4 id="无符号数转换为补码"><a href="#无符号数转换为补码" class="headerlink" title="无符号数转换为补码"></a>无符号数转换为补码</h4><p>对于0&lt;=x&lt;=UMax的无符号x的值：<br>$$<br>U2T(x)=\begin{cases}<br>u,&amp;x&lt;=TMax\<br>u-2^w,&amp;x&gt;TMax<br>\end{cases}<br>$$</p>
+<h4 id="补码转换为无符号数"><a href="#补码转换为无符号数" class="headerlink" title="补码转换为无符号数"></a>补码转换为无符号数</h4><p>对于TMin&lt;=x&lt;=TMax的有符号x的值：<br>$$<br>T2U(x)=\begin{cases}<br>u,&amp;x&gt;=0\<br>u+2^w,&amp;x&lt;0<br>\end{cases}<br>$$</p>
+<h3 id="截取与扩充"><a href="#截取与扩充" class="headerlink" title="截取与扩充"></a>截取与扩充</h3><p>&emsp;&emsp;在程序中常常出现类型转换大致上包括两种类型转换，截取与扩充，当然还有目标数与原数位数不变的情况，截取我们直接将高位的二进制位丢弃，扩充则填充一定规则的二进制位，他们具体的执行方式如下：    </p>
+<h4 id="无符号数与补码数的扩充"><a href="#无符号数与补码数的扩充" class="headerlink" title="无符号数与补码数的扩充"></a>无符号数与补码数的扩充</h4><p>&emsp;&emsp;无符号的扩充采用的是零扩充的方式，即简单的在开头填充0,例如将无符号数8，w=4二进制表示为：1000，将其扩充为w=8表示时，结果如下：00001000，结果的大小不变。<br>&emsp;&emsp;补码的扩充采用的是符号位扩充的方式，即在高位填充符号位，例如有符号数-8,w=4时表示为1000,将其扩充为w=8表示时，结果如下：11111000.结果的大小不变。        </p>
+<blockquote>
+<p>推论:对于有符号数二进制表示为1111110000与-10000相同。即可以省略符号位前面的任意多个连续的1，这便是符号扩充推到而来的技巧。</p>
+</blockquote>
+<h4 id="无符号数与补码的截断"><a href="#无符号数与补码的截断" class="headerlink" title="无符号数与补码的截断"></a>无符号数与补码的截断</h4><p>&emsp;&emsp;截断一个无符号数时，如果将其截断为k位，则截取的结果为：<br>$$<br>y=x \ mod\  2^k<br>$$</p>
+<p>&emsp;&emsp;截断一个有符号数时，如果将其截断为k位，则截取的结果与截断无符号数相同，不过需要将最高位转换为符号位。<br>$$<br>y=x \ mod\  2^k<br>$$<br>例如如下代码，可以看到在java中截断是如何进行的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">1234567</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;截取前的数为：&quot;</span>+i+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(i));</span><br><span class="line">        <span class="keyword">short</span> s=(<span class="keyword">short</span>)i;</span><br><span class="line">        System.out.println(<span class="string">&quot;截取后的数为：&quot;</span>+s+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(s));</span><br><span class="line">        <span class="keyword">int</span> r=i%<span class="number">65536</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;i%2^16=&quot;</span>+r+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(r));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//output</span></span><br><span class="line">截取前的数为：<span class="number">1234567</span>其二进制表示为：<span class="number">100101101011010000111</span></span><br><span class="line">截取后的数为：-<span class="number">10617</span>其二进制表示为：<span class="number">11111111111111111101011010000111</span></span><br><span class="line">i%<span class="number">2</span>^<span class="number">16</span>=<span class="number">54919</span>其二进制表示为：<span class="number">1101011010000111</span></span><br></pre></td></tr></table></figure>
+<p>可以看到截取后的二进制表示与直接mod 2的16次方相同。</p>
+<h3 id="无符号数加法与补码加法"><a href="#无符号数加法与补码加法" class="headerlink" title="无符号数加法与补码加法"></a>无符号数加法与补码加法</h3><p>&emsp;&emsp;无符号加法存在正溢出的情况，因为两个非负数相加只会存在正溢出，其加法后的结果如下：<br>对于无符号数x和y,$0 &lt;= x,y&lt; 2^w$</p>
+<p>$$<br>x+y=\begin{cases}<br>    x+y,&amp;x+y&lt;2^w &amp;normal\<br>    x+y-2^w,&amp;2^w&lt;=x+y&lt;=2^{w+1} &amp;\ \ overflow<br>    \end{cases}<br>$$</p>
+<p>&emsp;&emsp;有符号加法有正溢出和负溢出之分，其加法之后的结果如下：<br>对于有符号数x和y,$-2^{w-1}&lt;=x,y&lt;=2^{w-1}-1$</p>
+<p>$$<br>x+y=\begin{cases}<br>    x+y-2^w, &amp;2^{w-1}&lt;=x+y\<br>    x+y, &amp;-2^{w-1}&lt;=x+y&lt;=2^{w-1}\<br>    x+y+2^w, &amp;x+y&lt;-2^{w-1}<br>    \end{cases}<br>$$</p>
+<p>总的来说，有符号加法与无符号加法在指令执行上相同，只是对相加后的结果的每一位的解释不同。</p>
+<h3 id="无符号数乘法与补码乘法"><a href="#无符号数乘法与补码乘法" class="headerlink" title="无符号数乘法与补码乘法"></a>无符号数乘法与补码乘法</h3><h3 id="无符号数与补码的溢出判断"><a href="#无符号数与补码的溢出判断" class="headerlink" title="无符号数与补码的溢出判断"></a>无符号数与补码的溢出判断</h3><h3 id="无符号数与补码的乘2的幂"><a href="#无符号数与补码的乘2的幂" class="headerlink" title="无符号数与补码的乘2的幂"></a>无符号数与补码的乘2的幂</h3><h3 id="无符号数与补码的除2的幂"><a href="#无符号数与补码的除2的幂" class="headerlink" title="无符号数与补码的除2的幂"></a>无符号数与补码的除2的幂</h3><hr>
+<h2 id="浮点数表示与运算"><a href="#浮点数表示与运算" class="headerlink" title="浮点数表示与运算"></a>浮点数表示与运算</h2><h3 id="浮点数表示方法："><a href="#浮点数表示方法：" class="headerlink" title="浮点数表示方法："></a>浮点数表示方法：</h3><p>浮点数遵循IEEE754规则，表示的形式为:    </p>
+<p>$V=(-1)^S *M*2^E$</p>
+<p>而其二进制表示中，总共分为三部分，有如下定义：</p>
+<ol>
+<li>符号位，用于确定浮点数的大小，双精度和单精度中都是一位.</li>
+<li>阶码，用于确定E（单精度中为8位，双进度中为11位）.</li>
+<li>尾数，用于确定M（单精度中为23位，双进度中为52位）.<br>表示方法如下：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>符号位 S</th>
+<th>阶码E</th>
+<th>尾数M</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1位</td>
+<td>8或11位</td>
+<td>23或52位</td>
+</tr>
+<tr>
+<td>根据阶码以及尾数的不同，可以将浮点数分为四种类型，这非常重要。</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>规格化：阶码E不能为0和255.尾数为任意值。    </li>
+<li>非规格化：阶码为0，尾数为任意数。     </li>
+<li>无穷大：阶码为255，尾数为0.   </li>
+<li>无穷小：阶码为255，尾数不为0. </li>
+</ul>
+<h3 id="四种类型的不同的计算数值的方法："><a href="#四种类型的不同的计算数值的方法：" class="headerlink" title="四种类型的不同的计算数值的方法："></a>四种类型的不同的计算数值的方法：</h3><ul>
+<li>当为规格化表示法时，计算方法如下：  </li>
+</ul>
+<p>$E=e-Bias$    </p>
+<p>$M=1+f$</p>
+<p>其中，e为阶码的无符号表示的值（范围为0~255/2047），Bias为偏置值（单精度为127，双进度为2013）。其值求法为：<br><code>2^&#123;(k-1)&#125;-1</code><br>M包含隐藏的1，这叫做隐含的以1开头的。</p>
+<ul>
+<li>当为非规格化表示法时，计算方法如下:</li>
+</ul>
+<p>$E=1-Bias$  </p>
+<p>$M=f$</p>
+<p>与规格化不同的是，将e改为1，同时M中不再加上1。非规格的浮点表示方法中，包含有正0和负0，正0表示为全0的二进制组合，而负0表示为符号位为1，其余位为0的二进制组合。</p>
+<ul>
+<li><p>无穷大代表正无穷或者负无穷，根据符号位确定正负。</p>
+</li>
+<li><p>NaN代表不是一个数（Not A Number）。通过对负数开根号或者无穷数相减等操作会得到一个NaN。</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/06/24/%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E4%B8%8E%E5%A4%84%E7%90%86%E4%B9%8B%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8/">https://super-aviator.github.io/2018/06/24/%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E4%B8%8E%E5%A4%84%E7%90%86%E4%B9%8B%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/"># 深入理解计算机系统</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/07/01/Java%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/">Java泛型与数组</a>
+            
+            
+            <a class="next" rel="next" href="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%90%9C%E7%B4%A2/">Linux中的文本查看与文件搜索</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

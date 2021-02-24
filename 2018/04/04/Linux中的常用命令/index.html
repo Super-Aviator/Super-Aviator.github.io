@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>Linux中的基础命令 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Linux中的基础命令</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-04-04&nbsp;&nbsp;16:39:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/OperationSystem/">OperationSystem</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>linux使用中一些常用的命令</p>
+<h2 id="文件管理命令"><a href="#文件管理命令" class="headerlink" title="文件管理命令"></a>文件管理命令</h2><p><code>cd [相对路径或绝对路径]</code></p>
+<ul>
+<li><p>命令行说明:<br>切换到指定目录下</p>
+</li>
+<li><p>参数说明:<br>想要切换的目录的相对或绝对路径</p>
+</li>
+</ul>
+<hr>
+<p><code>pwd </code></p>
+<ul>
+<li>命令行说明:<br>显示用户当前工作目录。</li>
+</ul>
+<hr>
+<p><code>mkdir [-p] [目录名称及路径]</code></p>
+<ul>
+<li><p>命令行说明:<br>创建一个目录。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>p: 当父目录不存在时，连通父目录一起建立。</p>
+</li>
+<li><p>参数说明:<br>想要创建的目录的名称</p>
+</li>
+</ul>
+<hr>
+<p><code>rmdir [-p] [目录名称及路径]</code></p>
+<ul>
+<li><p>命令行说明:<br>删除一个空的目录。使用-p选项，可以递归的删除空目录，例如：rmdir test1/test 将删除test目录，如果删除test后test1目录为空，则将test1也一并删除。如果删除的文件夹非空，则不能删除。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>p: 删除子目录时，若父目录为空则一并删除。</p>
+</li>
+<li><p>参数说明:<br>目录及其路径</p>
+</li>
+</ul>
+<hr>
+<p><code> ls [-adhlnSt] 目录名称</code></p>
+<ul>
+<li><p>命令行说明:<br>查看指定文件下的文件或目录。   </p>
+</li>
+<li><p>选项说明:     </p>
+</li>
+<li><p>a: 显示全部的文件，连通隐藏的文件。（以.开头的文件）  </p>
+</li>
+<li><p>d: 仅列出目录本身，而不列出目录内的文件数据。  </p>
+</li>
+<li><p>h: 将文件容量以较易读的方式（GB,KB）显示出来。    </p>
+</li>
+<li><p>l: 等同于(ll),显示文件的属性以及权限。    </p>
+</li>
+<li><p>n: 列出UID和GID而非使用者与数组的名称。    </p>
+</li>
+<li><p>S: 以文件容量大小排序，而不是文件名派速。     </p>
+</li>
+<li><p>t：依时间排序而不是文件名。    </p>
+</li>
+<li><p>参数说明:<br>指定文件夹</p>
+</li>
+</ul>
+<hr>
+<p><code>cp [-iru] 源文件   目标文件</code></p>
+<ul>
+<li><p>命令行说明:<br>拷贝文件或目录。当时用-u选项时，如果源文件与目标文件相同（没有修改过），就不进行复制，否则复制。复制目录时，需要加上-r选项。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>i: 若目标文件已经存在，在覆盖时会先询问。  </p>
+</li>
+<li><p>r: 可以进行目录的复制。如果需要拷贝一个文件夹，则需要加上此参数</p>
+</li>
+<li><p>u: 若源文件较新，或者没有目标文件时，才会进行复制，可用备份操作。  </p>
+</li>
+<li><p>v: 显示复制的细节。</p>
+</li>
+<li><p>参数说明:<br>源文件。目标文件。</p>
+</li>
+</ul>
+<hr>
+<p><code>rm [-fir] 文件或目录</code></p>
+<ul>
+<li><p>命令行说明:<br>移除文件或文件夹，当不使用选项时，默认为-i选项，即会询问你是否删除。当使用此命令删除文件夹时，需要使用功能-r或者-i选项，当删除文件时，需要使用-i或者-f选项。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>f: force,强制删除文件。    </p>
+</li>
+<li><p>i: 互动模式，在删除前会进行询问是否删除。  </p>
+</li>
+<li><p>r: 递归删除文件夹，删除目录下所有文件夹，非常危险。    </p>
+</li>
+<li><p>参数说明:<br>想要删除的文件或者文件夹。</p>
+</li>
+</ul>
+<hr>
+<p><code>mv [-fiu] 源文件 目标文件</code></p>
+<ul>
+<li><p>命令行说明:<br>移动文件或者文件夹，或者重命名文件。使用.代表当前目录可以更好的实现重命名效果。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>f: force强制的意思，如果文件已经存在，则强制覆盖该文件。      </p>
+</li>
+<li><p>i: 若目标文件已经存在，就会询问是否覆盖。  </p>
+</li>
+<li><p>u: 若文件已经存在，且源文件时目标文件的修改过的，才会覆盖。</p>
+</li>
+<li><p>参数说明:   </p>
+</li>
+</ul>
+<hr>
+<p><code>tar [主选项+副选项]    文件或目录</code></p>
+<ul>
+<li>命令行说明:<br>为文件和目录创建归档。下面是几种常用的使用方法：<br>1：将</li>
+</ul>
+<p>选项说明:<br>主选项：（必须存在）<br>-c: 创建新的备份文件，如果用户想要备份一个目录或者是一些文件，就要选择此选项。<br>-r: 要把归档文件追加到文件末尾。<br>-u: 更新文件，使用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，则把他追加到备份文件的最后。<br>-x: 从备份归档中释放文件。  </p>
+<p>副选项：（选用）<br>-f: 使用备份归档或设备，这个选项通常是必选。<br>-m: 在还原文件时，将所有文件修改为现在。<br>-v: 详细报告tar处理的文件信息，若无此选项tar不报告文件信息。<br>-z: 用gzip来压缩/解压缩文件，加上此选项后可将备份档文件进行压缩，还原时也一定要使用该选项进行解压缩。<br>-j: 使使用zb2来压缩/解压缩文件，加上此选项后可将备份档文件进行压缩，还原时也一定要使用该选项进行解压缩。  </p>
+<ul>
+<li>参数说明:<br>想要压缩的文件路径。</li>
+</ul>
+<hr>
+<h2 id="用户管理命令"><a href="#用户管理命令" class="headerlink" title="用户管理命令"></a>用户管理命令</h2><h4 id="超级用户的切换"><a href="#超级用户的切换" class="headerlink" title="超级用户的切换"></a>超级用户的切换</h4><p><code>su [-lcm] [username]</code>    </p>
+<ul>
+<li><p>命令行说明:<br>su命令是切换用户的工具，可以从当前用户切换到指定用户。当使用超级用户向普通或者伪用户切换时不需要用户的密码，而普通用户切换到其他任何用户都需要输入想要切换的指定用户的密码。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>l: 切换用户时使用想要切换的用户的所有相关环境设定配置。改变身份时，也同时变更工作目录，以及HOME,SHELL,USER,logname。此外，也会变更PATH变量。     </p>
+</li>
+<li><p>c: 同–command,仅进行一次root指令，后面可以加上想要执行的命令。    </p>
+</li>
+<li><p>: 当不带选项或者选项为-时，为切换到root用户。  </p>
+</li>
+<li><p>参数说明:<br>想要切换到的用户名。    </p>
+</li>
+</ul>
+<hr>
+<p><code>sudo [-u [username]|#uid] command</code>      </p>
+<ul>
+<li><p>命令行说明:<br>更加安全的su命令，使用此命令切换到指定用户时，不会像su一样需要输入root密码，而只需要root用户配置好/etc/sudoers文件即可，普通用户如果在该文件中有权限，只需输入当前用户的密码就可以执行root操作。root用户执行sudo时不需要输入密码。如果欲切换用户与执行者身份相同，也不需要输入密码。</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>u: 使用sudo -u #500来切换到UID为500的用户。例如：sudo -u account touch /hime/test。使用sudo切换到account进行touch操作。        </p>
+</li>
+<li><p>l: 列出用户在主机上可用的和被禁止的命令，一半般用于测试/etc/shdoers是否配置正确。  </p>
+</li>
+<li><p>参数说明:<br>想要执行的指令  </p>
+</li>
+</ul>
+<hr>
+<p><code>sudo passwd</code>   </p>
+<ul>
+<li><p>命令行说明:<br>当使用ubuntu时，第一次使用默认没有开启root权限，所以要使用此命令激活root用户并设置密码。    </p>
+</li>
+<li><p>选项说明:  </p>
+</li>
+<li><p>参数说明:   </p>
+</li>
+</ul>
+<hr>
+<h4 id="用户账号管理"><a href="#用户账号管理" class="headerlink" title="用户账号管理"></a>用户账号管理</h4><p><code>useradd [-u UID] [-g initial_group] [-G other_group] [-Mm] [-c说明栏] [-d home] [-s Shell] username</code>  </p>
+<ul>
+<li><p>命令行说明:<br>添加一个用户。（root可用）值得注意的是，如果创建一个用户，没有使用-m或者没有使用-d选项建立用户家目录，那么使用GUI是无法登录该用户的。（不要问我为什么，血的教训。）</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>u: 指定用户的UID   </p>
+</li>
+<li><p>g: 初始群组名称        </p>
+</li>
+<li><p>G: 后面跟的群组名则是这个账号还可以支持的群组，这个参数会修改/etc/group的内容    </p>
+</li>
+<li><p>M: 强制不要建立用户家目录  </p>
+</li>
+<li><p>m: 强制建立家目录  </p>
+</li>
+<li><p>c: 用户信息说明栏      </p>
+</li>
+<li><p>d: 指定某个目录为家目录    </p>
+</li>
+<li><p>r: 建立一个系统的账号,这个账号的UID会有限制.（1~499）  </p>
+</li>
+<li><p>s: 指定的shell名称，默认为/bin/shell   </p>
+</li>
+<li><p>参数说明:<br>指定该用户的用户名</p>
+</li>
+</ul>
+<hr>
+<p><code>usermod [-cdegGlsuLU]  username</code></p>
+<ul>
+<li><p>命令行说明:<br>当创建用户时如果发现遗漏或者设置错误了某个选项，可以使用此命令进行微调。（root可用）</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>c：后面跟用户的说明，即/etcpasswd中的第5栏。   </p>
+</li>
+<li><p>d: 后面跟账号的家目录，即修改/etc/passwd第6栏 。 </p>
+</li>
+<li><p>e: 后面跟日期，格式是YYYY-MM-DD ，设置用户的实效日期。</p>
+</li>
+<li><p>g: 后面跟群组名，修改用户的群组。</p>
+</li>
+<li><p>G: 后面跟群组名，指这个用户能够支持的群组名。</p>
+</li>
+<li><p>l: 后面跟用户名，修改用户的用户名。</p>
+</li>
+<li><p>s: 后面跟shell的实际文件，如;/bin/bash等。</p>
+</li>
+<li><p>u: 修改用户的UID.</p>
+</li>
+<li><p>L: 暂时将用户冻结。实际是想shadow中的密码栏加上一个！</p>
+</li>
+<li><p>U: 将用户解冻。</p>
+</li>
+<li><p>参数说明:<br>想要修改的用户名。</p>
+</li>
+</ul>
+<hr>
+<p><code>userdel [-r] username</code></p>
+<ul>
+<li><p>命令行说明:<br>删除系统中的用户。（root可用）</p>
+</li>
+<li><p>选项说明:   </p>
+</li>
+<li><p>r: 删除时连通用户家目录一起删除。</p>
+</li>
+<li><p>参数说明:<br>想要删除的用户名。</p>
+</li>
+</ul>
+<hr>
+<p><code>passwd [username]</code></p>
+<ul>
+<li><p>命令行说明:<br>此命令用于修改用户的密码，如果不加参数，则为修改当前用户的密码，此命令有两种用法，第一种是如果当前用户是root，root可以修改任何用户的密码而不需要待修改用户的密码。而且此种方法设定的密码即使太简单，也能够设定，第二种如果当前用户是普通用户，直接使用<code>passwd</code>就可以修改当前用户的密码了，而此时密码不能够太简单。密码设定有三个原则：<br>1：密码不能与账号相同，<br>2：密码不要选用字典里面会出现的字符串<br>3：密码需要超过8个字符</p>
+</li>
+<li><p>选项说明: </p>
+</li>
+<li><p>S：查看用户的密码状态</p>
+</li>
+<li><p>d：删除用户的密码，设置用户的密码为空密码</p>
+</li>
+<li><p>l：locked,将用户的密码状态设置为锁定状态</p>
+</li>
+<li><p>u：unlock，将密码锁定状态的用户解除锁定</p>
+</li>
+<li><p>n：设置用户密码的最短使用期限，默认值为0天</p>
+</li>
+<li><p>x：设置用户密码的最长使用期限，默认值为99999天</p>
+</li>
+<li><p>w：设置用户的密码在到达最大使用期限之前多少天开始发出警告，默认7天</p>
+</li>
+<li><p>i：设置用户的密码在到达最大使用期限之后，还可以继续使用多少天，默认无穷大<br>默认功能不开启，即无限期</p>
+</li>
+<li><p>参数说明:<br>想要修改的用户名。</p>
+</li>
+</ul>
+<hr>
+<h2 id="系统管理命令"><a href="#系统管理命令" class="headerlink" title="系统管理命令"></a>系统管理命令</h2><hr>
+<p><code>shoutdown [-]</code></p>
+<hr>
+<p>模板<br><code>命令名 [-选项] [参数]</code>   </p>
+<ul>
+<li>命令行说明:   </li>
+</ul>
+<ul>
+<li>选项说明:   </li>
+</ul>
+<ul>
+<li>参数说明:</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/04/04/Linux%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">https://super-aviator.github.io/2018/04/04/Linux%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"># Linux常用命令</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/04/Linux%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Linux中常见的配置文件</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/02/World/">这是我的第一篇博客</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

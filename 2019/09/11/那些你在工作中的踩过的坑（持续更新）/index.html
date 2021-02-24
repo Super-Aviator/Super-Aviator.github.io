@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>那些你在工作中的踩过的坑（持续更新） | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">那些你在工作中的踩过的坑（持续更新）</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-09-11&nbsp;&nbsp;10:42:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Daily/">Daily</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>上周项目上线之后，遭受了无数次空指针异常的狂扁之后，这周新增的需求中又被类型转换错误狠狠的教训了一顿。（这可能就是上天对菜逼的惩罚），感觉组长已经对我的代码中这种异常产生了强大的免疫力了。。。</p>
+<p>刚刚改完bug之后，决定开个坑，记录一下工作中踩过的坑，有点绕口惹。。。主要的目的是要保证犯过的错误不能再犯第二次。</p>
+<h1 id="NullPointerException"><a href="#NullPointerException" class="headerlink" title="NullPointerException"></a>NullPointerException</h1><h1 id="基本类型的包装类的类型转换"><a href="#基本类型的包装类的类型转换" class="headerlink" title="基本类型的包装类的类型转换"></a>基本类型的包装类的类型转换</h1><h1 id="org-springframework-web-HttpMediaTypeNotAcceptableException-Could-not-find-acceptable-representation异常"><a href="#org-springframework-web-HttpMediaTypeNotAcceptableException-Could-not-find-acceptable-representation异常" class="headerlink" title="org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acceptable representation异常"></a>org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acceptable representation异常</h1><p>在新的需求的代码中，需要前端批量上传图片和视频，本来完美的解决方案是将图片和视频保存在本地，然后通过公司的海豚品台的nginx去代理图片的访问，但是我们的项目里面他喵的海豚没有挂在nginx，所以所有的图片和视频只能通过项目中的接口去访问，后台直接返回二进制流。海豚真是含棒棒惹。</p>
+<p>在访问图片和视频的接口中，我脑子进水一般的，在同一个接口中同时返回了JSON和二进制流的数据格式，分别对应的MediaType是application/json、application/octet-stream。<br>Controller层返回了Json对象：    </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(value = &quot;/&#123;fileName:\\S+\\.\\S+&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseMessage <span class="title">updateTextMaterial</span><span class="params">(<span class="meta">@PathVariable(&quot;fileName&quot;)</span> String file, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> materialService.getMaterialFileStream(file, response);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Service层向HttpServletResponse层直接写入了二进制流：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (InputStream in = <span class="keyword">new</span> FileInputStream(materialFile)) &#123;</span><br><span class="line">            <span class="comment">//文件拷贝时，使用16kb的缓冲区大小</span></span><br><span class="line">            IOUtils.copy(in, response.getOutputStream(), <span class="number">16</span> * <span class="number">1024</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;文件写入时异常&quot;</span>, e);</span><br><span class="line">            <span class="keyword">return</span> ResponseMessage.error(<span class="string">&quot;文件写入时异常&quot;</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>但是当时我并不知道不能这样写，刚开始还以为是前端没有加上Accept头部的原因，跑去和前端沟通，结果前端当然是加不了头部的，因为他们是直接将连接放在&lt; image&gt;标签中的；所以现在前端每访问一次接口，都会抛出这个异常。</p>
+<p>解决方法是只返回二进制流的数据，不用返回json格式的数据:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(value = &quot;/&#123;fileName:\\S+\\.\\S+&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateTextMaterial</span><span class="params">(<span class="meta">@PathVariable(&quot;fileName&quot;)</span> String fileName, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">    materialService.getMaterialFileStream(fileName, response);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-ComponentScan排除指定的包"><a href="#使用-ComponentScan排除指定的包" class="headerlink" title="使用@ComponentScan排除指定的包"></a>使用@ComponentScan排除指定的包</h1><p>上次启动项目时，会有kstp和kidp包里面的RedisService冲突了，所以需要配置取消某个包的扫描，可以通过注解@ComponentScan来实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableWebSecurity</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;com.xqk.learn.springboot.*&quot;&#125;,excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ,pattern = &#123;&quot;com.xqk.learn.springboot.base.schedule.tasks.*&quot;&#125;))</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LearnApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The entry point of application.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args the input arguments</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//最常规的启动方式，使用静态方法的方式</span></span><br><span class="line">        SpringApplication.run(LearnApplication.class, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要指定FilterType的类型为ASPECTJ，pattern指定包的名称，想要排除某个包下面的所有包，后面使用*通配符即可。</p>
+<p>也可以通过类型去排除：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableWebSecurity</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;com.xqk.learn.springboot.*&quot;&#125;,</span></span><br><span class="line"><span class="meta">        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = &#123;ScheduleTask.class&#125;))</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LearnApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//最常规的启动方式，使用静态方法的方式</span></span><br><span class="line">        SpringApplication.run(LearnApplication.class, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="maven下载包超时"><a href="#maven下载包超时" class="headerlink" title="maven下载包超时"></a>maven下载包超时</h1><p>有时候在pom文件里面,新增了依赖,却发现项目中并没有下载相对应的包,而pom文件中也会报错,表示无法解析对应的依赖.<br>首先可以去.m2文件夹中,找到对应的依赖的文件夹,里买有一个文件,后缀是lastUpdate,用记事本打开该文件,如果里面的原因是read timeout ,则说明是链接超时,可以配置国内的镜像来解决:<br>找到maven安装目录下的conf文件夹,在settings.xml文件中,新增镜像:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>mirrorId<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>repositoryId<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://my.repository.com/repo/path<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">     --&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo2<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo2.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后在.m2中间价中删除对应依赖的文件夹,在idea中使用重新导入按钮,重新下载依赖就ok了.</p>
+<h1 id="项目启动时链接数据库时，出现的Public-Key-Retrieval-is-not-allowed错误"><a href="#项目启动时链接数据库时，出现的Public-Key-Retrieval-is-not-allowed错误" class="headerlink" title="项目启动时链接数据库时，出现的Public Key Retrieval is not allowed错误"></a>项目启动时链接数据库时，出现的Public Key Retrieval is not allowed错误</h1><p>搜索了一下StackOverflow中的相关答案，在MySQL中，url的所有属性：<a target="_blank" rel="noopener" href="https://mysqlconnector.net/connection-options/">MySQL ConnectionString Options</a><br>在上面的文档中，可以看到，<code>AllowPublicKeyRetrieval</code>, 字段的描述使用谷歌翻译结果如下：</p>
+<blockquote>
+<p>如果用户帐户使用sha256_password身份验证，则在传输过程中必须保护 密码。 TLS是实现此目的的首选机制，但是如果它不可用，则将使用RSA公钥加密。 要指定服务器的RSA公钥，请使用ServerRSAPublicKeyFile连接字符串设置，或设置AllowPublicKeyRetrieval = True以允许客户端自动从服务器请求公钥。 请注意，AllowPublicKeyRetrieval = True可能允许恶意代理执行MITM攻击以获取纯文本密码，因此默认情况下为False，必须明确启用它。</p>
+</blockquote>
+<p>暂时还没搞懂什么原因，写上去再说吧。</p>
+<h1 id="springboot启动出现Access-to-DialectResolutionInfo-cannot-be-null-when-‘hibernate-dialect’-not-set"><a href="#springboot启动出现Access-to-DialectResolutionInfo-cannot-be-null-when-‘hibernate-dialect’-not-set" class="headerlink" title="springboot启动出现Access to DialectResolutionInfo cannot be null when ‘hibernate.dialect’ not set"></a>springboot启动出现Access to DialectResolutionInfo cannot be null when ‘hibernate.dialect’ not set</h1><p>出现这个异常，首先应该检查MySQL数据库中的表是否已经创建，例如，连接到jpa这个数据库，但是jpa数据库中，项目启动所需要的表并没有创建，则会抛出这个异常。</p>
+<h1 id="项目引入common-server包之后，报elasticsearch包不兼容"><a href="#项目引入common-server包之后，报elasticsearch包不兼容" class="headerlink" title="项目引入common-server包之后，报elasticsearch包不兼容"></a>项目引入common-server包之后，报elasticsearch包不兼容</h1><p>一般不需要引入elasticserach包，但是如果有些情况需要引入的话，需要注意以下问题：</p>
+<ol>
+<li>flyway数据库脚本不兼容<br>因为flyway的sql脚本存放地址和common-server包的sql地址一样，需要修改本项目里面flyway脚本的地址：</li>
+</ol>
+<p><img src="/images/flyway.png" alt="upload successful"><br>最下面的地址是sql脚本存放的地址。和common-server中脚本存放的地址不同即可。</p>
+<p>2.elasticsearch的jar包不兼容<br>对于jar不兼容的问题，需要引入如下的依赖，折腾了两天，最后在后端大佬的帮助下才解决。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.data&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-data-elasticsearch&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.2.3.0-RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.elasticsearch&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;elasticsearch&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;5.6.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.elasticsearch.plugin&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;transport-netty4-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;5.6.10&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.elasticsearch.client&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;transport&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;5.6.0&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;exclusions&gt;</span><br><span class="line">        &lt;exclusion&gt;</span><br><span class="line">            &lt;groupId&gt;org.elasticsearch.plugin&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;transport-netty4-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;exclusion&gt;</span><br><span class="line">    &lt;&#x2F;exclusions&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/09/11/%E9%82%A3%E4%BA%9B%E4%BD%A0%E5%9C%A8%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%9A%84%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/">https://super-aviator.github.io/2019/09/11/%E9%82%A3%E4%BA%9B%E4%BD%A0%E5%9C%A8%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%9A%84%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/15/Springboot%E4%B8%AD%E5%AE%9A%E4%B9%89%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F/">SpringBoot中定义定时执行的任务的两种方式</a>
+            
+            
+            <a class="next" rel="next" href="/2019/09/10/%E6%B5%85%E5%85%A5%E6%B5%85%E5%87%BALogback%EF%BC%88T-T%EF%BC%89/">浅入浅出Logback（T_T）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

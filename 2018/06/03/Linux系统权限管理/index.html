@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>Linux系统普通权限和高级权限 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Linux系统普通权限和高级权限</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-06-03&nbsp;&nbsp;19:44:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/OperationSystem/">OperationSystem</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>linux系统中权限的简单总结</p>
+<h2 id="Linux普通权限"><a href="#Linux普通权限" class="headerlink" title="Linux普通权限"></a>Linux普通权限</h2><h3 id="权限定义"><a href="#权限定义" class="headerlink" title="权限定义"></a>权限定义</h3><p>&emsp;&emsp;重所周知，linux拥有一套完整的权限机制，那么linux系统的权限机制到底是怎么一回事？在linux系统中如何对文件或者文件夹进行操作呢?<br>&emsp;&emsp;在linux系统中，文件或者文件夹普通权限一共有三组，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>所属用户</th>
+<th>所属组</th>
+<th>其他用户</th>
+<th>所有用户</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代表字符</td>
+<td>u</td>
+<td>g</td>
+<td>o</td>
+<td>a</td>
+</tr>
+<tr>
+<td>所占位数</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>-</td>
+</tr>
+<tr>
+<td>&emsp;&emsp;在使用ls-l命令查看文件属性各列属性如下：</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>drwxrwxrwx</th>
+<th>2</th>
+<th>aviator</th>
+<th>aviator</th>
+<th>512</th>
+<th>apr 23 09:37</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件权限/第一位代表文件属性</td>
+<td>文件的链接个数</td>
+<td>所属用户</td>
+<td>所属组</td>
+<td>文件大小</td>
+<td>修改日期</td>
+<td>文件名</td>
+</tr>
+</tbody></table>
+<h3 id="权限修改"><a href="#权限修改" class="headerlink" title="权限修改"></a>权限修改</h3><p>&emsp;&emsp;linux中使用命令chmod、chown、chgrp、来修改文件/文件夹的权限。  其中chmod修改文件有两种方式。     </p>
+<p>方式一：<br>chmod命令将文件rwx权限使用二进制表示，例如：rw对应二进制位为110,故表示为4+2=6，同样，rwx二进制表为111，表示为4+2+1=7.chmod使用例子如下：<br>1: <code>chmod 567 filename</code>将文件权限修改为r-xrw—x权限。<br>2: <code> chmod 123 filename</code>将文件权限修改为–x-w–wx权限。</p>
+<p>方式二：<br>chmod命令可以直接使用u,g,o + 权限 的方式来修改文件属性，使用例子如下：<br>1: <code>chmod u+r filename</code>将文件所属用户加上读权限。<br>2: <code>chmod a+r filename</code>将文件所有属性都加上读权限。</p>
+<p>chown命令修改文件所属用户，用法为<code>chown username filename</code> 将filename所属用户为username.<br>chgrp命令修改文件所属组，用法为<code>chgrp username filename</code>将filename所属组修改为username.</p>
+<blockquote>
+<p>对于文件夹，如果没有x权限，那么此文件夹将不能够进入</p>
+</blockquote>
+<h2 id="Linux高级权限"><a href="#Linux高级权限" class="headerlink" title="Linux高级权限"></a>Linux高级权限</h2><h3 id="高级权限定义"><a href="#高级权限定义" class="headerlink" title="高级权限定义"></a>高级权限定义</h3><p>&emsp;&emsp;linux中有三种特殊权限，suid、sgid、sticky。其作用如下：</p>
+<table>
+<thead>
+<tr>
+<th>作用</th>
+<th>对于文件</th>
+<th>对于文件夹</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>suid</td>
+<td>以文件所属用户执行此文件而非执行用户来执行文件</td>
+<td>无</td>
+</tr>
+<tr>
+<td>sgid</td>
+<td>以文件所属用户组执行此文件而非执行用户</td>
+<td>在此文件夹下新建的所有文件默认所属组都是此文件所属组</td>
+</tr>
+<tr>
+<td>sticky</td>
+<td>无</td>
+<td>此文件夹下的文件中，一个用户只能够删除该用户所拥有的文件，而非此用户拥有的文件则不能够删除。</td>
+</tr>
+</tbody></table>
+<h3 id="修改高级权限"><a href="#修改高级权限" class="headerlink" title="修改高级权限"></a>修改高级权限</h3><p>linux高级权限同样使用chmod进行修改。如下所示：<br>1: 给文件添加suid 属性：<code>chmod u+s filename</code><br>2: 给文件夹加上sgid属性：<code>chmod g+s directoryname</code><br>3: 给文件夹加上sticky属性：<code>chmod o+t directoryname</code>    </p>
+<p>同样chmod也可以使用数字的方式进行权限的控制。其中suid,sgid,sticky同样对应着4,2,1三位数字。例子如下：</p>
+<p>1: 给文件添加suid 属性：<code>chmod 4777 filename</code><br>2: 给文件夹加上sgid属性：<code>chmod 2777 directoryname</code><br>3: 给文件夹加上sticky属性：<code>chmod 1777 directoryname</code>       </p>
+<h2 id="默认权限的修改"><a href="#默认权限的修改" class="headerlink" title="默认权限的修改"></a>默认权限的修改</h2><p>&emsp;&emsp;在linux系统中，没创建一个文件或者文件夹，都会赋予一个默认的权限。那么这个权限是如何得到的呢，其实linux系统是使用umask值实现的。使用<code>umask</code>命令可以查看系统umask值。<br>&emsp;&emsp;一般系统默认umask值为0002，那么文件默认权限就是666-002=664，文件夹默认权限就是777-002=775。使用<code>umask number </code>可以将umask修改为想要的值。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/">https://super-aviator.github.io/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"># Linux常用命令</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/06/07/ArrayList%E4%B8%AD%E5%88%A0%E9%99%A4%E7%9A%84%E7%96%91%E6%83%91/">ArrayList中删除的疑惑</a>
+            
+            
+            <a class="next" rel="next" href="/2018/05/27/VIM%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">VIM常用命令</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>JUnit基础用法 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">JUnit基础用法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-02-01&nbsp;&nbsp;16:05:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="JUnit4和JUnit5常用注解-Annotations"><a href="#JUnit4和JUnit5常用注解-Annotations" class="headerlink" title="JUnit4和JUnit5常用注解(Annotations)"></a>JUnit4和JUnit5常用注解(Annotations)</h1><ul>
+<li><p>@BeforeClass(等价于JUnit5中的@BeforeAll)<br>该注解作用于方法之上，含有此注解的方法在<strong>所有方法执行之前</strong>执行，方法必须使用<code>public static void</code>修饰，不能有参数，通常用来加载资源或配置文件。</p>
+</li>
+<li><p>@BeforeClass(等价于JUnit5中的@AfterAll)<br>该注解作用于方法之上，含有此注解的方法在<strong>所有方法执行之后</strong>执行，方法必须使用<code>public static void</code>修饰，不能有参数，通常用来释放资源。</p>
+</li>
+<li><p>@Before(等价于JUnit5中的@BeforeEach)<br>该注解作用于方法之上，含有此注解的方法在**每个测试方法(@Test注解的方法)**执行之后执行，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@After(等价于JUnit5中的@AfterEach)<br>该注解作用于方法之上，含有此注解的方法在**每个测试方法(@Test注解的方法)**执行之后执行，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@Test<br>该注解作用于方法之上，表示该方法是一个<strong>测试方法</strong>，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@Ignore(等价于JUnit5中的@Disable)<br>该注解作用于@Test注解的测试方法之上，表示忽略此测试方法，此测试方法不会被执行，此注解不能作用在类上。</p>
+</li>
+</ul>
+<ul>
+<li>@DisplayName（JUnit5新增）<br>该注解可作用于类或者方法上，可以更改测试类的显示名称，例如使用<code>@DisplayName(&quot;Aviator&quot;)</code>则测试类名显示为Aviator，通过@DisplayName，开发人员可以为每个测试用例添加更具体的名字，更容易传达用例所要测试的内容。</li>
+</ul>
+<hr>
+<p>常用注释表(<a target="_blank" rel="noopener" href="https://blog.csdn.net/winteroak/article/details/80591598">CSDN博客原表格地址</a>)：</p>
+<table>
+<thead>
+<tr>
+<th>JUnit4</th>
+<th>JUnit5</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Test</td>
+<td>@Test</td>
+<td>表示该方法是一个测试方法。JUnit5与JUnit 4的@Test注解不同的是，它没有声明任何属性，因为JUnit Jupiter中的测试扩展是基于它们自己的专用注解来完成的。这样的方法会被继承，除非它们被覆盖；</td>
+</tr>
+<tr>
+<td>@BeforeClass</td>
+<td>@BeforeAll</td>
+<td>表示使用了该注解的方法应该在当前类中所有使用了@Test @RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之前 执行；</td>
+</tr>
+<tr>
+<td>@AfterClass</td>
+<td>@AfterAll</td>
+<td>表示使用了该注解的方法应该在当前类中所有使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之后执行；</td>
+</tr>
+<tr>
+<td>@Before</td>
+<td>@BeforeEach</td>
+<td>表示使用了该注解的方法应该在当前类中每一个使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之前 执行</td>
+</tr>
+<tr>
+<td>@After</td>
+<td>@AfterEach</td>
+<td>表示使用了该注解的方法应该在当前类中每一个使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之后 执行</td>
+</tr>
+<tr>
+<td>@Ignore</td>
+<td>@Disabled</td>
+<td>用于禁用一个测试类或测试方法</td>
+</tr>
+<tr>
+<td>@Category</td>
+<td>@Tag</td>
+<td>用于声明过滤测试的tags，该注解可以用在方法或类上；类似于TesgNG的测试组或JUnit 4的分类。</td>
+</tr>
+<tr>
+<td>@Parameters</td>
+<td>@ParameterizedTest</td>
+<td>表示该方法是一个参数化测试</td>
+</tr>
+<tr>
+<td>@RunWith</td>
+<td>@ExtendWith</td>
+<td>@Runwith就是放在测试类名之前，用来确定这个类怎么运行的</td>
+</tr>
+<tr>
+<td>@Rule</td>
+<td>@ExtendWith</td>
+<td>Rule是一组实现了TestRule接口的共享类，提供了验证、监视TestCase和外部资源管理等能力</td>
+</tr>
+<tr>
+<td>@ClassRule</td>
+<td>@ExtendWith</td>
+<td>@ClassRule用于测试类中的静态变量，必须是TestRule接口的实例，且访问修饰符必须为public。</td>
+</tr>
+</tbody></table>
+<h1 id="JUnit4和5中的断言（Assertion）"><a href="#JUnit4和5中的断言（Assertion）" class="headerlink" title="JUnit4和5中的断言（Assertion）"></a>JUnit4和5中的断言（Assertion）</h1><p><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-junit5/">点击查看原文地址</a><br>断言（assertions）是测试方法中的核心部分，用来对测试需要满足的条件进行验证。这些断言方法都是 <code>org.junit.jupiter.api.Assertions</code> 的静态方法。JUnit 5 内置的断言可以分成如下几个类别：</p>
+<hr>
+<p>第一类是简单断言，用来对单个值进行简单的验证，常用的方法见表：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>assertEquals</td>
+<td>判断两个对象或两个原始类型是否相等</td>
+</tr>
+<tr>
+<td>assertNotEquals</td>
+<td>判断两个对象或两个原始类型是否不相等</td>
+</tr>
+<tr>
+<td>assertSame</td>
+<td>判断两个对象引用是否指向同一个对象</td>
+</tr>
+<tr>
+<td>assertNotSame</td>
+<td>判断两个对象引用是否指向不同的对象</td>
+</tr>
+<tr>
+<td>assertTrue</td>
+<td>判断给定的布尔值是否为 true</td>
+</tr>
+<tr>
+<td>assertFalse</td>
+<td>判断给定的布尔值是否为 false</td>
+</tr>
+<tr>
+<td>assertNull</td>
+<td>判断给定的对象引用是否为 null</td>
+</tr>
+<tr>
+<td>assertNotNull</td>
+<td>判断给定的对象引用是否不为 null</td>
+</tr>
+</tbody></table>
+<p>在<strong>JUnit5</strong>中这些方法都有多个重载方法(JUnit4不支持)，可以提供额外的消息来作为断言不满足时的提示消息(Message)，还可以接受 Java 8 中的函数式编程接口 Supplier来获取要判断的值和显示的消息。下面代码给出了简单断言的使用示例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="meta">@DisplayName(&quot;simple assertion&quot;)</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">simple</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       assertEquals(<span class="number">3</span>, <span class="number">1</span> + <span class="number">2</span>, <span class="string">&quot;simple math&quot;</span>);<span class="comment">//接受String作为提示</span></span><br><span class="line">       assertEquals(<span class="number">1</span>,<span class="number">2</span>-<span class="number">1</span>,()-&gt;<span class="string">&quot;simple math&quot;</span>);<span class="comment">//接受Java8的Supplier接口作为提示</span></span><br><span class="line">       assertNotEquals(<span class="number">3</span>, <span class="number">1</span> + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">       assertNotSame(<span class="keyword">new</span> Object(), <span class="keyword">new</span> Object());</span><br><span class="line">       Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">       assertSame(obj, obj);</span><br><span class="line">       assertSame(obj, obj,<span class="string">&quot;not same new Object()&quot;</span>);<span class="comment">//接受String作为提示</span></span><br><span class="line">       assertSame(obj, obj,()-&gt;<span class="string">&quot;not same new Object()&quot;</span>);<span class="comment">//接受Java8的Supplier接口</span></span><br><span class="line"></span><br><span class="line">       assertFalse(<span class="number">1</span> &gt; <span class="number">2</span>);</span><br><span class="line">       assertTrue(<span class="number">1</span> &lt; <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">       assertNull(<span class="keyword">null</span>);</span><br><span class="line">       assertNotNull(<span class="keyword">new</span> Object());</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>第二类是通过 assertArrayEquals 方法来判断两个对象或原始类型的<strong>数组</strong>是否相等,或者通过assertIterableEquals方法来判断两个<strong>可迭代对象</strong>是否相等，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;array assertion&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">array</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertArrayEquals(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>&#125;);<span class="comment">//同样也可以指定消息或者使用Supplier接口。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;iterable assertion&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">iterable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertIterableEquals(Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>),Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>),<span class="string">&quot;Iterable Not Equal&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<p>第三类是通过assertAll方法来判断一组断言是否满足。assertAll 方法接受多个<code>org.junit.jupiter.api.Executable（方法签名为void-&gt;void）</code>函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言，assertAll的第一个参数是标题（heading），表示一组Executtable共有的属性，如下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;assert all&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">all</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertAll(<span class="string">&quot;Math&quot;</span>,</span><br><span class="line">            () -&gt; assertEquals(<span class="number">2</span>, <span class="number">1</span> + <span class="number">1</span>),</span><br><span class="line">            () -&gt; assertTrue(<span class="number">1</span> &gt; <span class="number">0</span>)</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>第四类是通过 assertThrows 或 expectThrows 来判断是否抛出期望的异常类型。两个方法的参数都是所期望的异常类型和对应的 Executable 接口的实现对象，区别在于 expectThrows 方法会<strong>返回抛出的异常对象</strong>。在下面代码中，1/0 会抛出 ArithmeticException 异常，下面代码使用assertThrows 用来验证这一点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;throws exception&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exception</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertThrows(ArithmeticException.class, () -&gt; System.out.println(<span class="number">1</span> / <span class="number">0</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>第五类是fail方法，用来直接使一个测试方法失败，如下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;fail&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shouldFail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fail(<span class="string">&quot;This should fail&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="JUnit中测试异常-Exception-和超时-Timeout"><a href="#JUnit中测试异常-Exception-和超时-Timeout" class="headerlink" title="JUnit中测试异常(Exception)和超时(Timeout)"></a>JUnit中测试异常(Exception)和超时(Timeout)</h1><p>在<strong>JUnit4</strong>中（JUnit5不支持），可以对@Test注解进行扩展，使用expected和timeout属性，以便支持测试方法是否抛出特定异常和检测方法的运行时间。</p>
+<ul>
+<li><p>@Test(expected=xx.class)：xx.class表示想要抛出的异常类，表示测试的方法抛出此异常时，认为是正常的测试通过的，如果没有抛出特定异常，则测试不通过。</p>
+</li>
+<li><p>@Test(timeout=毫秒数)：测试方法执行时间是否符合预期，如果方法运行时间超过给定的毫秒数，则测试不通过，否则测试通过，一般用来测试方法的性能。</p>
+</li>
+</ul>
+<p>JUnit5中可以使用断言来测试异常和超时,,以下方法都有一个参数为<code>org.junit.jupiter.api.Executable（方法签名为void-&gt;void）</code>，同时可以指定一个String类型的message或者使用函数式接口Supplier来提供message,如下所示：</p>
+<ul>
+<li><p>assertThrows：断言所提供的可执行代码块的执行会引发expectedType的异常并返回异常。如果没有抛出异常，或者抛出了不同类型的异常，则此方法将失败。如果不想对异常实例执行其他检查，只需忽略返回值。</p>
+</li>
+<li><p>assertDoesNotThrow：断言所提供的可执行代码块的执行不会引发expectedType的异常并返回异常。如果抛出异常，则此方法将失败。</p>
+</li>
+<li><p>expectThrows：和assertThrows功能相同，区别在于 expectThrows 方法会返回抛出的异常对象。</p>
+</li>
+<li><p>assertTimeout：断言在超出给定超时之前，所提供的可执行代码块的执行完成。注意：可执行代码块将在与调用代码相同的线程中执行。因此，如果超过超时，则不会抢先中止执行可执行代码块，<strong>即如果发生超时方法不会立即结束</strong>。</p>
+</li>
+<li><p>assertTimeoutPreemptively：断言在超出给定超时之前，所提供的可执行代码块的执行完成。注意：可执行代码块将在与调用代码不同的线程中执行。此外，如果超时，则可抢占地执行可执行代码块，<strong>即如果超时方法会立即结束</strong>。</p>
+</li>
+</ul>
+<h1 id="参数化测试（Parameters）"><a href="#参数化测试（Parameters）" class="headerlink" title="参数化测试（Parameters）"></a>参数化测试（Parameters）</h1>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/">https://super-aviator.github.io/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JUnit/"># JUnit</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/">工作总结-第一周</a>
+            
+            
+            <a class="next" rel="next" href="/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">Intellij IDEA中添加JUnit单元测试</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

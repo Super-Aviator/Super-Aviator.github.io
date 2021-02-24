@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>在JPA中使用SQL语句构建动态查询语句 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">在JPA中使用SQL语句构建动态查询语句</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2019-09-08&nbsp;&nbsp;16:08:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Database/">Database</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>上次做项目的过程中，需要根据参数是否为NULL去动态构建语句，因为JPA是使用的是<code>JpaSpecificationExecutor</code>等去使用编程的方式去构建动态语句，当时没有去学习，当然了，现在任然没有学习T_T，等把logback学完之后，一定要好好看一下JPA里面的动态查询的实现，不然连基本的CRUD都完不成的话就太废了。当时想到的方法是使用SQL函数的方式去实现，那天晚上又是百度谷歌一顿搜，最后终于还是实现了，今天刚睡完午觉，状态很好，结合网上的博客和Mysql文档，记录一下。后面还得学习一下常见的SQL函数，感觉太有用了，能解决很多开发过程中的问题。</p>
+<h1 id="COALESCE-A-B-C…"><a href="#COALESCE-A-B-C…" class="headerlink" title="COALESCE(A,B,C…)"></a>COALESCE(A,B,C…)</h1><blockquote>
+<p><strong>描述</strong>：Returns the first non-NULL value in the list, or NULL if there are no non-NULL values.</p>
+</blockquote>
+<p>总的来说，COALESCE函数有多个参数，函数会返回从左至右第一个不为NULL的参数，并且会使用短路的方法去判断。使用方法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COALESCE</span>(<span class="keyword">NULL</span>,<span class="number">1</span>);</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COALESCE</span>(<span class="keyword">NULL</span>,<span class="keyword">NULL</span>,<span class="keyword">NULL</span>);</span><br><span class="line"><span class="keyword">NULL</span></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COALESCE</span>(<span class="keyword">NULL</span>,<span class="number">1</span>,<span class="string">&#x27;ABC&#x27;</span>);</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>根据函数的特性，如果在参数列表中，可以通过指定最后一个参数的值的方式，来指定当所有参数都为NULL时函数返回的默认值：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COALESCE</span>(<span class="keyword">NULL</span>,<span class="keyword">NULL</span>,<span class="string">&#x27;ABC&#x27;</span>);</span><br><span class="line"><span class="string">&#x27;ABC&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="ISNULL-A"><a href="#ISNULL-A" class="headerlink" title="ISNULL(A)"></a>ISNULL(A)</h1><p>ISNULL函数顾名思义就是检查参数是否是NULL，与关键字IS NULL 用法相同，如果是NULL，则返回1，否则返回0，但是和COALESCE相比，ISNULL参数只支持一个，使用方法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ISNULL(<span class="keyword">NULL</span>);</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">SELECT</span> ISNULL(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="IFNULL-A-B"><a href="#IFNULL-A-B" class="headerlink" title="IFNULL(A,B)"></a>IFNULL(A,B)</h1><p>IFNULL是ISNULL函数的升级版本，ISNULL函数只能返回0、1，而IFNULL则可以自定义返回结果，如果第一个参数不为NULL,则返回第一个参数,如果第一个参数为NULL，则返回第二个参数：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> IFNULL(<span class="keyword">NULL</span>,<span class="number">123</span>);</span><br><span class="line"><span class="number">123</span></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">SELECT</span> IFNULL(<span class="string">&#x27;ABC&#x27;</span>,<span class="number">123</span>);</span><br><span class="line"><span class="string">&#x27;ABC&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="JPA中使用SQL语句构建动态查询语句"><a href="#JPA中使用SQL语句构建动态查询语句" class="headerlink" title="JPA中使用SQL语句构建动态查询语句"></a>JPA中使用SQL语句构建动态查询语句</h1><p>项目开发中，常常需要根据参数是否为NULL来动态构建查询语句，例如如下的查询语句：<code>SELECT * FROM USER WHERE NAME=&#39;熊乾坤&#39;;</code>，如果NAME为NULL，则不执行过滤条件，查询语句会变成：<code>SELECT * FROM USER;</code>，JPA中如果想要实现这种动态构造查询语句的方式，可以使用JPASpecificationExecutor这种通过编程的方式实现，我还没有学过。。。第二种方式是退而求其次，使用SQL语句来构建动态查询语句，会将上面的语句装换为<code>SELECT * FROM USER WHERE ? IS NULL OR NAME = ?;</code>,当参数为NULL时，因为短路的原则，OR表达式直接为TRUE，则不执行过滤，当不为NULL时，OR左边为false，则会判断OR右边的语句，进行对查询结果过滤，达到动态查询的效果。<br>先来学习一下第二种方式。</p>
+<p>数据库表结构如下；<br><img src="/images/jpa-user-table.png" alt="upload successful"></p>
+<h2 id="一个参数"><a href="#一个参数" class="headerlink" title="一个参数"></a>一个参数</h2><p>首先实验一下当查询单数为一个时，如果去写：<br>在Repository层新建查询语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 是否IS NULL OR 构建动态SQL语句</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> name 姓名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> User列表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Query(value= &quot;SELECT t FROM User AS t &quot; +</span></span><br><span class="line"><span class="meta">        &quot;WHERE ?1 IS NULL OR t.name=?1 &quot;)</span></span><br><span class="line"><span class="meta">@EntityGraph(&quot;UserEntity&quot;)</span></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">getUserWithDynamicSql</span><span class="params">(String name)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>在Controller层调用该方法进行测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/DynamicSql&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">getUserByDynamicSql</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userRepository.getUserWithDynamicSql(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用http请求工具测试结果如下；</p>
+<ul>
+<li><p>当查询参数为name=’熊乾坤是个人’时，查询结果为1条数据；<br><img src="/images/DynamicSqlTest3.png" alt="upload successful"></p>
+</li>
+<li><p>当查询参数中不带name时，查询结果为14条数据，即全部数据；<br><img src="/images/dynamicSqlTest1.png" alt="upload successful"></p>
+</li>
+</ul>
+<p>控制台打印的sql语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    user0_.id <span class="keyword">as</span> id1_2_0_,</span><br><span class="line">    userdetail1_.id <span class="keyword">as</span> id1_3_1_,</span><br><span class="line">    teacher3_.id <span class="keyword">as</span> id1_0_2_,</span><br><span class="line">    userfriend4_.id <span class="keyword">as</span> id1_4_3_,</span><br><span class="line">    user0_.address <span class="keyword">as</span> address2_2_0_,</span><br><span class="line">    user0_.email <span class="keyword">as</span> email3_2_0_,</span><br><span class="line">    user0_.gender <span class="keyword">as</span> gender4_2_0_,</span><br><span class="line">    user0_.name <span class="keyword">as</span> name5_2_0_,</span><br><span class="line">    user0_.score <span class="keyword">as</span> score6_2_0_,</span><br><span class="line">    user0_.version <span class="keyword">as</span> version7_2_0_,</span><br><span class="line">    userdetail1_.credit <span class="keyword">as</span> credit2_3_1_,</span><br><span class="line">    userdetail1_.enrollment_date <span class="keyword">as</span> enrollme3_3_1_,</span><br><span class="line">    userdetail1_.user_id <span class="keyword">as</span> user_id4_3_1_,</span><br><span class="line">    teacher3_.name <span class="keyword">as</span> name2_0_2_,</span><br><span class="line">    teachers2_.user_id <span class="keyword">as</span> user_id3_1_0__,</span><br><span class="line">    teachers2_.teacher_id <span class="keyword">as</span> teacher_4_1_0__,</span><br><span class="line">    userfriend4_.friend_id <span class="keyword">as</span> friend_i2_4_3_,</span><br><span class="line">    userfriend4_.user_id <span class="keyword">as</span> user_id3_4_3_,</span><br><span class="line">    userfriend4_.user_id <span class="keyword">as</span> user_id3_4_1__,</span><br><span class="line">    userfriend4_.id <span class="keyword">as</span> id1_4_1__ </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    <span class="keyword">user</span> user0_ </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    user_detail userdetail1_ </span><br><span class="line">        <span class="keyword">on</span> user0_.id<span class="operator">=</span>userdetail1_.id </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    teacher_user_relation teachers2_ </span><br><span class="line">        <span class="keyword">on</span> user0_.id<span class="operator">=</span>teachers2_.user_id </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    jpa.teacher teacher3_ </span><br><span class="line">        <span class="keyword">on</span> teachers2_.teacher_id<span class="operator">=</span>teacher3_.id </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    user_friend userfriend4_ </span><br><span class="line">        <span class="keyword">on</span> user0_.id<span class="operator">=</span>userfriend4_.user_id </span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    ? <span class="keyword">is</span> <span class="keyword">null</span> </span><br><span class="line">    <span class="keyword">or</span> user0_.name<span class="operator">=</span>? </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line">    userfriend4_.friend_id <span class="keyword">asc</span></span><br></pre></td></tr></table></figure>
+<p>SQL语句中，WHERE查询条件中加入了IS NULL OR语句，当查询参数为NULL时，OR语句会直接为true，则不会判断后面的name是否相等的条件，而查询参数不为NULL时，才会判断后面的查询条件是否为NULL。不过这样不知道会不会带来性能的问题还有待研究，如果采用编程的方式来实现的话应该会好一点，SQL语句在编译时就已经确定，不会在每次查询时都执行NULL判断。</p>
+<h2 id="多个查询参数"><a href="#多个查询参数" class="headerlink" title="多个查询参数"></a>多个查询参数</h2><p>当查询参数一个key对应以逗号分隔的多个value时，value一般会以集合或者数据的形式进行保存。在JPQL中，会将List集合中的数据以逗号分隔的方式，添加到SQL语句中，例如<code>WHERE COALESCE(?)</code>语句中，当？为字符串类型的List：’A’,’B’,’C’时，会转换为<code>WHERE COALESCE(&#39;A&#39;,&#39;B&#39;,&#39;C&#39;)</code>的形式，而数组则不会进行转换，所以当有多个查询参数时，需要将参数包装在List中作为参数传递给JPQL语句，并在SQL语句的查询条件中使用IN关键字，如下所示：<br>在Repository中编写JPQL语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 是否IS NULL OR 构建动态SQL语句</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> name 姓名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> User列表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Query(value= &quot;SELECT t FROM User AS t &quot; +</span></span><br><span class="line"><span class="meta">        &quot;WHERE COALESCE(?1,NULL) IS NULL OR t.name IN ?1 &quot;)</span></span><br><span class="line"><span class="meta">@EntityGraph(&quot;UserEntity&quot;)</span></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">getUserWithDynamicSql</span><span class="params">(List&lt;String&gt; name)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>和单个参数形式一样，只不过使用COALESCE函数对参数是否为NULL进行判断。<br><strong>注意</strong> 如果使用的原生的SQL，需要在 IN 关键字后面加上括号：<code>IN (?1)</code>，血的教训。</p>
+<p>Controller层进行调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/DynamicSqlWithArgsArr&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">getUserByDynamicSqlWithArgsArr</span><span class="params">(String[] name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userRepository.getUserWithDynamicSql(Objects.isNull(name)?<span class="keyword">null</span>:Arrays.asList(name));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring中只能用数组去接受一个key对应的多个value的数据，所以需要显示的将数组装换为List的形式，特殊情况当name参数为NULL时，需要直接将NULL传入JPQL中。</p>
+<p>完成了上面的工作，经过测试，将name=’xqk’,’熊乾坤’作为查询参数时，能够查询到相应的结果，当查询参数中没有name字段时，查询到了数据库中的所有的数据。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>使用SQL语句去实现动态查询是一个不太美观、不太高效的解决方案，更加正确的做法是使用编程的方式去控制，根据参数的值去动态生成SQL语句，这样在查询时，能够避免做很多没必要的判断。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://super-aviator.github.io/2019/09/08/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%B8%AD%E5%88%A4%E6%96%ADNULL%E7%9A%84%E5%87%BD%E6%95%B0/">https://super-aviator.github.io/2019/09/08/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%B8%AD%E5%88%A4%E6%96%ADNULL%E7%9A%84%E5%87%BD%E6%95%B0/</a></span>
+                    </p>
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Spring-Data-JPA/"># Spring Data JPA</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/10/Spring%E4%B8%AD%E5%9F%BA%E4%BA%8E%E7%B1%BB%E5%92%8C%E5%9F%BA%E4%BA%8E%E6%8E%A5%E5%8F%A3%E7%9A%84Bean%E8%A3%85%E9%85%8D/">Spring中基于类或者接口的两种不同的代理方式</a>
+            
+            
+            <a class="next" rel="next" href="/2019/09/08/%E6%A1%90%E5%BA%90%E4%B9%8B%E6%97%85/">桐庐之旅</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
