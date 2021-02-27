@@ -16,7 +16,7 @@
 
 
 
-<title>MySQL锁学习 | 飞行员</title>
+<title>MySQL事务与锁学习 | 飞行员</title>
 
 
 
@@ -152,11 +152,73 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">MySQL锁学习</h1>
+            <h1 class="post-title">MySQL事务与锁学习</h1>
             
                 <div class="post-meta">
                     
@@ -181,7 +243,25 @@
         </header>
 
         <div class="post-content">
-            
+            <h1 id="事务的ACID属性"><a href="#事务的ACID属性" class="headerlink" title="事务的ACID属性"></a>事务的ACID属性</h1><ul>
+<li>原子性</li>
+<li>一致性</li>
+<li>隔离性</li>
+<li>持久性</li>
+</ul>
+<h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><ul>
+<li>更新丢失</li>
+<li>脏读</li>
+<li>不可重复读</li>
+<li>幻读</li>
+</ul>
+<h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><ul>
+<li>未提交读</li>
+<li>已提交度</li>
+<li>不可重复读</li>
+<li>序列化</li>
+</ul>
+<h1 id="使用MyISAM表锁"><a href="#使用MyISAM表锁" class="headerlink" title="使用MyISAM表锁"></a>使用MyISAM表锁</h1><h1 id="使用InnoDB行锁"><a href="#使用InnoDB行锁" class="headerlink" title="使用InnoDB行锁"></a>使用InnoDB行锁</h1><h1 id="死锁发生后的解决方法"><a href="#死锁发生后的解决方法" class="headerlink" title="死锁发生后的解决方法"></a>死锁发生后的解决方法</h1>
         </div>
 
         
