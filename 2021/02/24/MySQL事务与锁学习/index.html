@@ -252,8 +252,8 @@
 <h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><ul>
 <li>更新丢失</li>
 <li>脏读</li>
-<li>不可重复读</li>
-<li>幻读</li>
+<li>不可重复读（针对UPDATE和DELETE的行）</li>
+<li>幻读（针对INSERT的行）</li>
 </ul>
 <h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><ul>
 <li>未提交读</li>
@@ -261,7 +261,50 @@
 <li>不可重复读</li>
 <li>序列化</li>
 </ul>
-<h1 id="使用MyISAM表锁"><a href="#使用MyISAM表锁" class="headerlink" title="使用MyISAM表锁"></a>使用MyISAM表锁</h1><h1 id="使用InnoDB行锁"><a href="#使用InnoDB行锁" class="headerlink" title="使用InnoDB行锁"></a>使用InnoDB行锁</h1><h1 id="死锁发生后的解决方法"><a href="#死锁发生后的解决方法" class="headerlink" title="死锁发生后的解决方法"></a>死锁发生后的解决方法</h1>
+<h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> table_name WRITE;  #获取表的写锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ;   #获取表的读锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ <span class="keyword">LOCAL</span>;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）</span><br><span class="line">LOCK TABLES table_name1 , table_name2 READ;   #获取多个表的写锁</span><br><span class="line"></span><br><span class="line">...   #执行<span class="keyword">SQL</span>语句</span><br><span class="line"></span><br><span class="line">UNLOCK TABLES;  #释放锁</span><br></pre></td></tr></table></figure>
+
+<p>在使用MyISAM表锁时，需要一次性获取SQL语句涉及到的所有的表锁，并且因为MySQL不支持表升级，所以只能访问锁定的表，不能访问未锁定的表。读锁不能执行更新操作；MyISAM总是一次性获取所有所需的锁，<strong>这也是MyISAM表锁不会存在死锁的原因</strong></p>
+<p>使用MyISAM表锁时，需要对SQL中使用到的所有别名进行锁定，否则会提示Table ‘别名’ was not locked white LOCK TABLES;</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCK TABLES table_name <span class="keyword">AS</span> a, table_name <span class="keyword">AS</span> b READ;</span><br></pre></td></tr></table></figure>
+
+<h2 id="并发插入（Concurrency-Insert）"><a href="#并发插入（Concurrency-Insert）" class="headerlink" title="并发插入（Concurrency Insert）"></a>并发插入（Concurrency Insert）</h2><p>MyISAM引擎还支持支持<strong>并发插入</strong>的操作，即在一个session获取到读锁时，允许另外一个session在表的末尾进行INSERT操作。搜索引擎有一个配置concurrent_insert控制并发插入的行为：</p>
+<ul>
+<li>concurrent_insert=0：不允许并发插入操作</li>
+<li>consurrent_insert=1：在表中没有空洞是，允许并发插入操作（默认设置）</li>
+<li>concurrent_insert=2：无论如何，都允许并发插入操作</li>
+</ul>
+<p>在手动锁定表时，可以使用<code>LOCK TABLE table_name READ LOCAL;</code>中的LOCAL关键字来指定是否启用并发插入。</p>
+<h2 id="锁调度"><a href="#锁调度" class="headerlink" title="锁调度"></a>锁调度</h2><p>MyISAM引擎会优先处理获取写锁的请求，及时读请求比写请求先入队列；所以<strong>不建议有大量更新和查询操作的应用使用MyISAM引擎</strong>，因为大量的更新操作会造成查询操作长时间获取不到锁，从而可能永远阻塞。</p>
+<h1 id="InnoDB行锁"><a href="#InnoDB行锁" class="headerlink" title="InnoDB行锁"></a>InnoDB行锁</h1><p>InnoDB引擎定义了如下几种行锁：</p>
+<ul>
+<li>共享锁（S锁）：允许一个事务读一行，防止其他事务获取相同数据集的排他锁。（主要用于确保在查询期间没有其他事务修改该数据集）</li>
+<li>排他锁（X锁）：允许获取排他锁的事务更新数据，阻止其他事务获取相同数据集的共享锁和排他锁。</li>
+</ul>
+<p>为了行锁和表锁共存 ，实现多粒度锁机制，InnoDB在内部还使用另外两种锁：</p>
+<ul>
+<li>意向共享锁（IS)：事务打算给数据行加共享锁，事务再给一个数据行加共享锁之前必须先取得改表的IS锁。</li>
+<li>意向排他锁（IX)：事务打算给数据行加排他锁，事务再给一个数据行加排他锁之前必须先取得改表的IX锁。</li>
+</ul>
+<p>使用InnoDB引擎时，SELECT语句是不加任何锁的，如果需要手动加锁，则需要使用如下方式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># MySQL5<span class="number">.7</span>中：</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name <span class="keyword">WHERE</span> ... LOCK <span class="keyword">IN</span> SHARE MODE;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name <span class="keyword">WHERE</span> ... <span class="keyword">FOR</span> UPDATE;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 在MySQL8<span class="number">.0</span>中：</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name <span class="keyword">WHERE</span> ... <span class="keyword">FOR</span> SHARE;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name <span class="keyword">WHERE</span> ... <span class="keyword">FOR</span> UPDATE [NOWAIT<span class="operator">|</span><span class="keyword">SKIP</span> LOCKED];</span><br></pre></td></tr></table></figure>
+
+<p><code>LOCK IN SHARE MODE</code>在8.0版本中依旧兼容；<code>NOWAIT</code>表示发现有锁等待时立即返回；<code>SKIP LOCKED</code>表示跳过被锁定的行，只更新未加锁的行。</p>
+<p>某事务在获得某数据集的S锁之后，如果对数据进行更新，会发生什么？实验证明，在单个事务中，是可以正常更新的，<strong>但是如果多个事务时可能导致死锁问题</strong>：在事务A、B中获得共享锁，A中执行UPDATE，A会阻塞，B然后也执行UPDATE，此时B会因为死锁而事务结束，事务A此时会获得锁然后更新成功。因此在<strong>需要对数据进行更新操作时，应该获得X锁而非S锁。</strong></p>
+<h2 id="InnoDB行锁的实现方式"><a href="#InnoDB行锁的实现方式" class="headerlink" title="InnoDB行锁的实现方式"></a>InnoDB行锁的实现方式</h2><p>nnoDB行锁是通过给索引项加锁实现的，如果无索引则会使用聚簇[cù]索引来对记录加锁；InnoDB行锁分为以下三种：</p>
+<ul>
+<li>Record Lock：对索引项加锁</li>
+<li>Gap Lock：对索引项之间的间隙加锁</li>
+<li>Next Key Lock：前两种所得组合，对索引项以及项之间的间隙加锁</li>
+</ul>
+<p><strong>注意</strong>：</p>
+<ol>
+<li>行锁的这种实现方式意味着当查询未使用到任何索引时，将会对这个表加锁，效果相当于表锁！可能导致大量的锁冲突。</li>
+<li>即使是查询列上有索引，但是如果两个查询使用的是一个索引键（id列上有索引，查询条件中索引列查询的是同一列，例如WHERE id=1 AND name =’1’ 和WHERE id=1AND name=’4’都会锁定id为的索引项）,或者查询的是同一行数据（id列上有主键索引，name上有普通索引，例如WHERE id=1和where name =’1’,锁定的是同一行id为1，name为1数据项），同样会出现锁冲突。</li>
+<li>查询有可能不走索引走全表扫描，也会导致锁全表，例如数据量小时数据库会优先使用全表扫描而不使用索引、索引列存在隐式类型转换而不使用索引。</li>
+</ol>
+<h1 id="死锁发生后的解决方法"><a href="#死锁发生后的解决方法" class="headerlink" title="死锁发生后的解决方法"></a>死锁发生后的解决方法</h1>
         </div>
 
         
