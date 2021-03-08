@@ -143,14 +143,14 @@ template {
   display: none;
 }
 @font-face {
-  font-family: 'lanting';
+  font-family: Consolas;
   src: url("../fonts/lanting/lanting.eot"); /* IE9 */
   src: url("../fonts/lanting/lanting.eot?#iefix") format('embedded-opentype'), /* IE6-IE8 */ url("../fonts/lanting/lanting.woff2") format('woff2'), url("../fonts/lanting/lanting.woff") format('woff'), url("../fonts/lanting/lanting.ttf") format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
   font-weight: 300;
   font-display: swap;
 }
 html {
-  font-family: 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: Consolas;
 }
 html::-webkit-scrollbar {
   width: 8px;
@@ -165,7 +165,7 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: #ddd;
 }
 body {
-  font-size: 11pt;
+  font-size: 12pt;
   font-weight: normal;
   line-height: 2em;
   background-color: #fff;
@@ -1359,4 +1359,15 @@ header label {
 .post-content pre .keyword,
 .post-content pre .javascript .function {
   color: #8959a8;
+}
+.dark-theme .post-content figure,
+.dark-theme .post-content figure.highlight .code pre {
+  background-color: #3e3e3e;
+  color: #fffef9;
+  font-family: Consolas;
+}
+.dark-theme .post-content figure.highlight .gutter pre {
+  background-color: #3e3e3e;
+  color: #fffef9;
+  font-family: Consolas;
 }

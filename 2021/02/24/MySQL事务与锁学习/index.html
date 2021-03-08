@@ -261,8 +261,12 @@
 <li>不可重复读</li>
 <li>序列化</li>
 </ul>
-<h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> table_name WRITE;  #获取表的写锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ;   #获取表的读锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ <span class="keyword">LOCAL</span>;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）</span><br><span class="line">LOCK TABLES table_name1 , table_name2 READ;   #获取多个表的写锁</span><br><span class="line"></span><br><span class="line">...   #执行<span class="keyword">SQL</span>语句</span><br><span class="line"></span><br><span class="line">UNLOCK TABLES;  #释放锁</span><br></pre></td></tr></table></figure>
+<p>MySQL可以动态更改事务隔离级别：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#修改当前事务隔离级别为可重复读</span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">#修改当前事务隔离界别为序列化</span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;</span><br></pre></td></tr></table></figure>
 
+<h1 id="MVCC（Molti-Version-Concurrency-Control）"><a href="#MVCC（Molti-Version-Concurrency-Control）" class="headerlink" title="MVCC（Molti Version Concurrency Control）"></a>MVCC（Molti Version Concurrency Control）</h1><h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> table_name WRITE;  #获取表的写锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ;   #获取表的读锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ <span class="keyword">LOCAL</span>;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）</span><br><span class="line">LOCK TABLES table_name1 , table_name2 READ;   #获取多个表的读锁</span><br><span class="line"></span><br><span class="line">...   #执行<span class="keyword">SQL</span>语句</span><br><span class="line"></span><br><span class="line">UNLOCK TABLES;  #释放锁</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：上面加锁的方式同样使用与InnoDB表锁，但是在InnoDB中释放<img src="file:///C:\Users\gww\AppData\Local\Temp\SGPicFaceTpBq\17464\02E601DB.png">锁的方式不一样；</p>
 <p>在使用MyISAM表锁时，需要一次性获取SQL语句涉及到的所有的表锁，并且因为MySQL不支持表升级，所以只能访问锁定的表，不能访问未锁定的表。读锁不能执行更新操作；MyISAM总是一次性获取所有所需的锁，<strong>这也是MyISAM表锁不会存在死锁的原因</strong></p>
 <p>使用MyISAM表锁时，需要对SQL中使用到的所有别名进行锁定，否则会提示Table ‘别名’ was not locked white LOCK TABLES;</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCK TABLES table_name <span class="keyword">AS</span> a, table_name <span class="keyword">AS</span> b READ;</span><br></pre></td></tr></table></figure>
@@ -273,7 +277,7 @@
 <li>consurrent_insert=1：在表中没有空洞是，允许并发插入操作（默认设置）</li>
 <li>concurrent_insert=2：无论如何，都允许并发插入操作</li>
 </ul>
-<p>在手动锁定表时，可以使用<code>LOCK TABLE table_name READ LOCAL;</code>中的LOCAL关键字来指定是否启用并发插入。</p>
+<p>在手动锁定表时，可以使用 <code>LOCK TABLE table_name READ LOCAL;</code>中的LOCAL关键字来指定是否启用并发插入。</p>
 <h2 id="锁调度"><a href="#锁调度" class="headerlink" title="锁调度"></a>锁调度</h2><p>MyISAM引擎会优先处理获取写锁的请求，及时读请求比写请求先入队列；所以<strong>不建议有大量更新和查询操作的应用使用MyISAM引擎</strong>，因为大量的更新操作会造成查询操作长时间获取不到锁，从而可能永远阻塞。</p>
 <h1 id="InnoDB行锁"><a href="#InnoDB行锁" class="headerlink" title="InnoDB行锁"></a>InnoDB行锁</h1><p>InnoDB引擎定义了如下几种行锁：</p>
 <ul>
@@ -302,8 +306,18 @@
 <ol>
 <li>行锁的这种实现方式意味着当查询未使用到任何索引时，将会对这个表加锁，效果相当于表锁！可能导致大量的锁冲突。</li>
 <li>即使是查询列上有索引，但是如果两个查询使用的是一个索引键（id列上有索引，查询条件中索引列查询的是同一列，例如WHERE id=1 AND name =’1’ 和WHERE id=1AND name=’4’都会锁定id为的索引项）,或者查询的是同一行数据（id列上有主键索引，name上有普通索引，例如WHERE id=1和where name =’1’,锁定的是同一行id为1，name为1数据项），同样会出现锁冲突。</li>
-<li>查询有可能不走索引走全表扫描，也会导致锁全表，例如数据量小时数据库会优先使用全表扫描而不使用索引、索引列存在隐式类型转换而不使用索引。</li>
+<li>查询有可能不走索引走全表扫描，也会导致锁全表，例如数据量小时数据库会优先使用全表扫描而不使用索引、索引列存在隐式类型转换而不使用索引等。</li>
 </ol>
+<h3 id="Next-Key锁"><a href="#Next-Key锁" class="headerlink" title="Next-Key锁"></a>Next-Key锁</h3><p>当使用范围查询而不是相等条件检索数据并请求共享锁或者排他锁时，InnoDB会对范围内的数据使用Next-Key锁；一方面是为了防止幻读，另一方面是为了满足其恢复和复制的需要（InnoDB在<strong>使用范围更新都会使用到Next-Key锁，与事务隔离级别无关</strong>）；InnoDB这种加锁方式在并发插入时往往会造成严重的所等待，开发中应该优化业务逻辑，尽量使用相等条件来访问更新数据，避免使用范围条件；</p>
+<p><strong>注意：</strong> 就算是使用等值条件，如果给一个不存在的记录加锁，InnoDB也会使用Next-Key锁，例如在id为1~100的表中，锁定表中不存在的id为101的记录，并发插入id为102的事务会进行锁等待；</p>
+<h1 id="InnoDB表锁"><a href="#InnoDB表锁" class="headerlink" title="InnoDB表锁"></a>InnoDB表锁</h1><p>同样可以使用MyISAM加表锁的方式对InnoDB引擎中的表加表锁，但是有以下两点需要注意：</p>
+<ol>
+<li>InnoDB中的表锁由MySQL Server层进行管理，只有使用设置成<code>autocommit=0</code>、<code>innodb_table_locks=1(默认)</code>时，引擎层才能感知服务层的表锁，服务层才能感知引擎层的行锁，这种情况下InnoDB才能感知表的死锁，否则InnoDB无法处理死锁。</li>
+<li>使用<code>LOCK TABLES</code>对表加锁时，需要设置为<code>autocommit=0</code>，否则不会给表加锁；事务结束前，正确的做法是先<code>COMMIT</code>提交事务，然后<code>UNLOCK TABLES</code>释放表锁；</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> AUTOCOMMIT <span class="operator">=</span><span class="number">0</span>;</span><br><span class="line">LOCK TABLES table_name1 WRITE,table_name2 READ;</span><br><span class="line">[do something...]</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line">UNLOCK TABLES;</span><br></pre></td></tr></table></figure>
+
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><p>InnoDB可以使用 <code>innodb_lock_wait_timeout </code>参数设定锁等待超时时间</p>
 <h1 id="死锁发生后的解决方法"><a href="#死锁发生后的解决方法" class="headerlink" title="死锁发生后的解决方法"></a>死锁发生后的解决方法</h1>
         </div>
 
