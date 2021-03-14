@@ -16,7 +16,7 @@
 
 
 
-<title>Java并发编程基础 | 飞行员</title>
+<title>Java并发基础 | 飞行员</title>
 
 
 
@@ -218,7 +218,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Java并发编程基础</h1>
+            <h1 class="post-title">Java并发基础</h1>
             
                 <div class="post-meta">
                     
@@ -243,7 +243,28 @@
         </header>
 
         <div class="post-content">
-            <h1 id="synchronize和volatile"><a href="#synchronize和volatile" class="headerlink" title="synchronize和volatile"></a>synchronize和volatile</h1><h1 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h1><h1 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h1><h1 id="CAS（Compare-And-Set）"><a href="#CAS（Compare-And-Set）" class="headerlink" title="CAS（Compare And Set）"></a>CAS（Compare And Set）</h1>
+            <h1 id="线程创建的三种方式"><a href="#线程创建的三种方式" class="headerlink" title="线程创建的三种方式"></a>线程创建的三种方式</h1><ol>
+<li>实现Runnable接口</li>
+<li>继承Thread类并重写run方法</li>
+<li>使用FutureTask方式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2021-03-13 12:34</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FutureTaskTest</span> <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        FutureTask&lt;String&gt; futureTask=<span class="keyword">new</span> FutureTask&lt;&gt;(<span class="keyword">new</span> FutureTaskTest());</span><br><span class="line">        Thread thread=<span class="keyword">new</span> Thread(futureTask);</span><br><span class="line">        thread.start();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(futureTask.get());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>只有调用Thread类的start方法，才会创建线程，否则是在调用线程中执行run方法；同时调用start方法之后，只是将线程设置为就绪状态，只有获得CPU资源之后才会处于运行状态；</p>
+<p><strong>小结：</strong> 继承的方式会收到单继承的限制，但是传参比较方便，内部获取线程直接使用this而无需使用Thread.currentThread方法；而实现Runnable接口则只能使用主线程中被声明为final的变量。如果需要线程返回结果，则使用FutureTask的方式。</p>
+<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><ul>
+<li><p><strong>void interrupt()方法</strong>👀️中断线程，该方法设置线程的中断标识为true并立即返回，但是线程并没有被中断，会继续往下执行。如果线程因为调用了join、sleep、wait系列的函数而被挂起，调用线程的interrupt方法则会抛出InterruptedException异常并返回。</p>
+</li>
+<li><p><strong>boolean isterrupt()方法</strong> 👀️ 检测线程是否被中断，如果是则返回true，否则返回false.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isInterrupted</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">//这里传递false表示不清理中断标识</span></span><br><span class="line">    <span class="keyword">return</span> isInterrupted(<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>boolean interrupted()方法</strong>👀️ 检测当前线程是否被中断，如果是则返回true,否则返回false。改方法如果发现线程被中断，<strong>则会清理中断标识</strong>；该方法是static方法，可以通过Thread类直接调用；该方法是判断<strong>当前线程</strong>的终端标识，而非调用interrupted方法的线程的中断标识。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">interrupted</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//传入true表示清理中断标识；并且判断的当前线程的中断标识；</span></span><br><span class="line">    <span class="keyword">return</span> currentThread().isInterrupted(<span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="使用中断使线程优雅退出"><a href="#使用中断使线程优雅退出" class="headerlink" title="使用中断使线程优雅退出"></a>使用中断使线程优雅退出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(!Thread.currentThread().isInterrupted()&amp;&amp;more work to <span class="keyword">do</span>)&#123;</span><br><span class="line">        <span class="comment">//do more work</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">    <span class="comment">//线程被中断</span></span><br><span class="line">&#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">//进行清理工作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="JMM-Java-Memory-Model"><a href="#JMM-Java-Memory-Model" class="headerlink" title="JMM(Java Memory Model)"></a>JMM(Java Memory Model)</h1><h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><h2 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h2><h1 id="synchronize和volatile"><a href="#synchronize和volatile" class="headerlink" title="synchronize和volatile"></a>synchronize和volatile</h1><h1 id="CAS（Compare-And-Set）"><a href="#CAS（Compare-And-Set）" class="headerlink" title="CAS（Compare And Set）"></a>CAS（Compare And Set）</h1>
         </div>
 
         

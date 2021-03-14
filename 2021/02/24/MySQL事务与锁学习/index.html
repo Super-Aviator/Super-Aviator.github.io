@@ -16,7 +16,7 @@
 
 
 
-<title>MySQL事务与锁学习 | 飞行员</title>
+<title>MySQL事务与锁 | 飞行员</title>
 
 
 
@@ -218,7 +218,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">MySQL事务与锁学习</h1>
+            <h1 class="post-title">MySQL事务与锁</h1>
             
                 <div class="post-meta">
                     
@@ -243,31 +243,31 @@
         </header>
 
         <div class="post-content">
-            <h1 id="事务的ACID属性"><a href="#事务的ACID属性" class="headerlink" title="事务的ACID属性"></a>事务的ACID属性</h1><ul>
-<li>原子性</li>
-<li>一致性</li>
-<li>隔离性</li>
-<li>持久性</li>
+            <p><strong>MySQL中的事务由存储引擎层进行管理</strong>，所以在同一个事务中混合使用事务型和非事务性的表是不可靠的，例如需要回滚时，事务型的表则无法撤销操作，造成数据不一致的情况；</p>
+<h1 id="事务的ACID属性"><a href="#事务的ACID属性" class="headerlink" title="事务的ACID属性"></a>事务的ACID属性</h1><ul>
+<li>原子性<br>事务被视为一个不可分割的最小执行单元，整个事务中的所有操作要么全部成功，要么全部回滚，不存在只执行一半的情况</li>
+<li>一致性<br>数据库总是从一个一致性状态转换到另一个一致性状态；例如事务执行到一半系统崩溃，所做的修改也不会提交</li>
+<li>隔离性<br>在某些隔离级别下，事务所做的修改在事务最终提交前，对其他事务是不可见的</li>
+<li>持久性<br>一旦事务提交，事务所做的修改就会永久保存到数据库中，此时即使系统崩溃，修改的数据也不会丢失</li>
 </ul>
-<h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><ul>
-<li>更新丢失</li>
-<li>脏读</li>
-<li>不可重复读（针对UPDATE和DELETE的行）</li>
-<li>幻读（针对INSERT的行）</li>
-</ul>
-<h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><ul>
-<li>未提交读</li>
-<li>已提交度</li>
-<li>不可重复读</li>
-<li>序列化</li>
-</ul>
-<p>MySQL可以动态更改事务隔离级别：</p>
+<h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><h4 id="更新丢失"><a href="#更新丢失" class="headerlink" title="更新丢失"></a>更新丢失</h4><h4 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h4><h4 id="不可重复读（针对UPDATE和DELETE的行）"><a href="#不可重复读（针对UPDATE和DELETE的行）" class="headerlink" title="不可重复读（针对UPDATE和DELETE的行）"></a>不可重复读（针对UPDATE和DELETE的行）</h4><h4 id="幻读（针对INSERT的行）"><a href="#幻读（针对INSERT的行）" class="headerlink" title="幻读（针对INSERT的行）"></a>幻读（针对INSERT的行）</h4><h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><h2 id="READ-UNCOMMITED-未提交读"><a href="#READ-UNCOMMITED-未提交读" class="headerlink" title="READ UNCOMMITED(未提交读)"></a>READ UNCOMMITED(未提交读)</h2><p>一个事务所做的修改即使未提交，对于另一个事务来说都是可见的。事务可以读取到未提交的行，这种也被成为脏读（Dirty Read）。</p>
+<h2 id="READ-COMMITED-已提交度、不可重复读"><a href="#READ-COMMITED-已提交度、不可重复读" class="headerlink" title="READ COMMITED(已提交度、不可重复读)"></a>READ COMMITED(已提交度、不可重复读)</h2><p>大多数数据库默认的隔离级别；事务只能看到已提交的事务所做的修改，一个事务所做的修改对另外一个事务是不可见的。但是在<strong>一个事务中</strong>执行两次同样的查询，可能会得到不一样的结果。</p>
+<h2 id="REPEATABLE-READ-可重复读"><a href="#REPEATABLE-READ-可重复读" class="headerlink" title="REPEATABLE READ(可重复读)"></a>REPEATABLE READ(可重复读)</h2><p>MySQL默认的隔离级别；该级别解决了脏读的问题，保证了在<strong>一个事务中</strong>多次读取同样的记录的结果是一致的。但是在在理论上还是存在幻读的问题。InnoDB和XtraDB使用MVCC多版本并发控制解决了幻读的问题。</p>
+<h2 id="SERIALIZABLE-序列化"><a href="#SERIALIZABLE-序列化" class="headerlink" title="SERIALIZABLE(序列化)"></a>SERIALIZABLE(序列化)</h2><p>最高的隔离级别，他通过强制事务串行化执行，避免了前面提到的幻读问题。简单来说，SERIALIZABLE会在读取到的每一行数据上都加锁，所以可能导致大量超时和锁争用问题。</p>
+<p><strong>注意：</strong>MySQL可以动态更改事务隔离级别：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#修改当前事务隔离级别为可重复读</span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">#修改当前事务隔离界别为序列化</span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;</span><br></pre></td></tr></table></figure>
 
-<h1 id="MVCC（Molti-Version-Concurrency-Control）"><a href="#MVCC（Molti-Version-Concurrency-Control）" class="headerlink" title="MVCC（Molti Version Concurrency Control）"></a>MVCC（Molti Version Concurrency Control）</h1><h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> table_name WRITE;  #获取表的写锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ;   #获取表的读锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ <span class="keyword">LOCAL</span>;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）</span><br><span class="line">LOCK TABLES table_name1 , table_name2 READ;   #获取多个表的读锁</span><br><span class="line"></span><br><span class="line">...   #执行<span class="keyword">SQL</span>语句</span><br><span class="line"></span><br><span class="line">UNLOCK TABLES;  #释放锁</span><br></pre></td></tr></table></figure>
+<h1 id="MVCC（Molti-Version-Concurrency-Control）"><a href="#MVCC（Molti-Version-Concurrency-Control）" class="headerlink" title="MVCC（Molti Version Concurrency Control）"></a>MVCC（Molti Version Concurrency Control）</h1><p>MVCC只在<strong>READ COMMITED</strong>和<strong>REPEATABLE READ</strong>级别下工作，另外两种隔离级别并不兼容MVCC，READ UNCOMMITED每次都读取最新的行，SERIALIZABLE则对每次读取都加锁；在InnoDB引擎下，简单描述其工作原理如下：</p>
+<p><strong>前提条件：</strong> 为每一行数据都增加两个隐藏列，一列保存行的创建系统版本号，一列保存行的删除系统版本号。没开始一个事务，系统版本号都会自增，事务开始是的系统版本号作为事务的版本号，和查询到记录的版本号做比较，例如在REPEATABLE READ隔离级别下,具体行为如下：</p>
+<p><strong>INSERT:</strong></p>
+<p><strong>DELETE:</strong></p>
+<p><strong>UPDATE:</strong></p>
+<p><strong>SELECT:</strong></p>
+<h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> table_name WRITE;  #获取表的写锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ;   #获取表的读锁</span><br><span class="line">LOCK <span class="keyword">TABLE</span> table_name READ <span class="keyword">LOCAL</span>;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）</span><br><span class="line">LOCK TABLES table_name1 , table_name2 READ;   #获取多个表的读锁</span><br><span class="line"></span><br><span class="line">...   #执行<span class="keyword">SQL</span>语句</span><br><span class="line"></span><br><span class="line">UNLOCK TABLES;  #释放锁</span><br></pre></td></tr></table></figure>
 
 <p><strong>注意</strong>：上面加锁的方式同样使用与InnoDB表锁，但是在InnoDB中释放<img src="file:///C:\Users\gww\AppData\Local\Temp\SGPicFaceTpBq\17464\02E601DB.png">锁的方式不一样；</p>
 <p>在使用MyISAM表锁时，需要一次性获取SQL语句涉及到的所有的表锁，并且因为MySQL不支持表升级，所以只能访问锁定的表，不能访问未锁定的表。读锁不能执行更新操作；MyISAM总是一次性获取所有所需的锁，<strong>这也是MyISAM表锁不会存在死锁的原因</strong></p>
+<p>表锁是MySQL服务层实现的，和存储引擎无关。</p>
 <p>使用MyISAM表锁时，需要对SQL中使用到的所有别名进行锁定，否则会提示Table ‘别名’ was not locked white LOCK TABLES;</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCK TABLES table_name <span class="keyword">AS</span> a, table_name <span class="keyword">AS</span> b READ;</span><br></pre></td></tr></table></figure>
 

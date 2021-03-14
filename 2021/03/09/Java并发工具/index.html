@@ -16,7 +16,7 @@
 
 
 
-<title>Kafka-Consumer | 飞行员</title>
+<title>Java并发工具 | 飞行员</title>
 
 
 
@@ -218,7 +218,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Kafka-Consumer</h1>
+            <h1 class="post-title">Java并发工具</h1>
             
                 <div class="post-meta">
                     
@@ -227,26 +227,49 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2021-03-08&nbsp;&nbsp;20:08:04</a>
+                        Date: <a href="#">2021-03-09&nbsp;&nbsp;22:30:04</a>
                         </span>
                     
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
                     
                 </div>
             
         </header>
 
         <div class="post-content">
-            <h2 id="seek"><a href="#seek" class="headerlink" title="seek"></a>seek</h2><p>调用seek方法前必须要调用poll方法使消费者获取到分区，否则将抛出异常，同时如果调用poll方法超时时间为0或者过小，同样会获取不到分区导致seek方法因为还未获取到分区而报错。</p>
-<h2 id="weakup"><a href="#weakup" class="headerlink" title="weakup"></a>weakup</h2><p>唯一一个线程安全方法，用于的其他线程跳出consumer的poll方法。正确的使用姿势如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (isRunning) &#123;</span><br><span class="line">        consumer.poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(WakeupException wakeupException)&#123;</span><br><span class="line">    log.error(wakeupException);</span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    consumer.commitSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><h1 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h1><p>可重入锁用于替代synchronized关键字，在性能方面，JDK5及之前性能远由于synchronized，但是JDK6对synchronized做了优化，性能差距并不大。同时在使用上也更加灵活<br>可重入锁主要提供了以下特性：</p>
+<h2 id="中断响应"><a href="#中断响应" class="headerlink" title="中断响应"></a>中断响应</h2><p>在尝试获取到锁时，如果调用 <code>lockInterruptibly()</code>方法，即可在等待锁的过程中可以响应中断，当产生死锁的线程被中断时，也可以避免死锁的发送。调用 <code>isHeldByCurrentThread()</code>方法可以检测所是否被当前线程获取的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ReentrantLock lock=<span class="keyword">new</span> ReentrantLock();</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    <span class="keyword">if</span>(lock.isHeldByCurrentThread())&#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h2 id="锁申请等待限时-java"><a href="#锁申请等待限时-java" class="headerlink" title="锁申请等待限时 {java}"></a>锁申请等待限时 {java}</h2><p>调用 <code>tryLock(long,TimeUnit)</code>方法，可以设置等待所得超时时间，并返回true或者false表示是否成功获取到锁。也可以有效避免死锁。</p>
+<p>同样也可以调用不带参数的tryLock方法，此方法在获取到锁时返回true，否则立即返回false，不会进行锁等待，这种方式不会引起锁等待，也不会产生死锁。</p>
+<h2 id="公平锁"><a href="#公平锁" class="headerlink" title="公平锁"></a>公平锁</h2><p>正常情况下，锁的获取都是非公平的，在使用可重入锁时，可以在构造参数中指定锁是公平的，当fair为true时，标识创建的锁为公平锁:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public ReentrantLock(boolean fair);</span><br></pre></td></tr></table></figure>
 
-<h2 id="ConsumerInterceptor"><a href="#ConsumerInterceptor" class="headerlink" title="ConsumerInterceptor"></a>ConsumerInterceptor</h2><h2 id="多线程实现"><a href="#多线程实现" class="headerlink" title="多线程实现"></a>多线程实现</h2><p>KafkaConsumer不是线程安全的，除了调用wakeup方法之外，其余方法在操作前都会调动acquire方法确保只有单个线程使用，否则会报出ConcurrencyModificationException异常，源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> threadId = Thread.currentThread().getId();</span><br><span class="line">    <span class="comment">//这里为了确保第一次调用acquire方法时，能正确初始化currentThread的值</span></span><br><span class="line">    <span class="comment">//如果不同的线程调用，compareAndSet会失败</span></span><br><span class="line">    <span class="keyword">if</span> (threadId != currentThread.get() &amp;&amp; !currentThread.compareAndSet(NO_CURRENT_THREAD, threadId))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException(<span class="string">&quot;KafkaConsumer is not safe for multi-threaded access&quot;</span>);</span><br><span class="line">    <span class="comment">//引用自增一</span></span><br><span class="line">    refcount.incrementAndGet();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>release方法和acquire方法成对出现，分别对应加锁和解锁操作，源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这里当没有线程引用时，设置currentThread的值为初始值，后续调用acquire方法时compareAndSet会成功</span></span><br><span class="line">    <span class="keyword">if</span> (refcount.decrementAndGet() == <span class="number">0</span>)</span><br><span class="line">        currentThread.set(NO_CURRENT_THREAD);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<p>公平锁需要系统维护一个有序的等待队列，所以成本比较高，性能非常低下，因此默认情况下所示非公平的。</p>
+<p>可重入锁的实现上主要是三个要素：</p>
+<ul>
+<li>原子状态：使用CAS操作存储当前锁状态，判断锁是否已被其他线程拥有</li>
+<li>等待队列：如果没有请求到锁，就进入等待队列，如果锁被释放，则从对待队列中唤醒一个线程，继续工作</li>
+<li>阻塞原语：<code>park()</code>和<code>unpark()</code>方法用来挂起和回复线程，没有得到锁的线程会被挂起</li>
+</ul>
+<h1 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h1><p>与Object对象的wait和notify方法类似，前者与synchronized一起使用，而Condition则与ReentrantLock一起使用。ReentrantLock中的newCondision方法则可以获取一个与之关联的Condition对象，一个锁可以获取多个Condition对象，但是由于必须获取到锁才能调用对应的方法，所以同一时刻只能有一个Condition在使用咯，Condition具体包含如下几个常用方法：</p>
+<ul>
+<li><code>await()</code>:是当前线程等待，同时<code>释放当前锁</code>，其他线程调用singnal或者singnalAll方法后会重新获得锁并继续执行，当被中断时也能跳出等待</li>
+<li><code>awaitUnInterruptibly()</code>:等待过程中不会响应中断</li>
+<li><code>sigal()</code>：唤醒一个等待中的线程</li>
+<li><code>sigleAll()</code>：唤醒所有等待的线程</li>
+</ul>
+<p><strong>注意：</strong> 此方法和那啥wait、notify方法一样，当前线程也必须首先获取可重入锁，然后才能调用相应的await和singal方法。</p>
+<p>同时，再signal或者signalAll方法调用后，行线程需要重新获取锁才能运行，否则依旧无法匀巡（所以在调用signal方法之后，需要立即调用unlock方法将锁释放，让唤醒的线程获得锁才能执行）</p>
+<h1 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h1><p>23</p>
+<h1 id="CountDownLatch"><a href="#CountDownLatch" class="headerlink" title="CountDownLatch"></a>CountDownLatch</h1>
         </div>
 
         
@@ -268,6 +291,10 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/%E5%B9%B6%E5%8F%91/"># 并发</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -278,10 +305,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/03/09/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/">Java并发工具</a>
+                <a class="prev" rel="prev" href="/2021/03/14/Kafka-Broker/">Kafka-Broker</a>
             
             
-            <a class="next" rel="next" href="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88/">Java并发集合</a>
+            <a class="next" rel="next" href="/2021/03/08/Kafka-Consumer/">Kafka-Consumer</a>
             
         </section>
 
