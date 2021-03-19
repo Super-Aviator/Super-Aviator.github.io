@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="熊乾坤">
+
+
+    <meta name="subtitle" content="飞行员">
+
+
+    <meta name="description" content="熊乾坤的博客">
+
+
+
+<title>IDEA项目部署到Docker之一顿百度加谷歌 | 飞行员</title>
+
+
+
+    <link rel="icon" href="/images/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/">Home</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">IDEA项目部署到Docker之一顿百度加谷歌</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2021-03-19&nbsp;&nbsp;22:28:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Other/">Other</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>我熊老大，今天开始再次学微服务了，想着按着晚上的教程，在阿里云和腾讯云上搭建一个Eureka集群方便学习下。冲了！</p>
+<h1 id="给Docker开放远程端口"><a href="#给Docker开放远程端口" class="headerlink" title="给Docker开放远程端口"></a>给Docker开放远程端口</h1><p>在IDEA中需要可以远程访问Docker，所以需要给Docker开放下远程端口，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/lib/systemd/system/docker.service</span><br></pre></td></tr></table></figure>
+
+<p>然后在配置文件中，新增如下配置 <code>ExecStart=中追加-H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock</code>：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/19/42ee0c50-2b3d-48cf-bc7d-3b93f77226ed.png" alt="QQ图片20210319230142.png"></p>
+<p>修改后保存文件，然后通知docker服务做出的修改<br><code>systemctl daemon-reload</code></p>
+<p>重启docker服务<br><code>service docker restart</code></p>
+<p>注意：如果老版本的dokcer修改此配置后，无法启动或者只支持远程连接，则需要升级docker版本即可解决，血的教训（PS：升级之后容器还在，不要慌，不然会显得很伞兵T_T。）</p>
+<h2 id="升级Docker"><a href="#升级Docker" class="headerlink" title="升级Docker"></a><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6e5da590aeda" title="简书">升级Docker</a></h2><h3 id="1、查看系统要求"><a href="#1、查看系统要求" class="headerlink" title="1、查看系统要求"></a>1、查看系统要求</h3><p>Docker 要求 CentOS 系统的内核版本高于 3.10 ,查看CentOS的内核版本。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、删除旧版本"><a href="#2、删除旧版本" class="headerlink" title="2、删除旧版本"></a>2、删除旧版本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker  docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、安装需要的软件包"><a href="#3、安装需要的软件包" class="headerlink" title="3、安装需要的软件包"></a>3、安装需要的软件包</h3><p>yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
+
+<h3 id="4、设置Docker-yum源"><a href="#4、设置Docker-yum源" class="headerlink" title="4、设置Docker yum源"></a>4、设置Docker yum源</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、查看所有仓库中所有docker版本"><a href="#5、查看所有仓库中所有docker版本" class="headerlink" title="5、查看所有仓库中所有docker版本"></a>5、查看所有仓库中所有docker版本</h4><p>可以查看所有仓库中所有docker版本,并选择特定的版本安装。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list docker-ce --showduplicates | sort -r</span><br></pre></td></tr></table></figure>
+
+<h3 id="6、安装docker"><a href="#6、安装docker" class="headerlink" title="6、安装docker"></a>6、安装docker</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-ce</span><br></pre></td></tr></table></figure>
+
+<p>由于repo中默认只开启stable仓库，故这里安装的是最新稳18.03.0.ce-1.el7.centos。</p>
+<p>如果要安装特定版本：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-ce-18.06.1.ce  </span><br></pre></td></tr></table></figure>
+
+<h3 id="7、启动"><a href="#7、启动" class="headerlink" title="7、启动"></a>7、启动</h3><h4 id="设置为开机启动"><a href="#设置为开机启动" class="headerlink" title="设置为开机启动"></a>设置为开机启动</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看启动状态"><a href="#查看启动状态" class="headerlink" title="查看启动状态"></a>查看启动状态</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看版本"><a href="#查看版本" class="headerlink" title="查看版本"></a>查看版本</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
+
+<h1 id="防火墙端口开放"><a href="#防火墙端口开放" class="headerlink" title="防火墙端口开放"></a>防火墙端口开放</h1><p>因为使用的云服务器，所以需要注意将项目映射的端口和主机端口加入白名单才能访问：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/7e040c09-c35d-41ef-8442-33cefd7d3b46.png" alt="QQ图片20210320002030.png"></p>
+<h1 id="编写Dockerfile文件"><a href="#编写Dockerfile文件" class="headerlink" title="编写Dockerfile文件"></a>编写Dockerfile文件</h1><p>然后需要再springboot项目的更目录中新建dockerfile文件：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/e1b7a361-c6a0-4124-b84f-73ab9f4623a5.png" alt="QQ截图20210320002113.png"></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Docker image for springboot application</span></span><br><span class="line"><span class="comment"># VERSION 0.0.1</span></span><br><span class="line"><span class="comment"># Author: bolingcavalry</span></span><br><span class="line"></span><br><span class="line"><span class="comment">### 基础镜像，使用alpine操作系统，openjkd使用8u201</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">openjdk:8u201-jdk-alpine3.9</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#作者</span></span><br><span class="line"><span class="string">MAINTAINER</span> <span class="string">BolingCavalry</span> <span class="string">&lt;2372389705@qq.com&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#系统编码</span></span><br><span class="line"><span class="string">ENV</span> <span class="string">LANG=C.UTF-8</span> <span class="string">LC_ALL=C.UTF-8</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#声明一个挂载点，容器内此路径会对应宿主机的某个文件夹</span></span><br><span class="line"><span class="string">VOLUME</span> <span class="string">/tmp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#应用构建成功后的jar文件被复制到镜像内，名字也改成了app.jar</span></span><br><span class="line"><span class="string">ADD</span> <span class="string">target/*.jar</span> <span class="string">app.jar</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动容器时的进程</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&quot;java&quot;</span>,<span class="string">&quot;-jar&quot;</span>,<span class="string">&quot;/app.jar&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#暴露8080端口</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="IDEA配置"><a href="#IDEA配置" class="headerlink" title="IDEA配置"></a>IDEA配置</h1><p>在IDEA中，需要下载Docker插件，之后连接上远程的Docker：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/410a8666-8165-458d-ab1c-fbfe6079416f.png" alt="QQ截图20210320002420.png"></p>
+<p>接下来需要在idea中新增一个启动配置：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/9c77b07f-201a-45b2-8e87-144e742e9461.png" alt="QQ图片20210320002813.png"></p>
+<p>最下面的maven命令为：<code>clean package -U -DskipTests</code>，打错了。。</p>
+<h1 id="部署项目"><a href="#部署项目" class="headerlink" title="部署项目"></a>部署项目</h1><p>然后点击启动，即可完成部署：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/7d538c27-fb24-4000-91c3-1325f51f8491.png" alt="QQ图片20210320002942.png"></p>
+<p>首次部署时需要拉去镜像，比较慢，后面就快了。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>熊乾坤</span>
+                    </p>
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Docker/"># Docker</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/03/14/Kafka-Broker/">Kafka-Broker</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
