@@ -1,249 +1,549 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <meta name="author" content="熊乾坤">
-
-
-    <meta name="subtitle" content="飞行员">
-
-
-    <meta name="description" content="熊乾坤的博客">
-
-
-
-<title>初学Servlet-Servlet、GenericServlet、HttpServlet | 飞行员</title>
-
-
-
-    <link rel="icon" href="/images/favicon.ico">
-
-
-
-
-    <!-- stylesheets list from _config.yml -->
+  <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
     
-    <link rel="stylesheet" href="/css/style.css">
+  
+  <!-- 渲染优化 -->
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link rel="preload" href="/css/first.css" as="style">
+  
+
+  <!-- 页面元数据 -->
+  
+  <title>初学Servlet-Servlet、GenericServlet、HttpServlet - 飞行员</title>
+  
+    <meta name="keywords" content="Java Web,Servlet">
+  
+
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  
+
+  <!-- import link -->
+  
+
+  
     
+<link rel="stylesheet" href="/css/first.css">
 
+  
 
+  
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
 
-    <!-- scripts list from _config.yml -->
-    
-    <script src="/js/script.js"></script>
-    
-    <script src="/js/tocbot.min.js"></script>
-    
+  <script id="loadcss"></script>
 
-
-
-    
-    
-        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    "HTML-CSS": {
-        preferredFont: "TeX",
-        availableFonts: ["STIX","TeX"],
-        linebreaks: { automatic:true },
-        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
-    },
-    tex2jax: {
-        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-        processEscapes: true,
-        ignoreClass: "tex2jax_ignore|dno",
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
-        Macros: { href: "{}" }
-    },
-    messageStyle: "none"
-    });
-</script>
-<!-- 给MathJax元素添加has-jax class -->
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-<!-- 通过连接CDN加载MathJax的js代码 -->
-<script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-
-    
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body>
-    <div class="wrapper">
-        <header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-header header-logo"><a href="/">孤独飞行员</a></div>
-            <div class="menu navbar-right">
-                
-                    <a class="menu-item" href="/">Home</a>
-                
-                    <a class="menu-item" href="/category">Categories</a>
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
-                    <a class="menu-item" href="/tag">Tags</a>
-                
-                    <a class="menu-item" href="/about">About</a>
-                
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
-            </div>
-        </div>
-    </nav>
-
-    
-    <nav class="navbar-mobile" id="nav-mobile">
-        <div class="container">
-            <div class="navbar-header">
-                <div>
-                    <a href="/">孤独飞行员</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
-                </div>
-                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
-            </div>
-            <div class="menu" id="mobile-menu">
-                
-                    <a class="menu-item" href="/">Home</a>
-                
-                    <a class="menu-item" href="/category">Categories</a>
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
-                    <a class="menu-item" href="/tag">Tags</a>
-                
-                    <a class="menu-item" href="/about">About</a>
-                
-            </div>
-        </div>
-    </nav>
-
-</header>
+  
 <script>
-    var mobileBtn = function f() {
-        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-        var mobileMenu = document.getElementById("mobile-menu");
-        if(toggleMenu.classList.contains("active")){
-           toggleMenu.classList.remove("active")
-            mobileMenu.classList.remove("active")
-        }else{
-            toggleMenu.classList.add("active")
-            mobileMenu.classList.add("active")
-        }
-    }
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        '<h1><b>抱歉，您的浏览器无法访问本站</b></h1>'+
+        '<h3>微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>'+
+        '继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</h3><br/>'+
+        '<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/WindowsForBusiness/End-of-IE-support"><strong>了解详情 ></strong></a>'+
+    '</div>');
 </script>
-        <div class="main">
-            <div class="container">
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+	</style>
+    <div class="kill-noscript">
+        <h1><b>抱歉，您的浏览器无法访问本站</b></h1>
+        <h3>本页面需要浏览器支持（启用）JavaScript</h3><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+</head>
+
+  <body>
+    
+
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone' id="pjax-header-nav-list">
+        <li><a id="s-comment" class="fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a id="s-toc" class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+            <img no-lazy class='logo' src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
+          
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box header toggle-mode-btn">
+                  <i class='fas fa-moon fa-fw'></i>暗黑模式
+                </a>
+              <li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="搜到算我输" />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box header toggle-mode-btn">
+                  <i class='fas fa-moon fa-fw'></i>暗黑模式
+                </a>
+              <li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+    
+        <div id="full" class='cover-wrapper post search' style="display: none;">
+          
+            <div id='cover-backstretch'></div>
+          
+          <div class='cover-body'>
+  <div class='top'>
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
+      <p class="title">孤独飞行员</p>
+    
+    
+  </div>
+  <div class='bottom'>
+    
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <input type="text" class="input u-search-input" placeholder="搜到算我输" />
+          <i class="icon fas fa-search fa-fw"></i>
+        </form>
+      </div>
+    
+    <div class='menu navigation'>
+      <div class='list-h'>
+        
+          
+            <a href="/v4/getting-started/"
+              
+              
+              id="v4getting-started">
+              <p>文档</p>
+            </a>
+          
+            <a href="/faqs/"
+              
+              
+              id="faqs">
+              <p>帮助</p>
+            </a>
+          
+            <a href="/examples/"
+              
+              
+              id="examples">
+              <p>示例</p>
+            </a>
+          
+            <a href="/contributors/"
+              
+              
+              id="contributors">
+              <p>社区</p>
+            </a>
+          
+            <a href="/archives/"
+              
+              
+              id="archives">
+              <p>博客</p>
+            </a>
+          
+            <a target="_blank" rel="noopener" href="https://github.com/volantis-x/hexo-theme-volantis/"
+              
+              
+              id="https:githubcomvolantis-xhexo-theme-volantis">
+              <p>源码</p>
+            </a>
+          
+        
+      </div>
     </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
+  </div>
 </div>
 
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
+          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+        </div>
     
+  
+  </div>
 
+      <div id="safearea">
+        <div class="body-wrapper" id="pjax-container">
+          
+
+<div class='l_main'>
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
     
-    <article class="post-wrap">
-        <header class="post-header">
-            <h1 class="post-title">初学Servlet-Servlet、GenericServlet、HttpServlet</h1>
+    
+    
+      <h1 class="title">
+        初学Servlet-Servlet、GenericServlet、HttpServlet
+      </h1>
+      <div class='new-meta-box'>
+        
+          
             
-                <div class="post-meta">
-                    
-                        Author: <a itemprop="author" rel="author" href="/">熊乾坤</a>
-                    
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
 
-                    
-                        <span class="post-time">
-                        Date: <a href="#">2018-08-18&nbsp;&nbsp;19:42:00</a>
-                        </span>
-                    
-                    
-                        <span class="post-category">
-                    Category:
-                            
-                                <a href="/categories/Java/">Java</a>
-                            
-                        </span>
-                    
-                </div>
+          
+        
+          
             
-        </header>
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/Java/">Java</a>
+    </a>
+  </div>
 
-        <div class="post-content">
-            <p>经过十几天的颓废之后，今天状态总算是有所好转，终于可以静下心来看看东西了，学习了一点点Servlet的东西，记录一下，以前做学生管理系统用过一点点的Servlet，不过没有系统的学习，写出来的东西也非常乱，至今没有搞懂ServletConfig,ServletContext啥的，希望通过这几天的学习能够深入了解一下。为接下来的Spring框架学习打好基础。</p>
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Aug 18, 2018</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="初学Servlet-Servlet、GenericServlet、HttpServlet" data-path="/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+<div class="new-meta-item comments-count">
+  
+  <a href="/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/#comments">
+    <i class="fas fa-comment-dots fa-fw"></i>
+    <span class="valine-comment-count" data-xid="/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/">0</span>
+    <span class="leancloud-comments-count">&nbsp;</span>
+  </a>
+</div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  
+  <p>经过十几天的颓废之后，今天状态总算是有所好转，终于可以静下心来看看东西了，学习了一点点Servlet的东西，记录一下，以前做学生管理系统用过一点点的Servlet，不过没有系统的学习，写出来的东西也非常乱，至今没有搞懂ServletConfig,ServletContext啥的，希望通过这几天的学习能够深入了解一下。为接下来的Spring框架学习打好基础。</p>
 <hr>
 <h2 id="Servlet的两种配置方式"><a href="#Servlet的两种配置方式" class="headerlink" title="Servlet的两种配置方式"></a>Servlet的两种配置方式</h2><p>从Servlet3.0开始，配置Servlet支持注解方式，但还是保留了配置web.xml方式，所有使用Servlet有两种方式：</p>
 <h3 id="通过注解的方式"><a href="#通过注解的方式" class="headerlink" title="通过注解的方式"></a>通过注解的方式</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mytt_10566/article/details/70173007">原地址</a></p>
@@ -330,61 +630,1479 @@
 
 <p>输出结果：<br><img src="data:image/png;base64,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" alt="result"></p>
 <h2 id="HttpServletRequest和HttpServletResponse"><a href="#HttpServletRequest和HttpServletResponse" class="headerlink" title="HttpServletRequest和HttpServletResponse"></a>HttpServletRequest和HttpServletResponse</h2>
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+          </blockquote>
         </div>
+      
+      
+    </div>
+  
+  
+    
 
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
         
-            <section class="post-copyright">
-                
-                    <p class="copyright-item">
-                        <span>Author:</span>
-                        <span>熊乾坤</span>
-                    </p>
-                
-                
-                
-                
-
-            </section>
-        
-        <section class="post-tags">
-            <div>
-                <span>Tag(s):</span>
-                <span class="tag">
-                    
-                    
-                        <a href="/tags/Java-Web/"># Java Web</a>
-                    
-                        <a href="/tags/Servlet/"># Servlet</a>
-                    
-                        
-                </span>
-            </div>
-            <div>
-                <a href="javascript:window.history.back();">back</a>
-                <span>· </span>
-                <a href="/">home</a>
-            </div>
-        </section>
-        <section class="post-nav">
-            
-                <a class="prev" rel="prev" href="/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/">Spring-装配bean</a>
-            
-            
-            <a class="next" rel="next" href="/2018/08/07/TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E5%85%B3%E9%97%AD/">TCP连接建立与关闭</a>
-            
-        </section>
-
-
-    </article>
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-23T21:00:07+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Feb 23, 2021</p>
+  </a>
 </div>
 
-        </div>
-        <footer id="footer" class="footer">
-    <div class="copyright">
-        <span>© 熊乾坤 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
-    </div>
-</footer>
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/Java-Web/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>Java Web</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/Servlet/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>Servlet</p></a></div>
 
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://super-aviator.github.io/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/&title=初学Servlet-Servlet、GenericServlet、HttpServlet - 飞行员&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=https://super-aviator.github.io/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/&title=初学Servlet-Servlet、GenericServlet、HttpServlet - 飞行员&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
+        <a class="-mob-share-telegram" title="" rel="external nofollow noopener noreferrer noopener"
+          
+            target="_blank" href="https://t.me/share/url?url=https://super-aviator.github.io/2018/08/18/Spring%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Servlet/&text=初学Servlet-Servlet、GenericServlet、HttpServlet - 飞行员"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/telegram.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/telegram.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
     </div>
-</body>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>Spring-装配bean</p>
+          <p class='content'>在前几天，通过学习《Spring in action》这本书的前7章，我学习了Spring框架的基础以及SpringMVC部分的知识，对Spring框架有了比较浅显的认识，接下来的几天，我准备将...</p>
+        </a>
+      
+      
+        <a class='next' href='/2018/08/07/TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E5%85%B3%E9%97%AD/'>
+          <p class='title'>TCP连接建立与关闭<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>大三上学期，学习了计算机网络这门课程，老师主要从TCP\IP的五层协议中的前四层进行了讲解，但是对于比较重要的运输层，讲解的比较少，但是也是因为TCP协议本身太复杂，而且涉及到的东西非常多，不深...</p>
+        </a>
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside class='l_side'>
+  
+  
+    
+    
+
+
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Servlet%E7%9A%84%E4%B8%A4%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">Servlet的两种配置方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E6%B3%A8%E8%A7%A3%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">通过注解的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87xml%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">通过xml文件的方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Servlet%E6%8E%A5%E5%8F%A3"><span class="toc-text">Servlet接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0Servlet%E6%8E%A5%E5%8F%A3"><span class="toc-text">实现Servlet接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%A7%E6%89%BFGenericServlet%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="toc-text">继承GenericServlet抽象类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%A7%E6%89%BFHttpServlet%E7%B1%BB"><span class="toc-text">继承HttpServlet类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ServletConfig%E5%92%8CServletContext%E5%AF%B9%E8%B1%A1"><span class="toc-text">ServletConfig和ServletContext对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HttpServletRequest%E5%92%8CHttpServletResponse"><span class="toc-text">HttpServletRequest和HttpServletResponse</span></a></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+
+		  
+		  <!--此文件用来存放一些不方便取值的变量-->
+<!--思路大概是将值藏到重加载的区域内-->
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.postTitle="初学Servlet-Servlet、GenericServlet、HttpServlet";
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  // header 这里无论是否开启pjax都需要
+  var l_header=document.getElementById("l_header");
+  
+  l_header.classList.add("show");
+  
+  
+    // cover
+    var cover_wrapper=document.querySelector('.cover-wrapper');
+    
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
+    
+  
+</script>
+
+        </div>
+        
+  
+  <footer class="footer clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      
+    
+      
+        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+</div>
+      
+    
+      
+        
+          <div><p><span id="lc-sv">本站总访问量为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 次</span> <span id="lc-uv">访客数为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 人</span></p>
+</div>
+        
+      
+    
+      
+        本站使用
+        <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
+        作為主題
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="/">Copyright © 2017-2020 XXX</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+
+        <a id="s-top" class="fas fa-arrow-up fa-fw" href="javascript:void(0)"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+/************这个文件存放不需要重载的全局变量和全局函数*********/
+window.volantis={};
+window.volantis.loadcss=document.getElementById("loadcss");
+/******************** Pjax ********************************/
+function VPjax(){
+	this.list=[] // 存放回调函数
+	this.start=()=>{
+	  for(var i=0;i<this.list.length;i++){
+		this.list[i].run();
+	  }
+	}
+	this.push=(fn,name)=>{
+		var f=new PjaxItem(fn,name);
+		this.list.push(f);
+	}
+	// 构造一个可以run的对象
+	function PjaxItem(fn,name){
+		// 函数名称
+		this.name = name || fn.name
+		// run方法
+		this.run=()=>{
+			fn()
+		}
+	}
+}
+volantis.pjax={}
+volantis.pjax.method={
+	complete: new VPjax(),
+	error: new VPjax(),
+	send: new VPjax()
+}
+volantis.pjax={
+	...volantis.pjax,
+	push: volantis.pjax.method.complete.push,
+	error: volantis.pjax.method.error.push,
+	send: volantis.pjax.method.send.push
+}
+/********************脚本懒加载函数********************************/
+// 已经加入了setTimeout
+function loadScript(src, cb) {
+	setTimeout(function() {
+		var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
+		var script = document.createElement('script');
+		script.setAttribute('type','text/javascript');
+		if (cb) script.onload = cb;
+		script.setAttribute('src', src);
+		HEAD.appendChild(script);
+	});
+}
+//https://github.com/filamentgroup/loadCSS
+var loadCSS = function( href, before, media, attributes ){
+	var doc = window.document;
+	var ss = doc.createElement( "link" );
+	var ref;
+	if( before ){
+		ref = before;
+	}
+	else {
+		var refs = ( doc.body || doc.getElementsByTagName( "head" )[ 0 ] ).childNodes;
+		ref = refs[ refs.length - 1];
+	}
+	var sheets = doc.styleSheets;
+	if( attributes ){
+		for( var attributeName in attributes ){
+			if( attributes.hasOwnProperty( attributeName ) ){
+				ss.setAttribute( attributeName, attributes[attributeName] );
+			}
+		}
+	}
+	ss.rel = "stylesheet";
+	ss.href = href;
+	ss.media = "only x";
+	function ready( cb ){
+		if( doc.body ){
+			return cb();
+		}
+		setTimeout(function(){
+			ready( cb );
+		});
+	}
+	ready( function(){
+		ref.parentNode.insertBefore( ss, ( before ? ref : ref.nextSibling ) );
+	});
+	var onloadcssdefined = function( cb ){
+		var resolvedHref = ss.href;
+		var i = sheets.length;
+		while( i-- ){
+			if( sheets[ i ].href === resolvedHref ){
+				return cb();
+			}
+		}
+		setTimeout(function() {
+			onloadcssdefined( cb );
+		});
+	};
+	function loadCB(){
+		if( ss.addEventListener ){
+			ss.removeEventListener( "load", loadCB );
+		}
+		ss.media = media || "all";
+	}
+	if( ss.addEventListener ){
+		ss.addEventListener( "load", loadCB);
+	}
+	ss.onloadcssdefined = onloadcssdefined;
+	onloadcssdefined( loadCB );
+	return ss;
+};
+</script>
+<script>
+  
+  loadCSS("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/css/all.min.css", window.volantis.loadcss);
+  
+  
+  
+  
+  loadCSS("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/styles/solarized-light.min.css", window.volantis.loadcss);
+  
+</script>
+<!-- required -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5/dist/jquery.min.js"></script>
+
+<script>
+  function pjax_fancybox() {
+    $(".md .gallery").find("img").each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("class", "fancybox");
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 判断当前页面是否存在描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".md .gallery").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  function SCload_fancybox() {
+    if ($(".md .gallery").find("img").length == 0) return;
+    loadCSS("https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css", document.getElementById("loadcss"));
+    loadScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', pjax_fancybox)
+  };
+  $(function () {
+    SCload_fancybox();
+  });
+  function Pjax_SCload_fancybox(){
+	if (typeof $.fancybox == "undefined") {
+	 SCload_fancybox();
+    } else {
+	 pjax_fancybox();
+    }
+  }
+  volantis.pjax.push(Pjax_SCload_fancybox)
+  volantis.pjax.send(()=>{
+      if (typeof $.fancybox != "undefined") {
+        $.fancybox.close();    // 关闭弹窗
+      }
+  },'fancybox')
+</script>
+
+
+<!-- internal -->
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+        var imgs=["https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/001.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/002.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/003.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/004.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/005.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/006.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/012.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/016.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/019.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/025.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/033.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/034.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/035.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/038.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/039.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/042.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/046.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/051.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/052.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/054.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/056.jpg"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+	  function Pjax_backstretch(){
+        
+          $('#cover-backstretch').backstretch(
+            imgs,
+          {
+            duration: "10000",
+            fade: "1500"
+          });
+        
+	  }
+	  loadScript("https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js",Pjax_backstretch)
+    </script>
+  
+
+
+
+  
+  
+
+  <div id="rightmenu-wrapper">
+    <ul class="list-v rightmenu" id="rightmenu-content">
+      <li class='option'>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <hr id='hr-text'>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <hr id='hr-href'>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <hr id='hr-src'>
+      </li>
+      
+        <li class='navigation'>
+          <a class='nav icon-only fix-cursor-default' onclick='history.back()'><i class='fa fa-arrow-left fa-fw'></i></a>
+          <a class='nav icon-only fix-cursor-default' onclick='history.forward()'><i class='fa fa-arrow-right fa-fw'></i></a>
+          <a class='nav icon-only fix-cursor-default' onclick='window.location.reload()'><i class='fa fa-redo fa-fw'></i></a>
+          <a class='nav icon-only fix-cursor-default' href='/'><i class='fa fa-home fa-fw'></i></a>
+        </li>
+      
+      <hr>
+      
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/faqs/
+        
+        
+        
+        
+          id="https:volantisjsorgfaqs"
+        >
+        <i class='fa fa-question fa-fw'></i> 常见问题
+      </a>
+    </li>
+  
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/examples/
+        
+        
+        
+        
+          id="https:volantisjsorgexamples"
+        >
+        <i class='fa fa-rss fa-fw'></i> 示例博客
+      </a>
+    </li>
+  
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/contributors/
+        
+        
+        
+        
+          id="https:volantisjsorgcontributors"
+        >
+        <i class='fa fa-fan fa-spin fa-fw'></i> 加入社区
+      </a>
+    </li>
+  
+        
+      
+        
+          <hr>
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default ' href=https://github.com/volantis-x/volantis-docs/
+        
+        
+        
+        
+          id="https:githubcomvolantis-xvolantis-docs"
+        >
+        <i class='fa fa-code-branch fa-fw'></i> 本站源码
+      </a>
+    </li>
+  
+        
+      
+        
+      
+        
+          <hr>
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default ' 
+        
+        
+        
+          onclick="document.execCommand('print')"
+        
+        >
+        <i class='fa fa-print fa-fw'></i> 打印页面
+      </a>
+    </li>
+  
+        
+      
+        
+          <hr>
+        
+      
+        
+          
+    <li>
+      <a class='vlts-menu fix-cursor-default toggle-mode-btn' 
+        
+        
+        
+        >
+        <i class='fas fa-moon fa-fw'></i> Dark mode
+      </a>
+    </li>
+  
+        
+      
+        
+          <hr>
+        
+      
+        
+      
+        
+      
+    </ul>
+  </div>
+
+  <script>
+    window.document.oncontextmenu = function (event) {
+      if (event.ctrlKey) return true;
+      if (/Android|webOS|BlackBerry/i.test(navigator.userAgent)) return true;
+      return popMenu(event);
+    };
+    document.addEventListener("click", function (event) {
+      var mymenu = document.getElementById('rightmenu-wrapper');
+      mymenu.style.display = "none";
+    });
+    function popMenu(event) {
+      var mymenu = document.getElementById('rightmenu-wrapper');
+      var menuContent = document.getElementById('rightmenu-content');
+      var screenWidth = document.documentElement.clientWidth || document.body.clientWidth;
+      var screenHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      mymenu.style.left = event.clientX + "px"; // 获取鼠标位置
+      mymenu.style.top = event.clientY + "px";
+      mymenu.style.display = 'block';
+      if (event.clientX * 2 > screenWidth) {
+        menuContent.classList.add('left');
+      } else {
+        menuContent.classList.remove('left');
+      }
+      if (event.clientY * 2 > screenHeight) {
+        menuContent.classList.add('top');
+      } else {
+        menuContent.classList.remove('top');
+      }
+
+      let hrText = document.getElementById('hr-text');
+      let hrSrc = document.getElementById('hr-src');
+      let hrHref = document.getElementById('hr-href');
+
+      // 选中图片
+      let copySrc = document.getElementById('menu-copy-src');
+      if (copySrc != undefined) {
+        if (event.target.currentSrc) {
+          copySrc.style.display = 'block';
+          copySrc.addEventListener("click", function (e) {
+            copyString(event.target.currentSrc);
+          },{once: true});
+          hrSrc.style.display = 'block';
+        } else {
+          copySrc.style.display = 'none';
+          hrSrc.style.display = 'none';
+        }
+      }
+
+      // 选中按钮
+      // 判断是不是按钮
+      let href = '';
+      if (event.path) {
+        for (i = 0; i < event.path.length; i++) {
+          if (event.path[i].href != undefined && event.path[i].href.length > 0) {
+            href = event.path[i].href;
+          }
+        }
+      }
+
+      let copyText = document.getElementById('menu-copy-text');
+      copyText.style.display = 'none';
+      hrText.style.display = 'none';
+      if (href.length == 0) {
+        // 选中文本
+        if (window.getSelection().toString()) {
+          if ('true' == 'true') {
+            copyText.style.display = 'block';
+            hrText.style.display = 'block';
+          }
+        }
+      }
+
+      // 在新标签页打开
+      let openHref = document.getElementById('menu-open-href');
+      if (openHref != undefined) {
+        if (href.length > 0) {
+          openHref.style.display = 'block';
+          openHref.addEventListener("click", function (e) {
+            window.open(href);
+          },{once: true});
+          hrHref.style.display = 'block';
+        } else {
+          openHref.style.display = 'none';
+          hrHref.style.display = 'none';
+        }
+      }
+      // 复制链接
+      let copyHref = document.getElementById('menu-copy-href');
+      if (copyHref != undefined) {
+        if (href.length > 0) {
+          copyHref.style.display = 'block';
+          copyHref.addEventListener("click", function (e) {
+            copyString(href);
+          },{once: true});
+        } else {
+          copyHref.style.display = 'none';
+        }
+      }
+      // 有音乐播放器 see: layout/_third-party/aplayer/script.ejs
+      
+      return false; // 该行代码确保系统自带的右键菜单不会被调出
+    }
+    function hideMenu() {
+      document.getElementById('rightmenu-wrapper').style.display = 'none';
+    }
+    function copyString(str) {
+      const input = document.createElement('input');
+      input.setAttribute('readonly', 'readonly');
+      document.body.appendChild(input);
+      input.setAttribute('value', str);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    document.execCommand('click');
+  </script>
+
+
+
+
+<script>
+  function loadIssuesJS() {
+    if ($(".md").find(".issues-api").length == 0) return;
+	
+	  loadScript('/js/issues.js');
+	
+  };
+  $(function () {
+    loadIssuesJS();
+  });
+  volantis.pjax.push(()=>{
+	if (typeof IssuesAPI == "undefined") {
+	  loadIssuesJS();
+	}
+  },"IssuesJS")
+</script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 0
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    lazyLoadInstance.update();
+  });
+  document.addEventListener('pjax:complete', function () {
+    lazyLoadInstance.update();
+  });
+</script>
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: [],
+	maxRPS: 5,
+	hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+    var clipboard = new ClipboardJS('.btn-copy', {
+        target: function (trigger) {
+            return trigger.nextElementSibling
+        }
+    });
+    function wait(callback, seconds) {
+        var timelag = null;
+        timelag = window.setTimeout(callback, seconds)
+    }
+    function pjax_initCopyCode() {
+		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
+        var copyHtml = '';
+        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+        copyHtml += '</button>';
+        $(".highlight .code pre").before(copyHtml);
+        $(".article pre code").before(copyHtml);
+        clipboard.off('success').on('success', function (e) {
+            let $btn = $(e.trigger);
+            $btn.addClass('copied');
+            let $icon = $($btn.find('i'));
+            $icon.removeClass('fa-copy');
+            $icon.addClass('fa-check-circle');
+            let $span = $($btn.find('span'));
+            $span[0].innerText = 'COPIED';
+            wait(function () {
+                $icon.removeClass('fa-check-circle');
+                $icon.addClass('fa-copy');
+                $span[0].innerText = 'COPY'
+            }, 2000)
+        });
+        clipboard.off('error').on('error', function (e) {
+            e.clearSelection();
+            let $btn = $(e.trigger);
+            $btn.addClass('copy-failed');
+            let $icon = $($btn.find('i'));
+            $icon.removeClass('fa-copy');
+            $icon.addClass('fa-times-circle');
+            let $span = $($btn.find('span'));
+            $span[0].innerText = 'COPY FAILED';
+            wait(function () {
+                $icon.removeClass('fa-times-circle');
+                $icon.addClass('fa-copy');
+                $span[0].innerText = 'COPY'
+            }, 2000)
+        })
+    }
+    $(function () {
+        pjax_initCopyCode()
+    });
+	volantis.pjax.push(pjax_initCopyCode)
+</script>
+
+
+
+
+   <script type="text/javascript">
+  loadScript("https://cdn.jsdelivr.net/npm/scrollreveal@4.0.6/dist/scrollreveal.min.js")
+  function pjax_scrollrebeal() {
+    ScrollReveal().reveal('.l_main .reveal', {
+      distance: '32px',
+      duration: '800',
+      interval: '20',
+      scale: '1',
+      easing: 'ease-out'
+    });
+  }
+  $(function () {
+  var checkScrollReveal = setInterval(function () {
+    if ($("#safearea").css("display")!="block") return
+    if (typeof ScrollReveal=="undefined") return
+    clearInterval(checkScrollReveal)
+	pjax_scrollrebeal();
+  }, 100)
+  });
+  volantis.pjax.push(pjax_scrollrebeal)
+</script>
+
+
+
+
+
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+
+
+<script>
+  function emoji(path, idx, ext) {
+    return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  function pjax_valine() {
+    if(!document.querySelectorAll("#valine_container")[0])return;
+    let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
+    let path = pdata.commentPath;
+    if (path.length == 0) {
+      let defaultPath = '';
+      path = defaultPath || decodeURI(window.location.pathname);
+    }
+    var valine = new Valine();
+    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+      el: '#valine_container',
+      path: path,
+      placeholder: pagePlaceholder,
+      emojiCDN: 'https://cdn.jsdelivr.net/gh/volantis-x/cdn-emoji/valine/',
+      emojiMaps: emojiMaps,
+    }))
+  }
+  $(function () {
+    pjax_valine();
+  });
+  volantis.pjax.push(pjax_valine);
+</script>
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+<!-- optional -->
+
+  <script>
+const SearchServiceimagePath="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@master/img/";
+const ROOT =  ("/" || "/").endsWith('/') ? ("/" || "/") : ("//" || "/" );
+
+$('.input.u-search-input').one('focus',function(){
+	
+		loadScript('/js/search/hexo.js',setSearchService);
+	
+})
+
+function listenSearch(){
+  
+    customSearch = new HexoSearch({
+      imagePath: SearchServiceimagePath
+    });
+  
+}
+function setSearchService() {
+	listenSearch();
+	
+		document.addEventListener("pjax:success", listenSearch);
+	
+}
+</script>
+
+
+
+
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+  
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script>
+volantis.pjax.push(()=>{
+	document.querySelectorAll('pre code').forEach((block) => {
+	  hljs.highlightBlock(block);
+	});
+},"highlightjs")
+</script>
+
+
+
+  <script defer>
+
+  const LCCounter = {
+    app_id: 'u9j57bwJod4EDmXWdxrwuqQT-MdYXbMMI',
+    app_key: 'jfHtEKVE24j0IVCGHbvuFClp',
+    custom_api_server: '',
+
+    // 查询存储的记录
+    getRecord(Counter, url, title) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({url})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {url, title: title, times: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    },
+
+    // 发起自增请求
+    increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    },
+
+    // 构建自增请求体
+    buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "times": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    },
+
+    // 校验是否为有效的 UV
+    validUV() {
+      var key = 'LeanCloudUVTimestamp';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    },
+
+    addCount(Counter) {
+      var enableIncr = '' === 'true' && window.location.hostname !== 'localhost';
+      enableIncr = true;
+      var getterArr = [];
+      var incrArr = [];
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#lc-sv');
+      if (pvCtn || enableIncr) {
+        var pvGetter = this.getRecord(Counter, 'https://super-aviator.github.io' + '/#lc-sv', 'Visits').then((record) => {
+          incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-sv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + 1;
+              if (pvCtn) {
+                pvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#lc-uv');
+      if (uvCtn || enableIncr) {
+        var uvGetter = this.getRecord(Counter, 'https://super-aviator.github.io' + '/#lc-uv', 'Visitors').then((record) => {
+          var vuv = this.validUV();
+          vuv && incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-uv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + (vuv ? 1 : 0);
+              if (uvCtn) {
+                uvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 请求文章的浏览数，如果是当前页面就自增
+      var allPV = document.querySelectorAll('#lc-pv');
+      if (allPV.length > 0 || enableIncr) {
+        for (i = 0; i < allPV.length; i++) {
+          let pv = allPV[i];
+          let title = pv.getAttribute('data-title');
+          var url = 'https://super-aviator.github.io' + pv.getAttribute('data-path');
+          if (url) {
+            var viewGetter = this.getRecord(Counter, url, title).then((record) => {
+              // 是当前页面就自增
+              let curPath = window.location.pathname;
+              if (curPath.includes('index.html')) {
+                curPath = curPath.substring(0, curPath.lastIndexOf('index.html'));
+              }
+              if (pv.getAttribute('data-path') == curPath) {
+                incrArr.push(this.buildIncrement(record.objectId));
+              }
+              if (pv) {
+                var ele = pv.querySelector('#lc-pv #number');
+                if (ele) {
+                  if (pv.getAttribute('data-path') == curPath) {
+                    ele.innerText = (record.times || 0) + 1;
+                  } else {
+                    ele.innerText = record.times || 0;
+                  }
+                  pv.style.display = 'inline';
+                }
+              }
+            });
+            getterArr.push(viewGetter);
+          }
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && this.increment(Counter, incrArr);
+        })
+      }
+
+    },
+
+
+    fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': this.app_id,
+            'X-LC-Key': this.app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      this.addCount(Counter);
+    },
+
+    refreshCounter() {
+      var api_server = this.app_id.slice(-9) !== '-MdYXbMMI' ? this.custom_api_server : `https://${ this.app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+      if (api_server) {
+        this.fetchData(api_server);
+      } else {
+        fetch('https://app-router.leancloud.cn/2/route?appId=' + this.app_id)
+          .then(resp => resp.json())
+          .then(({api_server}) => {
+            this.fetchData('https://' + api_server);
+          });
+      }
+    }
+
+  };
+
+  LCCounter.refreshCounter();
+
+  document.addEventListener('pjax:complete', function () {
+    LCCounter.refreshCounter();
+  });
+</script>
+
+
+
+
+  <script>
+const rootElement = document.documentElement;
+const darkModeStorageKey = "user-color-scheme";
+const rootElementDarkModeAttributeName = "data-user-color-scheme";
+
+const setLS = (k, v) => {
+    localStorage.setItem(k, v);
+};
+
+const removeLS = (k) => {
+    localStorage.removeItem(k);
+};
+
+const getLS = (k) => {
+    return localStorage.getItem(k);
+};
+
+const getModeFromCSSMediaQuery = () => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const resetRootDarkModeAttributeAndLS = () => {
+  rootElement.removeAttribute(rootElementDarkModeAttributeName);
+  removeLS(darkModeStorageKey);
+};
+
+const validColorModeKeys = {
+  dark: true,
+  light: true,
+};
+
+const applyCustomDarkModeSettings = (mode) => {
+  const currentSetting = mode || getLS(darkModeStorageKey);
+
+  if (currentSetting === getModeFromCSSMediaQuery()) {
+    resetRootDarkModeAttributeAndLS();
+  } else if (validColorModeKeys[currentSetting]) {
+    rootElement.setAttribute(rootElementDarkModeAttributeName, currentSetting);
+  } else {
+    resetRootDarkModeAttributeAndLS();
+  }
+};
+
+const invertDarkModeObj = {
+  dark: "light",
+  light: "dark",
+};
+
+/**
+ * get target mode
+ */
+const toggleCustomDarkMode = () => {
+  let currentSetting = getLS(darkModeStorageKey);
+
+  if (validColorModeKeys[currentSetting]) {
+    currentSetting = invertDarkModeObj[currentSetting];
+  } else if (currentSetting === null) {
+    currentSetting = invertDarkModeObj[getModeFromCSSMediaQuery()];
+  } else {
+    return;
+  }
+  setLS(darkModeStorageKey, currentSetting);
+  return currentSetting;
+};
+
+/**
+ * bind click event for toggle button
+ */
+var btn=$("#wrapper .toggle-mode-btn,#rightmenu-wrapper .toggle-mode-btn");
+function bindToggleButton() {
+    btn.on('click',(e) => {
+      const mode = toggleCustomDarkMode();
+      applyCustomDarkModeSettings(mode);
+    });
+}
+
+applyCustomDarkModeSettings();
+document.addEventListener("DOMContentLoaded", bindToggleButton);
+volantis.pjax.push(bindToggleButton);
+volantis.pjax.send(()=>{
+	btn.unbind('click');
+},'toggle-mode-btn-unbind');
+</script>
+
+
+
+
+
+
+
+
+<script>
+function listennSidebarTOC() {
+  const navItems = document.querySelectorAll(".toc li");
+  if (!navItems.length) return;
+  const sections = [...navItems].map((element) => {
+    const link = element.querySelector(".toc-link");
+    const target = document.getElementById(
+      decodeURI(link.getAttribute("href")).replace("#", "")
+    );
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+		top: target.offsetTop + 100,
+		
+		behavior: "smooth"
+		
+	  });
+    });
+    return target;
+  });
+
+  function activateNavByIndex(target) {
+    if (target.classList.contains("active-current")) return;
+
+    document.querySelectorAll(".toc .active").forEach((element) => {
+      element.classList.remove("active", "active-current");
+    });
+    target.classList.add("active", "active-current");
+    let parent = target.parentNode;
+    while (!parent.matches(".toc")) {
+      if (parent.matches("li")) parent.classList.add("active");
+      parent = parent.parentNode;
+    }
+  }
+
+  function findIndex(entries) {
+    let index = 0;
+    let entry = entries[index];
+    if (entry.boundingClientRect.top > 0) {
+      index = sections.indexOf(entry.target);
+      return index === 0 ? 0 : index - 1;
+    }
+    for (; index < entries.length; index++) {
+      if (entries[index].boundingClientRect.top <= 0) {
+        entry = entries[index];
+      } else {
+        return sections.indexOf(entry.target);
+      }
+    }
+    return sections.indexOf(entry.target);
+  }
+
+  function createIntersectionObserver(marginTop) {
+    marginTop = Math.floor(marginTop + 10000);
+    let intersectionObserver = new IntersectionObserver(
+      (entries, observe) => {
+        let scrollHeight = document.documentElement.scrollHeight + 100;
+        if (scrollHeight > marginTop) {
+          observe.disconnect();
+          createIntersectionObserver(scrollHeight);
+          return;
+        }
+        let index = findIndex(entries);
+        activateNavByIndex(navItems[index]);
+      },
+      {
+        rootMargin: marginTop + "px 0px -100% 0px",
+        threshold: 0,
+      }
+    );
+    sections.forEach((element) => {
+      element && intersectionObserver.observe(element);
+    });
+  }
+  createIntersectionObserver(document.documentElement.scrollHeight);
+}
+
+document.addEventListener("DOMContentLoaded", listennSidebarTOC);
+document.addEventListener("pjax:success", listennSidebarTOC);
+</script>
+
+<!-- more -->
+
+ 
+	   
+	    
+
+
+<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
+
+
+<script>
+    var pjax;
+    document.addEventListener('DOMContentLoaded', function () {
+      pjax = new Pjax({
+        elements: 'a[href]:not([href^="#"]):not([href="javascript:void(0)"]):not([pjax-fancybox])',
+        selectors: [
+          "title",
+          
+          "#pjax-container",
+          "#pjax-header-nav-list"
+        ],
+        cacheBust: false,   // url 地址追加时间戳，用以避免浏览器缓存
+        timeout: 5000
+      });
+    });
+
+    document.addEventListener('pjax:send', function (e) {
+      //window.stop(); // 相当于点击了浏览器的停止按钮
+
+      try {
+        var currentUrl = window.location.pathname;
+        var targetUrl = e.triggerElement.href;
+        var banUrl = [""];
+        if (banUrl[0] != "") {
+          banUrl.forEach(item => {
+            if(currentUrl.indexOf(item) != -1 || targetUrl.indexOf(item) != -1) {
+              window.location.href = targetUrl;
+            }
+          });
+        }
+      } catch (error) {}
+
+      window.subData = null; // 移除标题（用于一二级导航栏切换处）
+
+      volantis.$switcher.removeClass('active'); // 关闭移动端激活的搜索框
+      volantis.$header.removeClass('z_search-open'); // 关闭移动端激活的搜索框
+      volantis.$wrapper.removeClass('sub'); // 跳转页面时关闭二级导航
+
+      // 解绑事件 避免重复监听
+      volantis.$topBtn.unbind('click');
+      $('.menu a').unbind('click');
+      $(window).unbind('resize');
+      $(window).unbind('scroll');
+      $(document).unbind('scroll');
+      $(document).unbind('click');
+      $('body').unbind('click');
+	  // 使用 volantis.pjax.send 方法传入pjax:send回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.send.start();
+    });
+
+    document.addEventListener('pjax:complete', function () {
+      $('.nav-main').find('.list-v').not('.menu-phone').removeAttr("style",""); // 移除小尾巴的移除
+      $('.menu-phone.list-v').removeAttr("style",""); // 移除小尾巴的移除
+      $('script[data-pjax], .pjax-reload script').each(function () {
+        $(this).parent().append($(this).remove());
+      });
+      try{
+		// 使用 volantis.pjax.push 方法传入重载函数 参见layout/_partial/scripts/global.ejs
+		volantis.pjax.method.complete.start();
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    document.addEventListener('pjax:error', function (e) {
+	  // 使用 volantis.pjax.error 方法传入pjax:error回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.error.start();
+      window.location.href = e.triggerElement.href;
+    });
+</script>
+ 
+	  
+    </div>
+  </body>
 </html>
