@@ -550,8 +550,33 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <h2 id="执行方法（先排后分）"><a href="#执行方法（先排后分）" class="headerlink" title="执行方法（先排后分）"></a>执行方法（先排后分）</h2><p>&emsp;&emsp;首先选定数组中lo为枢纽元,然后执行partition函数,使得lo左边的元素都小于lo,lo右边的元素都大于lo,然后对数组从lo分割,递归的将左边数组和右边数组进行排序.在归并排序中，是先分隔后排序，在快速排序中是先排序再分割。</p>
 <hr>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Quick</span> <span class="keyword">extends</span> <span class="title">Sortable</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">	    Arrays.shuffle(a);</span><br><span class="line">		sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (lo &gt;= hi) <span class="keyword">return</span>;<span class="comment">//递归终止条件</span></span><br><span class="line">		<span class="keyword">int</span> median = partition(a, lo, hi);</span><br><span class="line">		sort(a, lo, median - <span class="number">1</span>);	</span><br><span class="line">		sort(a, median + <span class="number">1</span>, hi);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">		Comparable temp = a[lo]; <span class="comment">// 设置a[lo]为枢纽元.</span></span><br><span class="line">		<span class="keyword">int</span> i = lo, j = hi + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">			<span class="keyword">while</span> (less(a[++i], temp)) <span class="keyword">if</span>(i==hi)	<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">while</span> (less(temp, a[--j])) <span class="keyword">if</span>(j==lo)	<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">if</span> (i&gt;=j)	<span class="keyword">break</span>;</span><br><span class="line">			exch(a, i, j);</span><br><span class="line">		&#125;</span><br><span class="line">		exch(a, lo, j);</span><br><span class="line">		<span class="keyword">return</span> j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><pre><code class="java">public class Quick extends Sortable &#123;
+    public static void sort(Comparable[] a) &#123;
+        Arrays.shuffle(a);
+        sort(a, 0, a.length - 1);
+    &#125;
 
+    private static void sort(Comparable[] a, int lo, int hi) &#123;
+        if (lo &gt;= hi) return;//递归终止条件
+        int median = partition(a, lo, hi);
+        sort(a, lo, median - 1);    
+        sort(a, median + 1, hi);
+    &#125;
+
+    private static int partition(Comparable[] a, int lo, int hi) &#123;
+        Comparable temp = a[lo]; // 设置a[lo]为枢纽元.
+        int i = lo, j = hi + 1;
+        while (true) &#123;
+            while (less(a[++i], temp)) if(i==hi)    break;
+            while (less(temp, a[--j])) if(j==lo)    break;
+            if (i&gt;=j)    break;
+            exch(a, i, j);
+        &#125;
+        exch(a, lo, j);
+        return j;
+    &#125;
+&#125;
+</code></pre>
 <hr>
 <h2 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h2><p>&emsp;&emsp;快速排序被誉为21世纪十大重大算法之一,是一种非常快速的排序算法,对于大小为N的数组,他平均需要2NlgN（实际是1.39NlgN）次比较.最大需要$ N^2/2 $次比较，这种情况只有在每次枢纽元都是数组中最大或者最小的时候才会出现，可以通过随机打乱数组避免.归并排序和希尔排序一般都比快速排序慢,因为快速排序需要使用较少的移动数据的次数。而归并排序需要较多的数据移动。</p>
 <hr>
@@ -559,7 +584,28 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>当待排序的数组元素个数小于5~15时,使用插入排序(Insertion)排序.即将<code>if (lo &gt;= hi) return;</code>替换为<code>if(hi&lt;=lo+10)&#123;Insertion.sort(a,lo,hi);return;&#125;</code></p>
 </li>
 <li><p>对于大量重复的数组,使用三向切分来切分数组.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Quick3way</span> <span class="keyword">extends</span> <span class="title">Quick</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (hi &lt;= lo) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> lt = lo, gt = hi, i = lo + <span class="number">1</span>;</span><br><span class="line">        Comparable temp = a[lo];</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         lo~lt-1 :小于temp的元素</span></span><br><span class="line"><span class="comment">         lt~i:等于temp的元素</span></span><br><span class="line"><span class="comment">         gt+1~hi:大于temp的元素</span></span><br><span class="line"><span class="comment">         i~gt:未确定的元素</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= gt) &#123;</span><br><span class="line">            <span class="keyword">int</span> cmp = a[i].compareTo(temp);</span><br><span class="line">            <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) exch(a, lt++, i++);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) exch(a, gt--, i);</span><br><span class="line">            <span class="keyword">else</span> i++;</span><br><span class="line">        &#125;</span><br><span class="line">        sort(a, lo, lt - <span class="number">1</span>);</span><br><span class="line">        sort(a, gt + <span class="number">1</span>, hi);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Quick3way extends Quick &#123;
+  public static void sort(Comparable[] a, int lo, int hi) &#123;
+      if (hi &lt;= lo) return;
+      int lt = lo, gt = hi, i = lo + 1;
+      Comparable temp = a[lo];
+      /**
+       lo~lt-1 :小于temp的元素
+       lt~i:等于temp的元素
+       gt+1~hi:大于temp的元素
+       i~gt:未确定的元素
+       */
+      while (i &lt;= gt) &#123;
+          int cmp = a[i].compareTo(temp);
+          if (cmp &lt; 0) exch(a, lt++, i++);
+          else if (cmp &gt; 0) exch(a, gt--, i);
+          else i++;
+      &#125;
+      sort(a, lo, lt - 1);
+      sort(a, gt + 1, hi);
+  &#125;
+&#125;
+</code></pre>
 <p>对于大量重复元素的数组,三向切分的方法比二分法的运行效率高得多.他将排序时间从线性对数级别缩小到到线性级别。<br>三向切分运行时的数据分布图如下：<br><img src="data:image/png;base64,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"></p>
 </li>
 <li><p>快速三向切分法<br>&emsp;&emsp;还没看懂T~T???</p>
@@ -792,7 +838,7 @@ final作用于数据final作用于域final作用于域有两种情况:1:  一个
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -804,9 +850,9 @@ final作用于数据final作用于域final作用于域有两种情况:1:  一个
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1055,12 +1101,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1189,8 +1235,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1259,7 +1303,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1378,62 +1422,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1465,7 +1453,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1493,11 +1481,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

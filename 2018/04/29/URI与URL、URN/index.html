@@ -548,7 +548,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h3 id="URI和URL、URN的区别与联系"><a href="#URI和URL、URN的区别与联系" class="headerlink" title="URI和URL、URN的区别与联系"></a>URI和URL、URN的区别与联系</h3><p>&emsp;&emsp;URI包含了URL和URN,总的来说，URI是一种协议和规则，URL则是URI的一种具体实现，URN也是URI的具体实现，只不过实现的方式不同而已。</p>
 <hr>
 <h2 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h2><h3 id="URL语法"><a href="#URL语法" class="headerlink" title="URL语法"></a>URL语法</h3><p>&emsp;&emsp;URL是使用的最多的一种URI形式，大多数URL方案的URL语法都建立在有9个组件构成的通用格式上：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;scheme&gt;:&#x2F;&#x2F;&lt;user&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;&#x2F;&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;frag&gt;</span><br><span class="line">  方案      用户名    密码      主机   端口   路径    参数     查询   片段</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;scheme&gt;://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;frag&gt;
+  方案      用户名    密码      主机   端口   路径    参数     查询   片段
+</code></pre>
 <p>各个组件的解释如下：</p>
 <ol>
 <li><p>方案：方案即URL使用的是什么协议方案必须是字母符号开始，由第一个冒号将其与后面隔开。<code>注意</code>：方案名是大小写无关的</p>
@@ -569,7 +571,13 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <hr>
 <h2 id="特殊的URL"><a href="#特殊的URL" class="headerlink" title="特殊的URL"></a>特殊的URL</h2><h3 id="相对URL"><a href="#相对URL" class="headerlink" title="相对URL"></a>相对URL</h3><p>&emsp;&emsp;URL有两种形式，绝对和相对URL，例如：<code>http://www.myhost.com/index.html</code>是一个绝对URL，而<code>./tools.html</code>是一个相对URL.<br> &emsp;&emsp;利用基础URL,从相对URl可一推导出绝对URL,将上面第一个URL作为基础ULR,从第二个相对URL对到出的绝对URL为<code>http://www.myhost.com/tools.html</code><br> &emsp;&emsp;查找基础URL有几个不同的方式，第一种是通过HTMl中的标记<code>&lt;BASE&gt;</code>显式的给出，第二种是如果没有显示给出基础URL，就将他所属的URL作为基础URL。如果没有基础URL,那么这个URL就可能是一个损坏的URL。</p>
 <hr>
-<h2 id="URL的转义"><a href="#URL的转义" class="headerlink" title="URL的转义"></a>URL的转义</h2><h3 id="安全字符集"><a href="#安全字符集" class="headerlink" title="安全字符集"></a>安全字符集</h3><p> &emsp;&emsp;URL中可以出现安全字符集以内的字符而不需要转义，安全字符集包括如下字符：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">大写字母A-Z</span><br><span class="line">小写字母a-z</span><br><span class="line">数字0-9</span><br><span class="line">标点符号- _ . ! ~ * &#39; ,</span><br></pre></td></tr></table></figure><br><code>注意</code>，符号/ &amp; ? # ; $ + = % 这些字符也可以使用，但都有特定用途，如果出现在路径或者查询字段中，他们以及所有其他字符都需要转义。</p>
+<h2 id="URL的转义"><a href="#URL的转义" class="headerlink" title="URL的转义"></a>URL的转义</h2><h3 id="安全字符集"><a href="#安全字符集" class="headerlink" title="安全字符集"></a>安全字符集</h3><p> &emsp;&emsp;URL中可以出现安全字符集以内的字符而不需要转义，安全字符集包括如下字符：</p>
+<pre><code>大写字母A-Z
+小写字母a-z
+数字0-9
+标点符号- _ . ! ~ * &#39; ,
+</code></pre>
+<p><code>注意</code>，符号/ &amp; ? # ; $ + = % 这些字符也可以使用，但都有特定用途，如果出现在路径或者查询字段中，他们以及所有其他字符都需要转义。</p>
 <h3 id="非安全字符"><a href="#非安全字符" class="headerlink" title="非安全字符"></a>非安全字符</h3><p>&emsp;&emsp;对于URL中的非安全字符集，需要对其进行转义，方式是%加上两位的十六进制数字。例如：’+’应该编码为%2B，<code>注意</code>：空格’ ‘可以编码为%20，也可以编码为’+’。</p>
 
   
@@ -797,7 +805,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -809,9 +817,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1060,12 +1068,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1194,8 +1202,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1264,7 +1270,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1383,62 +1389,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1470,7 +1420,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1498,11 +1448,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

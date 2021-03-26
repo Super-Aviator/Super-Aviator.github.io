@@ -545,31 +545,120 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <ul>
 <li><a target="_blank" rel="noopener" href="https://juejin.im/post/5ab548f75188257ddb0f8fa2#heading-1">搞懂 Java ArrayList 源码</a></li>
 </ul>
-<h1 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
+<h1 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h1><pre><code class="java">public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;
+        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable
+</code></pre>
 <p>从上面的集成关系可以得知，ArrayList支持浅拷贝，同时支持序列化，RandomAccess接口是一个标记接口，指明ArrayList的随机访问的时间复杂度为O(1)。</p>
 <h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>ArrayList的构造函数中如果不传入初始值，并不是直接初始化为长度为10的Object数组，而是指向内部的静态成员变量<code>private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</code>。当有元素初次插入时，才会初始化为默认的长度10。<code>    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;</code>表明List最长的长度。</p>
 <p>拷贝构造器中，有一个对toArray()方法的bug的兼容：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    elementData = c.toArray();</span><br><span class="line">    <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">        <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">            elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// replace with empty array.</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    public ArrayList(Collection&lt;? extends E&gt; c) &#123;
+        elementData = c.toArray();
+        if ((size = elementData.length) != 0) &#123;
+            // c.toArray might (incorrectly) not return Object[] (see 6260652)
+            if (elementData.getClass() != Object[].class)
+                elementData = Arrays.copyOf(elementData, size, Object[].class);
+        &#125; else &#123;
+            // replace with empty array.
+            this.elementData = EMPTY_ELEMENTDATA;
+        &#125;
+    &#125;
+</code></pre>
 <p>对这个bug的解释可以看下面这段代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testToArray</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;String&gt; strings1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    strings1.add(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    strings1.add(<span class="string">&quot;World&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Object[] objects1=strings1.toArray();</span><br><span class="line">    System.out.println(objects1.getClass());</span><br><span class="line">    <span class="comment">//输出class [Ljava.lang.Object;</span></span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; strings2= Arrays.asList(<span class="string">&quot;Hello&quot;</span>,<span class="string">&quot;World&quot;</span>);</span><br><span class="line">    System.out.println(strings2.getClass());</span><br><span class="line">    <span class="comment">//输出class java.util.Arrays$ArrayList</span></span><br><span class="line">    Object[] objects2=strings2.toArray();</span><br><span class="line">    <span class="comment">//objects2[0]=new Object();   代码会有ArrayStorageException异常</span></span><br><span class="line">    System.out.println(objects2.getClass());</span><br><span class="line">    <span class="comment">//输出class [Ljava.lang.String;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用Arrays.copyOf的第三个参数，将String数组转换为Object数组</span></span><br><span class="line">    objects2=Arrays.copyOf(objects2,<span class="number">2</span>,Object[].class);</span><br><span class="line">    objects2[<span class="number">0</span>]=<span class="keyword">new</span> Object();</span><br><span class="line">    System.out.println(objects2.getClass());</span><br><span class="line">    <span class="comment">//输出class [Ljava.lang.Object;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    @Test
+    public void testToArray()&#123;
+        List&lt;String&gt; strings1=new ArrayList&lt;&gt;();
+        strings1.add(&quot;Hello&quot;);
+        strings1.add(&quot;World&quot;);
+
+        Object[] objects1=strings1.toArray();
+        System.out.println(objects1.getClass());
+        //输出class [Ljava.lang.Object;
+
+        List&lt;String&gt; strings2= Arrays.asList(&quot;Hello&quot;,&quot;World&quot;);
+        System.out.println(strings2.getClass());
+        //输出class java.util.Arrays$ArrayList
+        Object[] objects2=strings2.toArray();
+        //objects2[0]=new Object();   代码会有ArrayStorageException异常
+        System.out.println(objects2.getClass());
+        //输出class [Ljava.lang.String;
+
+        //使用Arrays.copyOf的第三个参数，将String数组转换为Object数组
+        objects2=Arrays.copyOf(objects2,2,Object[].class);
+        objects2[0]=new Object();
+        System.out.println(objects2.getClass());
+        //输出class [Ljava.lang.Object;
+    &#125;
+</code></pre>
 <p>对于toArray方法返回不是Object[]数组时，需要使用Arrays.copyOf方法，使用第三个参数将数组转换为Object数组。</p>
 <p>在Arrays类内部的ArrayList源码中，可以看到如下代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Object[] toArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> a.clone();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+public Object[] toArray() &#123;
+    return a.clone();
+&#125;
+</code></pre>
 <p>因为clone方法不会改变元素的类型，如果保存的是String类型，返回的仍然是String类型的数组，而数组是协变类型，可以转换为String的父类Object数组，导致返回了错误的类型编译也可以通过。</p>
-<h1 id="成员方法"><a href="#成员方法" class="headerlink" title="成员方法"></a>成员方法</h1><h2 id="indexOf"><a href="#indexOf" class="headerlink" title="indexOf"></a>indexOf</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">            <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="成员方法"><a href="#成员方法" class="headerlink" title="成员方法"></a>成员方法</h1><h2 id="indexOf"><a href="#indexOf" class="headerlink" title="indexOf"></a>indexOf</h2><pre><code class="java">    public int indexOf(Object o) &#123;
+        if (o == null) &#123;
+            for (int i = 0; i &lt; size; i++)
+                if (elementData[i]==null)
+                    return i;
+        &#125; else &#123;
+            for (int i = 0; i &lt; size; i++)
+                if (o.equals(elementData[i]))
+                    return i;
+        &#125;
+        return -1;
+    &#125;
+</code></pre>
 <p>从indexOf方法可以看出，ArrayList是支持存储null值的,并且可以存储多个null值，当方法中需要匹配的值是null时，使用elementData[i]==null的方式进行判断，否则使用quuals方法进行判断，原因是如果直接在null上调用equals方法会有空指针异常。</p>
 <h2 id="toArray"><a href="#toArray" class="headerlink" title="toArray"></a>toArray</h2><p>对于方法toArray，重点看一下带泛型的版本：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.length &lt; size)</span><br><span class="line">        <span class="comment">// Make a new array of a&#x27;s runtime type, but my contents:</span></span><br><span class="line">        <span class="keyword">return</span> (T[]) Arrays.copyOf(elementData, size, a.getClass());</span><br><span class="line">    System.arraycopy(elementData, <span class="number">0</span>, a, <span class="number">0</span>, size);</span><br><span class="line">    <span class="keyword">if</span> (a.length &gt; size)</span><br><span class="line">        a[size] = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    public &lt;T&gt; T[] toArray(T[] a) &#123;
+        if (a.length &lt; size)
+            // Make a new array of a&#39;s runtime type, but my contents:
+            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        System.arraycopy(elementData, 0, a, 0, size);
+        if (a.length &gt; size)
+            a[size] = null;
+        return a;
+    &#125;
+</code></pre>
 <p>从代码中得知，如果参数的长度小于ArrayList中的元素的长度，则使用Arrays.copyOf方法新建一个和elementData相同的数组返回，否则，使用参数中的数组保存elementData中的元素，并且将最后一个数组的值设置为null,例如：elementData为[1,2,3]，而参数中的数组a为[a,b,c,d,e],则执行ArrayList.toArray(a)以后，a中的结果为：[1,2,3,null,e]。示例程序如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testToArray2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ArrayList&lt;String&gt; list=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    list.add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">    list.add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">    list.add(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">    String[] arr=&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>&#125;;</span><br><span class="line">    System.out.println(Arrays.toString(list.toArray(arr)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    @Test
+    public void testToArray2()&#123;
+        ArrayList&lt;String&gt; list=new ArrayList&lt;&gt;();
+        list.add(&quot;1&quot;);
+        list.add(&quot;2&quot;);
+        list.add(&quot;3&quot;);
+        String[] arr=&#123;&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;&#125;;
+        System.out.println(Arrays.toString(list.toArray(arr)));
+    &#125;
+</code></pre>
 <p>输出结果为：[1, 2, 3, null, e]<br><strong>注意</strong>：此方法的泛型参数和定义ArrayList时指定的泛型参数是不同的，如果使用toArray方法传入的参数和定义ArrayList时指定的泛型参数不同，则会抛出java.lang.ArrayStoreException异常。</p>
 <h2 id="rangeCheck方法"><a href="#rangeCheck方法" class="headerlink" title="rangeCheck方法"></a>rangeCheck方法</h2><p>rangeCheck方法是一个内部私有的方法，在对下标进行操作时，都会调用这个方法进行下标检查，但是查看代码的过程中有产生了一个疑问：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rangeCheck</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= size)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private void rangeCheck(int index) &#123;
+        if (index &gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    &#125;
+</code></pre>
 <p>马虎的我一直搞不懂既然对检查了是否大于size，但是为什么不检查是否小于0呢，后来通过网上查询得知，判断index是否大于size的原因是，elementData数组的length和size一个是数组的长度，一个是当前元素的个数，而size可能是小于length的,所以需要对index进行判断，此时index的上限是size-1，而非length-1,而index小于0时，数字自动会抛出IndexOutofBoundsException异常,所以不需要进行判断。</p>
 <h1 id="增长策略"><a href="#增长策略" class="headerlink" title="增长策略"></a>增长策略</h1><p>ArrayList在每次增加元素时，都会显式的调用ensureCapacityernal方法来判断当前数组的大小是否能够容纳对应的元素，所以需要了解一下ArrayList的扩容机制。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ensureExplicitCapacity(minCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private void ensureCapacityInternal(int minCapacity) &#123;
+        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+        &#125;
+
+        ensureExplicitCapacity(minCapacity);
+    &#125;
+</code></pre>
 <p>在EnsureCapacity方法的开始，判断elementData是否是静态成员变量<code>DEFAULTCAPACITY_EMPTY_ELEMENTDATA</code>（只有使用new ArrayList()构造方法时，才会将内部的elementData赋值为此成员变量），如果是的话，将minCapacty赋值为默认的大小10,然后调用ensureExplicitCapacity方法进行更加精确的扩容操作。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private void ensureExplicitCapacity(int minCapacity) &#123;
+        modCount++;
+
+        // overflow-conscious code
+        if (minCapacity - elementData.length &gt; 0)
+            grow(minCapacity);
+    &#125;
+</code></pre>
 <p>ensureExplicitCapacity方法内部，只有当想要增长的元素长度大于elementData数组的长度时，才会进行增长操作，真正增长的策略则在grow方法中。</p>
 <p><strong>总结</strong> </p>
 <h1 id="最大容量"><a href="#最大容量" class="headerlink" title="最大容量"></a>最大容量</h1>
@@ -799,7 +888,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -811,9 +900,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1062,12 +1151,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1196,8 +1285,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1266,7 +1353,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1385,62 +1472,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1472,7 +1503,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1500,11 +1531,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

@@ -545,19 +545,119 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <p>java中实现迭代器接口的几种方法</p>
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>Iterable接口定义：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterable</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">Iterator&lt;T&gt; <span class="title">iterator</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface Iterable&lt;T&gt; &#123;
+    Iterator&lt;T&gt; iterator();
+&#125;
+</code></pre>
 <p>如上所示，Iterable接口中含有一个iterator方法，该方法返回一个Iterator接口，我们来看一看Iterator接口的定义：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">E <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;<span class="comment">//选择实现。</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;remove&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public interface Iterator&lt;E&gt; &#123;
+    boolean hasNext();
+    E next();
+    default void remove() &#123;//选择实现。
+        throw new UnsupportedOperationException(&quot;remove&quot;);
+    &#125;
+&#125;
+</code></pre>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="类实现Iterable接口"><a href="#类实现Iterable接口" class="headerlink" title="类实现Iterable接口"></a>类实现Iterable接口</h3><p>&emsp;&emsp;在java中，如果你想要你的类可以使用foreach遍历，就需要实现Iterable接口。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IterableTest</span> <span class="keyword">implements</span> <span class="title">Iterable</span>&lt;<span class="title">String</span>&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String[] str=&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;String&gt; <span class="title">iterator</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;String&gt;()&#123;<span class="comment">//使用匿名内部类实现Iterator接口。</span></span><br><span class="line">            <span class="keyword">int</span> current = <span class="number">0</span>;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> current&lt;str.length;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">next</span><span class="params">()</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> str[current++];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        IterableTest it=<span class="keyword">new</span> IterableTest();</span><br><span class="line">        <span class="keyword">for</span>(String str:it)</span><br><span class="line">            System.out.print(str+<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">output<span class="comment">//</span></span><br><span class="line">a b c d e</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.util.Iterator;
 
+public class IterableTest implements Iterable&lt;String&gt;&#123;
+    private String[] str=&#123;&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;&#125;;
+    public Iterator&lt;String&gt; iterator()&#123;
+        return new Iterator&lt;String&gt;()&#123;//使用匿名内部类实现Iterator接口。
+            int current = 0;
+            public boolean hasNext()&#123;
+                return current&lt;str.length;
+            &#125;
+
+            public String next()&#123;
+                return str[current++];
+            &#125;
+
+            public void remove()&#123;
+                throw new UnsupportedOperationException();
+            &#125;
+        &#125;;
+    &#125;
+
+    public static void main(String[] args)&#123;
+        IterableTest it=new IterableTest();
+        for(String str:it)
+            System.out.print(str+&quot; &quot;);
+    &#125;
+&#125;
+output//
+a b c d e
+</code></pre>
 <hr>
 <h3 id="方法返回Iterable接口"><a href="#方法返回Iterable接口" class="headerlink" title="方法返回Iterable接口"></a>方法返回Iterable接口</h3><p>&emsp;&emsp;当想调用函数返回一个Iterable时，可以在方法中使用内部类实现Iterable接口。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IterableTest</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String[] str=&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>&#125;;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> Iterable&lt;String&gt; <span class="title">getIterator</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Iterable&lt;String&gt;() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> Iterator&lt;String&gt; <span class="title">iterator</span><span class="params">()</span></span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;String&gt;() &#123;</span><br><span class="line">                        <span class="keyword">int</span> current =<span class="number">0</span>;</span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> current&lt;str.length;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> String <span class="title">next</span><span class="params">()</span></span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> str[current++];</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>&#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                    </span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        IterableTest it=<span class="keyword">new</span> IterableTest();</span><br><span class="line">        <span class="keyword">for</span>(String str:it.getIterator())</span><br><span class="line">            System.out.print(str+<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//output</span></span><br><span class="line">a b c d e</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.util.Iterator;
 
+public class IterableTest&#123;
+    private String[] str=&#123;&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;&#125;;
+        public Iterable&lt;String&gt; getIterator()&#123;
+            return new Iterable&lt;String&gt;() &#123;
+                public Iterator&lt;String&gt; iterator()&#123;
+                    return new Iterator&lt;String&gt;() &#123;
+                        int current =0;
+                    public boolean hasNext()&#123;
+                        return current&lt;str.length;
+                    &#125;
+
+                    public String next()&#123;
+                        return str[current++];
+                    &#125;
+
+                    public void remove()&#123;
+                        throw new UnsupportedOperationException();
+                    &#125;
+                    &#125;;
+                &#125;
+                    
+                &#125;;
+            &#125;;
+
+    public static void main(String[] args)&#123;
+        IterableTest it=new IterableTest();
+        for(String str:it.getIterator())
+            System.out.print(str+&quot; &quot;);
+    &#125;
+&#125;
+//output
+a b c d e
+</code></pre>
 <h3 id="使用Lambda表达式"><a href="#使用Lambda表达式" class="headerlink" title="使用Lambda表达式"></a>使用Lambda表达式</h3><p>&emsp;&emsp;使用java8中的Lambda可以简化我们的代码。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IterableTest</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String[] str=&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>&#125;;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> Iterable&lt;String&gt; <span class="title">iterator</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> ()-&gt; <span class="keyword">new</span> Iterator&lt;String&gt;() &#123;<span class="comment">//Lambda</span></span><br><span class="line">                            <span class="keyword">int</span> current =<span class="number">0</span>;</span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>&#123;</span><br><span class="line">                                <span class="keyword">return</span> current&lt;str.length;</span><br><span class="line">                            &#125;</span><br><span class="line">        </span><br><span class="line">                            <span class="function"><span class="keyword">public</span> String <span class="title">next</span><span class="params">()</span></span>&#123;</span><br><span class="line">                                <span class="keyword">return</span> str[current++];</span><br><span class="line">                            &#125;</span><br><span class="line">        </span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>&#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">                            &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        IteratorTest it=<span class="keyword">new</span> IteratorTest();</span><br><span class="line">        <span class="keyword">for</span>(String str:it.iterator())</span><br><span class="line">            System.out.print(str+<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output</span></span><br><span class="line">a b c d e</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.util.Iterator;
+
+public class IterableTest&#123;
+    private String[] str=&#123;&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;&#125;;
+        public Iterable&lt;String&gt; iterator()&#123;
+            return ()-&gt; new Iterator&lt;String&gt;() &#123;//Lambda
+                            int current =0;
+                            public boolean hasNext()&#123;
+                                return current&lt;str.length;
+                            &#125;
+        
+                            public String next()&#123;
+                                return str[current++];
+                            &#125;
+        
+                            public void remove()&#123;
+                                throw new UnsupportedOperationException();
+                            &#125;
+                    &#125;;
+            &#125;
+    public static void main(String[] args)&#123;
+        IteratorTest it=new IteratorTest();
+        for(String str:it.iterator())
+            System.out.print(str+&quot; &quot;);
+    &#125;
+&#125;
+
+//output
+a b c d e
+</code></pre>
+
   
   
     
@@ -782,7 +882,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -794,9 +894,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1045,12 +1145,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1179,8 +1279,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1249,7 +1347,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1368,62 +1466,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1455,7 +1497,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1483,11 +1525,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

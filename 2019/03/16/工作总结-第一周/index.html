@@ -566,19 +566,110 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h2 id="将对象属性序列化为指定的名称"><a href="#将对象属性序列化为指定的名称" class="headerlink" title="将对象属性序列化为指定的名称"></a>将对象属性序列化为指定的名称</h2><p>有时对象的属性并不能序列化为指定的名字，此时就需要使用注解来指定序列化之后的名字，可以使用@JSONField(name=”name”),同样此注解可以使用在geter或者seter方法上，也可以使用在成员变量上，对序列化进行不同控制。</p>
 <h2 id="对时间进行格式化"><a href="#对时间进行格式化" class="headerlink" title="对时间进行格式化"></a>对时间进行格式化</h2><p>对于Data时间格式，可以使用@JSONField(format=”yyyyMMdd”)来格式化时间</p>
 <p>##使用serialize/deserialize指定字段不序列化</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">      <span class="meta">@JSONField(serialize=false)</span></span><br><span class="line">      <span class="keyword">public</span> Date date;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">      <span class="meta">@JSONField(deserialize=false)</span></span><br><span class="line">      <span class="keyword">public</span> Date date;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class A &#123;
+      @JSONField(serialize=false)
+      public Date date;
+ &#125;
 
+ public class A &#123;
+      @JSONField(deserialize=false)
+      public Date date;
+ &#125;
+</code></pre>
 <p>更多的用法可以<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/fastjson/fastjson-jsonfield.html">查看文档</a></p>
 <h1 id="Mybatis中JavaType和JDBCType的对应"><a href="#Mybatis中JavaType和JDBCType的对应" class="headerlink" title="Mybatis中JavaType和JDBCType的对应"></a>Mybatis中JavaType和JDBCType的对应</h1><p>在弄毕设的时候，数据库中的BIGINT会被映射为Java的Long类型，但是在今天做映射的时候，BIGINT且被映射为Integer类型，具体的原因我还没弄清除，可能是BIGINT（20）由于数字太小进行了自动转换，等下次遇到的时候再去研究一下，先记录下JDBCType和JavaType数据类型的对应关系：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">JDBCType            JavaType</span><br><span class="line">  CHAR                String</span><br><span class="line">  VARCHAR             String</span><br><span class="line">  LONGVARCHAR         String</span><br><span class="line">  NUMERIC             java.math.BigDecimal</span><br><span class="line">  DECIMAL             java.math.BigDecimal</span><br><span class="line">  BIT                 <span class="keyword">boolean</span></span><br><span class="line">  BOOLEAN             <span class="keyword">boolean</span></span><br><span class="line">  TINYINT             <span class="keyword">byte</span></span><br><span class="line">  SMALLINT            <span class="keyword">short</span></span><br><span class="line">  INTEGER             <span class="keyword">int</span></span><br><span class="line">  BIGINT              <span class="keyword">long</span></span><br><span class="line">  REAL                <span class="keyword">float</span></span><br><span class="line">  FLOAT               <span class="keyword">double</span></span><br><span class="line">  DOUBLE              <span class="keyword">double</span></span><br><span class="line">  BINARY              <span class="keyword">byte</span>[]</span><br><span class="line">  VARBINARY           <span class="keyword">byte</span>[]</span><br><span class="line">  LONGVARBINARY       <span class="keyword">byte</span>[]</span><br><span class="line">  DATE                java.sql.Date</span><br><span class="line">  TIME                java.sql.Time</span><br><span class="line">  TIMESTAMP           java.sql.Timestamp</span><br><span class="line">  CLOB                Clob</span><br><span class="line">  BLOB                Blob</span><br><span class="line">  ARRAY               Array</span><br><span class="line">  DISTINCT            mapping of underlying type</span><br><span class="line">  STRUCT              Struct</span><br><span class="line">  REF                 Ref</span><br><span class="line">  DATALINK            java.net.URL[color=red][/color]</span><br></pre></td></tr></table></figure>
-<h1 id="Mybatis中-lt-collection-gt-标签的使用"><a href="#Mybatis中-lt-collection-gt-标签的使用" class="headerlink" title="Mybatis中&lt; collection &gt;标签的使用"></a>Mybatis中&lt; collection &gt;标签的使用</h1><p>在做课设处理映射时，使用到了一对多的映射，先还原场景，然后看一看&lt; collection &gt;标签的用法。</p>
-<h2 id="表结构："><a href="#表结构：" class="headerlink" title="表结构："></a>表结构：</h2><p>user_info(用户信息表)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUPfJ.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/03/17/AeUPfJ.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="AeUPfJ.png"><br>packet_info(用户分组信息，每个分组保存了用户的好友)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUMfH.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/03/17/AeUMfH.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="AeUMfH.png"><br>user_packet_info(用户所建的分组)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUt78.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/03/17/AeUt78.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="AeUt78.png"><br>packet_user_info(分组中保存的好友)：<br><img src="https://s2.ax1x.com/2019/03/17/AeUdhQ.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/03/17/AeUdhQ.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="AeUdhQ.png"></p>
-<h2 id="所要是实现的功能"><a href="#所要是实现的功能" class="headerlink" title="所要是实现的功能"></a>所要是实现的功能</h2><p>项目中所要实现的功能是查询某一个user_id的所有分组下的好友，返回的主要部分JSON格式需要如下：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;	//好友列表</span><br><span class="line">    &quot;friend&quot;: [&#123;</span><br><span class="line">      &quot;groupname&quot;: &quot;前端码屌&quot; //好友分组名</span><br><span class="line">      ,&quot;id&quot;: 1 //分组ID</span><br><span class="line">      ,&quot;list&quot;: [&#123; //分组下的好友列表</span><br><span class="line">        &quot;username&quot;: &quot;贤心&quot; //好友昵称</span><br><span class="line">        ,&quot;id&quot;: &quot;100001&quot; //好友ID</span><br><span class="line">        ,&quot;avatar&quot;: &quot;a.jpg&quot; //好友头像</span><br><span class="line">        ,&quot;sign&quot;: &quot;这些都是测试数据，实际使用请严格按照该格式返回&quot; //好友签名</span><br><span class="line">        ,&quot;status&quot;: &quot;online&quot; //若值为offline代表离线，online或者不填为在线</span><br><span class="line">      &#125;, …… ]</span><br><span class="line">    &#125;, …… ]</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="JAVA">  JDBCType            JavaType
+    CHAR                String
+    VARCHAR             String
+    LONGVARCHAR         String
+    NUMERIC             java.math.BigDecimal
+    DECIMAL             java.math.BigDecimal
+    BIT                 boolean
+    BOOLEAN             boolean
+    TINYINT             byte
+    SMALLINT            short
+    INTEGER             int
+    BIGINT              long
+    REAL                float
+    FLOAT               double
+    DOUBLE              double
+    BINARY              byte[]
+    VARBINARY           byte[]
+    LONGVARBINARY       byte[]
+    DATE                java.sql.Date
+    TIME                java.sql.Time
+    TIMESTAMP           java.sql.Timestamp
+    CLOB                Clob
+    BLOB                Blob
+    ARRAY               Array
+    DISTINCT            mapping of underlying type
+    STRUCT              Struct
+    REF                 Ref
+    DATALINK            java.net.URL[color=red][/color]
+    ```
+    
+# Mybatis中&lt; collection &gt;标签的使用
+在做课设处理映射时，使用到了一对多的映射，先还原场景，然后看一看&lt; collection &gt;标签的用法。
 
+## 表结构：
+user_info(用户信息表)：
+![AeUPfJ.png](https://s2.ax1x.com/2019/03/17/AeUPfJ.png)
+packet_info(用户分组信息，每个分组保存了用户的好友)：
+![AeUMfH.png](https://s2.ax1x.com/2019/03/17/AeUMfH.png)
+user_packet_info(用户所建的分组)：
+![AeUt78.png](https://s2.ax1x.com/2019/03/17/AeUt78.png)
+packet_user_info(分组中保存的好友)：
+![AeUdhQ.png](https://s2.ax1x.com/2019/03/17/AeUdhQ.png)
+
+## 所要是实现的功能
+项目中所要实现的功能是查询某一个user_id的所有分组下的好友，返回的主要部分JSON格式需要如下：
+
+```text
+&#123;    //好友列表
+    &quot;friend&quot;: [&#123;
+      &quot;groupname&quot;: &quot;前端码屌&quot; //好友分组名
+      ,&quot;id&quot;: 1 //分组ID
+      ,&quot;list&quot;: [&#123; //分组下的好友列表
+        &quot;username&quot;: &quot;贤心&quot; //好友昵称
+        ,&quot;id&quot;: &quot;100001&quot; //好友ID
+        ,&quot;avatar&quot;: &quot;a.jpg&quot; //好友头像
+        ,&quot;sign&quot;: &quot;这些都是测试数据，实际使用请严格按照该格式返回&quot; //好友签名
+        ,&quot;status&quot;: &quot;online&quot; //若值为offline代表离线，online或者不填为在线
+      &#125;, …… ]
+    &#125;, …… ]
+    
+&#125;
+</code></pre>
 <h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>ResultMap:</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;SelectFriendInfo&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;FriendInfoResultMap&quot;</span>&gt;</span></span><br><span class="line">        SELECT packet_name  ,C.packet_id</span><br><span class="line">        FROM user_packet_info AS A</span><br><span class="line">        INNER JOIN packet_info AS C ON A.packet_id=C.packet_id</span><br><span class="line">        WHERE A.user_id=#&#123;id&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;SelectUserFriend&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;FriendInfo&quot;</span>&gt;</span></span><br><span class="line">        SELECT E.user_id AS id,username,sign,avatar,status</span><br><span class="line">        FROM user_packet_info AS A</span><br><span class="line">        INNER JOIN packet_user_info AS E ON A.packet_id=E.packet_id</span><br><span class="line">        INNER JOIN user_info AS B ON E.user_id=B.user_id AND B.user_id!=A.user_id</span><br><span class="line">        WHERE E.packet_id=#&#123;id&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;FriendInfoResultMap&quot;</span> <span class="attr">type</span>=<span class="string">&quot;PacketInfo&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">idArg</span> <span class="attr">column</span>=<span class="string">&quot;packet_id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Long&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">arg</span> <span class="attr">column</span>=<span class="string">&quot;packet_name&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;list&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;FriendInfo&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;ArrayList&quot;</span> <span class="attr">column</span>=<span class="string">&quot;packet_id&quot;</span> <span class="attr">select</span>=<span class="string">&quot;SelectUserFriend&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Long&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;username&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;sign&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;status&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span>  <span class="attr">column</span>=<span class="string">&quot;avatar&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;select id=&quot;SelectFriendInfo&quot; resultMap=&quot;FriendInfoResultMap&quot;&gt;
+        SELECT packet_name  ,C.packet_id
+        FROM user_packet_info AS A
+        INNER JOIN packet_info AS C ON A.packet_id=C.packet_id
+        WHERE A.user_id=#&#123;id&#125;;
+    &lt;/select&gt;
 
+    &lt;select id=&quot;SelectUserFriend&quot; resultType=&quot;FriendInfo&quot;&gt;
+        SELECT E.user_id AS id,username,sign,avatar,status
+        FROM user_packet_info AS A
+        INNER JOIN packet_user_info AS E ON A.packet_id=E.packet_id
+        INNER JOIN user_info AS B ON E.user_id=B.user_id AND B.user_id!=A.user_id
+        WHERE E.packet_id=#&#123;id&#125;;
+    &lt;/select&gt;
+
+    &lt;resultMap id=&quot;FriendInfoResultMap&quot; type=&quot;PacketInfo&quot;&gt;
+        &lt;constructor&gt;
+            &lt;idArg column=&quot;packet_id&quot; javaType=&quot;Long&quot;/&gt;
+            &lt;arg column=&quot;packet_name&quot; javaType=&quot;String&quot;/&gt;
+        &lt;/constructor&gt;
+        &lt;collection property=&quot;list&quot; ofType=&quot;FriendInfo&quot; javaType=&quot;ArrayList&quot; column=&quot;packet_id&quot; select=&quot;SelectUserFriend&quot;&gt;
+            &lt;id column=&quot;id&quot; javaType=&quot;Long&quot;/&gt;
+            &lt;result  column=&quot;username&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;sign&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;status&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;avatar&quot; javaType=&quot;String&quot;/&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;
+</code></pre>
 <p>其中的&lt; collection &gt;中，需要使用一个column属性，将上层的packet_id传递给下层的查询语句作为参数，association同样也需要。而且不能将两个SELECT合并为一个查询语句。</p>
 
   
@@ -740,7 +831,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="toc-text">自定义属性序列化的顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%BA%E5%AD%97%E7%AC%A6%E7%B1%BB%E5%9E%8B"><span class="toc-text">将数值类型序列化为字符类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%BA%E6%8C%87%E5%AE%9A%E7%9A%84%E5%90%8D%E7%A7%B0"><span class="toc-text">将对象属性序列化为指定的名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%97%B6%E9%97%B4%E8%BF%9B%E8%A1%8C%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="toc-text">对时间进行格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="toc-text">表结构：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%80%E8%A6%81%E6%98%AF%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="toc-text">所要是实现的功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="toc-text">自定义属性序列化的顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%BA%E5%AD%97%E7%AC%A6%E7%B1%BB%E5%9E%8B"><span class="toc-text">将数值类型序列化为字符类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%BA%E6%8C%87%E5%AE%9A%E7%9A%84%E5%90%8D%E7%A7%B0"><span class="toc-text">将对象属性序列化为指定的名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%97%B6%E9%97%B4%E8%BF%9B%E8%A1%8C%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="toc-text">对时间进行格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol>
     </div>
   </section>
 
@@ -805,7 +896,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -817,9 +908,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1068,12 +1159,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1202,8 +1293,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1272,7 +1361,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1391,62 +1480,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1478,7 +1511,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1506,11 +1539,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

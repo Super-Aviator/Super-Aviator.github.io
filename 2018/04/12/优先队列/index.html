@@ -556,13 +556,27 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>&emsp;&emsp;基于数组下标从1开始的二叉堆,某个下标为k的节点的父节点下标为k/2,其左子节点的下标为2<em>k,右子节点的下标为(2</em>k+1)。通过归纳可得，一棵结点数量为N的二叉堆，他的层次是$ logN $。</p>
 <ul>
 <li><p>结点上浮(swim)<br>&emsp;&emsp;当向一个有序堆末尾插入一个元素，此时如果该元素比他的父结点大，此时堆就是一个不稳定堆，此时需要调整至堆有序的状态，那么就需要将插入的结点上浮到适合的位置，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(k&gt;<span class="number">1</span>&amp;&amp;less(k/<span class="number">2</span>,k))&#123;</span><br><span class="line">        exch(k/<span class="number">2</span>,k);</span><br><span class="line">        k/=<span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private void swim(int k)&#123;
+  while(k&gt;1&amp;&amp;less(k/2,k))&#123;
+      exch(k/2,k);
+      k/=2;
+  &#125;
+&#125;
+</code></pre>
 </li>
 <li><p>结点下沉(sink)<br>&emsp;&emsp;当由于顶结点被删除并将最后一个元素插入时，如果此元素比他的子结点更小时，那么此时我们就需要调整堆的状态，将此结点下沉到合适的位置以保证堆有序，代码如下；其中第4行代码实现非常巧妙，j&lt;N用于确定结点k的右子结点是否存在，而less(j,j+1)用于确定右子结点是否大于左子结点。如果两个条件都满足，表明右子结点大于左子结点，此时j指向右子结点，反之则指向左子结点。</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(k*<span class="number">2</span>&lt;=N)&#123;</span><br><span class="line">        <span class="keyword">int</span> j=k*<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(j&lt;N&amp;&amp;less(j,j+<span class="number">1</span>))    j++;</span><br><span class="line">        <span class="keyword">if</span>(!less(k,j))  <span class="keyword">break</span>;</span><br><span class="line">        exch(k,j);</span><br><span class="line">        k=j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private void sink(int k)&#123;
+    while(k*2&lt;=N)&#123;
+        int j=k*2;
+        if(j&lt;N&amp;&amp;less(j,j+1))    j++;
+        if(!less(k,j))  break;
+        exch(k,j);
+        k=j;
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li><p>插入元素<br>&emsp;&emsp;我们将新元素加到数组末尾，增加堆的大小，并让这个新元素上浮到合适的位置。</p>
 </li>
@@ -571,24 +585,172 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>自动扩充数组容量<br>&emsp;&emsp;在插入或者删除二叉堆中的元素之后，需要对数组中含有的元素进行判断，达到动态扩充和缩减的效果。</p>
 </li>
 <li><p>二叉堆实现实现</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityQueue</span>&lt;<span class="title">Item</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Item</span>&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Item[] items;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN)</span> </span>&#123;</span><br><span class="line">        items = (Item[]) <span class="keyword">new</span> Comparable[maxN + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        items = (Item[]) <span class="keyword">new</span> Comparable[<span class="number">16</span>];<span class="comment">//默认堆大小为16</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Item item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(N&gt;items.length*<span class="number">2</span>/<span class="number">3</span>)  resize(items.length,<span class="keyword">true</span>);</span><br><span class="line">        items[++N] = item;</span><br><span class="line">        swim(N);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Item <span class="title">delMax</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(N&lt;items.length/<span class="number">3</span>)  resize(items.length,<span class="keyword">false</span>);</span><br><span class="line">        Item result = items[<span class="number">1</span>];</span><br><span class="line">        exch(<span class="number">1</span>, N--);</span><br><span class="line">        items[N + <span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">        sink(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">capacity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> items.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; less(k / <span class="number">2</span>, k)) &#123;</span><br><span class="line">            exch(k / <span class="number">2</span>, k);</span><br><span class="line">            k /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="number">2</span> * k &lt;= N) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = <span class="number">2</span> * k;</span><br><span class="line">            <span class="keyword">if</span> (j &lt; N &amp;&amp; less(j, j + <span class="number">1</span>)) j++;</span><br><span class="line">            <span class="keyword">if</span> (!less(k, j)) <span class="keyword">break</span>;</span><br><span class="line">            exch(k, j);</span><br><span class="line">            k = j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">resize</span><span class="params">(<span class="keyword">int</span> old, <span class="keyword">boolean</span> isDilatation)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断是扩容(dilatation)还是缩减(curtail)</span></span><br><span class="line">        <span class="keyword">int</span> current;</span><br><span class="line">        <span class="keyword">if</span> (isDilatation)<span class="comment">//dilatation</span></span><br><span class="line">            current = old * <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">else</span>             <span class="comment">//curtail</span></span><br><span class="line">            current = old / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">        Item[] newItems = (Item[]) <span class="keyword">new</span> Comparable[current];</span><br><span class="line">        System.arraycopy(items,<span class="number">0</span>,newItems,<span class="number">0</span>,N);</span><br><span class="line"></span><br><span class="line">        items = newItems;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> items[x].compareTo(items[y]) &lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        Item t = items[x];</span><br><span class="line">        items[x] = items[y];</span><br><span class="line">        items[y] = t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Integer[] ints = <span class="keyword">new</span> Integer[]&#123;<span class="number">23</span>, <span class="number">547</span>, <span class="number">234</span>, <span class="number">92</span>, <span class="number">56</span>, <span class="number">23</span>, <span class="number">2</span>, <span class="number">52</span>, <span class="number">5</span>, <span class="number">234</span>, <span class="number">5</span>&#125;;</span><br><span class="line">        PriorityQueue&lt;Integer&gt; pq = <span class="keyword">new</span> PriorityQueue&lt;&gt;(<span class="number">3</span>);</span><br><span class="line">        <span class="keyword">for</span> (Integer c : ints)</span><br><span class="line">            pq.insert(c);</span><br><span class="line">        System.out.println(pq.size());</span><br><span class="line">        System.out.println(pq.isEmpty());</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty())</span><br><span class="line">            System.out.print(pq.delMax() + <span class="string">&quot;  此时堆的容量为：&quot;</span>+pq.capacity()+<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output</span></span><br><span class="line"><span class="number">11</span></span><br><span class="line"><span class="keyword">false</span></span><br><span class="line"><span class="number">547</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">234</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">234</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">92</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">56</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">52</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">23</span>  此时堆的容量为：<span class="number">16</span></span><br><span class="line"><span class="number">23</span>  此时堆的容量为：<span class="number">8</span></span><br><span class="line"><span class="number">5</span>  此时堆的容量为：<span class="number">8</span></span><br><span class="line"><span class="number">5</span>  此时堆的容量为：<span class="number">8</span></span><br><span class="line"><span class="number">2</span>  此时堆的容量为：<span class="number">4</span></span><br><span class="line"><span class="number">4</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>时间复杂度分析<br>&emsp;&emsp;插入元素操作只需不超过(lgN+1)次比较(二叉堆的层数为lgN+1,需要k和k/2比较一次),删除操作需要不超过2lgN次比较(二叉堆层数为lgN,需要比较j和j+1,两者较大者再与k比较,共两次).<br>&emsp;&emsp;对于需要大量插入和删除操作的应用来说,堆实现有很大的好处,使用无序或者有序数组(链表)的有线队列实现总是需要线性(N)时间来完成,而使用二叉堆实现则只需要对数级(logN)时间完成.</p>
+<pre><code class="java">public class PriorityQueue&lt;Item extends Comparable&lt;Item&gt;&gt; &#123;
+  private Item[] items;
+  private int N;
+
+  public PriorityQueue(int maxN) &#123;
+      items = (Item[]) new Comparable[maxN + 1];
+  &#125;
+
+  public PriorityQueue() &#123;
+      items = (Item[]) new Comparable[16];//默认堆大小为16
+  &#125;
+
+  public boolean isEmpty() &#123;
+      return N == 0;
+  &#125;
+
+  public int size() &#123;
+      return N;
+  &#125;
+
+  public void insert(Item item) &#123;
+      if(N&gt;items.length*2/3)  resize(items.length,true);
+      items[++N] = item;
+      swim(N);
+  &#125;
+
+  public Item delMax() &#123;
+      if(N&lt;items.length/3)  resize(items.length,false);
+      Item result = items[1];
+      exch(1, N--);
+      items[N + 1] = null;
+      sink(1);
+      return result;
+  &#125;
+
+  public int capacity() &#123;
+      return items.length;
+  &#125;
+
+  private void swim(int k) &#123;
+      while (k &gt; 1 &amp;&amp; less(k / 2, k)) &#123;
+          exch(k / 2, k);
+          k /= 2;
+      &#125;
+  &#125;
+
+  private void sink(int k) &#123;
+      while (2 * k &lt;= N) &#123;
+          int j = 2 * k;
+          if (j &lt; N &amp;&amp; less(j, j + 1)) j++;
+          if (!less(k, j)) break;
+          exch(k, j);
+          k = j;
+      &#125;
+  &#125;
+
+  private void resize(int old, boolean isDilatation) &#123;
+  //判断是扩容(dilatation)还是缩减(curtail)
+      int current;
+      if (isDilatation)//dilatation
+          current = old * 2;
+      else             //curtail
+          current = old / 2;
+
+      Item[] newItems = (Item[]) new Comparable[current];
+      System.arraycopy(items,0,newItems,0,N);
+
+      items = newItems;
+  &#125;
+
+  private boolean less(int x, int y) &#123;
+      return items[x].compareTo(items[y]) &lt; 0;
+  &#125;
+
+  private void exch(int x, int y) &#123;
+      Item t = items[x];
+      items[x] = items[y];
+      items[y] = t;
+  &#125;
+
+  public static void main(String[] args) &#123;
+      Integer[] ints = new Integer[]&#123;23, 547, 234, 92, 56, 23, 2, 52, 5, 234, 5&#125;;
+      PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;(3);
+      for (Integer c : ints)
+          pq.insert(c);
+      System.out.println(pq.size());
+      System.out.println(pq.isEmpty());
+      while (!pq.isEmpty())
+          System.out.print(pq.delMax() + &quot;  此时堆的容量为：&quot;+pq.capacity()+&quot;\n&quot;);
+  &#125;
+&#125;
+</code></pre>
 </li>
 </ul>
-<hr>
+<p>//output<br>11<br>false<br>547  此时堆的容量为：16<br>234  此时堆的容量为：16<br>234  此时堆的容量为：16<br>92  此时堆的容量为：16<br>56  此时堆的容量为：16<br>52  此时堆的容量为：16<br>23  此时堆的容量为：16<br>23  此时堆的容量为：8<br>5  此时堆的容量为：8<br>5  此时堆的容量为：8<br>2  此时堆的容量为：4<br>4</p>
+<pre><code>
+- 时间复杂度分析  
+&amp;emsp;&amp;emsp;插入元素操作只需不超过(lgN+1)次比较(二叉堆的层数为lgN+1,需要k和k/2比较一次),删除操作需要不超过2lgN次比较(二叉堆层数为lgN,需要比较j和j+1,两者较大者再与k比较,共两次).    
+&amp;emsp;&amp;emsp;对于需要大量插入和删除操作的应用来说,堆实现有很大的好处,使用无序或者有序数组(链表)的有线队列实现总是需要线性(N)时间来完成,而使用二叉堆实现则只需要对数级(logN)时间完成.
+
+---
+
+- 索引二叉堆优先队列    
+//!没看懂...
+
+--- 
+
+## 一种全新的排：堆排序
+&amp;emsp;&amp;emsp;利用优先队列,我们可以很简单的对数组进行排序：堆排序，堆排序有两个步骤。    
+- 步骤一 是构造有序堆，对于大小为N的数组，可以从右到左将每个元素进行sink操作，而更加快速的方法是只对拥有子结点的结点进行sink操作，而跳过叶结点。这是因为当一个结点的左右子结点已经是堆有序时，对该结点进行sink操作一定可以构造一个有序堆。如图所示，只需要从右到左对红色的结点进行sink操作。
+![堆排序][create]
+
+- 步骤二 是排序阶段，每次将堆顶元素与堆中最后的元素交换，然后再对堆顶元素进行sink操作使得堆有序。
+
+- 代码实现:
+```java
+package unit2_4_code;
+
+public class HeapSort &#123;
+    public static void sort(Comparable[] a)&#123;
+        int N=a.length-1;
+        for(int k=N/2;k&gt;=0;k--)//堆构造
+            sink(a,k,N);
+        //show(a);
+        while(N&gt;0)&#123;
+            exch(a,0,N--);//保存此时堆中的最大值到N中
+            sink(a,0,N);
+        &#125;
+    &#125;
+
+    public static boolean less(Comparable[] a,int x,int y)&#123;
+        return a[x].compareTo(a[y])&lt;0;
+    &#125;
+
+    private static void exch(Comparable[] a,int x,int y)&#123;
+        Comparable t=a[x];
+        a[x]=a[y];
+        a[y]=t;
+    &#125;
+
+    private static void sink(Comparable[] a,int k,int N)&#123;
+        while(2*k+1&lt;=N)&#123;//保证k有子结点
+            int j=2*k+1;
+            if(j&lt;N&amp;&amp;less(a,j,j+1))    j++;
+            if(!less(a,k,j))    break;
+            exch(a,k,j);
+            k=j;
+        &#125;
+    &#125;
+
+    private static void show(Comparable[] a)&#123;
+        for(Comparable b:a)
+            System.out.print(b+&quot; &quot;);
+        System.out.println();
+    &#125;
+
+    public static void main(String[] args)&#123;
+        Integer[] i=&#123;22,31,123,3241,34,1,34,233,22,11,5,74&#125;;
+        sort(i);
+        show(i);
+    &#125;
+&#125;
+//output
+1 5 11 22 22 31 34 34 74 123 233 3241 
+</code></pre>
 <ul>
-<li>索引二叉堆优先队列<br>//!没看懂…</li>
-</ul>
-<hr>
-<h2 id="一种全新的排：堆排序"><a href="#一种全新的排：堆排序" class="headerlink" title="一种全新的排：堆排序"></a>一种全新的排：堆排序</h2><p>&emsp;&emsp;利用优先队列,我们可以很简单的对数组进行排序：堆排序，堆排序有两个步骤。    </p>
-<ul>
-<li><p>步骤一 是构造有序堆，对于大小为N的数组，可以从右到左将每个元素进行sink操作，而更加快速的方法是只对拥有子结点的结点进行sink操作，而跳过叶结点。这是因为当一个结点的左右子结点已经是堆有序时，对该结点进行sink操作一定可以构造一个有序堆。如图所示，只需要从右到左对红色的结点进行sink操作。<br><img src="data:image/png;base64,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" alt="堆排序"></p>
-</li>
-<li><p>步骤二 是排序阶段，每次将堆顶元素与堆中最后的元素交换，然后再对堆顶元素进行sink操作使得堆有序。</p>
-</li>
-<li><p>代码实现:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> unit2_4_code;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapSort</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N=a.length-<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k=N/<span class="number">2</span>;k&gt;=<span class="number">0</span>;k--)<span class="comment">//堆构造</span></span><br><span class="line">            sink(a,k,N);</span><br><span class="line">        <span class="comment">//show(a);</span></span><br><span class="line">        <span class="keyword">while</span>(N&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            exch(a,<span class="number">0</span>,N--);<span class="comment">//保存此时堆中的最大值到N中</span></span><br><span class="line">            sink(a,<span class="number">0</span>,N);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(Comparable[] a,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a[x].compareTo(a[y])&lt;<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(Comparable[] a,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        Comparable t=a[x];</span><br><span class="line">        a[x]=a[y];</span><br><span class="line">        a[y]=t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(Comparable[] a,<span class="keyword">int</span> k,<span class="keyword">int</span> N)</span></span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">2</span>*k+<span class="number">1</span>&lt;=N)&#123;<span class="comment">//保证k有子结点</span></span><br><span class="line">            <span class="keyword">int</span> j=<span class="number">2</span>*k+<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span>(j&lt;N&amp;&amp;less(a,j,j+<span class="number">1</span>))    j++;</span><br><span class="line">            <span class="keyword">if</span>(!less(a,k,j))    <span class="keyword">break</span>;</span><br><span class="line">            exch(a,k,j);</span><br><span class="line">            k=j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Comparable b:a)</span><br><span class="line">            System.out.print(b+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Integer[] i=&#123;<span class="number">22</span>,<span class="number">31</span>,<span class="number">123</span>,<span class="number">3241</span>,<span class="number">34</span>,<span class="number">1</span>,<span class="number">34</span>,<span class="number">233</span>,<span class="number">22</span>,<span class="number">11</span>,<span class="number">5</span>,<span class="number">74</span>&#125;;</span><br><span class="line">        sort(i);</span><br><span class="line">        show(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//output</span></span><br><span class="line"><span class="number">1</span> <span class="number">5</span> <span class="number">11</span> <span class="number">22</span> <span class="number">22</span> <span class="number">31</span> <span class="number">34</span> <span class="number">34</span> <span class="number">74</span> <span class="number">123</span> <span class="number">233</span> <span class="number">3241</span> </span><br></pre></td></tr></table></figure></li>
 <li><p>结论</p>
 <blockquote>
 <p>下标0开始的堆，某结点k的左子结点为2<em>k+1,右子结点为2</em>k+2。<br>大小为N的二叉树中，非叶结点的个数为N/2。</p>
@@ -760,7 +922,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-text">优先队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">二叉堆的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E7%A7%8D%E5%85%A8%E6%96%B0%E7%9A%84%E6%8E%92%EF%BC%9A%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="toc-text">一种全新的排：堆排序</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-text">优先队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">二叉堆的实现</span></a></li></ol>
     </div>
   </section>
 
@@ -825,7 +987,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -837,9 +999,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1088,12 +1250,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1222,8 +1384,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1292,7 +1452,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1411,62 +1571,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1498,7 +1602,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1526,11 +1630,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

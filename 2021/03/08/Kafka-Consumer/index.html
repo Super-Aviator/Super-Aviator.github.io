@@ -536,14 +536,34 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <h2 id="seek"><a href="#seek" class="headerlink" title="seek"></a>seek</h2><p>调用seek方法前必须要调用poll方法使消费者获取到分区，否则将抛出异常，同时如果调用poll方法超时时间为0或者过小，同样会获取不到分区导致seek方法因为还未获取到分区而报错。</p>
 <h2 id="weakup"><a href="#weakup" class="headerlink" title="weakup"></a>weakup</h2><p>唯一一个线程安全方法，用于的其他线程跳出consumer的poll方法。正确的使用姿势如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (isRunning) &#123;</span><br><span class="line">        consumer.poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(WakeupException wakeupException)&#123;</span><br><span class="line">    log.error(wakeupException);</span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    consumer.commitSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<pre><code class="java">try &#123;
+    while (isRunning) &#123;
+        consumer.poll();
+    &#125;
+&#125;catch(WakeupException wakeupException)&#123;
+    log.error(wakeupException);
+&#125;finally&#123;
+    consumer.commitSync();
+&#125;
+</code></pre>
 <h2 id="ConsumerInterceptor"><a href="#ConsumerInterceptor" class="headerlink" title="ConsumerInterceptor"></a>ConsumerInterceptor</h2><h2 id="多线程实现"><a href="#多线程实现" class="headerlink" title="多线程实现"></a>多线程实现</h2><p>KafkaConsumer不是线程安全的，除了调用wakeup方法之外，其余方法在操作前都会调动acquire方法确保只有单个线程使用，否则会报出ConcurrencyModificationException异常，源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> threadId = Thread.currentThread().getId();</span><br><span class="line">    <span class="comment">//这里为了确保第一次调用acquire方法时，能正确初始化currentThread的值</span></span><br><span class="line">    <span class="comment">//如果不同的线程调用，compareAndSet会失败</span></span><br><span class="line">    <span class="keyword">if</span> (threadId != currentThread.get() &amp;&amp; !currentThread.compareAndSet(NO_CURRENT_THREAD, threadId))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException(<span class="string">&quot;KafkaConsumer is not safe for multi-threaded access&quot;</span>);</span><br><span class="line">    <span class="comment">//引用自增一</span></span><br><span class="line">    refcount.incrementAndGet();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private void acquire() &#123;
+    long threadId = Thread.currentThread().getId();
+    //这里为了确保第一次调用acquire方法时，能正确初始化currentThread的值
+    //如果不同的线程调用，compareAndSet会失败
+    if (threadId != currentThread.get() &amp;&amp; !currentThread.compareAndSet(NO_CURRENT_THREAD, threadId))
+        throw new ConcurrentModificationException(&quot;KafkaConsumer is not safe for multi-threaded access&quot;);
+    //引用自增一
+    refcount.incrementAndGet();
+&#125;
+</code></pre>
 <p>release方法和acquire方法成对出现，分别对应加锁和解锁操作，源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这里当没有线程引用时，设置currentThread的值为初始值，后续调用acquire方法时compareAndSet会成功</span></span><br><span class="line">    <span class="keyword">if</span> (refcount.decrementAndGet() == <span class="number">0</span>)</span><br><span class="line">        currentThread.set(NO_CURRENT_THREAD);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private void release() &#123;
+    //这里当没有线程引用时，设置currentThread的值为初始值，后续调用acquire方法时compareAndSet会成功
+    if (refcount.decrementAndGet() == 0)
+        currentThread.set(NO_CURRENT_THREAD);
+&#125;
+</code></pre>
 
   
   
@@ -764,7 +784,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -776,9 +796,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1027,12 +1047,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1161,8 +1181,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1231,7 +1249,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1350,62 +1368,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1437,7 +1399,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1465,11 +1427,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

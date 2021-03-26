@@ -570,59 +570,131 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <h1 id="开始搭建"><a href="#开始搭建" class="headerlink" title="开始搭建"></a>开始搭建</h1><p>Redis集群一般由多个节点组成，节点数量至少为6个才能保证组成完整<br>高可用的集群。在windows下将redis文件夹拷贝6份，如图所示：<br><img src="https://s2.ax1x.com/2019/07/08/ZsYKKO.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/07/08/ZsYKKO.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="ZsYKKO.png"></p>
 <h2 id="运行服务"><a href="#运行服务" class="headerlink" title="运行服务"></a>运行服务</h2><p>然后为每个redis服务，都要使用如下的配置，根据端口号的不同进行区分。每个节点需要开启配置cluster-enabled yes，让Redis运行在集群模式下。建议为集群内所有节点统一目录，一般划分三个目录：conf、 data、log，分别存放配置、数据和日志相关文件。把6个节点配置统一放在 conf目录下，集群相关配置如下：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#节点端口 </span></span><br><span class="line"><span class="string">port</span> <span class="number">7000</span> </span><br><span class="line"><span class="comment"># 开启集群模式 </span></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> </span><br><span class="line"><span class="comment"># 节点超时时间，单位毫秒 </span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span> </span><br><span class="line"><span class="comment"># 集群内部配置文件 </span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">&quot;nodes-7000.conf&quot;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">#节点端口 
+port 7000 
+# 开启集群模式 
+cluster-enabled yes 
+# 节点超时时间，单位毫秒 
+cluster-node-timeout 15000 
+# 集群内部配置文件 
+cluster-config-file &quot;nodes-7000.conf&quot;
+</code></pre>
 <p>然后使用下面的命令开启Redis服务：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">redis-server</span> <span class="string">conf/redis-&#123;port&#125;.conf</span> <span class="comment"># port为该端口对应的配置文件</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">redis-server conf/redis-&#123;port&#125;.conf # port为该端口对应的配置文件
+</code></pre>
 <p>集群中每一个节点都有一个配置文件，保存了集群信息，集群配置文件由服务自动生成，不需要手动去修改，以免出现错误。</p>
 <h2 id="节点间握手"><a href="#节点间握手" class="headerlink" title="节点间握手"></a>节点间握手</h2><p>现在开启了六个Redis服务，但是他们是彼此分离的，还没有组合成一个集群，所以需要使用命令让他们握手，形成一个能够互相感知的集群。</p>
 <p>登录某一个结点，然后分别使用下面的命令去和每一个节点握手：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cluster</span> <span class="string">meet&#123;ip&#125;&#123;port&#125;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">cluster meet&#123;ip&#125;&#123;port&#125;
+</code></pre>
 <p>也可以使用Redis Shell命令去执行，例如</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">7000 </span><span class="string">cluster</span> <span class="string">meet</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7001</span></span><br><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">7000 </span><span class="string">cluster</span> <span class="string">meet</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7002</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1:7001
+redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1:7002
+...
+</code></pre>
 <p>需要注意的是，只需要在一个结点上执行握手命令，握手信息会在集群中自动传播。这样其他节点会自动发现新节点并发起握手流程。最后执行<code>cluster nodes</code>命令确认6个节点都彼此感知并组成集群。</p>
 <p>可以使用<code>cluster nodes</code>查看集群结点的状态：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">089f76372aa3f9373f72850ebb5909c978665c3b</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7001</span> <span class="string">master</span> <span class="bullet">-</span> <span class="number">0</span> <span class="number">1562679329399</span> <span class="number">1</span> <span class="string">connected</span> <span class="number">5462</span><span class="number">-10922</span>	</span><br><span class="line"><span class="string">605773c926b468fb079cfacf021bdeea2ecc1747</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7002</span> <span class="string">myself,master</span> <span class="bullet">-</span> <span class="number">0</span> <span class="number">0</span> <span class="number">5</span> <span class="string">connected</span> <span class="number">10923</span><span class="number">-16383</span>	</span><br><span class="line"><span class="string">c8f0ae93b339311acb74807bdaead7cbf6eb5738</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7004</span> <span class="string">slave</span> <span class="string">089f76372aa3f9373f72850ebb5909c978665c3b</span> <span class="number">0</span> <span class="number">1562679330363</span> <span class="number">1</span> <span class="string">connected</span>	</span><br><span class="line"><span class="string">551693dbe8904405e925ec1fab859051597905d4</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7003</span> <span class="string">slave</span> <span class="string">53613c8c8c7e0f060de44a36c94e0abf35d8cee0</span> <span class="number">0</span> <span class="number">1562679329297</span> <span class="number">3</span> <span class="string">connected</span>	</span><br><span class="line"><span class="string">c8317c12ddb83e22c3b0244d21e1ea53c7a56e00</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7005</span> <span class="string">slave</span> <span class="string">605773c926b468fb079cfacf021bdeea2ecc1747</span> <span class="number">0</span> <span class="number">1562679327174</span> <span class="number">5</span> <span class="string">connected</span>	</span><br><span class="line"><span class="string">53613c8c8c7e0f060de44a36c94e0abf35d8cee0</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7000</span> <span class="string">master</span> <span class="bullet">-</span> <span class="number">0</span> <span class="number">1562679331423</span> <span class="number">2</span> <span class="string">connected</span> <span class="number">0</span><span class="number">-5461</span>	</span><br></pre></td></tr></table></figure>
+<pre><code class="yml">089f76372aa3f9373f72850ebb5909c978665c3b 127.0.0.1:7001 master - 0 1562679329399 1 connected 5462-10922    
+605773c926b468fb079cfacf021bdeea2ecc1747 127.0.0.1:7002 myself,master - 0 0 5 connected 10923-16383    
+c8f0ae93b339311acb74807bdaead7cbf6eb5738 127.0.0.1:7004 slave 089f76372aa3f9373f72850ebb5909c978665c3b 0 1562679330363 1 connected    
+551693dbe8904405e925ec1fab859051597905d4 127.0.0.1:7003 slave 53613c8c8c7e0f060de44a36c94e0abf35d8cee0 0 1562679329297 3 connected    
+c8317c12ddb83e22c3b0244d21e1ea53c7a56e00 127.0.0.1:7005 slave 605773c926b468fb079cfacf021bdeea2ecc1747 0 1562679327174 5 connected    
+53613c8c8c7e0f060de44a36c94e0abf35d8cee0 127.0.0.1:7000 master - 0 1562679331423 2 connected 0-5461    
+</code></pre>
 <p>上面是槽点分配完成的结点。<br>可以使用<code>cluster info</code>查看集群状态：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cluster_state:down</span></span><br><span class="line"><span class="string">cluster_slots_assigned:o</span></span><br><span class="line"><span class="string">cluster_slots_ok:0</span></span><br><span class="line"><span class="string">cluster_slots_pfail:0</span></span><br><span class="line"><span class="string">cluster_slots_fail:0</span></span><br><span class="line"><span class="string">cluster_known_nodes:6</span></span><br><span class="line"><span class="string">cluster_size:3</span></span><br><span class="line"><span class="string">cluster_current_epoch:5</span></span><br><span class="line"><span class="string">cluster_my_epoch:5</span></span><br><span class="line"><span class="string">cluster_stats_messages_sent:82521</span></span><br><span class="line"><span class="string">cluster_stats_messages_received:82273</span></span><br></pre></td></tr></table></figure>
+<pre><code class="yml">cluster_state:down
+cluster_slots_assigned:o
+cluster_slots_ok:0
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:5
+cluster_my_epoch:5
+cluster_stats_messages_sent:82521
+cluster_stats_messages_received:82273
+</code></pre>
 <p>从中可以看出集群中共有六个节点，并已近互相感知了对方的存在。此时集群状态为down,表示不可用。</p>
 <h2 id="分配槽点"><a href="#分配槽点" class="headerlink" title="分配槽点"></a>分配槽点</h2><p>Redis集群中，数据保存的位置是通过key的映射的槽点来决定的，Redis集群把所有的数据映射到16384个槽中（0-16383）。每个key会映射为一个固定的槽，只有当节点分配了槽，才能响应和这些槽关联的键命令。通过 <code>cluster addslots</code>命令为节点分配槽。这里利用bash特性批量设置槽（slots）， 命令如下：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">6379 </span><span class="string">cluster</span> <span class="string">addslots</span> &#123;<span class="number">0</span><span class="string">...5461</span>&#125; 	</span><br><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">6380 </span><span class="string">cluster</span> <span class="string">addslots</span> &#123;<span class="number">5462</span><span class="string">...10922</span>&#125; 	</span><br><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">6381 </span><span class="string">cluster</span> <span class="string">addslots</span> &#123;<span class="number">10923</span><span class="string">...16383</span>&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 6379 cluster addslots &#123;0...5461&#125;     
+redis-cli -h 127.0.0.1 -p 6380 cluster addslots &#123;5462...10922&#125;     
+redis-cli -h 127.0.0.1 -p 6381 cluster addslots &#123;10923...16383&#125;
+</code></pre>
 <p>不过windows下不支持节点批量操作，只能手动去添加，可以手动写一个脚本去自动添加结点，windows平台下，可以新建一个bat脚本，然后复制如下代码（<strong>脚本是网上照着别人的100求和的脚本改的，执行的慢的很。。。</strong>）：</p>
 <ul>
 <li>7000节点 addslots.bat</li>
 </ul>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">setlocal</span> ENABLEDELAYEDEXPANSION</span><br><span class="line"><span class="keyword">for</span> /l <span class="variable">%%i</span> <span class="keyword">in</span> (<span class="number">0</span>,<span class="number">1</span>,<span class="number">5461</span>) <span class="keyword">do</span> (</span><br><span class="line">    redis-cli -h <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span> -p <span class="number">7000</span> cluster addslots <span class="variable">%%i</span></span><br><span class="line"><span class="comment">    REM echo %%i</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (0,1,5461) do (
+    redis-cli -h 127.0.0.1 -p 7000 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
 <ul>
 <li>7001节点 addslots.bat</li>
 </ul>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">setlocal</span> ENABLEDELAYEDEXPANSION</span><br><span class="line"><span class="keyword">for</span> /l <span class="variable">%%i</span> <span class="keyword">in</span> (<span class="number">5462</span>,<span class="number">1</span>,<span class="number">10922</span>) <span class="keyword">do</span> (</span><br><span class="line">    redis-cli -h <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span> -p <span class="number">7001</span> cluster addslots <span class="variable">%%i</span></span><br><span class="line"><span class="comment">    REM echo %%i</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (5462,1,10922) do (
+    redis-cli -h 127.0.0.1 -p 7001 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
 <ul>
 <li>7002结点 addslots.bat</li>
 </ul>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">setlocal</span> ENABLEDELAYEDEXPANSION</span><br><span class="line"><span class="keyword">for</span> /l <span class="variable">%%i</span> <span class="keyword">in</span> (<span class="number">10923</span>,<span class="number">1</span>,<span class="number">16383</span>) <span class="keyword">do</span> (</span><br><span class="line">    redis-cli -h <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span> -p <span class="number">7002</span> cluster addslots <span class="variable">%%i</span></span><br><span class="line"><span class="comment">    REM echo %%i</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (10923,1,16383) do (
+    redis-cli -h 127.0.0.1 -p 7002 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
 <p>在等待脚本执行完成之后，所有的槽点都均匀的分配给了三个主节点，集群的状态也从不可用变为可用状态，可以使用<code>cluster info</code>查看集群状态，使用<code>cluster nodes</code>查看槽点的分配。</p>
 <h2 id="设置从结点"><a href="#设置从结点" class="headerlink" title="设置从结点"></a>设置从结点</h2><p>首次启动的节点和被分配槽的 节点都是主节点，从节点负责复制主节点槽信息和相关的数据。使用cluster replicate {nodeId}命令让一个节点成为从节点。其中命令执行必须在对应的 从节点上执行，nodeId是要复制主节点的节点ID，命令如下：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7003&gt;cluster</span> <span class="string">replicate</span> <span class="string">cfb28ef1deee4e0fa78da86abe5d24566744411e</span> <span class="string">OK</span> </span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7004&gt;cluster</span> <span class="string">replicate</span> <span class="string">8e41673d59c9568aa9d29fb174ce733345b3e8f1</span> <span class="string">OK</span> </span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7005&gt;cluster</span> <span class="string">replicate</span> <span class="string">40b8d09d44294d2e23c7c768efc8fcd153446746</span> <span class="string">OK</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">127.0.0.1:7003&gt;cluster replicate cfb28ef1deee4e0fa78da86abe5d24566744411e OK 
+127.0.0.1:7004&gt;cluster replicate 8e41673d59c9568aa9d29fb174ce733345b3e8f1 OK 
+127.0.0.1:7005&gt;cluster replicate 40b8d09d44294d2e23c7c768efc8fcd153446746 OK
+</code></pre>
 <p>同样也可以编写脚本添加从结点，例如如下代码将7003节点设置为7000的从结点：</p>
 <ul>
 <li>7003 replicate.bat</li>
 </ul>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">@echo</span> <span class="string">off</span></span><br><span class="line"><span class="string">setlocal</span> <span class="string">ENABLEDELAYEDEXPANSION</span></span><br><span class="line"></span><br><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">7003 </span><span class="string">cluster</span> <span class="string">replicate</span> <span class="string">53613c8c8c7e0f060de44a36c94e0abf35d8cee0</span></span><br><span class="line"></span><br><span class="line"><span class="string">pause</span></span><br></pre></td></tr></table></figure>
+<pre><code class="yml">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+
+redis-cli -h 127.0.0.1 -p 7003 cluster replicate 53613c8c8c7e0f060de44a36c94e0abf35d8cee0
+
+pause
+</code></pre>
 <p>目前为止，我们依照Redis协议手动建立一个集群。它由6个节点构成，3个主节点负责处理槽和相关数据，3个从节点负责故障转移。Redis官方推荐使用Ruby的工具Redis-trib.rb来搭建Redis集群，不过这就是运维的事情了。（我主要还是嫌安装Ruby啥的太麻烦了QAQ，懒得弄。）</p>
 <h1 id="SpringBoot中JedisCluster客户端的使用"><a href="#SpringBoot中JedisCluster客户端的使用" class="headerlink" title="SpringBoot中JedisCluster客户端的使用"></a>SpringBoot中JedisCluster客户端的使用</h1><p>SpringBoot中，可以会用Spring-Data-Redis对Redis进行操作，所有的Redis操作都被封装在Template模板中。</p>
 <p>在application.yml配置文件中，需要指定集群的各个节点的IP、端口号。并且需要指定redis第一次连接到的结点信息。在yml中，配置如下：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">    <span class="attr">database:</span> <span class="number">0</span></span><br><span class="line">    <span class="attr">ssl:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">7000</span></span><br><span class="line">    <span class="attr">cluster:</span></span><br><span class="line">      <span class="comment"># redis集群的ip和端口</span></span><br><span class="line">      <span class="attr">nodes:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7000,127.0.0.1:7001,127.0.0.1:7002,</span></span><br><span class="line">      	     <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:7003,127.0.0.1:7004,127.0.0.1:7005</span></span><br><span class="line">      <span class="attr">max-redirects:</span> <span class="number">1</span> <span class="comment">#集群最大跳转次数</span></span><br><span class="line">    <span class="attr">jedis:</span></span><br><span class="line">      <span class="attr">pool:</span></span><br><span class="line">        <span class="attr">max-active:</span> <span class="number">8</span> <span class="comment">#线程池中最大线程数</span></span><br><span class="line">        <span class="attr">min-idle:</span> <span class="number">2</span> <span class="comment">#最大空闲线程数</span></span><br><span class="line">    <span class="attr">timeout:</span> <span class="string">5000ms</span> <span class="comment">#连接超时时间</span></span><br></pre></td></tr></table></figure>
+<pre><code class="yml">spring:
+  redis:
+    host: 127.0.0.1
+    database: 0
+    ssl: false
+    port: 7000
+    cluster:
+      # redis集群的ip和端口
+      nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,
+               127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
+      max-redirects: 1 #集群最大跳转次数
+    jedis:
+      pool:
+        max-active: 8 #线程池中最大线程数
+        min-idle: 2 #最大空闲线程数
+    timeout: 5000ms #连接超时时间
+</code></pre>
 <p>在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复 MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重 定向</p>
 <p>redis-cli可以使用-c参数自动帮我们连接到正确的节点执行命令，这个过程是在redis-cli内部维护，实质上是client端接到MOVED信息之后再次发起请求，并不在 Redis节点中完成请求转发</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">redis-cli</span> <span class="string">-h</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="string">-p</span> <span class="number">7000</span> <span class="string">-c</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 7000 -c
+</code></pre>
 <p>redis客户端执行命令的方式如下：</p>
 <ol>
 <li>计算slot并根据slots缓存获取目标节点连接，发送命令。         </li>
@@ -632,13 +704,31 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ol>
 <p>上面的配置中，max-redirects指定了集群中的最大跳转次数，如果查找键时跳转的次数超过阈值，就会抛出异常。</p>
 <p>SpringDataRedis封装了Redis的操作，所有操作通过RedisTemplate提供相同的模板,使用方式为：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> RedisTemplate&lt;String,String&gt; StringRedisTemplate;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Autowired
+private RedisTemplate&lt;String,String&gt; StringRedisTemplate;
+</code></pre>
 <p>对于String类型的键和值，RedisTemplat提供了StringRedisTemplate可以直接注入使用。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Autowired
+private StringRedisTemplate stringRedisTemplate;
+</code></pre>
 <p>对于所有的非String类型，不能直接使用上面的方式，直接注入指定泛型类型的RedisTemplate，而需要使用下面的方式，配置特定类型的RedisTemplate的键和值的序列化器，才能够注入并使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 特定类型的RedisTemplate需要自己创建相应的bean才行。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> redisConnectionFactory redis连接池</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 指定泛型类型的RedisTemplate</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RedisTemplate&lt;String, User&gt; <span class="title">getRedisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> </span>&#123;</span><br><span class="line">    RedisTemplate&lt;String, User&gt; redisTemplate = <span class="keyword">new</span> RedisTemplate&lt;&gt;();</span><br><span class="line">    redisTemplate.setConnectionFactory(redisConnectionFactory);</span><br><span class="line">    <span class="comment">//设置key的序列化器，非常重要</span></span><br><span class="line">    redisTemplate.setKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">    <span class="comment">//设置value的序列化器</span></span><br><span class="line">    redisTemplate.setValueSerializer(<span class="keyword">new</span> Jackson2JsonRedisSerializer&lt;&gt;(User.class));</span><br><span class="line">    <span class="keyword">return</span> redisTemplate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    /**
+     * 特定类型的RedisTemplate需要自己创建相应的bean才行。
+     *
+     * @param redisConnectionFactory redis连接池
+     * @return 指定泛型类型的RedisTemplate
+     */
+    @Bean
+    public RedisTemplate&lt;String, User&gt; getRedisTemplate(RedisConnectionFactory redisConnectionFactory) &#123;
+        RedisTemplate&lt;String, User&gt; redisTemplate = new RedisTemplate&lt;&gt;();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        //设置key的序列化器，非常重要
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        //设置value的序列化器
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer&lt;&gt;(User.class));
+        return redisTemplate;
+    &#125;
+</code></pre>
 <p><strong>值得注意的是，如果不指定键的序列化器，可能会导致redis中存入的键因为编码的方式不同，在RedisTemplate中存入的键，使用命令行的方式查找失败。</strong></p>
 <p>上面的值的序列化器有多种选择，最常规的是序列化为JSON字符串进行保存。</p>
 
@@ -866,7 +956,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -878,9 +968,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1129,12 +1219,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1263,8 +1353,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1333,7 +1421,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1452,62 +1540,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1539,7 +1571,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1567,11 +1599,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

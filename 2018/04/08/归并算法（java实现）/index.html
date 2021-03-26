@@ -546,8 +546,57 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <p>归并算法的分析</p>
 <h2 id="自顶向下的归并排序"><a href="#自顶向下的归并排序" class="headerlink" title="自顶向下的归并排序"></a>自顶向下的归并排序</h2><h3 id="执行方法-先分再排"><a href="#执行方法-先分再排" class="headerlink" title="执行方法(先分再排)"></a>执行方法(先分再排)</h3><p>&emsp;&emsp;将一个数组排序，可以先将他的左边和右边分别排序，然后将结果归并起来。此算法吸引人的地方是它能够保证将任意长度为N的数组排序所需的时间和NlogN成正比。缺点是需要长度为N的附加空间。</p>
 <hr>
-<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Merge</span> <span class="keyword">extends</span> <span class="title">Sortable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Comparable[] tmp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//驱动程序1</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        tmp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">//定义临时数组</span></span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//驱动程序2</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> low, <span class="keyword">int</span> up)</span> </span>&#123;<span class="comment">//将数组的low到up排序</span></span><br><span class="line">        <span class="keyword">if</span> (low &gt;= up) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> mid = (up + low) / <span class="number">2</span>;</span><br><span class="line">        sort(a, low, mid);<span class="comment">//递归的对左半边排序</span></span><br><span class="line">        sort(a, mid + <span class="number">1</span>, up);<span class="comment">//递归的对右半边排序</span></span><br><span class="line">        <span class="keyword">if</span> (a[mid].compareTo(a[mid + <span class="number">1</span>]) &gt; <span class="number">0</span>) merge(a, low, mid, up);</span><br><span class="line">        <span class="comment">//将两半边合并(排除数组已经有序的情况)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//算法核心</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mid, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = lo, j = mid + <span class="number">1</span>;</span><br><span class="line">        System.arraycopy(a, lo, tmp, lo, (hi - lo + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式1</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt;= hi; k++)</span><br><span class="line">            <span class="keyword">if</span> (i &gt; mid) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) a[k] = tmp[i++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式2</span></span><br><span class="line">        <span class="keyword">int</span> k = lo;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= hi)</span><br><span class="line">            <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k++] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k++] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid) a[k++] = tmp[i++];</span><br><span class="line">        <span class="keyword">while</span> (j &lt;= hi) a[k++] = tmp[j++];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//测试用例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Integer[] a = &#123;<span class="number">2</span>, <span class="number">31</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">34</span>, <span class="number">6</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">74</span>&#125;;</span><br><span class="line">        sort(a);</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><pre><code class="java">public class Merge extends Sortable &#123;
+    private static Comparable[] tmp;
 
+    //驱动程序1
+    public static void sort(Comparable[] a) &#123;
+        tmp = new Comparable[a.length];//定义临时数组
+        sort(a, 0, a.length - 1);
+    &#125;
+
+    //驱动程序2
+    private static void sort(Comparable[] a, int low, int up) &#123;//将数组的low到up排序
+        if (low &gt;= up) return;
+        int mid = (up + low) / 2;
+        sort(a, low, mid);//递归的对左半边排序
+        sort(a, mid + 1, up);//递归的对右半边排序
+        if (a[mid].compareTo(a[mid + 1]) &gt; 0) merge(a, low, mid, up);
+        //将两半边合并(排除数组已经有序的情况)
+    &#125;
+
+    //算法核心
+    private static void merge(Comparable[] a, int lo, int mid, int hi) &#123;
+        int i = lo, j = mid + 1;
+        System.arraycopy(a, lo, tmp, lo, (hi - lo + 1));
+
+        //方式1
+        for (int k = lo; k &lt;= hi; k++)
+            if (i &gt; mid) a[k] = tmp[j++];
+            else if (j &gt; hi) a[k] = tmp[i++];
+            else if (tmp[j].compareTo(tmp[i]) == -1) a[k] = tmp[j++];
+            else a[k] = tmp[i++];
+
+        //方式2
+        int k = lo;
+        while (i &lt;= mid &amp;&amp; j &lt;= hi)
+            if (tmp[j].compareTo(tmp[i]) == -1) a[k++] = tmp[j++];
+            else a[k++] = tmp[i++];
+
+        while (i &lt;= mid) a[k++] = tmp[i++];
+        while (j &lt;= hi) a[k++] = tmp[j++];
+
+    &#125;
+
+    //测试用例
+    public static void main(String[] args) &#123;
+        Integer[] a = &#123;2, 31, 4, 1, 34, 6, 2, 1, 5, 74&#125;;
+        sort(a);
+        System.out.println(Arrays.toString(a));
+
+    &#125;
+&#125;
+</code></pre>
 <hr>
 <h3 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h3><p>&emsp;&emsp;归并排序与基本的排序不一样,归并排序能够处理百万级别的数据,这是基本排序方法所不能做到的,但是他的缺点是排序时需要额外的与N成正比的空间开销.</p>
 <blockquote>
@@ -568,12 +617,69 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>避免辅助数组的拷贝<br>&emsp;&emsp;在归并排序时,可以避免数组赋值的时间(空间不行).需要巧妙的交换输入数组和输出数组的角色.</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//优化代码的代码实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Merge</span> <span class="keyword">extends</span> <span class="title">Sortable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Comparable[] tmp;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        tmp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">// 定义临时数组</span></span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> low, <span class="keyword">int</span> up)</span> </span>&#123;<span class="comment">// 将数组的low到up排序</span></span><br><span class="line">        <span class="keyword">if</span> (up &lt;= low + <span class="number">10</span>) &#123; <span class="comment">// 如果是小数组(&lt;10),就执行插入排序.</span></span><br><span class="line">            Insertion.sort(a, low, up);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = (up + low) / <span class="number">2</span>;</span><br><span class="line">        sort(a, low, mid);<span class="comment">// 递归的对左半边排序</span></span><br><span class="line">        sort(a, mid + <span class="number">1</span>, up);<span class="comment">// 递归的对右半边排序</span></span><br><span class="line">        <span class="keyword">if</span> (a[mid].compareTo(a[mid + <span class="number">1</span>]) &lt;= <span class="number">0</span>) <span class="keyword">return</span>;<span class="comment">//当数组已经有序时，跳过下面的归并。</span></span><br><span class="line">        merge(a, low, mid, up);<span class="comment">// 将两半边合并</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//算法核心</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mid, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = lo, j = mid + <span class="number">1</span>;</span><br><span class="line">        System.arraycopy(a, lo, tmp, lo, (hi - lo + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式1</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt;= hi; k++)</span><br><span class="line">            <span class="keyword">if</span> (i &gt; mid) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) a[k] = tmp[i++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式2</span></span><br><span class="line">        <span class="keyword">int</span> k = lo;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= hi)</span><br><span class="line">            <span class="keyword">if</span> (tmp[j].compareTo(tmp[i]) == -<span class="number">1</span>) a[k++] = tmp[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k++] = tmp[i++];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= mid) a[k++] = tmp[i++];</span><br><span class="line">        <span class="keyword">while</span> (j &lt;= hi) a[k++] = tmp[j++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">//优化代码的代码实现
+public class Merge extends Sortable &#123;
+    private static Comparable[] tmp;
 
+    public static void sort(Comparable[] a) &#123;
+        tmp = new Comparable[a.length];// 定义临时数组
+        sort(a, 0, a.length - 1);
+    &#125;
+
+    private static void sort(Comparable[] a, int low, int up) &#123;// 将数组的low到up排序
+        if (up &lt;= low + 10) &#123; // 如果是小数组(&lt;10),就执行插入排序.
+            Insertion.sort(a, low, up);
+            return;
+        &#125;
+        int mid = (up + low) / 2;
+        sort(a, low, mid);// 递归的对左半边排序
+        sort(a, mid + 1, up);// 递归的对右半边排序
+        if (a[mid].compareTo(a[mid + 1]) &lt;= 0) return;//当数组已经有序时，跳过下面的归并。
+        merge(a, low, mid, up);// 将两半边合并
+    &#125;
+
+    //算法核心
+    private static void merge(Comparable[] a, int lo, int mid, int hi) &#123;
+        int i = lo, j = mid + 1;
+        System.arraycopy(a, lo, tmp, lo, (hi - lo + 1));
+
+        //方式1
+        for (int k = lo; k &lt;= hi; k++)
+            if (i &gt; mid) a[k] = tmp[j++];
+            else if (j &gt; hi) a[k] = tmp[i++];
+            else if (tmp[j].compareTo(tmp[i]) == -1) a[k] = tmp[j++];
+            else a[k] = tmp[i++];
+
+        //方式2
+        int k = lo;
+        while (i &lt;= mid &amp;&amp; j &lt;= hi)
+            if (tmp[j].compareTo(tmp[i]) == -1) a[k++] = tmp[j++];
+            else a[k++] = tmp[i++];
+
+        while (i &lt;= mid) a[k++] = tmp[i++];
+        while (j &lt;= hi) a[k++] = tmp[j++];
+    &#125;
+
+&#125;
+</code></pre>
 <hr>
 <h2 id="自底向上的排序"><a href="#自底向上的排序" class="headerlink" title="自底向上的排序"></a>自底向上的排序</h2><h3 id="执行方式"><a href="#执行方式" class="headerlink" title="执行方式"></a>执行方式</h3><p>&emsp;&emsp;自底向下的归并排序代码量较少,它依次排序1…2…4…8…个数据.</p>
-<h3 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现:"></a>代码实现:</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeUP</span> <span class="keyword">extends</span> <span class="title">Merge</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> Increment = <span class="number">1</span>; Increment &lt; N; Increment += Increment)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> start = <span class="number">0</span>; start &lt; N - Increment; start+=Increment*<span class="number">2</span>))</span><br><span class="line">        <span class="comment">//!注意!start&lt;N-Increment是由start+Increment-1&lt;N-1推导而出</span></span><br><span class="line">       merge(a, start, start + Increment - <span class="number">1</span>, Math.min(start + <span class="number">2</span> * Increment - <span class="number">1</span>, N - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//自底向上的排序方法中，在使用merge方法时,应当在merge方法中加上判断:</span></span><br><span class="line">	<span class="keyword">if</span> (temp == <span class="keyword">null</span>)</span><br><span class="line">            temp = <span class="keyword">new</span> Comparable[a.length];<span class="comment">// 定义临时数组</span></span><br><span class="line">            System.arraycopy(a, low, temp, low, length);</span><br><span class="line"><span class="comment">// 拷贝temp因为temp数组在直接使用merge方法时并没有创建空间.</span></span><br></pre></td></tr></table></figure>
+<h3 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现:"></a>代码实现:</h3><pre><code class="java">public class MergeUP extends Merge &#123;
+    public static void sort(Comparable[] a) &#123;
+        int N = a.length;
+        for (int Increment = 1; Increment &lt; N; Increment += Increment)
+            for (int start = 0; start &lt; N - Increment; start+=Increment*2))
+        //!注意!start&lt;N-Increment是由start+Increment-1&lt;N-1推导而出
+       merge(a, start, start + Increment - 1, Math.min(start + 2 * Increment - 1, N - 1));
+    &#125;
+&#125;
 
+//自底向上的排序方法中，在使用merge方法时,应当在merge方法中加上判断:
+    if (temp == null)
+            temp = new Comparable[a.length];// 定义临时数组
+            System.arraycopy(a, low, temp, low, length);
+// 拷贝temp因为temp数组在直接使用merge方法时并没有创建空间.
+</code></pre>
 <h4 id="时间复杂度分析-1"><a href="#时间复杂度分析-1" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h4><p>&emsp;&emsp;自底向上的归并排序比较适合链表组织的数据结构，与数组中交换顺序不同，链表只要重新组织链接就能够排序子数组（不需要重新分配结点）。</p>
 
   
@@ -800,7 +906,7 @@ final作用于数据final作用于域final作用于域有两种情况:1:  一个
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -812,9 +918,9 @@ final作用于数据final作用于域final作用于域有两种情况:1:  一个
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1063,12 +1169,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1197,8 +1303,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1267,7 +1371,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1386,62 +1490,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1473,7 +1521,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1501,11 +1549,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

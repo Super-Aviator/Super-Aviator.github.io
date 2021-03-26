@@ -583,11 +583,32 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>如果使用的是GET请求，浏览器用<code>x-www-form-urlencoded</code>的编码方式把form数据转换成一个字串（name1=value1&amp;name2=value2…），然后把这个字串append到url后面，用?分割，加载这个新的url。</p>
 </li>
 <li><p>如果使用的是POST请求，会采用类似GET的字符串拼接的方式，<strong>将拼接的key-value字段放到body里面，而非url的后面</strong>,所以POST请求的url长度是没有限制的，因为拼接的url请求参数都存放在body里面,如下</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   POST  HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8000</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: e8c31d7a-fd52-cbf2-2741-07d73cb1101b</span><br><span class="line"></span><br><span class="line">keyword=panda&amp;author=zane</span><br></pre></td></tr></table></figure>
+<pre><code class="http">     POST  HTTP/1.1
+  Host: 127.0.0.1:8000
+  Content-Type: application/x-www-form-urlencoded
+  Cache-Control: no-cache
+  Postman-Token: e8c31d7a-fd52-cbf2-2741-07d73cb1101b
+
+  keyword=panda&amp;author=zane
+</code></pre>
 <p><strong>注意</strong>：使用<code>application/x-www-form-urlencoded</code>编码方式的请求会对所有非ASCII的字符使用%HH的方式进行转换，所以一个非ASCII字符会由三个字符去表示，当非ASCII非常多时，会增加大约三倍的带宽，这无疑是一种浪费。</p>
 <h3 id="multipart-form-data"><a href="#multipart-form-data" class="headerlink" title="multipart/form-data"></a>multipart/form-data</h3><p>如果没有type=file的控件，用默认的<code>application/x-www-form-urlencoded</code>就可以了。 但是如果有type=file的话，Content-Type就会升级使用<code>multipart/form-data</code>类型。浏览器会把整个表单以控件为单位分割，**并为每个部分加上Content-Disposition(form-data或者file),Content-Type(默认为text/plain),name(控件的name，即字段名)等信息，并加上分割符(boundary)**，例如：    </p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8000</span><br><span class="line">Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: 090df52c-d103-279b-1479-50e6a7fef58b</span><br><span class="line"></span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Content-Disposition: form-data; name=&quot;keyword&quot;</span><br><span class="line"></span><br><span class="line">panda</span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br><span class="line">Content-Disposition: form-data; name=&quot;author&quot;</span><br><span class="line"></span><br><span class="line">zane</span><br><span class="line">------WebKitFormBoundary7MA4YWxkTrZu0gW</span><br></pre></td></tr></table></figure>
+<pre><code class="html">  POST / HTTP/1.1
+  Host: 127.0.0.1:8000
+  Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+  Cache-Control: no-cache
+  Postman-Token: 090df52c-d103-279b-1479-50e6a7fef58b
 
+  ------WebKitFormBoundary7MA4YWxkTrZu0gW
+  Content-Disposition: form-data; name=&quot;keyword&quot;
+
+  panda
+  ------WebKitFormBoundary7MA4YWxkTrZu0gW
+  Content-Disposition: form-data; name=&quot;author&quot;
+
+  zane
+  ------WebKitFormBoundary7MA4YWxkTrZu0gW
+</code></pre>
 </li>
 </ul>
 <p>上面的请求中，keyword键对应的值为panda,author键对应的值为zane。</p>
@@ -596,7 +617,34 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h3 id="application-json"><a href="#application-json" class="headerlink" title="application/json"></a>application/json</h3><p>数据以纯文本形式(text/json/xml/html)进行编码，POST方法使用这种方式会把表单的键值对以一个JSON字符串的方式放到HTTP的body里面。例如如下的postman中的请求示例：<br>?<br><img src="/images/applicationjsonrequestdemo.png" class="lazyload" data-srcset="/images/applicationjsonrequestdemo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="upload successful"></p>
 <p><strong>注意</strong>：当非post请求的请求体中也含有JSON字符串时，依旧可以使用@RequestBody拿到请求体中的数据。</p>
 <h2 id="Postman测试"><a href="#Postman测试" class="headerlink" title="Postman测试"></a>Postman测试</h2><p>下面使用Postman来测试一下什么时候要加@Requestbody，什么时候不用加@RequestBody注解：<br>首先是Controller中的代码，有个方法，一个使用了@RequestBody注解，一个没有使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/requestBody&quot;)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestBodyController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@NoArgsConstructor</span></span><br><span class="line">    <span class="meta">@AllArgsConstructor</span></span><br><span class="line">    <span class="meta">@Getter</span></span><br><span class="line">    <span class="meta">@Setter</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Request</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">        <span class="keyword">private</span> Integer age;</span><br><span class="line">        <span class="meta">@JSONField(serialize = false,deserialize = false)</span></span><br><span class="line">        <span class="keyword">private</span> MultipartFile avatar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/request&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HttpEntity&lt;Request&gt; <span class="title">generalRequest</span><span class="params">(Request request)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;generalRequest-&#123;&#125;&quot;</span>,JSON.toJSONString(request));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HttpEntity&lt;&gt;(request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/requestBody&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HttpEntity&lt;Request&gt; <span class="title">generalRequestBody</span><span class="params">(<span class="meta">@RequestBody</span> Request request)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;generalRequest-&#123;&#125;&quot;</span>,JSON.toJSONString(request));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HttpEntity&lt;&gt;(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/requestBody&quot;)
+@Slf4j
+public class RequestBodyController &#123;
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    private static class Request&#123;
+        private String name;
+        private Integer age;
+        @JSONField(serialize = false,deserialize = false)
+        private MultipartFile avatar;
+    &#125;
+
+    @PostMapping(&quot;/request&quot;)
+    public HttpEntity&lt;Request&gt; generalRequest(Request request) &#123;
+        log.info(&quot;generalRequest-&#123;&#125;&quot;,JSON.toJSONString(request));
+        return new HttpEntity&lt;&gt;(request);
+    &#125;
+
+    @PostMapping(&quot;/requestBody&quot;)
+    public HttpEntity&lt;Request&gt; generalRequestBody(@RequestBody Request request) &#123;
+        log.info(&quot;generalRequest-&#123;&#125;&quot;,JSON.toJSONString(request));
+        return new HttpEntity&lt;&gt;(request);
+    &#125;
+&#125;
+</code></pre>
 <p>当请求中的ContentType分别为一下三种类型时，结果如下：</p>
 <table>
 <thead>
@@ -855,7 +903,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -867,9 +915,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1118,12 +1166,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1252,8 +1300,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1322,7 +1368,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1441,62 +1487,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1528,7 +1518,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1556,11 +1546,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

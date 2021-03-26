@@ -547,33 +547,73 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h1 id="下载rpm的安装包"><a href="#下载rpm的安装包" class="headerlink" title="下载rpm的安装包"></a>下载rpm的安装包</h1><p>可以通过<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">官网</a>去下载RedHat对应版本的tar压缩包，需要注意的是如果CentOS上没有MySQL组件或者版本不对，则需要下载RPM Bundle包，里面有MySQL的所有组件。</p>
 <h1 id="解压tar文件"><a href="#解压tar文件" class="headerlink" title="解压tar文件"></a>解压tar文件</h1><p>下载之后会有一个.tar格式的压缩包，使用<code>tar -xvf 压缩包名</code>去解压，需要注意是**.tar格式和.tar.gz格式解压和压缩区别是不带-z参数。<strong>解压之后会得到以下文件（第一个文件不是的，截图手抖多截了一个QAQ）：<br><img src="https://s2.ax1x.com/2019/04/12/AbFghQ.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/04/12/AbFghQ.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="AbFghQ.png"><br>然后依次安装</strong>common-&gt;libs-&gt;client-&gt;server**，安装顺序不能错哦。</p>
 <h1 id="使用rpm命令安装MySQL组件-参考文章"><a href="#使用rpm命令安装MySQL组件-参考文章" class="headerlink" title="使用rpm命令安装MySQL组件(参考文章)"></a>使用rpm命令安装MySQL组件(<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zqwang0929/p/3352237.html">参考文章</a>)</h1><p>rpm安装命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rpm -i example.rpm    <span class="comment">#安装 example.rpm 包；</span></span><br><span class="line">rpm -iv example.rpm   <span class="comment">#安装 example.rpm 包并在安装过程中显示正在安装的文件信息；</span></span><br><span class="line">rpm -ivh example.rpm  <span class="comment">#安装 example.rpm 包并在安装过程中显示正在安装的文件信息及安装进度</span></span><br></pre></td></tr></table></figure>
+<pre><code class="bash">rpm -i example.rpm    #安装 example.rpm 包；
+rpm -iv example.rpm   #安装 example.rpm 包并在安装过程中显示正在安装的文件信息；
+rpm -ivh example.rpm  #安装 example.rpm 包并在安装过程中显示正在安装的文件信息及安装进度
+</code></pre>
 <p>rpm卸载命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># rpm -e example</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash"> # rpm -e example
+</code></pre>
 <p>如果出现：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">error: Failed dependencies:</span><br><span class="line">	mysql-community-client(x86-64) &gt;= 5.7.9 is needed by mysql-community-server-5.7.25-1.el7.x86_64</span><br><span class="line">	mysql-community-common(x86-64) = 5.7.25-1.el7 is needed by mysql-community-server-5.7.25-1.el7.x86_64</span><br><span class="line">	mariadb-server is obsoleted by mysql-community-server-5.7.25-1.el7.x86_64</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">error: Failed dependencies:
+    mysql-community-client(x86-64) &gt;= 5.7.9 is needed by mysql-community-server-5.7.25-1.el7.x86_64
+    mysql-community-common(x86-64) = 5.7.25-1.el7 is needed by mysql-community-server-5.7.25-1.el7.x86_64
+    mariadb-server is obsoleted by mysql-community-server-5.7.25-1.el7.x86_64
+</code></pre>
 <p>则表明组件的安装顺序有问题。</p>
 <p>如果出现：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Preparing...                          <span class="comment">################################# [100%]</span></span><br><span class="line">	file /usr/share/mysql/czech/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/danish/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/dutch/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/english/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/estonian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/french/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/german/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/greek/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/hungarian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/italian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/japanese/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br><span class="line">	file /usr/share/mysql/korean/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts </span><br><span class="line">	with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">Preparing...                          ################################# [100%]
+    file /usr/share/mysql/czech/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/danish/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/dutch/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/english/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/estonian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/french/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/german/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/greek/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/hungarian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/italian/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/japanese/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+    file /usr/share/mysql/korean/errmsg.sys from install of mysql-community-common-5.7.25-1.el7.x86_64 conflicts 
+    with file from package mariadb-libs-1:5.5.60-1.el7_5.x86_64
+</code></pre>
 <p>这是因为安装的rpm包和系统已有的组件冲突了，可以通过如下方式删除系统中的组件：<br>首先使用yum查看系统的MySQL组件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list installed | grep &quot;mysql&quot;</span><br></pre></td></tr></table></figure>
+<pre><code>yum list installed | grep &quot;mysql&quot;
+</code></pre>
 <p>然后如果已经安装的MySQL组件和想要安装的组件有冲突，就删除它们吧：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y remove 想要删除的组件名</span><br></pre></td></tr></table></figure>
+<pre><code>yum -y remove 想要删除的组件名
+</code></pre>
 <p>删除之后再使用rpm安装就ok了。</p>
 <h1 id="启动并设置密码（参考文章）"><a href="#启动并设置密码（参考文章）" class="headerlink" title="启动并设置密码（参考文章）"></a>启动并设置密码（<a target="_blank" rel="noopener" href="https://blog.csdn.net/hello_world_qwp/article/details/79551789">参考文章</a>）</h1><p>启动MySQL并查看运行状态:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo service mysqld start;<span class="comment">#启动</span></span><br><span class="line">sudo service mysqld status;<span class="comment">#查看是否运行</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">sudo service mysqld start;#启动
+sudo service mysqld status;#查看是否运行
+</code></pre>
 <p>因为安装时会给root设置一个默认密码，可以通过如下方式查看保存在log文件中的密码：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo grep <span class="string">&#x27;temporary password&#x27;</span> /var/<span class="built_in">log</span>/mysqld.log</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">sudo grep &#39;temporary password&#39; /var/log/mysqld.log
+</code></pre>
 <p>然后使用这个密码登陆MySQL：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql <span class="operator">-</span>uroot <span class="operator">-</span>p</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">mysql -uroot -p
+</code></pre>
 <p>修改密码可以使用如下命令：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;NewPassword&#x27;</span>;#方式一</span><br><span class="line"><span class="keyword">SET</span> password<span class="operator">=</span>password(<span class="string">&#x27;NewPassword&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="sql"> ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;NewPassword&#39;;#方式一
+ SET password=password(&#39;NewPassword&#39;);
+</code></pre>
 <p>设置密码时，如果密码太简单，会因为MySQL密码的安全策略而报错,可以通过如下命令修改安全策略：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;validate_password%&#x27;</span>; #查看系统安全策略</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_policy<span class="operator">=</span>LOW; #设置密码的验证强度等级为低，就只会检查密码长度</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_length<span class="operator">=</span><span class="number">6</span>; #设置密码长度为<span class="number">6</span>，默认长度为<span class="number">8</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">SHOW VARIABLES LIKE &#39;validate_password%&#39;; #查看系统安全策略
+set global validate_password_policy=LOW; #设置密码的验证强度等级为低，就只会检查密码长度
+set global validate_password_length=6; #设置密码长度为6，默认长度为8
+</code></pre>
 <p>MySQL安全各策略字段含义如下：</p>
 <ul>
 <li>validate_password_length  固定密码的总长度；</li>
@@ -814,7 +854,7 @@ CSDN博客
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -826,9 +866,9 @@ CSDN博客
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1077,12 +1117,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1211,8 +1251,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1281,7 +1319,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1400,62 +1438,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1487,7 +1469,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1515,11 +1497,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

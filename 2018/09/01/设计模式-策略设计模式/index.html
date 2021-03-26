@@ -557,48 +557,313 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>具体策略(ConcreteStrategy)角色：包装了相关的算法或行为。</li>
 </ul>
 <p>策略模式的典型代码如下：</p>
-<h5 id="抽象策略类-策略接口"><a href="#抽象策略类-策略接口" class="headerlink" title="抽象策略类(策略接口)"></a>抽象策略类(策略接口)</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Strategy</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 策略方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">strategyInterface</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="抽象策略类-策略接口"><a href="#抽象策略类-策略接口" class="headerlink" title="抽象策略类(策略接口)"></a>抽象策略类(策略接口)</h5><pre><code class="java">public interface Strategy &#123;
+    /**
+     * 策略方法
+     */
+    public void strategyInterface();
+&#125;
+</code></pre>
+<h5 id="具体策略类"><a href="#具体策略类" class="headerlink" title="具体策略类"></a>具体策略类</h5><pre><code class="java">public class ConcreteStrategyA implements Strategy &#123;
 
-<h5 id="具体策略类"><a href="#具体策略类" class="headerlink" title="具体策略类"></a>具体策略类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteStrategyA</span> <span class="keyword">implements</span> <span class="title">Strategy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">strategyInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//相关的业务</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteStrategyB</span> <span class="keyword">implements</span> <span class="title">Strategy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">strategyInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//相关的业务</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    @Override
+    public void strategyInterface() &#123;
+        //相关的业务
+    &#125;
 
-<h5 id="环境角色类"><a href="#环境角色类" class="headerlink" title="环境角色类"></a>环境角色类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//持有一个具体策略的对象</span></span><br><span class="line">    <span class="keyword">private</span> Strategy strategy;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数，传入一个具体策略对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> strategy    具体策略对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(Strategy strategy)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.strategy = strategy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 策略方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInterface</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        strategy.strategyInterface();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&#125;
+</code></pre>
+<pre><code class="java">public class ConcreteStrategyB implements Strategy &#123;
 
+    @Override
+    public void strategyInterface() &#123;
+        //相关的业务
+    &#125;
+
+&#125;
+</code></pre>
+<h5 id="环境角色类"><a href="#环境角色类" class="headerlink" title="环境角色类"></a>环境角色类</h5><pre><code class="java">public class Context &#123;
+    //持有一个具体策略的对象
+    private Strategy strategy;
+    /**
+     * 构造函数，传入一个具体策略对象
+     * @param strategy    具体策略对象
+     */
+    public Context(Strategy strategy)&#123;
+        this.strategy = strategy;
+    &#125;
+    /**
+     * 策略方法
+     */
+    public void contextInterface()&#123;
+
+        strategy.strategyInterface();
+    &#125;
+&#125;
+</code></pre>
 <h2 id="策略模式例子"><a href="#策略模式例子" class="headerlink" title="策略模式例子"></a>策略模式例子</h2><p>假设鹅厂推出了3种会员，分别为会员，超级会员以及金牌会员，还有就是普通玩家，针对不同类别的玩家，购买《王者农药》皮肤有不同的打折方式，并且一个顾客每消费10000就增加一个级别，那么我们就可以使用策略模式，因为策略模式描述的就是算法的不同，这里我们举例就采用最简单的，以上四种玩家分别采用原价（普通玩家），九折，八折和七价的收钱方式。</p>
 <p>那么我们首先要有一个计算价格的策略接口:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="comment">//根据原价返回一个最终的价格</span></span><br><span class="line">    <span class="function">Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface CalPrice &#123;
+    //根据原价返回一个最终的价格
+    Double calPrice(Double orgnicPrice);
+&#125;
+</code></pre>
 <p>下面是4种玩家的计算方式的实现:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Orgnic</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Vip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.9</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperVip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.8</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoldVip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.7</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Orgnic implements CalPrice &#123;
 
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">public class Vip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.9;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">public class SuperVip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.8;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">public class GoldVip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.7;
+    &#125;
+&#125;
+</code></pre>
 <p>我们看客户类，我们需要客户类帮我们完成玩家升级的功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Double totalAmount = <span class="number">0D</span>;<span class="comment">//客户在鹅厂消费的总额</span></span><br><span class="line">    <span class="keyword">private</span> Double amount = <span class="number">0D</span>;<span class="comment">//客户单次消费金额</span></span><br><span class="line">    <span class="keyword">private</span> CalPrice calPrice = <span class="keyword">new</span> Orgnic();</span><br><span class="line">    <span class="comment">//每个客户都有一个计算价格的策略，初始都是普通计算，即原价</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//客户购买皮肤，就会增加它的总额</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">(Double amount)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.amount = amount;</span><br><span class="line">        totalAmount += amount;</span><br><span class="line">        <span class="keyword">if</span> (totalAmount &gt; <span class="number">30000</span>) &#123;<span class="comment">//30000则改为金牌会员计算方式</span></span><br><span class="line">            calPrice = <span class="keyword">new</span> GoldVip();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (totalAmount &gt; <span class="number">20000</span>) &#123;<span class="comment">//类似</span></span><br><span class="line">            calPrice = <span class="keyword">new</span> SuperVip();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (totalAmount &gt; <span class="number">10000</span>) &#123;<span class="comment">//类似</span></span><br><span class="line">            calPrice = <span class="keyword">new</span> Vip();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//计算客户最终要付的钱</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calLastAmount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> calPrice.calPrice(amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Player &#123;
+    private Double totalAmount = 0D;//客户在鹅厂消费的总额
+    private Double amount = 0D;//客户单次消费金额
+    private CalPrice calPrice = new Orgnic();
+    //每个客户都有一个计算价格的策略，初始都是普通计算，即原价
 
+    //客户购买皮肤，就会增加它的总额
+    public void buy(Double amount) &#123;
+        this.amount = amount;
+        totalAmount += amount;
+        if (totalAmount &gt; 30000) &#123;//30000则改为金牌会员计算方式
+            calPrice = new GoldVip();
+        &#125; else if (totalAmount &gt; 20000) &#123;//类似
+            calPrice = new SuperVip();
+        &#125; else if (totalAmount &gt; 10000) &#123;//类似
+            calPrice = new Vip();
+        &#125;
+    &#125;
+
+    //计算客户最终要付的钱
+    public Double calLastAmount() &#123;
+        return calPrice.calPrice(amount);
+    &#125;
+&#125;
+</code></pre>
 <p>接下来是客户端调用，系统会帮我们自动调整收费策略。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Player player = <span class="keyword">new</span> Player();</span><br><span class="line">        player.buy(<span class="number">5000D</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;玩家需要付钱：&quot;</span> + player.calLastAmount());</span><br><span class="line">        player.buy(<span class="number">12000D</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;玩家需要付钱：&quot;</span> + player.calLastAmount());</span><br><span class="line">        player.buy(<span class="number">12000D</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;玩家需要付钱：&quot;</span> + player.calLastAmount());</span><br><span class="line">        player.buy(<span class="number">12000D</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;玩家需要付钱：&quot;</span> + player.calLastAmount());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class Client &#123;
+    public static void main(String[] args) &#123;
+        Player player = new Player();
+        player.buy(5000D);
+        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
+        player.buy(12000D);
+        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
+        player.buy(12000D);
+        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
+        player.buy(12000D);
+        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
+    &#125;
+&#125;
+</code></pre>
 <p>运行以后会发现，第一次是原价，第二次是九折，第三次是八折，最后一次则是七价。这样设计的好处是，客户不再依赖于具体的收费策略，依赖于抽象永远是正确的。</p>
 <p>在上面的基础上，我们可以使用简单工厂来稍微进行优化</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义工厂类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalPriceFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CalPriceFactory</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="comment">//根据客户的总金额产生相应的策略</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CalPrice <span class="title">createCalPrice</span><span class="params">(Player customer)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (customer.getTotalAmount() &gt; <span class="number">30000</span>) &#123;<span class="comment">//3000则改为金牌会员计算方式</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> GoldVip();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (customer.getTotalAmount() &gt; <span class="number">20000</span>) &#123;<span class="comment">//类似</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> SuperVip();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (customer.getTotalAmount() &gt; <span class="number">10000</span>) &#123;<span class="comment">//类似</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Vip();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Orgnic();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//定义工厂类
+public class CalPriceFactory &#123;
+    private CalPriceFactory()&#123;&#125;
+    //根据客户的总金额产生相应的策略
+    public static CalPrice createCalPrice(Player customer)&#123;
+        if (customer.getTotalAmount() &gt; 30000) &#123;//3000则改为金牌会员计算方式
+            return new GoldVip();
+        &#125;else if (customer.getTotalAmount() &gt; 20000) &#123;//类似
+            return new SuperVip();
+        &#125;else if (customer.getTotalAmount() &gt; 10000) &#123;//类似
+            return new Vip();
+        &#125;else &#123;
+            return new Orgnic();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <p>这样就将制定策略的功能从客户类分离了出来，我们的客户类可以变成这样。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Double totalAmount = <span class="number">0D</span>;<span class="comment">//客户在鹅厂消费的总额</span></span><br><span class="line">    <span class="keyword">private</span> Double amount = <span class="number">0D</span>;<span class="comment">//客户单次消费金额</span></span><br><span class="line">    <span class="keyword">private</span> CalPrice calPrice = <span class="keyword">new</span> Orgnic();</span><br><span class="line">    <span class="comment">//每个客户都有一个计算价格的策略，初始都是普通计算，即原价</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//客户购买皮肤，就会增加它的总额</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">(Double amount)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.amount = amount;</span><br><span class="line">        totalAmount += amount;</span><br><span class="line">        <span class="comment">/* 变化点，我们将策略的制定转移给了策略工厂，将这部分责任分离出去 */</span></span><br><span class="line">        calPrice = CalPriceFactory.createCalPrice(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//计算客户最终要付的钱</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calLastAmount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> calPrice.calPrice(amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">getTotalAmount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> totalAmount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Player &#123;
+    private Double totalAmount = 0D;//客户在鹅厂消费的总额
+    private Double amount = 0D;//客户单次消费金额
+    private CalPrice calPrice = new Orgnic();
+    //每个客户都有一个计算价格的策略，初始都是普通计算，即原价
+
+    //客户购买皮肤，就会增加它的总额
+    public void buy(Double amount) &#123;
+        this.amount = amount;
+        totalAmount += amount;
+        /* 变化点，我们将策略的制定转移给了策略工厂，将这部分责任分离出去 */
+        calPrice = CalPriceFactory.createCalPrice(this);
+    &#125;
+
+    //计算客户最终要付的钱
+    public Double calLastAmount() &#123;
+        return calPrice.calPrice(amount);
+    &#125;
+
+    public Double getTotalAmount() &#123;
+        return totalAmount;
+    &#125;
+&#125;
+</code></pre>
 <h2 id="使用注解简化策略设计模式"><a href="#使用注解简化策略设计模式" class="headerlink" title="使用注解简化策略设计模式"></a>使用注解简化策略设计模式</h2><p>虽然结合简单工厂模式，我们的策略模式灵活了一些，但不免发现在工厂中多了if-else判断，也就是如果增加一个会员类别，我又得增加一个else-if语句，这是简单工厂的缺点，对修改开放。</p>
 <p>那有什么方法，可以较好的解决这个问题呢？那就是使用注解， 所以我们需要给注解加入属性上限和下限，用来表示策略生效的区间，用来解决总金额判断的问题。</p>
 <p>1.首先我们做一个注解，这个注解是用来给策略添加的，当中可以设置它的上下限</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这是有效价格区间注解，可以给策略添加有效区间的设置</span></span><br><span class="line"><span class="meta">@Target(ElementType.TYPE)</span><span class="comment">//表示只能给类添加该注解</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span><span class="comment">//这个必须要将注解保留在运行时</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PriceRegion &#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">()</span> <span class="keyword">default</span> Integer.MAX_VALUE</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">min</span><span class="params">()</span> <span class="keyword">default</span> Integer.MIN_VALUE</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">//这是有效价格区间注解，可以给策略添加有效区间的设置
+@Target(ElementType.TYPE)//表示只能给类添加该注解
+@Retention(RetentionPolicy.RUNTIME)//这个必须要将注解保留在运行时
+public @interface PriceRegion &#123;
+    int max() default Integer.MAX_VALUE;
+    int min() default Integer.MIN_VALUE;
+&#125;
+</code></pre>
 <p>可以看到，我们只是使用这个注解来声明每一个策略的生效区间，于是对策略进行修改</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PriceRegion(max = 10000)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Orgnic</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PriceRegion(max=20000)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Vip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.9</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PriceRegion(min=20000,max=30000)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperVip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.8</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PriceRegion(min=3000)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoldVip</span> <span class="keyword">implements</span> <span class="title">CalPrice</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">calPrice</span><span class="params">(Double orgnicPrice)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> orgnicPrice * <span class="number">0.7</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@PriceRegion(max = 10000)
+public class Orgnic implements CalPrice &#123;
 
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">@PriceRegion(max=20000)
+public class Vip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.9;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">@PriceRegion(min=20000,max=30000)
+public class SuperVip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.8;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">@PriceRegion(min=3000)
+public class GoldVip implements CalPrice &#123;
+    @Override
+    public Double calPrice(Double orgnicPrice) &#123;
+        return orgnicPrice * 0.7;
+    &#125;
+&#125;
+</code></pre>
 <p>接下来就是在策略工厂中去处理注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalPriceFactory</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CAL_PRICE_PACKAGE = <span class="string">&quot;com.example.stragedemo&quot;</span>;<span class="comment">//这里是一个常量，表示我们扫描策略的包</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ClassLoader classLoader = getClass().getClassLoader();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;Class&lt;? extends CalPrice&gt;&gt; calPriceList;<span class="comment">//策略列表</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//根据玩家的总金额产生相应的策略</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CalPrice <span class="title">createCalPrice</span><span class="params">(Player player)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//在策略列表查找策略</span></span><br><span class="line">        <span class="keyword">for</span> (Class&lt;? extends CalPrice&gt; clazz : calPriceList) &#123;</span><br><span class="line">            PriceRegion validRegion = handleAnnotation(clazz);<span class="comment">//获取该策略的注解</span></span><br><span class="line">            <span class="comment">//判断金额是否在注解的区间</span></span><br><span class="line">            <span class="keyword">if</span> (player.getTotalAmount() &gt; validRegion.min() &amp;&amp; player.getTotalAmount() &lt; validRegion.max()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">//是的话我们返回一个当前策略的实例</span></span><br><span class="line">                    <span class="keyword">return</span> clazz.newInstance();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;策略获得失败&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;策略获得失败&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//处理注解，我们传入一个策略类，返回它的注解</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> PriceRegion <span class="title">handleAnnotation</span><span class="params">(Class&lt;? extends CalPrice&gt; clazz)</span> </span>&#123;</span><br><span class="line">        Annotation[] annotations = clazz.getDeclaredAnnotations();</span><br><span class="line">        <span class="keyword">if</span> (annotations == <span class="keyword">null</span> || annotations.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; annotations.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (annotations[i] <span class="keyword">instanceof</span> PriceRegion) &#123;</span><br><span class="line">                <span class="keyword">return</span> (PriceRegion) annotations[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//单例</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CalPriceFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//在工厂初始化时要初始化策略列表</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        calPriceList = <span class="keyword">new</span> ArrayList&lt;Class&lt;? extends CalPrice&gt;&gt;();</span><br><span class="line">        File[] resources = getResources();<span class="comment">//获取到包下所有的class文件</span></span><br><span class="line">        Class&lt;CalPrice&gt; calPriceClazz = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            calPriceClazz = (Class&lt;CalPrice&gt;) classLoader.loadClass(CalPrice.class.getName());<span class="comment">//使用相同的加载器加载策略接口</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e1) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;未找到策略接口&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; resources.length; i++) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//载入包下的类</span></span><br><span class="line">                Class&lt;?&gt; clazz = classLoader.loadClass(CAL_PRICE_PACKAGE + <span class="string">&quot;.&quot;</span> + resources[i].getName().replace(<span class="string">&quot;.class&quot;</span>, <span class="string">&quot;&quot;</span>));</span><br><span class="line">                <span class="comment">//判断是否是CalPrice的实现类并且不是CalPrice它本身，满足的话加入到策略列表</span></span><br><span class="line">                <span class="keyword">if</span> (CalPrice.class.isAssignableFrom(clazz) &amp;&amp; clazz != calPriceClazz) &#123;</span><br><span class="line">                    calPriceList.add((Class&lt;? extends CalPrice&gt;) clazz);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取扫描的包下面所有的class文件</span></span><br><span class="line">    <span class="keyword">private</span> File[] getResources() &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            File file = <span class="keyword">new</span> File(classLoader.getResource(CAL_PRICE_PACKAGE.replace(<span class="string">&quot;.&quot;</span>, <span class="string">&quot;/&quot;</span>)).toURI());</span><br><span class="line">            <span class="keyword">return</span> file.listFiles(<span class="keyword">new</span> FileFilter() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">accept</span><span class="params">(File pathname)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">if</span> (pathname.getName().endsWith(<span class="string">&quot;.class&quot;</span>)) &#123;<span class="comment">//我们只扫描class文件</span></span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (URISyntaxException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;未找到策略资源&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CalPriceFactory <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> CalPriceFactoryInstance.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CalPriceFactoryInstance</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> CalPriceFactory instance = <span class="keyword">new</span> CalPriceFactory();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class CalPriceFactory &#123;
+    private static final String CAL_PRICE_PACKAGE = &quot;com.example.stragedemo&quot;;//这里是一个常量，表示我们扫描策略的包
 
+    private ClassLoader classLoader = getClass().getClassLoader();
+
+    private List&lt;Class&lt;? extends CalPrice&gt;&gt; calPriceList;//策略列表
+
+    //根据玩家的总金额产生相应的策略
+    public CalPrice createCalPrice(Player player) &#123;
+        //在策略列表查找策略
+        for (Class&lt;? extends CalPrice&gt; clazz : calPriceList) &#123;
+            PriceRegion validRegion = handleAnnotation(clazz);//获取该策略的注解
+            //判断金额是否在注解的区间
+            if (player.getTotalAmount() &gt; validRegion.min() &amp;&amp; player.getTotalAmount() &lt; validRegion.max()) &#123;
+                try &#123;
+                    //是的话我们返回一个当前策略的实例
+                    return clazz.newInstance();
+                &#125; catch (Exception e) &#123;
+                    throw new RuntimeException(&quot;策略获得失败&quot;);
+                &#125;
+            &#125;
+        &#125;
+        throw new RuntimeException(&quot;策略获得失败&quot;);
+    &#125;
+
+    //处理注解，我们传入一个策略类，返回它的注解
+    private PriceRegion handleAnnotation(Class&lt;? extends CalPrice&gt; clazz) &#123;
+        Annotation[] annotations = clazz.getDeclaredAnnotations();
+        if (annotations == null || annotations.length == 0) &#123;
+            return null;
+        &#125;
+        for (int i = 0; i &lt; annotations.length; i++) &#123;
+            if (annotations[i] instanceof PriceRegion) &#123;
+                return (PriceRegion) annotations[i];
+            &#125;
+        &#125;
+        return null;
+    &#125;
+
+    //单例
+    private CalPriceFactory() &#123;
+        init();
+    &#125;
+
+    //在工厂初始化时要初始化策略列表
+    private void init() &#123;
+        calPriceList = new ArrayList&lt;Class&lt;? extends CalPrice&gt;&gt;();
+        File[] resources = getResources();//获取到包下所有的class文件
+        Class&lt;CalPrice&gt; calPriceClazz = null;
+        try &#123;
+            calPriceClazz = (Class&lt;CalPrice&gt;) classLoader.loadClass(CalPrice.class.getName());//使用相同的加载器加载策略接口
+        &#125; catch (ClassNotFoundException e1) &#123;
+            throw new RuntimeException(&quot;未找到策略接口&quot;);
+        &#125;
+        for (int i = 0; i &lt; resources.length; i++) &#123;
+            try &#123;
+                //载入包下的类
+                Class&lt;?&gt; clazz = classLoader.loadClass(CAL_PRICE_PACKAGE + &quot;.&quot; + resources[i].getName().replace(&quot;.class&quot;, &quot;&quot;));
+                //判断是否是CalPrice的实现类并且不是CalPrice它本身，满足的话加入到策略列表
+                if (CalPrice.class.isAssignableFrom(clazz) &amp;&amp; clazz != calPriceClazz) &#123;
+                    calPriceList.add((Class&lt;? extends CalPrice&gt;) clazz);
+                &#125;
+            &#125; catch (ClassNotFoundException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+
+    //获取扫描的包下面所有的class文件
+    private File[] getResources() &#123;
+        try &#123;
+            File file = new File(classLoader.getResource(CAL_PRICE_PACKAGE.replace(&quot;.&quot;, &quot;/&quot;)).toURI());
+            return file.listFiles(new FileFilter() &#123;
+                public boolean accept(File pathname) &#123;
+                    if (pathname.getName().endsWith(&quot;.class&quot;)) &#123;//我们只扫描class文件
+                        return true;
+                    &#125;
+                    return false;
+                &#125;
+            &#125;);
+        &#125; catch (URISyntaxException e) &#123;
+            throw new RuntimeException(&quot;未找到策略资源&quot;);
+        &#125;
+    &#125;
+
+    public static CalPriceFactory getInstance() &#123;
+        return CalPriceFactoryInstance.instance;
+    &#125;
+
+    private static class CalPriceFactoryInstance &#123;
+
+        private static CalPriceFactory instance = new CalPriceFactory();
+    &#125;
+&#125;
+</code></pre>
 <p>虽然工厂里的逻辑增加了，但是解耦的效果达到了，现在我们随便加入一个策略，并设置好它的生效区间，策略工厂就可以帮我们自动找到适应的策略。</p>
 
   
@@ -824,7 +1089,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -836,9 +1101,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1087,12 +1352,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1221,8 +1486,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1291,7 +1554,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1410,62 +1673,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1497,7 +1704,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1525,11 +1732,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

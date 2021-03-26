@@ -547,17 +547,35 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/guliangliang/article/details/49019101">原作者</a></p>
 <p>今天在看框架的工具包时发现了一个细节,<br><code>double d=1024d * 1024 * 1024 * 1024;</code><br>第一个1024后面为什么要带个d呢?  </p>
 <p>于是我尝试了一下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">1024d</span> * <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">double</span> dw = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span> ;</span><br><span class="line">System.out.println(d);</span><br><span class="line">System.out.println(dw);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">double d = 1024d * 1024 * 1024 * 1024;
+double dw = 1024 * 1024 * 1024 * 1024 ;
+System.out.println(d);
+System.out.println(dw);
+</code></pre>
 <p>结果为:<br><code>1.099511627776E12 0</code></p>
 <hr>
 <p>0?为啥是0?? java的普通数字类型是int,1024是int,4个int的1024相乘(2^40)已经超出了int的表示范围了,2^32,</p>
 <p>看了《Java虚拟机说明书》中“Java语言编程概念”中对“基本数据类型的变窄转换”的介绍才算明白了。</p>
 <p>对于</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">1000000</span>;</span><br><span class="line">System.out.println(i*i);</span><br><span class="line">-----------------------</span><br><span class="line">-<span class="number">727379968</span></span><br><span class="line">-----------------------</span><br></pre></td></tr></table></figure>
+<pre><code class="java">int i = 1000000;
+System.out.println(i*i);
+-----------------------
+-727379968
+-----------------------
+</code></pre>
 <p>的合理解释和过程应该是这样的：<br>&emsp;&emsp;i设置为1000000，在乘方时Java发现结果（1000000000000）已经超出了int基本数据类型的最大范围（2147483647），于是作了默认的类型提升（type promotion），中间结果做为long类型存放，返回结果时目标数据类型int不能够容纳下结果，于是根据Java的基础类型的变窄转换（Narrowing primitive conversion）规则，把结果宽于int类型宽度的部分全部丢弃，也就是只取结果的==低32位==，于是就得到了上面的结果。<br>&emsp;&emsp;下面用一个十六进制表示的例子阐释这个问题:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int i3 &#x3D; 1000000;</span><br><span class="line">System.out.println (Long.toHexString (i3*i3).toUpperCase());</span><br><span class="line">System.out.println (Long.toHexString (i3*i3).toUpperCase());</span><br><span class="line">System.out.println (Integer.toHexString (i3*i3).toUpperCase());</span><br><span class="line">System.out.println ((int)i3*i3);</span><br><span class="line">---------------------------------------------------</span><br><span class="line">FFFFFFFFD4A51000</span><br><span class="line">1000000000000</span><br><span class="line">D4A51000</span><br><span class="line">-727379968</span><br><span class="line">---------------------------------------------------</span><br></pre></td></tr></table></figure>
-
+<pre><code>int i3 = 1000000;
+System.out.println (Long.toHexString (i3*i3).toUpperCase());
+System.out.println (Long.toHexString (i3*i3).toUpperCase());
+System.out.println (Integer.toHexString (i3*i3).toUpperCase());
+System.out.println ((int)i3*i3);
+---------------------------------------------------
+FFFFFFFFD4A51000
+1000000000000
+D4A51000
+-727379968
+---------------------------------------------------
+</code></pre>
 <p>   截取是非常直观的</p>
 <p>原来如此,于是加了d的1024相乘,结果就会以double储存,这样才能得到正确的结果…真意外 啊啊啊.</p>
 
@@ -671,7 +689,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
           <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>java实现Iterable接口的几种方法</p>
           <p class='content'>java中实现迭代器接口的几种方法
 定义Iterable接口定义：
-123public interface Iterable&lt;T&gt; &#123;    Iterator&lt;T&g...</p>
+public interface Iterable&lt;T&gt; &#123;
+    Iterator&lt;T&gt;...</p>
         </a>
       
       
@@ -772,7 +791,7 @@ URI与URL、URN定义&emsp;&emsp;WEB服务器资源都有一个名字，这样�
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -784,9 +803,9 @@ URI与URL、URN定义&emsp;&emsp;WEB服务器资源都有一个名字，这样�
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1035,12 +1054,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1169,8 +1188,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1239,7 +1256,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1358,62 +1375,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1445,7 +1406,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1473,11 +1434,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

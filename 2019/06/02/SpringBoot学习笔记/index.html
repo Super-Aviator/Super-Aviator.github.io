@@ -560,13 +560,31 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <ul>
 <li>如果你的POM是继承spring-boot-starter-parent的话，只需要下面的指定就行。</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- The main class to start by executing java -jar --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">start-class</span>&gt;</span>com.mycorp.starter.HelloWorldApplication<span class="tag">&lt;/<span class="name">start-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="xml">&lt;properties&gt;
+    &lt;!-- The main class to start by executing java -jar --&gt;
+    &lt;start-class&gt;com.mycorp.starter.HelloWorldApplication&lt;/start-class&gt;
+&lt;/properties&gt;
+</code></pre>
 <ul>
 <li>如果你的POM不是继承spring-boot-starter-parent的话，需要下面的指定。</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>$&#123;start-class&#125;<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">layout</span>&gt;</span>ZIP<span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="xml">    &lt;plugin&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+      &lt;version&gt;1.3.5.RELEASE&lt;/version&gt;
+      &lt;configuration&gt;
+        &lt;mainClass&gt;$&#123;start-class&#125;&lt;/mainClass&gt;
+        &lt;layout&gt;ZIP&lt;/layout&gt;
+      &lt;/configuration&gt;
+      &lt;executions&gt;
+        &lt;execution&gt;
+          &lt;goals&gt;
+            &lt;goal&gt;repackage&lt;/goal&gt;
+          &lt;/goals&gt;
+        &lt;/execution&gt;
+      &lt;/executions&gt;
+    &lt;/plugin&gt;
+</code></pre>
 <h1 id="SpringBootApplication注解"><a href="#SpringBootApplication注解" class="headerlink" title="@SpringBootApplication注解"></a>@SpringBootApplication注解</h1><p>@SpringBootApplication开启了Spring的组件扫描和Spring Boot的自动配置功能。实际上，@SpringBootApplication将三个有用的注解组合在了一起。</p>
 <ul>
 <li>Spring的@Configuration：标明该类使用Spring基于Java的配置。虽然本书不会写太多 配置，但我们会更倾向于使用基于Java而不是XML的配置。</li>
@@ -575,7 +593,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <p>在Spring Boot的早期版本中，你需要在ReadingListApplication类上同时标上这三个注<br>解，但从Spring Boot 1.2.0开始，有@SpringBootApplication就行了。</p>
 <h1 id="使用-ConfigurationProperties注解"><a href="#使用-ConfigurationProperties注解" class="headerlink" title="使用@ConfigurationProperties注解"></a>使用@ConfigurationProperties注解</h1><p>在application.yml中，假如有如下配置：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自定义配置</span></span><br><span class="line"><span class="attr">myconfig:</span></span><br><span class="line">  <span class="attr">config1:</span> <span class="string">this</span> <span class="string">is</span> <span class="string">myconfig</span></span><br></pre></td></tr></table></figure>
+<pre><code class="yml">#自定义配置
+myconfig:
+  config1: this is myconfig
+</code></pre>
 <p>如果想将myconfig下的配置包装成一个对象，并提供getter和setter方法进行读取和写入，应该如何实现呢？这就需要使用<code>@ConfigurationProperties</code>注解去实现。使用这个注解主要由以下步骤：</p>
 <ol>
 <li>为项目于添加spring-boot-configuration-processor依赖</li>
@@ -583,24 +604,107 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>在需要使用到的地方使用getter和setter方法进行读取和写入。</li>
 </ol>
 <p>要使用ConfigurationProperties注解，首先需要为项目添加所需的依赖，在pom文件中添加：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+    &lt;optional&gt;true&lt;/optional&gt;
+&lt;/dependency&gt;
+</code></pre>
 <p>然后创建bean:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xqk.yxb.dto;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Aviator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;myconfig&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String config1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package com.xqk.yxb.dto;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Aviator
+ */
+@Data
+@Component
+@ConfigurationProperties(prefix = &quot;myconfig&quot;)
+public class MyConfig &#123;
+    private String config1;
+&#125;
+</code></pre>
 <p>bean中的@ConfigurationProperties注解定义了属性在配置文件中的前缀为myconfig，并定义了myconfig下的属性config1。并提供了getter和setter方法。</p>
 <p>需要使用自定义的属性时，只需要注入我们自定义的bean，就可以使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.xqk.yxb.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.xqk.yxb.dto.HTTPResponse;</span><br><span class="line"><span class="keyword">import</span> com.xqk.yxb.dto.MyConfig;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.logging.Level;</span><br><span class="line"><span class="keyword">import</span> java.util.logging.Logger;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Aviator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MyConfig myConfig;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger log=Logger.getLogger(<span class="string">&quot;HomeController&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(value = &quot;/index&quot;,method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HTTPResponse <span class="title">home</span><span class="params">()</span></span>&#123;</span><br><span class="line">        log.log(Level.INFO,myConfig.getConfig1());</span><br><span class="line">        myConfig.setConfig1(<span class="string">&quot;项目搭建成功&quot;</span>);</span><br><span class="line">        log.log(Level.INFO,myConfig.getConfig1());</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HTTPResponse(<span class="number">1</span>,<span class="string">&quot;项目搭建成功&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package com.xqk.yxb.controller;
 
+import com.xqk.yxb.dto.HTTPResponse;
+import com.xqk.yxb.dto.MyConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * @author Aviator
+ */
+@RestController
+public class HomeController &#123;
+
+    @Autowired
+    private MyConfig myConfig;
+
+    private Logger log=Logger.getLogger(&quot;HomeController&quot;);
+
+    @RequestMapping(value = &quot;/index&quot;,method = RequestMethod.GET)
+    public HTTPResponse home()&#123;
+        log.log(Level.INFO,myConfig.getConfig1());
+        myConfig.setConfig1(&quot;项目搭建成功&quot;);
+        log.log(Level.INFO,myConfig.getConfig1());
+        return new HTTPResponse(1,&quot;项目搭建成功&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>也可以在@bean注解的方法上使用@ConfigurationProperties注解，这样就不需要在实体类上使用@Component和@Configuration注解了,在启动类中定义bean：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.dxz.property4;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.builder.SpringApplicationBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestProperty4</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(locations = &quot;classpath:mail.properties&quot;,prefix = &quot;mail&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MailProperties <span class="title">mailProperties</span><span class="params">()</span></span>&#123;</span><br><span class="line">        MailProperties mp = <span class="keyword">new</span> MailProperties();</span><br><span class="line">        System.out.println(<span class="string">&quot;zheli &quot;</span> + mp);</span><br><span class="line">        <span class="keyword">return</span> mp;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//SpringApplication.run(TestProperty1.class, args);</span></span><br><span class="line">        <span class="keyword">new</span> SpringApplicationBuilder(TestProperty4.class).web(<span class="keyword">true</span>).run(args);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package com.dxz.property4;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class TestProperty4 &#123;
+
+    @Bean
+    @ConfigurationProperties(locations = &quot;classpath:mail.properties&quot;,prefix = &quot;mail&quot;)
+    public MailProperties mailProperties()&#123;
+        MailProperties mp = new MailProperties();
+        System.out.println(&quot;zheli &quot; + mp);
+        return mp;
+
+    &#125;
+
+    public static void main(String[] args) &#123;
+        //SpringApplication.run(TestProperty1.class, args);
+        new SpringApplicationBuilder(TestProperty4.class).web(true).run(args);
+
+    &#125;
+&#125;
+</code></pre>
 <blockquote>
 <p><strong>开启配置属性</strong> 从技术上来说，@ConfigurationProperties注解不会生效，除<br>非先向Spring配置类添加@EnableConfigurationProperties注解。但通常无需这么 做，因为Spring Boot自动配置后面的全部配置类都已经加上了@EnableConfigurationProperties注解。因此，除非你完全不使用自动配置（那怎么可能？），否则就无需显式地添加@EnableConfigurationProperties。</p>
 </blockquote>
 <h1 id="使用-ApplicationRunner-或-CommandLineRunner"><a href="#使用-ApplicationRunner-或-CommandLineRunner" class="headerlink" title="使用 ApplicationRunner 或 CommandLineRunner"></a>使用 ApplicationRunner 或 CommandLineRunner</h1><p>如果您需要在 SpringApplication 启动时运行一些代码，可以实现 ApplicationRunner 或者 CommandLineRunner 接口。这两个接口的工作方式是一样的，都提供了一个单独的 run 方法，它将在 SpringApplication.run(​…) 完成之前调用。</p>
 <p>CommandLineRunner 接口提供了访问应用程序字符串数组形式参数的方法，而 ApplicationRunner 则使用了上述的 ApplicationArguments 接口。以下示例展示 CommandLineRunner 和 run 方法的使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.boot.*;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBean</span> <span class="keyword">implements</span> <span class="title">CommandLineRunner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(String... args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Do something...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import org.springframework.boot.*;
+import org.springframework.stereotype.*;
 
+@Component
+public class MyBean implements CommandLineRunner &#123;
+
+    public void run(String... args) &#123;
+        // Do something...
+    &#125;
+
+&#125;
+</code></pre>
 <p>如果您定义了多个 CommandLineRunner 或者 ApplicationRunner bean，则必须指定调用顺序，您可以实现 org.springframework.core.Ordered 接口，也可以使用 org.springframework.core.annotation.Order 注解解决顺序问题。</p>
 
   
@@ -826,7 +930,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -838,9 +942,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1089,12 +1193,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1223,8 +1327,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1293,7 +1395,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1412,62 +1514,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1499,7 +1545,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1527,11 +1573,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

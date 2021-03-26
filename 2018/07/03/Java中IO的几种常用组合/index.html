@@ -544,17 +544,199 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   
   <p>今天主要复习了thinking in java 中java中的io部分,以前看过一段时间，不过现在都忘得差不多了。T_T,学过之后不常用总是会忘得很快，不过一遍遍的学过和忘记,在每次重新学习的时候捡起来会比较快。<br>java中的io大致分为两类，字符流（Reader/Writer）和字节流(InputStream/OutPutStream)，涉及到的类也相当多，要真正精通应该是很困难滴，所以我准备记住几种常用的组合就ok啦（什么?你说我学习不认真？小心我顺着网线过去打你，哈哈哈），然后自己写一个非常大（我自己差点信了）的程序巩固一下。明天开始啃nio部分。</p>
-<h2 id="几种常见的组合"><a href="#几种常见的组合" class="headerlink" title="几种常见的组合"></a>几种常见的组合</h2><h3 id="通过BufferedReader类编写echo回显程序"><a href="#通过BufferedReader类编写echo回显程序" class="headerlink" title="通过BufferedReader类编写echo回显程序"></a>通过BufferedReader类编写echo回显程序</h3><p> 由于System.in是一个未经包装的InputStream，所以我们需要将他通过InputStreamReader包装成一个BufferedReader,然后通过BufferedReader中的readLine来读取用户的输入字符：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Echo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        String item;</span><br><span class="line">        <span class="keyword">while</span> ((item = reader.readLine()) != <span class="keyword">null</span> &amp;&amp; item.length() != <span class="number">0</span>)</span><br><span class="line">            System.out.println(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><br> 当不输入任何字符直接回车时，会退出程序，达到终止程序的目的。</p>
-<h3 id="读取文件内容到控制台"><a href="#读取文件内容到控制台" class="headerlink" title="读取文件内容到控制台"></a>读取文件内容到控制台</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.FileReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BufferedInputFile</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">read</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader reader=<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(path));</span><br><span class="line">        StringBuilder sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        String temp;</span><br><span class="line">        <span class="keyword">while</span>((temp=reader.readLine())!=<span class="keyword">null</span>)</span><br><span class="line">            sb.append(temp+<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        reader.close();</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader sb=<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        String path=sb.readLine();</span><br><span class="line">        System.out.println(read(path));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="几种常见的组合"><a href="#几种常见的组合" class="headerlink" title="几种常见的组合"></a>几种常见的组合</h2><h3 id="通过BufferedReader类编写echo回显程序"><a href="#通过BufferedReader类编写echo回显程序" class="headerlink" title="通过BufferedReader类编写echo回显程序"></a>通过BufferedReader类编写echo回显程序</h3><p> 由于System.in是一个未经包装的InputStream，所以我们需要将他通过InputStreamReader包装成一个BufferedReader,然后通过BufferedReader中的readLine来读取用户的输入字符：</p>
+<pre><code class="java">package io;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Echo &#123;
+   public static void main(String[] args) throws IOException &#123;
+       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+       String item;
+       while ((item = reader.readLine()) != null &amp;&amp; item.length() != 0)
+           System.out.println(item);
+   &#125;
+&#125;
+</code></pre>
+<p> 当不输入任何字符直接回车时，会退出程序，达到终止程序的目的。</p>
+<h3 id="读取文件内容到控制台"><a href="#读取文件内容到控制台" class="headerlink" title="读取文件内容到控制台"></a>读取文件内容到控制台</h3><pre><code class="java">package io;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class BufferedInputFile &#123;
+    public static String read(String path) throws IOException&#123;
+        BufferedReader reader=new BufferedReader(new FileReader(path));
+        StringBuilder sb=new StringBuilder();
+        String temp;
+        while((temp=reader.readLine())!=null)
+            sb.append(temp+&quot;\n&quot;);
+        reader.close();
+        return sb.toString();
+    &#125;
+
+    public static void main(String[] args) throws IOException&#123;
+        BufferedReader sb=new BufferedReader(new InputStreamReader(System.in));
+        String path=sb.readLine();
+        System.out.println(read(path));
+    &#125;
+&#125;
+</code></pre>
 <p>需要注意的是BufferedReader中的readLine()方法会自动删除读取的一行的换行符，则在显示时需要手动加上\n进行换行</p>
-<h3 id="控制台字符输出到文件"><a href="#控制台字符输出到文件" class="headerlink" title="控制台字符输出到文件"></a>控制台字符输出到文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyFile</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        File out=<span class="keyword">new</span> File(<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\test.txt&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(!out.exists())</span><br><span class="line">            out.mkdir();</span><br><span class="line">        PrintWriter writer =<span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> OutputStreamWriter(</span><br><span class="line">        <span class="keyword">new</span> FileOutputStream(out,<span class="keyword">true</span>),<span class="string">&quot;utf-8&quot;</span>));<span class="comment">//指定utf8编码和进行追加</span></span><br><span class="line"></span><br><span class="line">        String item;</span><br><span class="line">        <span class="keyword">while</span> ((item = reader.readLine()) != <span class="keyword">null</span> &amp;&amp; item.length() != <span class="number">0</span>)</span><br><span class="line">            writer.println(item);</span><br><span class="line"></span><br><span class="line">        writer.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="控制台字符输出到文件"><a href="#控制台字符输出到文件" class="headerlink" title="控制台字符输出到文件"></a>控制台字符输出到文件</h3><pre><code class="java">package io;
+
+import java.io.*;
+
+public class CopyFile &#123;
+    public static void main(String[] args) throws IOException&#123;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        File out=new File(&quot;C:\\Users\\Aviator\\Desktop\\test.txt&quot;);
+        if(!out.exists())
+            out.mkdir();
+        PrintWriter writer =new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(out,true),&quot;utf-8&quot;));//指定utf8编码和进行追加
+
+        String item;
+        while ((item = reader.readLine()) != null &amp;&amp; item.length() != 0)
+            writer.println(item);
+
+        writer.close();
+    &#125;
+&#125;
+</code></pre>
 <p>如上，在InputStream/OutputStream中第二个参数可以指定编码类型，将字节流通过指定字符集，编码为字符流，FileOutputStream/FileInputStream中的第二个参数指定是否为追加，为true则追加到文件末尾，为false或者不指定则为不追加。最后，如果不存在你说指定的文件夹中没有指定的文件，则会自动创建目标文件。test.txt,而文件夹则需要自己使用exsits 方法检查是否存在并mkdir方法进行创建。</p>
-<h3 id="合并两个文件"><a href="#合并两个文件" class="headerlink" title="合并两个文件"></a>合并两个文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.SequenceInputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeTwoFiles</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        FileInputStream f1=<span class="keyword">new</span> FileInputStream (<span class="string">&quot;path1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        FileInputStream f2=<span class="keyword">new</span> FileInputStream(<span class="string">&quot;path2&quot;</span>);</span><br><span class="line"></span><br><span class="line">        SequenceInputStream in=<span class="keyword">new</span> SequenceInputStream(f1,f2);</span><br><span class="line"></span><br><span class="line">        FileOutputStream out=<span class="keyword">new</span> FileOutputStream</span><br><span class="line">        (<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] temp=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> length;</span><br><span class="line">        <span class="keyword">while</span>((length=in.read(temp))!=-<span class="number">1</span>)</span><br><span class="line">            out.write(temp,<span class="number">0</span>,length);</span><br><span class="line"></span><br><span class="line">        out.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="合并两个文件"><a href="#合并两个文件" class="headerlink" title="合并两个文件"></a>合并两个文件</h3><pre><code class="java">package io;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.SequenceInputStream;
+
+public class MergeTwoFiles &#123;
+    public static void main(String[] args) throws IOException&#123;
+        FileInputStream f1=new FileInputStream (&quot;path1&quot;);
+
+        FileInputStream f2=new FileInputStream(&quot;path2&quot;);
+
+        SequenceInputStream in=new SequenceInputStream(f1,f2);
+
+        FileOutputStream out=new FileOutputStream
+        (&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;,true);
+
+        byte[] temp=new byte[1024];
+        int length;
+        while((length=in.read(temp))!=-1)
+            out.write(temp,0,length);
+
+        out.close();
+    &#125;
+&#125;
+</code></pre>
 <p>如上，SequenceInputStream类可以将两个或两个以上的流合并为一个流，在调用read方法时，会依次读取每一个流的内容，直到最后一个流的末尾时返回-1。读取结束。</p>
 <h3 id="文件的缓存"><a href="#文件的缓存" class="headerlink" title="文件的缓存"></a>文件的缓存</h3><p>使用DataInput/OutputStream类可以实现类似于缓存的读写方式。示例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StoringAndRecoveringData</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">        DataOutputStream out=<span class="keyword">new</span> DataOutputStream	</span><br><span class="line">        (<span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream	</span><br><span class="line">        (<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>)));</span><br><span class="line"></span><br><span class="line">        out.writeUTF(<span class="string">&quot;this is a buffer for data&quot;</span>);</span><br><span class="line">        out.writeInt(<span class="number">222</span>);</span><br><span class="line">        out.writeUTF(<span class="string">&quot;ok next write a double&quot;</span>);</span><br><span class="line">        out.writeDouble(<span class="number">12.23</span>);</span><br><span class="line"></span><br><span class="line">        out.close();</span><br><span class="line"></span><br><span class="line">        DataInputStream in =<span class="keyword">new</span> DataInputStream(<span class="keyword">new</span> BufferedInputStream</span><br><span class="line">        (<span class="keyword">new</span> FileInputStream(<span class="string">&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;</span>)));</span><br><span class="line"></span><br><span class="line">        System.out.println(in.readUTF());</span><br><span class="line">        System.out.println(in.readInt());</span><br><span class="line">        System.out.println(in.readUTF());</span><br><span class="line">        System.out.println(in.readDouble());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package io;
+
+import java.io.*;
+
+public class StoringAndRecoveringData &#123;
+    public static void main(String[] args) throws IOException&#123;
+        DataOutputStream out=new DataOutputStream    
+        (new BufferedOutputStream(new FileOutputStream    
+        (&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;)));
+
+        out.writeUTF(&quot;this is a buffer for data&quot;);
+        out.writeInt(222);
+        out.writeUTF(&quot;ok next write a double&quot;);
+        out.writeDouble(12.23);
+
+        out.close();
+
+        DataInputStream in =new DataInputStream(new BufferedInputStream
+        (new FileInputStream(&quot;C:\\Users\\Aviator\\Desktop\\copy.txt&quot;)));
+
+        System.out.println(in.readUTF());
+        System.out.println(in.readInt());
+        System.out.println(in.readUTF());
+        System.out.println(in.readDouble());
+    &#125;
+&#125;
+</code></pre>
 <p>DataInputStream/DataOutputStream类拥有格式化输入输出的方法，能够对基本数据类型进行读写,每一个writeXXX都有对应的readXXX，而且是跨平台的方式进行，非常强大。<br>值得注意的是，如果要写入字符串，则应该使用writeUTF方法进行写入，同时使用对应的readUTF方法进行读取，这两个方法实际是使用的修改过的UTF编码进行读写，必须配套使用才能正确得到想要的信息。</p>
-<h3 id="文件夹拷贝（所谓的大程序）"><a href="#文件夹拷贝（所谓的大程序）" class="headerlink" title="文件夹拷贝（所谓的大程序）"></a>文件夹拷贝（所谓的大程序）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyDirectory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyDirectory</span><span class="params">(String inPath, String outPath)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        File fileIn = <span class="keyword">new</span> File(inPath);</span><br><span class="line">        <span class="keyword">if</span> (!fileIn.exists())</span><br><span class="line">            fileIn.mkdir();</span><br><span class="line">        <span class="keyword">if</span> (!fileIn.isDirectory()) &#123;</span><br><span class="line">            System.out.println(inPath + <span class="string">&quot; is not a directory &quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        File fileOut = <span class="keyword">new</span> File(outPath);</span><br><span class="line">        <span class="keyword">if</span> (!fileOut.exists())</span><br><span class="line">            fileOut.mkdir();</span><br><span class="line">        <span class="keyword">if</span> (!fileOut.isDirectory()) &#123;</span><br><span class="line">            System.out.println(inPath + <span class="string">&quot; is not a directory &quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        File[] files = fileIn.listFiles();</span><br><span class="line">        <span class="keyword">if</span> (files.length == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        List&lt;File&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Collections.addAll(list, files);</span><br><span class="line"></span><br><span class="line">        FileOutputStream out = <span class="keyword">null</span>;</span><br><span class="line">        FileInputStream in;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] item = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> length;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                File temp = list.get(i);</span><br><span class="line">                <span class="keyword">if</span> (temp.isDirectory()) &#123;</span><br><span class="line">                    copyDirectory(temp.getAbsolutePath(),</span><br><span class="line">                    outPath + <span class="string">&quot;\\&quot;</span> + temp.getName());<span class="comment">//当遇到文件夹时，递归进行拷贝。</span></span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                out = <span class="keyword">new</span> FileOutputStream(outPath + <span class="string">&quot;\\&quot;</span> + temp.getName());</span><br><span class="line"></span><br><span class="line">                in = <span class="keyword">new</span> FileInputStream(temp);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">while</span> ((length = in.read(item)) != -<span class="number">1</span>)</span><br><span class="line">                    out.write(item, <span class="number">0</span>, length);</span><br><span class="line">            &#125;</span><br><span class="line">            out.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;文件夹不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">        System.out.print(<span class="string">&quot;请输入你想要拷贝的文件夹的路径：&quot;</span>);</span><br><span class="line">        String inPath = in.readLine();</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;\n请输入你想要存放的路径：&quot;</span>);</span><br><span class="line">        String outPath = in.readLine();</span><br><span class="line"></span><br><span class="line">        copyDirectory(inPath, outPath);</span><br><span class="line">        System.out.println(<span class="string">&quot;拷贝完成！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="文件夹拷贝（所谓的大程序）"><a href="#文件夹拷贝（所谓的大程序）" class="headerlink" title="文件夹拷贝（所谓的大程序）"></a>文件夹拷贝（所谓的大程序）</h3><pre><code class="java">package io;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CopyDirectory &#123;
+    public static void copyDirectory(String inPath, String outPath)
+    throws IOException &#123;
+        File fileIn = new File(inPath);
+        if (!fileIn.exists())
+            fileIn.mkdir();
+        if (!fileIn.isDirectory()) &#123;
+            System.out.println(inPath + &quot; is not a directory &quot;);
+            return;
+        &#125;
+
+        File fileOut = new File(outPath);
+        if (!fileOut.exists())
+            fileOut.mkdir();
+        if (!fileOut.isDirectory()) &#123;
+            System.out.println(inPath + &quot; is not a directory &quot;);
+            return;
+        &#125;
+
+        File[] files = fileIn.listFiles();
+        if (files.length == 0) return;
+
+        List&lt;File&gt; list = new ArrayList&lt;&gt;();
+        Collections.addAll(list, files);
+
+        FileOutputStream out = null;
+        FileInputStream in;
+
+        byte[] item = new byte[1024];
+        int length;
+        try &#123;
+            for (int i = 0; i &lt; list.size(); i++) &#123;
+                File temp = list.get(i);
+                if (temp.isDirectory()) &#123;
+                    copyDirectory(temp.getAbsolutePath(),
+                    outPath + &quot;\\&quot; + temp.getName());//当遇到文件夹时，递归进行拷贝。
+                    continue;
+                &#125;
+                out = new FileOutputStream(outPath + &quot;\\&quot; + temp.getName());
+
+                in = new FileInputStream(temp);
+
+                while ((length = in.read(item)) != -1)
+                    out.write(item, 0, length);
+            &#125;
+            out.close();
+        &#125; catch (FileNotFoundException e) &#123;
+            System.out.println(&quot;文件夹不存在&quot;);
+        &#125;
+    &#125;
+
+    public static void main(String[] args) throws IOException &#123;
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print(&quot;请输入你想要拷贝的文件夹的路径：&quot;);
+        String inPath = in.readLine();
+
+        System.out.print(&quot;\n请输入你想要存放的路径：&quot;);
+        String outPath = in.readLine();
+
+        copyDirectory(inPath, outPath);
+        System.out.println(&quot;拷贝完成！&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>特别重要的是，如果想要拷贝的文件夹中含有子文件夹，则需要对子文件夹进行拷贝。扩展程序的功能。</p>
 <h3 id="几种判断是否读取到文件末尾的方法"><a href="#几种判断是否读取到文件末尾的方法" class="headerlink" title="几种判断是否读取到文件末尾的方法"></a>几种判断是否读取到文件末尾的方法</h3><ul>
 <li>对于读取字节流，如果读入整数的结果为-1，则表示到达文件末尾: while((i=in.read())!=-1)</li>
@@ -563,7 +745,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>对于每次读取byte数组的方法，可以通过安排判断读取到的byte数组的长度来判断是否到达了文件末尾while((length=in.read(bytes))!=0)</li>
 <li>对于会产生EOFException异常的操作，也可以使用捕获try块中的异常来判断是否读取到文件末尾</li>
 </ul>
-<h3 id="字符串的编码-encode-与解码-decode"><a href="#字符串的编码-encode-与解码-decode" class="headerlink" title="字符串的编码(encode)与解码(decode)"></a>字符串的编码(encode)与解码(decode)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io;</span><br><span class="line"><span class="keyword">import</span> java.io.UnsupportedEncodingException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InCodeAndDeCode</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">        String str=<span class="string">&quot;熊乾坤&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] bytes=str.getBytes(<span class="string">&quot;GBK&quot;</span>);<span class="comment">//编码</span></span><br><span class="line"></span><br><span class="line">        String str1=<span class="keyword">new</span> String(bytes,<span class="string">&quot;GBK&quot;</span>);<span class="comment">//解码</span></span><br><span class="line">        System.out.println(str1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串的编码-encode-与解码-decode"><a href="#字符串的编码-encode-与解码-decode" class="headerlink" title="字符串的编码(encode)与解码(decode)"></a>字符串的编码(encode)与解码(decode)</h3><pre><code class="java">package io;
+import java.io.UnsupportedEncodingException;
+
+public class InCodeAndDeCode &#123;
+    public static void main(String[] args) throws UnsupportedEncodingException &#123;
+        String str=&quot;熊乾坤&quot;;
+
+        byte[] bytes=str.getBytes(&quot;GBK&quot;);//编码
+
+        String str1=new String(bytes,&quot;GBK&quot;);//解码
+        System.out.println(str1);
+    &#125;
+&#125;
+</code></pre>
 <p>如上，通过String对象的getBytes(“编码类型”)将字符串进行编码，使用String类的构造方法将字符串进行解码。非常方便的。嗯。</p>
 
   
@@ -681,7 +876,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         <a class='next' href='/2018/07/02/%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E9%80%92%E5%BD%92%E5%AE%9E%E7%8E%B0/'>
           <p class='title'>字符串全排列的递归实现<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
           <p class='content'>数据结构与算法分析第三版中，有一道习题很有趣，想了半天也没想出来，网上搜了答案后恍然大悟，题目描述如下：
-123456练习1.6 编写带有下列声明的例程：public void permute(...</p>
+
+ 练习1.6 编写带有下列声明的例程：
+ public void permute(St...</p>
         </a>
       
     </div>
@@ -789,7 +986,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -801,9 +998,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1052,12 +1249,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1186,8 +1383,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1256,7 +1451,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1375,62 +1570,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1462,7 +1601,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1490,11 +1629,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

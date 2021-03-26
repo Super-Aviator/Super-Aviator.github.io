@@ -563,50 +563,131 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>AUTO：主键由程序控制。</li>
 </ul>
 <h2 id="GenerationType-TABLE"><a href="#GenerationType-TABLE" class="headerlink" title="GenerationType.TABLE"></a>GenerationType.TABLE</h2><p>使用一个特定的数据库表格来保存主键,持久化引擎通过关系数据库的一张特定的表格来生成主键,这种策略的好处就是不依赖于外部环境和数据库的具体实现,在不同数据库间可以很容易的进行移植,但由于其不能充分利用数据库的特性,所以不会优先使用。该策略一般与另外一个注解一起使用@TableGenerator,@TableGenerator注解指定了生成主键的表(可以在实体类上指定也可以在主键字段或属性上指定),然后JPA将会根据注解内容自动生成一张表作为序列表(或使用现有的序列表)。如果不指定序列表,则会生成一张默认的序列表,表中的列名也是自动生成,数据库上会生成一张名为sequence的表(SEQ_NAME,SEQ_COUNT)。序列表一般只包含两个字段:第一个字段是该生成策略的名称,第二个字段是该关系表的最大序号,它会随着数据的插入逐渐累加。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;id&quot;)</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy=GenerationType.TABLE,generator=&quot;table_gen&quot;)</span></span><br><span class="line">    <span class="meta">@TableGenerator(</span></span><br><span class="line"><span class="meta">            name = &quot;table_gen&quot;,  </span></span><br><span class="line"><span class="meta">            table=&quot;fendo_generator&quot;,  </span></span><br><span class="line"><span class="meta">            pkColumnName=&quot;seq_name&quot;,     //指定主键的名字</span></span><br><span class="line"><span class="meta">            pkColumnValue=&quot;fendos&quot;,      //指定下次插入主键时使用默认的值</span></span><br><span class="line"><span class="meta">            valueColumnName=&quot;seq_id&quot;,    //该主键当前所生成的值，它的值将会随着每次创建累加</span></span><br><span class="line"><span class="meta">            initialValue = 1,            //初始化值</span></span><br><span class="line"><span class="meta">            allocationSize=1             //累加值</span></span><br><span class="line"><span class="meta">            )</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getUid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> uid;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Id
+    @Column(name=&quot;id&quot;)
+    @GeneratedValue(strategy=GenerationType.TABLE,generator=&quot;table_gen&quot;)
+    @TableGenerator(
+            name = &quot;table_gen&quot;,  
+            table=&quot;fendo_generator&quot;,  
+            pkColumnName=&quot;seq_name&quot;,     //指定主键的名字
+            pkColumnValue=&quot;fendos&quot;,      //指定下次插入主键时使用默认的值
+            valueColumnName=&quot;seq_id&quot;,    //该主键当前所生成的值，它的值将会随着每次创建累加
+            initialValue = 1,            //初始化值
+            allocationSize=1             //累加值
+            )
+    public Integer getUid() &#123;
+        return uid;
+    &#125;
+</code></pre>
 <h2 id="GenerationType-SEQUENCE"><a href="#GenerationType-SEQUENCE" class="headerlink" title="GenerationType.SEQUENCE"></a>GenerationType.SEQUENCE</h2><p>在某些数据库中,不支持主键自增长,比如Oracle,其提供了一种叫做”序列(sequence)”的机制生成主键。此时,GenerationType.SEQUENCE就可以作为主键生成策略。该策略的不足之处正好与TABLE相反,由于只有部分数据库(Oracle,PostgreSQL,DB2)支持序列对象,MYsql不支持序列,所以该策略一般不应用于其他数据库。类似的,该策略一般与另外一个注解一起使用@SequenceGenerator,@SequenceGenerator注解指定了生成主键的序列.然后JPA会根据注解内容创建一个序列(或使用一个现有的序列)。如果不指定序列,则会自动生成一个序列SEQ_GEN_SEQUENCE。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Id  </span><br><span class="line">@GeneratedValue(strategy &#x3D; GenerationType.SEQUENCE,generator&#x3D;&quot;fendo_seq&quot;)  </span><br><span class="line">@SequenceGenerator(name&#x3D;&quot;fendo_seq&quot;, sequenceName&#x3D;&quot;seq_name&quot;)</span><br></pre></td></tr></table></figure>
-
+<pre><code>@Id  
+@GeneratedValue(strategy = GenerationType.SEQUENCE,generator=&quot;fendo_seq&quot;)  
+@SequenceGenerator(name=&quot;fendo_seq&quot;, sequenceName=&quot;seq_name&quot;)
+</code></pre>
 <h2 id="GenerationType-IDENTITY"><a href="#GenerationType-IDENTITY" class="headerlink" title="GenerationType.IDENTITY"></a>GenerationType.IDENTITY</h2><p>此种主键生成策略就是通常所说的主键自增长,数据库在插入数据时,会自动给主键赋值,比如MySQL可以在创建表时声明”auto_increment” 来指定主键自增长。该策略在大部分数据库中都提供了支持(指定方法或关键字可能不同),但还是有少数数据库不支持,所以可移植性略差。使用自增长主键生成策略是只需要声明strategy = GenerationType.IDENTITY即可。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Id</span>  </span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Id  
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+</code></pre>
 <h2 id="GenerationType-AUTO"><a href="#GenerationType-AUTO" class="headerlink" title="GenerationType.AUTO"></a>GenerationType.AUTO</h2><p>把主键生成策略交给持久化引擎(persistence engine),持久化引擎会根据数据库在以上三种主键生成策略中选择其中一种。此种主键生成策略比较常用,由于JPA默认的生成策略就是GenerationType.AUTO,所以使用此种策略时.可以显式的指定@GeneratedValue(strategy = GenerationType.AUTO)也可以直接@GeneratedValue。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Id</span>  </span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.AUTO)</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Id  
+@GeneratedValue(strategy = GenerationType.AUTO)
+</code></pre>
 <h2 id="各种数据库支持的类型"><a href="#各种数据库支持的类型" class="headerlink" title="各种数据库支持的类型"></a>各种数据库支持的类型</h2><p><img src="https://s2.ax1x.com/2019/06/20/VvNLYd.png" class="lazyload" data-srcset="https://s2.ax1x.com/2019/06/20/VvNLYd.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="各种数据库支持的类型"></p>
 <h1 id="使用Projections查询部分字段"><a href="#使用Projections查询部分字段" class="headerlink" title="使用Projections查询部分字段"></a>使用Projections查询部分字段</h1><p>在写代码时常常有这样的业务逻辑，就是仅仅查询实体类的部分字段，而忽略其他的字段，比如查询用户，不包括用户的密码等敏感信息。</p>
 <p>Spring Data JPA对Projections有很好的支持，使用方式如下：<br>对于如下的实体类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Data
+@Entity
+public class User &#123;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String name;
+    private String email;
+    private String address;
+&#125;
+</code></pre>
 <p>如果只想查询用户的name和email字段，首先需要定义一个接口，包含想要查询的字段的<strong>getter方法</strong>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Aviator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">getEmail</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">/**
+ * @author Aviator
+ */
+@ToString
+public interface User &#123;
+    String getName();
+    String getEmail();
+&#125;
+</code></pre>
 <p>然后在Repository中，编写查询方法，方法返回的集合中包含该接口：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserJpaRepository</span> <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>,<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询所有name的用户</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name 字符串类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> projection，查询特定字段的值,集合中的User为编写的接口。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">List&lt;User&gt; <span class="title">findUserByName</span><span class="params">(String name)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface UserJpaRepository extends Repository&lt;User,Long&gt; &#123;
+    /**
+     * 查询所有name的用户
+     * @param name 字符串类型
+     * @return projection，查询特定字段的值,集合中的User为编写的接口。
+     */
+    List&lt;User&gt; findUserByName(String name);
+&#125;
+</code></pre>
 <p>这样就可以查询User实体类的name和email字段了：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserJpaRepository userRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/user&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;UserDTO&gt; <span class="title">getAllUser</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userRepository.findUserByName(<span class="string">&quot;熊乾坤&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@RestController
+public class UserController &#123;
 
+    @Autowired
+    UserJpaRepository userRepository;
+
+    @GetMapping(&quot;/user&quot;)
+    public List&lt;UserDTO&gt; getAllUser()&#123;
+        return userRepository.findUserByName(&quot;熊乾坤&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>结果：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;熊乾坤&quot;</span>,<span class="attr">&quot;email&quot;</span>:<span class="string">&quot;2372389705@qq.com&quot;</span>&#125;,&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;熊乾坤&quot;</span>,<span class="attr">&quot;email&quot;</span>:<span class="string">&quot;2372389705@qq.com&quot;</span>&#125;]</span><br></pre></td></tr></table></figure>
-
+<pre><code class="json">[&#123;&quot;name&quot;:&quot;熊乾坤&quot;,&quot;email&quot;:&quot;2372389705@qq.com&quot;&#125;,&#123;&quot;name&quot;:&quot;熊乾坤&quot;,&quot;email&quot;:&quot;2372389705@qq.com&quot;&#125;]
+</code></pre>
 <p>除了使用接口的方式，JPA中也可以使用DTO类来实现Projections:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDTO</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用Projection时，字段必须为final修饰</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name, email;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserDTO</span><span class="params">(String name, String email)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.email = email;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Getter
+@ToString
+public class UserDTO &#123;
+    /**
+     * 使用Projection时，字段必须为final修饰
+     */
+    private final String name, email;
 
+    public UserDTO(String name, String email) &#123;
+        this.name = name;
+        this.email = email;
+    &#125;
+&#125;
+</code></pre>
 <p><strong>值得注意的是：如果使用DTO类的方式，类中的字段必须使用final修饰，否则会抛出没有转换器的异常，要注意一下。</strong></p>
 <h1 id="使用动态Projections"><a href="#使用动态Projections" class="headerlink" title="使用动态Projections"></a>使用动态Projections</h1><p>上面学习的Projections也支持动态的操作，在Repository定义的方法中，使用泛型，就可以达到动态的映射，可以根据判定条件查询实体类的某些字段：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserJpaRepository</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>,<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用模糊查询</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name 字符串类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> tClass 类型信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 用户列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">List&lt;T&gt; <span class="title">findUserByName</span><span class="params">(String name,Class&lt;T&gt; tClass)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface UserJpaRepository&lt;T&gt; extends Repository&lt;User,Long&gt; &#123;
+    /**
+     * 使用模糊查询
+     * @param name 字符串类型
+     * @param tClass 类型信息
+     * @return 用户列表
+     */
+    List&lt;T&gt; findUserByName(String name,Class&lt;T&gt; tClass);
+&#125;
+</code></pre>
 <p>此时，如果想查询User的所有字段，则调用findUserByName方法时只需要指定tClass参数为User.class,如果只需要查询User的部分参数，则tClass参数传入UserDTO.class即可。</p>
 <h1 id="合理使用-Modifying注解"><a href="#合理使用-Modifying注解" class="headerlink" title="合理使用@Modifying注解"></a>合理使用@Modifying注解</h1><p>在使用Spring Data JPA对数据库中的数据进行修改或者删除操作时，在使用@Query注解的同时，也需要使用到@Modifying注解，但是单独使用@Modifying注解时可能会因为缓存而导致一些问题。</p>
 <p>JPA 的 Repository 提供一种非常易用的机制用于 ORM 方式处理数据，但是如果需要一次性更新一批数据的部分字段，构造所有实体并逐个修改字段再存回数据库就显得有些臃肿。在 JPA 中提供了 @Query 注解用于使用 JPQL 执行数据库操作，如果数据库操作是修改数据而非查询数据，则需要再额外使用 @Modifying 注解提示 JPA 该操作是修改操作。</p>
 <p>当进行 find 操作时，JPA 在 EntityManager 中缓存了 find 生成的对象，当再次 find 时会直接返回该对象。于是可能会出现下面这种情况 ,用@Query 定义一个修改状态的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EntityRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Entity</span>, <span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Modifying</span></span><br><span class="line">    <span class="meta">@Query(&quot;update Entity set status = &#x27;IGNORED&#x27; where id = ?1&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">updateStatus</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public interface EntityRepository extends JpaRepository&lt;Entity, Integer&gt; &#123;
 
+    @Modifying
+    @Query(&quot;update Entity set status = &#39;IGNORED&#39; where id = ?1&quot;)
+    int updateStatus(int id);
+
+&#125;
+</code></pre>
 <p>先读取一个对象，再修改对象状态，再次读取对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;Entity&gt; entityBefore = repository.findById(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">repository.updateStatus(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">Optional&lt;Entity&gt; entityAfter = repository.findById(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="java">Optional&lt;Entity&gt; entityBefore = repository.findById(1);
 
+repository.updateStatus(1);
+
+Optional&lt;Entity&gt; entityAfter = repository.findById(1);
+</code></pre>
 <p>结果会发现 entityBefore 和 entityAfter 中的 Entity 对象 id 是相同的，中间对状态的修改并没有体现出来！当然，其原因也很明确，**@Query 跟 find 和 save 系列方法是两套不同的体系**，@Query 引起的数据库变更 EntityManager 并不能发现，更进一步说，使用其它工具或者其它框架修改数据库中的数据，也不能及时反应到 JPA 的 find 系列方法上来。</p>
 <p>当然，只要有缓存机制就一定不可避免存在此类问题，这仅是个取舍问题而不要认为是 BUG。如果要解决 find 得到的值不是数据库中最新值的问题可以有几种方式，避免使用 @Query 是一种方式，在需要时显式清理 EntityManager 的缓存也是一种方式。Spring Data JPA 提供了另外一种方式则是 @Modifying(clearAutomatically = true)，@Modifying 的 clearAutomatically 属性为 true 时，执行完 modifying query 之后就会清理缓存，从而在下次 find 时就可以读取到数据库中的最新值。</p>
 <p>自动清理之后还会带来一个新的问题，clear 操作清理的缓存中，还包括提交后未 flush 的数据，例如调用 save 而不是 saveAndFlush 就有可能不会立即将修改内容更新到数据库中，在 save 之后 flush 之前调用 @Modifying(clearAutomatically = true) 修饰的方法就有可能导致修改丢失。如果再要解决这个问题，还可以再加上另外一个属性 @Modifying(clearAutomatically = true, flushAutomatically = true)，**@Modifying 的 flushAutomatically 属性为 true 时，执行 modifying query 之前会先调用 flush 操作，从而避免数据丢失问题。**</p>
@@ -624,8 +705,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>FetchType.EAGER：急加载，加载一个实体时，定义急加载的属性会立即从数据库中加载。</li>
 </ul>
 <p>比方User类有两个属性，name跟address，就像百度知道，登录后用户名是需要显示出来的，此属性用到的几率极大，要马上到数据库查，用急加载;而用户地址大多数情况下不需要显示出来，只有在查看用户资料是才需要显示，需要用了才查数据库，用懒加载就好了。所以，并不是一登录就把用户的所有资料都加载到对象中，于是有了这两种加载模式。 optional:表示该属性是否允许为null,默认为true</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Basic(optional=false)</span></span><br><span class="line"></span><br><span class="line">　　<span class="function"><span class="keyword">public</span> String <span class="title">getAddress</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> address; &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Basic(optional=false)
 
+　　public String getAddress() &#123; return address; &#125;
+</code></pre>
 <h2 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h2><p>@Transient表示该属性并非一个到数据库表的字段的映射，表示<br>非持久化属性，与@Basic作用相反。JPA映射数据库的时候忽略它。如果一个属性并非数据库表的字段映射,就务必将其标示为 @Transient ,否则,ORM框架默认其注解为 @Basic</p>
 <h2 id="Temporal-TemporalType"><a href="#Temporal-TemporalType" class="headerlink" title="@Temporal(TemporalType)"></a>@Temporal(TemporalType)</h2><p>@Temporal用来设置Date类型的属性映射到对应精度的字段。</p>
 <ul>
@@ -641,11 +724,41 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <h2 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h2><p>在数据库中创建字段时，可以创建枚举类型的字段，例如在User表中，GENDER字段为枚举类型ENUM(‘MALE’,FEMALE)。那么在Entity实体类中需要在字段上使用使用@Enumerated注解，并创建相应的枚举类：</p>
 <p>创建Enum：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    <span class="comment">//男性</span></span><br><span class="line">    MALE(<span class="string">&quot;男性&quot;</span>),</span><br><span class="line">    <span class="comment">//女性</span></span><br><span class="line">    FEMALE(<span class="string">&quot;女性&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String value;</span><br><span class="line">    Gender(String str)&#123;</span><br><span class="line">        value=str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public enum Gender &#123;
+    //男性
+    MALE(&quot;男性&quot;),
+    //女性
+    FEMALE(&quot;女性&quot;);
 
+    private String value;
+    Gender(String str)&#123;
+        value=str;
+    &#125;
+&#125;
+</code></pre>
 <p>然后在实体类中使用@Enumerated注解：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Table(name = &quot;USER&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;NAME&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;EMAIL&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;ADDRESS&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;GENDER&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Entity
+@Data
+@Table(name = &quot;USER&quot;)
+public class User &#123;
+    @Id
+    @GeneratedValue
+    private Long id;
 
+    @Column(name = &quot;NAME&quot;)
+    private String name;
+
+    @Column(name = &quot;EMAIL&quot;)
+    private String email;
+
+    @Column(name = &quot;ADDRESS&quot;)
+    private String address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;GENDER&quot;)
+    private Gender gender;
+&#125;
+</code></pre>
 <p>这样就可以在实体类中使用枚举类型啦。</p>
 <p>值得注意的是，这时插入两条数据，数据库里面的值是MAIL/FMAIL，而不是“男<br>性”/“女性”。<strong>如果我们用@Enumerated(EnumType.ORDINAL)，那么 这时数据库里面的值是0、1。但是实际工作中，不建议用数字下标，因为枚举里面的属性值是会不断新增的，如果新增一个，位置变化了就惨了。</strong></p>
 <h2 id="CreatedDate"><a href="#CreatedDate" class="headerlink" title="@CreatedDate"></a>@CreatedDate</h2><p>用来指定当前的时间字段的数据为数据插入时的时间。</p>
@@ -861,7 +974,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -873,9 +986,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1124,12 +1237,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1258,8 +1371,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1328,7 +1439,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1447,62 +1558,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1534,7 +1589,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1562,11 +1617,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

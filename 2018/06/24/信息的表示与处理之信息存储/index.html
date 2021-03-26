@@ -614,7 +614,21 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </blockquote>
 <p>有意思的是，大小端起源于《格列夫游记》中的应该从鸡蛋的大端还是小端敲开鸡蛋而来，哈哈哈的，蛋疼Y_Y。</p>
 <h3 id="布尔代数简介"><a href="#布尔代数简介" class="headerlink" title="布尔代数简介"></a>布尔代数简介</h3><p>使用逻辑异或，能够实现两个整型的数的交换操作，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">       b=a^b;</span><br><span class="line">       a=a^b;</span><br><span class="line">       b=a^b;</span><br><span class="line">       System.out.println(a+<span class="string">&quot;:&quot;</span>+b);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        swap(<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//output: 3,2</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Test&#123;
+    public static void swap(int a,int b)&#123;
+       b=a^b;
+       a=a^b;
+       b=a^b;
+       System.out.println(a+&quot;:&quot;+b);
+   &#125;
+   
+   public static void main(String[] args) &#123;
+        swap(2,3);
+    &#125;
+&#125;
+
+   //output: 3,2
+</code></pre>
 <blockquote>
 <p>其原理是基于这个式子：<code>a^(a^b)=b</code>,可以带入上式中进行化简，验证结果。</p>
 </blockquote>
@@ -642,7 +656,19 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </blockquote>
 <h4 id="无符号数与补码的截断"><a href="#无符号数与补码的截断" class="headerlink" title="无符号数与补码的截断"></a>无符号数与补码的截断</h4><p>&emsp;&emsp;截断一个无符号数时，如果将其截断为k位，则截取的结果为：<br>$$<br>y=x \ mod\  2^k<br>$$</p>
 <p>&emsp;&emsp;截断一个有符号数时，如果将其截断为k位，则截取的结果与截断无符号数相同，不过需要将最高位转换为符号位。<br>$$<br>y=x \ mod\  2^k<br>$$<br>例如如下代码，可以看到在java中截断是如何进行的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">1234567</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;截取前的数为：&quot;</span>+i+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(i));</span><br><span class="line">        <span class="keyword">short</span> s=(<span class="keyword">short</span>)i;</span><br><span class="line">        System.out.println(<span class="string">&quot;截取后的数为：&quot;</span>+s+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(s));</span><br><span class="line">        <span class="keyword">int</span> r=i%<span class="number">65536</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;i%2^16=&quot;</span>+r+<span class="string">&quot;其二进制表示为：&quot;</span>+Integer.toBinaryString(r));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//output</span></span><br><span class="line">截取前的数为：<span class="number">1234567</span>其二进制表示为：<span class="number">100101101011010000111</span></span><br><span class="line">截取后的数为：-<span class="number">10617</span>其二进制表示为：<span class="number">11111111111111111101011010000111</span></span><br><span class="line">i%<span class="number">2</span>^<span class="number">16</span>=<span class="number">54919</span>其二进制表示为：<span class="number">1101011010000111</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public static void main(String[] args) &#123;
+        int i=1234567;
+        System.out.println(&quot;截取前的数为：&quot;+i+&quot;其二进制表示为：&quot;+Integer.toBinaryString(i));
+        short s=(short)i;
+        System.out.println(&quot;截取后的数为：&quot;+s+&quot;其二进制表示为：&quot;+Integer.toBinaryString(s));
+        int r=i%65536;
+        System.out.println(&quot;i%2^16=&quot;+r+&quot;其二进制表示为：&quot;+Integer.toBinaryString(r));
+    &#125;
+//output
+截取前的数为：1234567其二进制表示为：100101101011010000111
+截取后的数为：-10617其二进制表示为：11111111111111111101011010000111
+i%2^16=54919其二进制表示为：1101011010000111
+</code></pre>
 <p>可以看到截取后的二进制表示与直接mod 2的16次方相同。</p>
 <h3 id="无符号数加法与补码加法"><a href="#无符号数加法与补码加法" class="headerlink" title="无符号数加法与补码加法"></a>无符号数加法与补码加法</h3><p>&emsp;&emsp;无符号加法存在正溢出的情况，因为两个非负数相加只会存在正溢出，其加法后的结果如下：<br>对于无符号数x和y,$0 &lt;= x,y&lt; 2^w$</p>
 <p>$$<br>x+y=\begin{cases}<br>    x+y,&amp;x+y&lt;2^w &amp;normal\<br>    x+y-2^w,&amp;2^w&lt;=x+y&lt;=2^{w+1} &amp;\ \ overflow<br>    \end{cases}<br>$$</p>
@@ -930,7 +956,7 @@ head 文件路径选项...</p>
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -942,9 +968,9 @@ head 文件路径选项...</p>
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1193,12 +1219,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1327,8 +1353,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1397,7 +1421,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1516,62 +1540,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1603,7 +1571,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1631,11 +1599,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

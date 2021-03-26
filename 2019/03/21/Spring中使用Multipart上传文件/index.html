@@ -545,7 +545,12 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <p>在web应用中，我们常常需要使用到文件上传功能，比如用户注册时需要上传用户自定义的头像，在聊天室需要发送聊天图片等等，这就需要使用到Multipart功能，要使用文件上传功能，前端的表单代码需要做一些小修改，同时后台Spring也需要添加对Multipart的解析器（Resolver）.</p>
 <h1 id="前台代码的修改"><a href="#前台代码的修改" class="headerlink" title="前台代码的修改"></a>前台代码的修改</h1><p>当表单需呀使用到Multipart时，需要在form标签中加上enctype属性：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;POST&quot;</span> <span class="attr">action</span>=<span class="string">&quot;http://localhost:8080/uploadImg&quot;</span> <span class="attr">enctype</span>=<span class="string">&quot;multipart/form-data&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">name</span>=<span class="string">&quot;uploadImg&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/jpg,image/png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;提交&quot;</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="html">&lt;form method=&quot;POST&quot; action=&quot;http://localhost:8080/uploadImg&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;input type=&quot;file&quot; name=&quot;uploadImg&quot; accept=&quot;image/jpg,image/png&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;username&quot; &gt;
+    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; &gt;
+&lt;/form&gt;
+</code></pre>
 <p>需要注意的时上面的代码中的<code>enctype=&quot;multipart/form-data&quot;</code>,当使用此属性时，form表单会被拆分为多个part，包含文件的part中，存放的数据即为文件的二进制数据。<br>input标签中的<code>accept=&quot;image/jpg,image/png&quot;</code>属性指明了所需的文件类型。</p>
 <h1 id="Spring中使用Multipart接收文件"><a href="#Spring中使用Multipart接收文件" class="headerlink" title="Spring中使用Multipart接收文件"></a>Spring中使用Multipart接收文件</h1><p>Spring中接收Multipart数据需要添加相应的解析器（Resolver）,Spring中主要有两种multipart解析器：</p>
 <ul>
@@ -554,10 +559,17 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <p>如果需要把应用部署到Servlet3.0的容器中或者使用3.1之前的Spring版本，则需要使用CommonsMultipartResolver，否则，一般情况下我们使用StandardServletMultipartResovler。</p>
 <h1 id="配置StandardServletMultipartResolver解析器"><a href="#配置StandardServletMultipartResolver解析器" class="headerlink" title="配置StandardServletMultipartResolver解析器"></a>配置StandardServletMultipartResolver解析器</h1><p>如果配置StandardServletMultipartResolver解析器，首先需要在WebConfig配置类中添加Bean。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> MultipartResolver <span class="title">multipartResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StandardServletMultipartResolver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Bean
+public MultipartResolver multipartResolver()&#123;
+    return new StandardServletMultipartResolver();
+&#125;
+</code></pre>
 <p>由于StandardServletMultipartResolver类没有属性和构造器参数，所以不能对其进行设置，我们需要重写AbstractAnnotationCongifDispatcherServlet类的customizeRegistration方法，在这个方法中去对StandardServletMultipartResolver进行设置：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">customizeRegistration</span><span class="params">(ServletRegistration.Dynamic registration)</span> </span>&#123;</span><br><span class="line">    registration.setMultipartConfig(<span class="keyword">new</span> MultipartConfigElement(<span class="string">&quot;E://avatar//&quot;</span>,<span class="number">2097152</span>,<span class="number">4194304</span>,<span class="number">0</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Override
+protected void customizeRegistration(ServletRegistration.Dynamic registration) &#123;
+    registration.setMultipartConfig(new MultipartConfigElement(&quot;E://avatar//&quot;,2097152,4194304,0));
+&#125;
+</code></pre>
 <p>对于Multipart，我们一般需要配置一下几个参数：</p>
 <ul>
 <li>文件临时存放的路径<code>例如：&quot;E://avatar//&quot;</code></li>
@@ -566,17 +578,79 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>上传过程中，如果文件大于某个数，则需要将其存入临时存放的路径中 <code>例如：0（即任何大小的文件都需要存到临时路径中）</code></li>
 </ul>
 <p>如果是基于web.xml的配置，则需要在DispatcherServlet的Servlet中添加<code>&lt;multipart-config&gt;</code>标签：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>application<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.</span><br><span class="line">    DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextClass<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>org.springframework.web.context.support.</span><br><span class="line">        AnnotationConfigWebApplicationContext<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--定义contextConfigLocation的初始化参数--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>com.spring.mvc.WebConfig<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">multipart-config</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">location</span>&gt;</span>E://avatar//<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">max-file-size</span>&gt;</span>2097152<span class="tag">&lt;/<span class="name">max-file-size</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">max-request-size</span>&gt;</span>4194304<span class="tag">&lt;/<span class="name">max-request-size</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">multipart-config</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;servlet&gt;
+    &lt;servlet-name&gt;application&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.
+    DispatcherServlet&lt;/servlet-class&gt;
 
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextClass&lt;/param-name&gt;
+        &lt;param-value&gt;org.springframework.web.context.support.
+        AnnotationConfigWebApplicationContext&lt;/param-value&gt;
+    &lt;/init-param&gt;
+
+    &lt;!--定义contextConfigLocation的初始化参数--&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;com.spring.mvc.WebConfig&lt;/param-value&gt;
+    &lt;/init-param&gt;
+
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    
+    &lt;multipart-config&gt;
+        &lt;location&gt;E://avatar//&lt;/location&gt;
+        &lt;max-file-size&gt;2097152&lt;/max-file-size&gt;
+        &lt;max-request-size&gt;4194304&lt;/max-request-size&gt;
+    &lt;/multipart-config&gt;
+
+&lt;/servlet&gt;
+</code></pre>
 <h1 id="配置CommonsMultipartResolver解析器"><a href="#配置CommonsMultipartResolver解析器" class="headerlink" title="配置CommonsMultipartResolver解析器"></a>配置CommonsMultipartResolver解析器</h1><p>CommonsMultipartResolver可以作为StandardMultipartResolver的替代方案，配置CommonsMultipartResolver需要引入单独的jar包：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>com.springsource.org.apache.commons.fileupload<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>  </span><br></pre></td></tr></table></figure>
-
+<pre><code class="xml">&lt;dependency&gt;
+      &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+      &lt;artifactId&gt;com.springsource.org.apache.commons.fileupload&lt;/artifactId&gt;
+      &lt;version&gt;1.2.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;commons-io&lt;/groupId&gt;
+      &lt;artifactId&gt;commons-io&lt;/artifactId&gt;
+      &lt;version&gt;2.5&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;  
+</code></pre>
 <p>然后在WebConfig.java中申明Bean:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> MultipartResolver <span class="title">commonsMultipartResolver</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    CommonsMultipartResolver resolver= <span class="keyword">new</span> CommonsMultipartResolver();</span><br><span class="line">    resolver.setUploadTempDir(<span class="keyword">new</span> FileSystemResource(<span class="string">&quot;E://avatar//&quot;</span>));</span><br><span class="line">    resolver.setMaxUploadSize(<span class="number">2097152</span>);</span><br><span class="line">    resolver.setMaxInMemorySize(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> resolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Bean
+public MultipartResolver commonsMultipartResolver() throws IOException &#123;
+    CommonsMultipartResolver resolver= new CommonsMultipartResolver();
+    resolver.setUploadTempDir(new FileSystemResource(&quot;E://avatar//&quot;));
+    resolver.setMaxUploadSize(2097152);
+    resolver.setMaxInMemorySize(0);
+    return resolver;
+&#125;
+</code></pre>
 <p>与StandardMultipartRsolver不同的是，CommonsMultipartResolver可以在申明时直接配置参数，不过CommonsMultipartResolver类无法配置<code>整个请求的最大长度</code>这一参数。</p>
 <h1 id="处理Multipart数据"><a href="#处理Multipart数据" class="headerlink" title="处理Multipart数据"></a>处理Multipart数据</h1><p>在Controller中，需要对Multipart进行写入处理：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.web.bind.annotation.RequestMethod.POST;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/uploadImg&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadImgController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(method = POST)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">LoginMsg <span class="title">uploadImg</span><span class="params">(<span class="meta">@RequestParam(&quot;uploadImg&quot;)</span>MultipartFile img</span></span></span><br><span class="line"><span class="function"><span class="params">    ,User user)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;UploadImgController has been visited&quot;</span>);</span><br><span class="line">        File f=<span class="keyword">new</span> File(<span class="string">&quot;E://avatar//&quot;</span>+img.getOriginalFilename());</span><br><span class="line">        img.transferTo(f);</span><br><span class="line">        String path=f.getAbsolutePath();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LoginMsg(<span class="number">0</span>,path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.io.File;
+import java.io.IOException;
 
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+@Controller
+@RequestMapping(value = &quot;/uploadImg&quot;)
+public class UploadImgController &#123;
+
+    @RequestMapping(method = POST)
+    public @ResponseBody LoginMsg uploadImg(@RequestParam(&quot;uploadImg&quot;)MultipartFile img
+    ,User user) throws IOException &#123;
+        System.out.println(&quot;UploadImgController has been visited&quot;);
+        File f=new File(&quot;E://avatar//&quot;+img.getOriginalFilename());
+        img.transferTo(f);
+        String path=f.getAbsolutePath();
+        return new LoginMsg(0,path);
+    &#125;
+
+&#125;
+</code></pre>
 <p>在处理表单对应的方法中，需要使用<code>@RequestParam</code>注解，并将前端的文件的标签的name属性作为参数传递进去，Spring会自动将其包装为MultipartFile对象，此对象包含了文件的所有信息：字节数组、文件名等，以及写入到磁盘的快捷方法<code>transferTo()</code>.<br>上面的方法中，还返回了代表成功失败的json对象，用于前端判断图片是否上传成功。同时，表单中的其他项则被包装到User类中。<br>同理，如果需要上传多个文件，则可以将参数设置为<code>@RequestParam(&quot;uploadImg&quot;)MultipartFile[] img</code>。</p>
 
   
@@ -807,7 +881,7 @@ CSDN博客
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -819,9 +893,9 @@ CSDN博客
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1070,12 +1144,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1204,8 +1278,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1274,7 +1346,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1393,62 +1465,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1480,7 +1496,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1508,11 +1524,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

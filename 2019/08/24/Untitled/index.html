@@ -569,7 +569,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <h2 id="安装NodeJS"><a href="#安装NodeJS" class="headerlink" title="安装NodeJS"></a>安装NodeJS</h2><p>我直接使用<code>yum install nodejs</code>yum安装nodejs，hexo要求nodejs必须6.9以后的版本，yum中的版本是6.17，满足要求就OK了。使用<code>node --version</code>查看当前安装的版本是否符合要求</p>
 <h2 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h2><p>这步就直接使用hexo文档上的说明进行安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">npm install -g hexo-cli
+</code></pre>
 <p>安装完成使用<code>hexo -version</code>查看版本</p>
 <h2 id="安装hexo-admin插件"><a href="#安装hexo-admin插件" class="headerlink" title="安装hexo-admin插件"></a>安装hexo-admin插件</h2><p>在安装插件之前，需要初始化博客，步骤如下：</p>
 <ol>
@@ -579,38 +580,52 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>这里需要删除hexo默认的文章<code>rm source/_posts/hello-world.md</code>,然后执行<code>rm -rf themes/landscape</code>删除默认的主体</li>
 </ol>
 <p>初始化博客之后，就可以安装<code>hexo-admin</code>插件插件了，这个部分可以使用<a target="_blank" rel="noopener" href="https://jaredforsyth.com/hexo-admin/">hexo-admin官网</a>上的教程进行安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-admin</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">npm install --save hexo-admin
+</code></pre>
 <p>安装完成后，使用<code>hexo c</code>、<code>hexo s</code>、<code>hexo g</code>、<code>hexo d</code> 命令开始使用了。以前使用便携版时，命令行简化了server，直接使用<code>hexo -s</code>就可以使用。<br>因为以前的文章都在本地的电脑中，需要将source.post文件夹下的文件拷贝到云服务器上，配置文件和主题也可以考过去，省的重新配置麻烦。</p>
 <p>注意，如果这个时候执行<code>hexo d</code>进行部署，会提示:    </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR Deployer not found: git</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">ERROR Deployer not found: git
+</code></pre>
 <p>按照网上搜索的，首先需要安装一个插件：    </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-deployer-git</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">npm install --save hexo-deployer-git
+</code></pre>
 <p>然后使用<code>hexo d</code>命令会提示需要设置git邮箱和用户名，所以按照提示的命令，对git邮箱和名字进行设置：        </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email <span class="string">&quot;邮箱&quot;</span></span><br><span class="line">git config --global user.name <span class="string">&quot;名字&quot;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="bash">git config --global user.email &quot;邮箱&quot;
+git config --global user.name &quot;名字&quot;
+</code></pre>
 <p>然后就可以使用<code>hexo d</code>进行部署了</p>
 <p>然而在使用hexo-admin插件总的Deploy功能部署时，会提示：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: Config value <span class="string">&quot;admin.deployCommand&quot;</span> not found</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">Error: Config value &quot;admin.deployCommand&quot; not found
+</code></pre>
 <p>需要创建一个脚本，然后点击发布按钮时，会执行这个脚本，步骤如下：</p>
 <ol>
 <li><p>在_config.yml里面填写好deployCommand的存储路径之后，在该路径下生成脚本；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch deploy.sh;</span><br><span class="line">vim deploy.sh;</span><br></pre></td></tr></table></figure></li>
+<pre><code class="bash">touch deploy.sh;
+vim deploy.sh;
+</code></pre>
+</li>
 <li><p>输入以下内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env sh</span></span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">#!/usr/bin/env sh
+hexo g
+hexo d
+</code></pre>
 </li>
 <li><p>保存退出，并赋予执行权限：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x deploy.sh</span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">chmod +x deploy.sh
+</code></pre>
 </li>
 </ol>
 <p>修改配置文件,在hexo的配置文件_config.yml文件中的admin配置下面加入下面的配置，指定脚本的位置：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">admin:</span></span><br><span class="line">  <span class="attr">deployCommand:</span> <span class="string">&#x27;./hexo-publish.sh&#x27;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="yml">admin:
+  deployCommand: &#39;./hexo-publish.sh&#39;
+</code></pre>
 <p>但是这时候如果使用hexo-admin自带的Deploy按钮进行部署，会发现依旧是部署不成功的，这时，需要配置一下云服务器上的git的SSH，然后需要在hexo的配置文件_config.yml文件中，使用SSH的仓库地址而非https的，具体步骤如下：</p>
 <ol>
 <li><p>查看是否已经有了ssh密钥：cd ~/.ssh<br>如果没有密钥则不会有此文件夹，有则备份删除</p>
 </li>
 <li><p>生成密钥：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;gudujianjsk@gmail.com&quot;</span><br></pre></td></tr></table></figure>
+<pre><code class="git">ssh-keygen -t rsa -C &quot;gudujianjsk@gmail.com&quot;
+</code></pre>
 <p>按3个回车，密码为空这里一般不使用密钥。<br>最后得到了两个文件：id_rsa和id_rsa.pub</p>
 </li>
 <li><p>在github上添加ssh密钥，这要添加的是“id_rsa.pub”里面的公钥。打开<code>http://github.com</code>，登陆。</p>
@@ -626,11 +641,24 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zxlovenet/p/4571850.html">为你的git添加SSH</a></li>
 </ul>
 <p>弄完上面的步骤之后，就可以进行编辑和发布了，日常的功能算式满足了。开心，部署的时候会提示下面的错误，但是不用管，这是nodejs版本的问题：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">WARN  ===============================================================</span><br><span class="line">WARN  ========================= ATTENTION! ==========================</span><br><span class="line">WARN  ===============================================================</span><br><span class="line">WARN   NexT repository is moving here: https://github.com/theme-next </span><br><span class="line">WARN  ===============================================================</span><br><span class="line">WARN   It&#x27;s rebase to v6.0.0 and future maintenance will resume there</span><br><span class="line">WARN  ===============================================================</span><br><span class="line">fatal: could not read Password for &#x27;https://super-aviator@github.com&#x27;: No such device or address</span><br><span class="line">FATAL Something&#x27;s wrong. you can find the solution here: https://hexo.io/docs/troubleshooting.html</span><br><span class="line">Error: Spawn failed</span><br><span class="line">    at ChildProcess.&lt;anonymous&gt; (/usr/local/hexo/blog/node_modules/hexo-util/lib/spawn.js:52:19)</span><br><span class="line">    at emitTwo (events.js:106:13)</span><br><span class="line">    at ChildProcess.emit (events.js:191:7)</span><br><span class="line">    at Process.ChildProcess._handle.onexit (internal/child_process.js:219:12)</span><br></pre></td></tr></table></figure>
-
+<pre><code class="txt">WARN  ===============================================================
+WARN  ========================= ATTENTION! ==========================
+WARN  ===============================================================
+WARN   NexT repository is moving here: https://github.com/theme-next 
+WARN  ===============================================================
+WARN   It&#39;s rebase to v6.0.0 and future maintenance will resume there
+WARN  ===============================================================
+fatal: could not read Password for &#39;https://super-aviator@github.com&#39;: No such device or address
+FATAL Something&#39;s wrong. you can find the solution here: https://hexo.io/docs/troubleshooting.html
+Error: Spawn failed
+    at ChildProcess.&lt;anonymous&gt; (/usr/local/hexo/blog/node_modules/hexo-util/lib/spawn.js:52:19)
+    at emitTwo (events.js:106:13)
+    at ChildProcess.emit (events.js:191:7)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:219:12)
+</code></pre>
 <p>如果搜索功能不能用的话，需要重新安装搜索的插件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">npm install hexo-generator-searchdb --save
+</code></pre>
 <h2 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h2><p>安装nginx也可以使用yum中的bginx,使用<code>yum install -y nginx</code> 或者<code>yum install nginx</code>安装ngingx，前者与后者的区别是不用手动输入y。。。</p>
 <p>安装之后的nginx的默认目录为：</p>
 <ul>
@@ -656,7 +684,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <h2 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h2><p>到这一步，我已经完成了大部分的安装工作，接下来就需要配置nginx了，因为hexo的命令<code>hexo g</code>会在public文件夹下面生成所有网页的.html文件，所以需要把nginx的root目录指向public文件夹，根目录/设置为index.html，这样当浏览器访问到ip的80端口时，就可以直接进入index.html主页。</p>
 <p>修改<code>etc/nginx/nginx.conf</code>文件，在80端口配置一下：</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">listen</span>       [::]:<span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">server_name</span>  xqk;</span><br><span class="line">        <span class="attribute">root</span>         /usr/local/hexo/blog/public;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Load configuration files for the default server block.</span></span><br><span class="line">        <span class="attribute">include</span> /etc/nginx/default.d/<span class="regexp">*.conf</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">             <span class="attribute">index</span> index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="nginx">server &#123;
+        listen       80 default_server;
+        listen       [::]:80 default_server;
+        server_name  xqk;
+        root         /usr/local/hexo/blog/public;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        location / &#123;
+             index index.html index.htm;
+        &#125;
+&#125;
+</code></pre>
 <p>在这之前，需要开启云服务器的端口80和4000，开启的时候，值得注意的是，<strong>授权对象里面，如果填写0.0.0.0/0则表示允许所有人访问。</strong></p>
 <p>按照上面的操作之后，如果在浏览器直接数据ip地址，就可以访问到hexo -g生成的文章了。</p>
 <p>但是需要注意的是，这个生成的文章不是动态的，在admin页面编辑的文章在这里是不能动态改变的，还是得需要到4000端口去访问，是不是瞬间感觉有点鸡肋了呢。。。</p>
@@ -664,12 +705,32 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>一顿百度加谷歌之后，还是百思不得姐啊，但是我一直怀疑是hexo版本太低的原因，第三天之后，也就是2019-8-27，我升级了一下hexo的版本，发现竟然可以粘贴图片了。耶耶耶。</p>
 <p>首先升级nodejs的版本，需要使用n模块去升级，至于n模块是什么我也不知道，我也不敢问。。。</p>
 <ol>
-<li>使用下面的命令安装n模块<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install-g n</span><br></pre></td></tr></table></figure></li>
-<li>升级node.js到最新稳定版<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n stable</span><br></pre></td></tr></table></figure>
+<li>使用下面的命令安装n模块<pre><code>npm install-g n
+</code></pre>
+</li>
+<li>升级node.js到最新稳定版<pre><code class="bash">n stable
+</code></pre>
 npm常用地址：</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">npm -v          <span class="comment">#显示版本，检查npm 是否正确安装。</span></span><br><span class="line"> </span><br><span class="line">npm install express   <span class="comment">#安装express模块</span></span><br><span class="line"> </span><br><span class="line">npm install -g express  <span class="comment">#全局安装express模块</span></span><br><span class="line"> </span><br><span class="line">npm list         <span class="comment">#列出已安装模块</span></span><br><span class="line"> </span><br><span class="line">npm show express     <span class="comment">#显示模块详情</span></span><br><span class="line"> </span><br><span class="line">npm update        <span class="comment">#升级当前目录下的项目的所有模块</span></span><br><span class="line"> </span><br><span class="line">npm update express    <span class="comment">#升级当前目录下的项目的指定模块</span></span><br><span class="line"> </span><br><span class="line">npm update -g express  <span class="comment">#升级全局安装的express模块</span></span><br><span class="line"> </span><br><span class="line">npm uninstall express  <span class="comment">#删除指定的模块</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">
+npm -v          #显示版本，检查npm 是否正确安装。
+ 
+npm install express   #安装express模块
+ 
+npm install -g express  #全局安装express模块
+ 
+npm list         #列出已安装模块
+ 
+npm show express     #显示模块详情
+ 
+npm update        #升级当前目录下的项目的所有模块
+ 
+npm update express    #升级当前目录下的项目的指定模块
+ 
+npm update -g express  #升级全局安装的express模块
+ 
+npm uninstall express  #删除指定的模块
+</code></pre>
 <p><strong>参考地址：</strong><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/adeyi/article/details/51076274">升级nodejs</a></p>
 <p>当前的hexo版本可使用<code>hexo --version</code> 去查看：<br><img src="/images/hexoVersion.png" class="lazyload" data-srcset="/images/hexoVersion.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="upload successful"><br>现在的版本是2.0.0,确实是有点太低了，又一顿百度加谷歌之后，我学会了升级hexo，步骤如下：</p>
 <ol>
@@ -679,14 +740,18 @@ npm常用地址：</li>
 <p>回到hexo-admin中，体验一下markdown中复制粘贴图片所带来的乐趣吧。如果粘贴图片发现不能正常显示的话，尝试点击一下这个按钮:<br><img src="/images/showImage.png" class="lazyload" data-srcset="/images/showImage.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="upload successful">然后再切换回来编辑页面，图片就可以正常显示啦。</p>
 <h2 id="后台运行hexo命令"><a href="#后台运行hexo命令" class="headerlink" title="后台运行hexo命令"></a>后台运行hexo命令</h2><p>因为目前是在远程终端中执行的hexo -s命令，所以当终端断开的时候命令也就终止执行了，那么就需要将命令放在后台执行，这样就可以将hexo的命令脱离终端来运行了，网查又又是一顿查，发现可以使用nohup命令来实现，具体操作的步骤如下：        </p>
 <p>nohup的使用方式是<code>nohup [command] &amp;</code>，末尾的&amp;也可以不加，加上&amp;表示后台执行。<br>然后命令就会脱离终端自己去撒丫子运行，这时候如果重新登录终端，会发现命令依旧在执行。例如，在云服务器中执行如下命令（<strong>别忘了cd进入博客文件夹内部执行</strong>）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup hexo s &amp;</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">nohup hexo s &amp;
+</code></pre>
 <p>然后退出终端再次登录终端，<strong>注意</strong>，退出终端需要使用exit命令的方式去退出，否则nohup不能在后台运行。<br>重新登录终端后，使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux |grep hexo</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">ps aux |grep hexo
+</code></pre>
 <p>会发现hexo进程在后台执行：<br><img src="/images/nohupBackgroup.png" class="lazyload" data-srcset="/images/nohupBackgroup.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="upload successful"></p>
 <p>使用下面的命令提取hexo进程的pid：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -aux|grep hexo| grep -v grep | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="bash">ps -aux|grep hexo| grep -v grep | awk &#39;&#123;print $2&#125;&#39;
+</code></pre>
 <p>得到hexo进程的pid之后，如果想要终止该进程，可以使用下面的命令去终止掉该PID对应的进程:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 PID</span><br></pre></td></tr></table></figure>
+<pre><code class="bash">kill -9 PID
+</code></pre>
 <p>好了，启动和终止都学会了，可以满足最基本的需求了嘤嘤嘤。</p>
 <p><strong>参考地址：</strong><br><a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/704932">nohup 命令解析</a></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>零零散散弄了三四五六天终于算是完成了，以后也可以在公司也能记东西啦，美滋滋。</p>
@@ -914,7 +979,7 @@ npm常用地址：</li>
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -926,9 +991,9 @@ npm常用地址：</li>
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1177,12 +1242,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1311,8 +1376,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1381,7 +1444,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1500,62 +1563,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1587,7 +1594,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1615,11 +1622,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

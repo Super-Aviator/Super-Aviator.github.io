@@ -545,7 +545,37 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <p>初级排序算法主要包括选择排序，插入排序，希尔排序，三种算法，其中希尔排序算法是对插入排序算法的改进，初级排序算法的特点是代码量少，但是运行时间比高级排序算法多，性能最好的初级排序算法是希尔排序希尔排序对于大数组也适用，选择排序运行时间最高，而插入排序适用于部分有序或者全部有序的数组。</p>
 <hr>
-<h2 id="研究算法的基本框架"><a href="#研究算法的基本框架" class="headerlink" title="研究算法的基本框架"></a>研究算法的基本框架</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Example</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(Comparable a,Comparable b)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.compareTo(b)&lt;<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//如果a&lt;b,就返回真</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(Comparable[] a,<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">        Comparable temp=a[i];a[i]=a[j];a[j]=temp;</span><br><span class="line">        <span class="comment">//交换数组中第i和第j个数的顺序</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.length;i++)</span><br><span class="line">            System.out.print(a[i]+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        System.out.println();</span><br><span class="line">        <span class="comment">//打印数组内容</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSorted</span><span class="params">(Comparable[] a)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;a.length;i++)</span><br><span class="line">        <span class="keyword">if</span>(less(a[i],a[i-<span class="number">1</span>]))   <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">//测试数组是否有序。</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//测试用例</span></span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="研究算法的基本框架"><a href="#研究算法的基本框架" class="headerlink" title="研究算法的基本框架"></a>研究算法的基本框架</h2><pre><code class="java">public class Example&#123;
+    public static void sort(Comparable[] a)&#123;
+        //各种排序算法的实现
+    &#125;
+    private static boolean less(Comparable a,Comparable b)&#123;
+        return a.compareTo(b)&lt;0;
+        //如果a&lt;b,就返回真
+    &#125;
+    private static void exch(Comparable[] a,int i,int j)&#123;
+        Comparable temp=a[i];a[i]=a[j];a[j]=temp;
+        //交换数组中第i和第j个数的顺序
+    &#125;
+    private static void show(Comparable[] a)&#123;
+        for(int i=0;i&lt;a.length;i++)
+            System.out.print(a[i]+&quot; &quot;);
+        System.out.println();
+        //打印数组内容
+    &#125;
+    
+    public static boolean isSorted(Comparable[] a)&#123;
+        for(int i=1;i&lt;a.length;i++)
+        if(less(a[i],a[i-1]))   return false;
+        return true;
+        //测试数组是否有序。
+    &#125;
+    
+    public static void main(String[] args)&#123;
+        //测试用例
+    &#125;    
+&#125;
+</code></pre>
 <p>问题解析：<br>&emsp;&emsp;对于特定情况例如：int[]数组，在编写特定的exch()方法时，如果使用这种方式实现：a[i]+=a[j],a[j]=a[i]-a[j],a[i]=a[i]-a[j],当i和j的下标相同时，会得到一个0的结果，具体的原因只需按步骤一步步执行就能发现问题所在。</p>
 <hr>
 <h2 id="排序算法的成本模型（时间消耗点）"><a href="#排序算法的成本模型（时间消耗点）" class="headerlink" title="排序算法的成本模型（时间消耗点）"></a>排序算法的成本模型（时间消耗点）</h2><p>&emsp;&emsp;对于交换元素的排序算法，排序算法的成本模型是比较和交换的次数，对于不交换元素的排序算法，我们研究的是访问数组的次数。</p>
@@ -559,20 +589,46 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li>如果a.comparTo(b)&gt;0说明a&gt;b</li>
 </ul>
 <p>Comparable接口的代码如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">interface Comparable&lt;T&gt;&#123;</span><br><span class="line">    public int compareTo(T o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code>interface Comparable&lt;T&gt;&#123;
+    public int compareTo(T o);
+&#125;
+</code></pre>
 <hr>
 <h2 id="计算算法的时间-Stopwatch"><a href="#计算算法的时间-Stopwatch" class="headerlink" title="计算算法的时间(Stopwatch)"></a>计算算法的时间(Stopwatch)</h2><p>该类用于计算算法所需的时间</p>
 <ul>
-<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stopwatch</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> start;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Stopwatch</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		start=System.currentTimeMillis();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">elapsedTimeMillis</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">long</span> now=System.currentTimeMillis();</span><br><span class="line">		<span class="keyword">return</span> (now-start)/<span class="number">1000.0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<li>代码实现:<pre><code class="java">public class Stopwatch &#123;
+  private final long start;
+  public Stopwatch() &#123;
+      start=System.currentTimeMillis();
+  &#125;
+  public double elapsedTimeMillis() &#123;
+      long now=System.currentTimeMillis();
+      return (now-start)/1000.0;
+  &#125;
+&#125;
+</code></pre>
 </li>
 </ul>
 <hr>
 <h2 id="各种基本排序算法"><a href="#各种基本排序算法" class="headerlink" title="各种基本排序算法"></a>各种基本排序算法</h2><p>介绍几种常用的排序算法:</p>
 <h3 id="选择排序-Selection-Sort"><a href="#选择排序-Selection-Sort" class="headerlink" title="选择排序(Selection Sort)"></a>选择排序(Selection Sort)</h3><ul>
 <li>执行方式:<br>&emsp;&emsp;每次从右边未排序的数组中选择最小元素,将其插入到左边已排序的数组中的最后位,直到整个数组已经有序.</li>
-<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; i++) &#123;   </span><br><span class="line">            <span class="comment">//该循环控制交换的次数,N个元素交换N-1此</span></span><br><span class="line">            <span class="keyword">int</span> min = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; N; j++)</span><br><span class="line">                <span class="comment">//该循环用于查找剩下数据中最小的那一个</span></span><br><span class="line">                <span class="keyword">if</span> (less(a[j], a[min])) min = j;</span><br><span class="line">                <span class="comment">//如果a[j]比a[min]小,就将j赋值给min</span></span><br><span class="line">            exch(a, i, min);        </span><br><span class="line">            <span class="comment">//交换最小的值和第i个数.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<li>代码实现:<pre><code class="java">public static void sort(Comparable[] a) &#123;
+      //各种排序算法的实现
+      int N = a.length;
+      for (int i = 0; i &lt; N - 1; i++) &#123;   
+          //该循环控制交换的次数,N个元素交换N-1此
+          int min = i;
+          for (int j = i + 1; j &lt; N; j++)
+              //该循环用于查找剩下数据中最小的那一个
+              if (less(a[j], a[min])) min = j;
+              //如果a[j]比a[min]小,就将j赋值给min
+          exch(a, i, min);        
+          //交换最小的值和第i个数.
+      &#125;
+  &#125;
+</code></pre>
+</li>
 <li>时间复杂度分析<br>&emsp;&emsp;代码中exch(交换)方法执行的次数为N次,所以时间复杂度决定为比较的次数.第二个<br>for循环中,比的次数为 $ (N-1)+(N-2)+…+2+1=N(N-1)/2=N^2/2 $</li>
 </ul>
 <hr>
@@ -580,7 +636,17 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>执行方式:<br>在右边未排序的数组中选择第一个,将其插入到左边已经排序的数组中去,必要时需要将左边数组中的部分数据向右移动移一位.</p>
 </li>
 <li><p>代码实现:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; less(a[j], a[j - <span class="number">1</span>]); j--)</span><br><span class="line">                <span class="comment">//如果后一个数小于它的前一个数</span></span><br><span class="line">                exch(a, j, j - <span class="number">1</span>);<span class="comment">//就将他们交换.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<pre><code class="java">public static void sort(Comparable[] a) &#123;
+      //各种排序算法的实现
+      int N = a.length;
+      for (int i = 1; i &lt; N - 1; i++) &#123;
+          for (int j = i; j &gt; 0 &amp;&amp; less(a[j], a[j - 1]); j--)
+              //如果后一个数小于它的前一个数
+              exch(a, j, j - 1);//就将他们交换.
+      &#125;
+  &#125;
+</code></pre>
+</li>
 <li><p>时间复杂度分析:  </p>
 </li>
 </ul>
@@ -591,15 +657,62 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <hr>
 <h3 id="插入排序的改进-improvement"><a href="#插入排序的改进-improvement" class="headerlink" title="插入排序的改进(improvement)"></a>插入排序的改进(improvement)</h3><p>&emsp;&emsp;在常规的插入排序算法中，我们每次遇到一个逆序对，总是将他和后面的数交换，如果我们将内循环中比a[j]小的数直接向后移动，这样可以将访问数组元素的次数减小一半。</p>
 <ul>
-<li>代码实现：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = a[i], j;</span><br><span class="line">            <span class="keyword">for</span> (j = i; j &gt; <span class="number">0</span> &amp;&amp; temp &lt; a[j - <span class="number">1</span>]; j--)</span><br><span class="line">                a[j] = a[j - <span class="number">1</span>];</span><br><span class="line">            a[j] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<li>代码实现：<pre><code class="java">public static void sort(Comparable[] a) &#123;
+      int N = a.length;
+      for (int i = 1; i &lt; N; i++) &#123;
+          int temp = a[i], j;
+          for (j = i; j &gt; 0 &amp;&amp; temp &lt; a[j - 1]; j--)
+              a[j] = a[j - 1];
+          a[j] = temp;
+      &#125;
+&#125;
+</code></pre>
 </li>
 </ul>
 <h3 id="插入排序和选择排序的比较"><a href="#插入排序和选择排序的比较" class="headerlink" title="插入排序和选择排序的比较"></a>插入排序和选择排序的比较</h3><p>&emsp;&emsp;对于无重复主键的大量数据，插入排序和选择排序的运行时间都是平方级别的，两者之间应该是一个较小的常数。<br>&emsp;&emsp;对于部分有序或者小规模数组时，插入排序的效率很高，此算法也会在高级排序算法中使用。<br>&emsp;&emsp;对于数组有序或者大量重复主键的数组，插入排序可能比任何算法都要快，这是它独有的特性。而选择排序则是平方级别的。    </p>
 <hr>
 <h3 id="希尔排序-Shell"><a href="#希尔排序-Shell" class="headerlink" title="希尔排序(Shell)"></a>希尔排序(Shell)</h3><ul>
 <li>执行方式<br>&emsp;&emsp;希尔排序也是插入排序的另一种优化算法,它克服了插入排序想要移动一个元素到正确的位置所需要的最多N-1次移动的缺点,它为了加快排序速度,交换不相邻的元素以对数组的局部进行排序,并最终用插入排序将局部有序的数组排序.</li>
-<li>代码实现:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortShellIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用希尔增量(较慢，较简单)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> Increment = N / <span class="number">2</span>; Increment &gt; <span class="number">0</span>; Increment /= <span class="number">2</span>)<span class="comment">//希尔增量</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp;</span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortHibbardIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用Hibbard增量(更快)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">int</span> Increment = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">while</span> (Increment &lt; N) Increment = Increment * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">for</span> (Increment /= <span class="number">2</span>; Increment &gt; <span class="number">0</span>; Increment /= <span class="number">2</span>)<span class="comment">//Hibbard增量</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp; </span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sortBookIncrement</span><span class="params">(Comparable[] a)</span> </span>&#123;<span class="comment">//使用书上的增量(最快)</span></span><br><span class="line">       <span class="keyword">int</span> N = a.length;</span><br><span class="line">       <span class="keyword">int</span> Increment = <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">while</span> (Increment &lt; N / <span class="number">3</span>) Increment = Increment * <span class="number">3</span> + <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">for</span> (; Increment &gt;= <span class="number">1</span>; Increment /= <span class="number">3</span>)</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = Increment; i &lt; N; i++) &#123;</span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= Increment &amp;&amp; </span><br><span class="line">                       less(a[j], a[j - Increment]); j -= Increment)</span><br><span class="line">                   exch(a, j, j - Increment);</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+<li>代码实现:<pre><code class="java">public static void sortShellIncrement(Comparable[] a) &#123;//使用希尔增量(较慢，较简单)
+      int N = a.length;
+      for (int Increment = N / 2; Increment &gt; 0; Increment /= 2)//希尔增量
+          for (int i = Increment; i &lt; N; i++) &#123;
+              for (int j = i; j &gt;= Increment &amp;&amp;
+                      less(a[j], a[j - Increment]); j -= Increment)
+                  exch(a, j, j - Increment);
+          &#125;
+  &#125;
+
+</code></pre>
+</li>
+</ul>
+<pre><code>public static void sortHibbardIncrement(Comparable[] a) &#123;//使用Hibbard增量(更快)
+    int N = a.length;
+    int Increment = 0;
+    while (Increment &lt; N) Increment = Increment * 2 + 1;
+    for (Increment /= 2; Increment &gt; 0; Increment /= 2)//Hibbard增量
+        for (int i = Increment; i &lt; N; i++) &#123;
+            for (int j = i; j &gt;= Increment &amp;&amp; 
+                    less(a[j], a[j - Increment]); j -= Increment)
+                exch(a, j, j - Increment);
+        &#125;
+&#125;
+
+
+public static void sortBookIncrement(Comparable[] a) &#123;//使用书上的增量(最快)
+    int N = a.length;
+    int Increment = 1;
+    while (Increment &lt; N / 3) Increment = Increment * 3 + 1;
+    for (; Increment &gt;= 1; Increment /= 3)
+        for (int i = Increment; i &lt; N; i++) &#123;
+            for (int j = i; j &gt;= Increment &amp;&amp; 
+                    less(a[j], a[j - Increment]); j -= Increment)
+                exch(a, j, j - Increment);
+        &#125;
+&#125;
+</code></pre>
+<p>```</p>
+<ul>
 <li>时间复杂度分析:<br>上面的代码采用了三种增量序列(Increment).   </li>
 </ul>
 <p>第一种为希尔增量(最坏时间复杂度为$ N^2 $):<br>$ 1,2,4,…,N/2 $</p>
@@ -837,7 +950,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -849,9 +962,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1100,12 +1213,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1234,8 +1347,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1304,7 +1415,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1423,62 +1534,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1510,7 +1565,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1538,11 +1593,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

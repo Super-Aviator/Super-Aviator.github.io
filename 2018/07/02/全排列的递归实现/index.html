@@ -544,9 +544,42 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   
   <p>数据结构与算法分析第三版中，有一道习题很有趣，想了半天也没想出来，网上搜了答案后恍然大悟，题目描述如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">练习<span class="number">1.6</span> 编写带有下列声明的例程：</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">permute</span><span class="params">(String str)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">permute</span><span class="params">(<span class="keyword">char</span>[] str, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span>;</span><br><span class="line">第一个例程是个驱动程序，它调用第二个例程并显示String str中的字符的所有排列。</span><br><span class="line">如果str是<span class="string">&quot;abc&quot;</span>，那么输出的串则是abc,acb,bac,bca,cab和cba。第二个例程使用递归。</span><br></pre></td></tr></table></figure>
+<pre><code class="java">
+ 练习1.6 编写带有下列声明的例程：
+ public void permute(String str);
+ public void permute(char[] str, int low, int high);
+ 第一个例程是个驱动程序，它调用第二个例程并显示String str中的字符的所有排列。
+ 如果str是&quot;abc&quot;，那么输出的串则是abc,acb,bac,bca,cab和cba。第二个例程使用递归。
+</code></pre>
 <p>简单来说就是使用递归实现全排列。标准答案如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">T6</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">permute</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        permute(str.toCharArray(), <span class="number">0</span>, str.length() - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">permute</span><span class="params">(<span class="keyword">char</span>[] str, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (hi == lo) &#123;</span><br><span class="line">            System.out.println(String.valueOf(str));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = lo; i &lt;= hi; i++) &#123;</span><br><span class="line">                swap(str, lo, i);</span><br><span class="line">                permute(str, lo + <span class="number">1</span>, hi);</span><br><span class="line">                swap(str, lo, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">char</span>[] str, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span> temp = str[lo];</span><br><span class="line">        str[lo] = str[hi];</span><br><span class="line">        str[hi] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        permute(<span class="string">&quot;ab&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class T6 &#123;
+    public static void permute(String str) &#123;
+        permute(str.toCharArray(), 0, str.length() - 1);
+    &#125;
+
+    public static void permute(char[] str, int lo, int hi) &#123;
+        if (hi == lo) &#123;
+            System.out.println(String.valueOf(str));
+        &#125; else &#123;
+            for (int i = lo; i &lt;= hi; i++) &#123;
+                swap(str, lo, i);
+                permute(str, lo + 1, hi);
+                swap(str, lo, i);
+            &#125;
+        &#125;
+    &#125;
+
+    public static void swap(char[] str, int lo, int hi) &#123;
+        char temp = str[lo];
+        str[lo] = str[hi];
+        str[hi] = temp;
+    &#125;
+
+    public static void main(String[] args) &#123;
+        permute(&quot;ab&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p><img src="data:image/png;base64,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" alt="image"></p>
 <p>代码实现非常巧妙，执行流程如图，在permute函数中，for循环中首先将i和lo交换，相当于控制str中的每一个首字母都有一次出现在字符串第一个字母的机会，当i和lo交换完毕后，递归的对i后面的字母进行全排列，回溯时将交换过的字母复原。当lo和hi相等时，打印出str数组。学习了。</p>
 
@@ -758,7 +791,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -770,9 +803,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1021,12 +1054,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1155,8 +1188,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1225,7 +1256,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1344,62 +1375,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1431,7 +1406,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1459,11 +1434,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

@@ -559,40 +559,175 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h2 id="排序算法扩充"><a href="#排序算法扩充" class="headerlink" title="排序算法扩充"></a>排序算法扩充</h2><h4 id="排序中的比较器-Comparator-用法"><a href="#排序中的比较器-Comparator-用法" class="headerlink" title="排序中的比较器(Comparator)用法"></a>排序中的比较器(Comparator)用法</h4><p>&emsp;&emsp;比较器用于对相同的事物使用不同的比较规则的排序方法.例如在对String数组排序时,可以使用’忽略字母大小写’(String.CASE_INSENSITIVE_ORDER)的比较器进行排序.</p>
 <ul>
 <li><p>比较器的创建方法.<br>&emsp;&emsp;比较器一般使用静态内部类(嵌套类)实现.例如在对Transaction(交易)类中定义比较器:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Transaction</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String who;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Date when;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">double</span> amount;<span class="comment">//定义待比较的数据类型</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">WhoOrder</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Tansaction</span>&gt;</span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">CompareTo</span><span class="params">(Transaction v,Transaction w)</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> v.who.compareTo(w.who);</span><br><span class="line">        &#125;<span class="comment">//定义比较器1</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">whenOrder</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Tansaction</span>&gt;</span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">CompareTo</span><span class="params">(Transaction v,Transaction w)</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> v.when.compareTo(w.when);</span><br><span class="line">        &#125;<span class="comment">//定义比较器2</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">HowMuchOrder</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Tansaction</span>&gt;</span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">CompareTo</span><span class="params">(Transaction v,Transaction w)</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> v.amount.compareTo(w.amount);</span><br><span class="line">        &#125;<span class="comment">//定义比较器3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Transaction&#123;
+  private final String who;
+  private final Date when;
+  private final double amount;//定义待比较的数据类型
+  
+  public static class WhoOrder implements Comparator&lt;Tansaction&gt;&#123;
+      public int CompareTo(Transaction v,Transaction w)&#123;
+          return v.who.compareTo(w.who);
+      &#125;//定义比较器1
+      
+  public static class whenOrder implements Comparator&lt;Tansaction&gt;&#123;
+      public int CompareTo(Transaction v,Transaction w)&#123;
+          return v.when.compareTo(w.when);
+      &#125;//定义比较器2
+      
+  public static class HowMuchOrder implements Comparator&lt;Tansaction&gt;&#123;
+      public int CompareTo(Transaction v,Transaction w)&#123;
+          return v.amount.compareTo(w.amount);
+      &#125;//定义比较器3
+  &#125;
+&#125;
+</code></pre>
 </li>
 <li><p>比较器的使用方法<br>使用比较器使,首先需要排序支持比较器,以插入排序为例,代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Object[] a,Comparator c)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//各种排序算法的实现</span></span><br><span class="line">		<span class="keyword">int</span> N=a.length;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;N;i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=i;j&gt;<span class="number">0</span>&amp;&amp;less(a[j],a[j-<span class="number">1</span>]);j--)</span><br><span class="line">            		<span class="comment">//如果后一个数小于它的前一个数</span></span><br><span class="line">				exch(a,j,j-<span class="number">1</span>);<span class="comment">//就将他们交换.</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//核心代码</span></span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(Compartor c,Object a,Object b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> c.comparTo(a,b)&lt;<span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(Object[] a,<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">    Object t=a[i],a[i]=a[j],a[j]=t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public static void sort(Object[] a,Comparator c) &#123;
+      //各种排序算法的实现
+      int N=a.length;
+      for(int i=1;i&lt;N;i++) &#123;
+          for(int j=i;j&gt;0&amp;&amp;less(a[j],a[j-1]);j--)
+                  //如果后一个数小于它的前一个数
+              exch(a,j,j-1);//就将他们交换.
+      &#125;
+  &#125;//核心代码
+  
+private static boolean less(Compartor c,Object a,Object b)&#123;
+  return c.comparTo(a,b)&lt;0
+&#125;
+</code></pre>
 </li>
 </ul>
-<p>在比较时,只需要将比较器对象传入sort函数:<br><code>sort(a,new Transaction.Who());</code></p>
-<hr>
-<h4 id="排序算法的稳定性"><a href="#排序算法的稳定性" class="headerlink" title="排序算法的稳定性"></a>排序算法的稳定性</h4><p>&emsp;&emsp;算法的稳定性是指相同的元素在排序前和排序后的相对位置不变.<br>&emsp;&emsp;稳定性在某些应用中的排序非常重要.而我们已经学过的算法中,插入排序和归并排序是稳定的.而选择排序,希尔排序,快速排序是不稳定的.</p>
-<hr>
-<h4 id="通用最快算法以及原始数据排序"><a href="#通用最快算法以及原始数据排序" class="headerlink" title="通用最快算法以及原始数据排序"></a>通用最快算法以及原始数据排序</h4><p>&emsp;&emsp;排序算法中,通用的速度最快的算法是快速排序,在考虑排序算法时要充分考虑.<br>&emsp;&emsp;在对原始数据排序时,可以忽略Comparable接口,直接进行排序,甚至可以将less等函数用a[k]&lt;a[j]替换.</p>
-<hr>
-<h4 id="java系统库中的Arrays-sort-方法的实现"><a href="#java系统库中的Arrays-sort-方法的实现" class="headerlink" title="java系统库中的Arrays.sort()方法的实现"></a>java系统库中的Arrays.sort()方法的实现</h4><p>&emsp;&emsp;java系统库的sort方法针对不同的数据使用了不同的方法</p>
-<ul>
-<li>每种原始数据类型都有对应的方法</li>
-<li>实现了Comparable接口的排序方法</li>
-<li>拥有比较器(Comparator)的排序方法</li>
-</ul>
-<p>&emsp;&emsp;如果是基本类型,使用的是三向切分的快速排序,如果是引用数组,则使用归并排序(用空间换取稳定性).</p>
-<h2 id="排序算法的应用"><a href="#排序算法的应用" class="headerlink" title="排序算法的应用"></a>排序算法的应用</h2><h4 id="查找数组重复元素的个数"><a href="#查找数组重复元素的个数" class="headerlink" title="查找数组重复元素的个数"></a>查找数组重复元素的个数</h4><p>&emsp;&emsp;常常遇到一些问题是，查找数组中重复元素的个数，一般使用平方级别的算法将所有元素相互比较一边就可以得到，但是对于大数组行不通，更高效的方法是将数组排序，然后使用线性级别算法就可以得到结果。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] a=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">10</span>&#125;;</span><br><span class="line">        Map&lt;Integer,Integer&gt; map=<span class="keyword">new</span> TreeMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[i]==a[i-<span class="number">1</span>])&#123;</span><br><span class="line">                <span class="keyword">if</span>(map.containsKey(a[i]))</span><br><span class="line">                    map.put(a[i],map.get(a[i])+<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    map.put(a[i],<span class="number">2</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(Integer i:map.keySet())</span><br><span class="line">            System.out.println(<span class="string">&quot;数字:&quot;</span>+i+<span class="string">&quot;重复的次数为：&quot;</span>+map.get(i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>private static void exch(Object[] a,int i,int j){<br>    Object t=a[i],a[i]=a[j],a[j]=t;<br>}</p>
+<pre><code>
+在比较时,只需要将比较器对象传入sort函数:
+`sort(a,new Transaction.Who());`
 
+---
+
+#### 排序算法的稳定性
+&amp;emsp;&amp;emsp;算法的稳定性是指相同的元素在排序前和排序后的相对位置不变.   
+&amp;emsp;&amp;emsp;稳定性在某些应用中的排序非常重要.而我们已经学过的算法中,插入排序和归并排序是稳定的.而选择排序,希尔排序,快速排序是不稳定的.
+
+---
+
+#### 通用最快算法以及原始数据排序
+&amp;emsp;&amp;emsp;排序算法中,通用的速度最快的算法是快速排序,在考虑排序算法时要充分考虑.    
+&amp;emsp;&amp;emsp;在对原始数据排序时,可以忽略Comparable接口,直接进行排序,甚至可以将less等函数用a[k]&lt;a[j]替换.
+
+--- 
+
+#### java系统库中的Arrays.sort()方法的实现
+&amp;emsp;&amp;emsp;java系统库的sort方法针对不同的数据使用了不同的方法
+
+- 每种原始数据类型都有对应的方法
+- 实现了Comparable接口的排序方法
+- 拥有比较器(Comparator)的排序方法
+
+&amp;emsp;&amp;emsp;如果是基本类型,使用的是三向切分的快速排序,如果是引用数组,则使用归并排序(用空间换取稳定性).
+
+
+## 排序算法的应用
+
+#### 查找数组重复元素的个数
+&amp;emsp;&amp;emsp;常常遇到一些问题是，查找数组中重复元素的个数，一般使用平方级别的算法将所有元素相互比较一边就可以得到，但是对于大数组行不通，更高效的方法是将数组排序，然后使用线性级别算法就可以得到结果。
+```java
+import java.util.*;
+
+public class Demo &#123;
+    public static void main(String[] args)&#123;
+        int[] a=&#123;1,2,2,2,2,3,4,5,5,5,6,7,8,8,8,8,8,8,10&#125;;
+        Map&lt;Integer,Integer&gt; map=new TreeMap&lt;&gt;();
+        for(int i=1;i&lt;a.length;i++)&#123;
+            if(a[i]==a[i-1])&#123;
+                if(map.containsKey(a[i]))
+                    map.put(a[i],map.get(a[i])+1);
+                else
+                    map.put(a[i],2);
+            &#125;
+        &#125;
+        for(Integer i:map.keySet())
+            System.out.println(&quot;数字:&quot;+i+&quot;重复的次数为：&quot;+map.get(i));
+    &#125;
+&#125;
+</code></pre>
 <hr>
 <h4 id="排名（查找kendall-tau距离，即数组中逆序对的个数）"><a href="#排名（查找kendall-tau距离，即数组中逆序对的个数）" class="headerlink" title="排名（查找kendall tau距离，即数组中逆序对的个数）"></a>排名（查找kendall tau距离，即数组中逆序对的个数）</h4><ul>
 <li><p>基础解法<br>&emsp;&emsp;类似于选择排序与插入排序，时间复杂度为平方级别。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KendallTau</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] a=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span>[] b=&#123;<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span>[] sum1=<span class="keyword">new</span> <span class="keyword">int</span>[a.length],sum2=<span class="keyword">new</span> <span class="keyword">int</span>[b.length];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.length;i++)</span><br><span class="line">            sum1[a[i]]=i;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;b.length;i++)</span><br><span class="line">            sum2[b[i]]=i;</span><br><span class="line">        <span class="comment">//将索引保存</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;b.length;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(i==j)    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">int</span> disOld=sum1[a[i]]-sum1[a[j]];</span><br><span class="line">                <span class="keyword">int</span> disNow=sum2[a[i]]-sum2[a[j]];</span><br><span class="line">                <span class="keyword">if</span>((disOld&gt;<span class="number">0</span>&amp;&amp;disNow&gt;<span class="number">0</span>)||(disNow&lt;<span class="number">0</span>&amp;&amp;disOld&lt;<span class="number">0</span>));</span><br><span class="line">                <span class="keyword">else</span>    sum++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;逆序对的数量为：&quot;</span>+sum/<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class KendallTau &#123;
+  public static void main(String[] args)&#123;
+      int[] a=&#123;0,1,2,3&#125;;
+      int[] b=&#123;3,2,1,0&#125;;
+      int[] sum1=new int[a.length],sum2=new int[b.length];
+      for(int i=0;i&lt;a.length;i++)
+          sum1[a[i]]=i;
+
+      for(int i=0;i&lt;b.length;i++)
+          sum2[b[i]]=i;
+      //将索引保存
+
+      int sum=0;
+      for(int i=0;i&lt;a.length;i++)&#123;
+          for(int j=0;j&lt;b.length;j++)&#123;
+              if(i==j)    continue;
+              int disOld=sum1[a[i]]-sum1[a[j]];
+              int disNow=sum2[a[i]]-sum2[a[j]];
+              if((disOld&gt;0&amp;&amp;disNow&gt;0)||(disNow&lt;0&amp;&amp;disOld&lt;0));
+              else    sum++;
+          &#125;
+      &#125;
+
+      System.out.println(&quot;逆序对的数量为：&quot;+sum/2);
+  &#125;
+&#125;
+</code></pre>
 </li>
 <li><p>改进算法<br>&emsp;&emsp;还没弄懂！！！Y_Y，观望一段时间先。</p>
 </li>
 </ul>
 <hr>
 <h4 id="基于快速排序的查找数组中第k小的元素"><a href="#基于快速排序的查找数组中第k小的元素" class="headerlink" title="基于快速排序的查找数组中第k小的元素"></a>基于快速排序的查找数组中第k小的元素</h4><p>&emsp;&emsp;基于快速排序和二分查找,我们可以查找到数组中第k小的元素.代码如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FindK</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span>[] a,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> tmp=a[x];</span><br><span class="line">        a[x]=a[y];</span><br><span class="line">        a[y]=tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] a,<span class="keyword">int</span> lo,<span class="keyword">int</span> hi)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> st=lo,en=hi+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> t=a[lo];</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[++st]&lt;t)   <span class="keyword">if</span>(st&gt;=hi)   <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span>(a[--en]&gt;t)   ;</span><br><span class="line">            <span class="keyword">if</span>(st&gt;=hi)  <span class="keyword">break</span>;</span><br><span class="line">            exch(a,st,en);</span><br><span class="line">        &#125;</span><br><span class="line">        exch(a,lo,en);</span><br><span class="line">        <span class="keyword">return</span> en;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] a=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">10</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> lo=<span class="number">0</span>,hi=a.length-<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> j=-<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k=<span class="number">6</span>;</span><br><span class="line">        <span class="keyword">if</span>(k&gt;hi)   &#123;<span class="comment">//特例</span></span><br><span class="line">            System.out.println(<span class="string">&quot;没有找到哦！！！&quot;</span>);</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">            j =partition(a,lo,hi);</span><br><span class="line">            <span class="keyword">if</span>(j==k)    <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">else</span>    <span class="keyword">if</span>(j&lt;k) lo=j+<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span>    hi=j-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;第&quot;</span>+k+<span class="string">&quot;小的数为：&quot;</span>+a[j]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.util.*;
+
+public class FindK&#123;
+    public static void exch(int[] a,int x,int y)&#123;
+        int tmp=a[x];
+        a[x]=a[y];
+        a[y]=tmp;
+    &#125;
+
+    public static int partition(int[] a,int lo,int hi)&#123;
+        int st=lo,en=hi+1;
+        int t=a[lo];
+        while(true)&#123;
+            if(a[++st]&lt;t)   if(st&gt;=hi)   break;
+            if(a[--en]&gt;t)   ;
+            if(st&gt;=hi)  break;
+            exch(a,st,en);
+        &#125;
+        exch(a,lo,en);
+        return en;
+    &#125;
+    public static void main(String[] args)&#123;
+        int[] a=&#123;1,2,2,2,2,3,4,5,5,5,6,7,8,8,8,8,8,8,10&#125;;
+        int lo=0,hi=a.length-1;
+        int j=-1;
+        int k=6;
+        if(k&gt;hi)   &#123;//特例
+            System.out.println(&quot;没有找到哦！！！&quot;);
+            System.exit(0);
+        &#125;  
+        while(lo&lt;=hi)&#123;
+            j =partition(a,lo,hi);
+            if(j==k)    break;
+            else    if(j&lt;k) lo=j+1;
+            else    hi=j-1;
+        &#125;
+        System.out.println(&quot;第&quot;+k+&quot;小的数为：&quot;+a[j]);
+    &#125;
+&#125;
+</code></pre>
 <p>对于N个输入,查找第k小的元素,该算法只需要线性级别的时间.划重点，面试会问的哦。</p>
 
   
@@ -756,7 +891,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">排序算法总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9"><span class="toc-text">各种排序算法的性能特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-text">排序算法的选择</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%89%A9%E5%85%85"><span class="toc-text">排序算法扩充</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%AF%94%E8%BE%83%E5%99%A8-Comparator-%E7%94%A8%E6%B3%95"><span class="toc-text">排序中的比较器(Comparator)用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E7%A8%B3%E5%AE%9A%E6%80%A7"><span class="toc-text">排序算法的稳定性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E6%9C%80%E5%BF%AB%E7%AE%97%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE%E6%8E%92%E5%BA%8F"><span class="toc-text">通用最快算法以及原始数据排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#java%E7%B3%BB%E7%BB%9F%E5%BA%93%E4%B8%AD%E7%9A%84Arrays-sort-%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">java系统库中的Arrays.sort()方法的实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text">排序算法的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E6%95%B0%E7%BB%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="toc-text">查找数组重复元素的个数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%90%8D%EF%BC%88%E6%9F%A5%E6%89%BEkendall-tau%E8%B7%9D%E7%A6%BB%EF%BC%8C%E5%8D%B3%E6%95%B0%E7%BB%84%E4%B8%AD%E9%80%86%E5%BA%8F%E5%AF%B9%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%89"><span class="toc-text">排名（查找kendall tau距离，即数组中逆序对的个数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E6%9F%A5%E6%89%BE%E6%95%B0%E7%BB%84%E4%B8%AD%E7%AC%ACk%E5%B0%8F%E7%9A%84%E5%85%83%E7%B4%A0"><span class="toc-text">基于快速排序的查找数组中第k小的元素</span></a></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">排序算法总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9"><span class="toc-text">各种排序算法的性能特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-text">排序算法的选择</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%89%A9%E5%85%85"><span class="toc-text">排序算法扩充</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%AF%94%E8%BE%83%E5%99%A8-Comparator-%E7%94%A8%E6%B3%95"><span class="toc-text">排序中的比较器(Comparator)用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%90%8D%EF%BC%88%E6%9F%A5%E6%89%BEkendall-tau%E8%B7%9D%E7%A6%BB%EF%BC%8C%E5%8D%B3%E6%95%B0%E7%BB%84%E4%B8%AD%E9%80%86%E5%BA%8F%E5%AF%B9%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%89"><span class="toc-text">排名（查找kendall tau距离，即数组中逆序对的个数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E6%9F%A5%E6%89%BE%E6%95%B0%E7%BB%84%E4%B8%AD%E7%AC%ACk%E5%B0%8F%E7%9A%84%E5%85%83%E7%B4%A0"><span class="toc-text">基于快速排序的查找数组中第k小的元素</span></a></li></ol></li></ol></li></ol>
     </div>
   </section>
 
@@ -821,7 +956,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -833,9 +968,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1084,12 +1219,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1218,8 +1353,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1288,7 +1421,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1407,62 +1540,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1494,7 +1571,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1522,11 +1599,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

@@ -546,44 +546,129 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <p>在学习Thinking in java这本书时，发现泛型是其介绍的比较多的一个章节，而且这一张的后半部分确实有点晦涩难懂，让我读起来头皮发麻T_T,主要就是三种通配符的使用不是很理解，反复读了Thinking in java中解释，也看了知乎上别人的文章，总算是有点头绪了，这里按照常理记录一下，方便以后回来瞅一瞅。</p>
 <hr>
 <p>在讨论泛型之前，我们首先假设有如下的继承关系</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fruit</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Apple</span> <span class="keyword">extends</span> <span class="title">Fruit</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Orange</span> <span class="keyword">extends</span> <span class="title">Fruit</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HongFuShi</span> <span class="keyword">extends</span> <span class="title">Apple</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">class Fruit&#123;&#125;
+class Apple extends Fruit&#123;&#125;
+class Orange extends Fruit&#123;&#125;
+class HongFuShi extends Apple&#123;&#125;
+</code></pre>
 <h2 id="泛型通配符之子类型通配符-lt-extends-MyClass-gt"><a href="#泛型通配符之子类型通配符-lt-extends-MyClass-gt" class="headerlink" title="泛型通配符之子类型通配符&lt;? extends MyClass&gt;"></a>泛型通配符之子类型通配符&lt;? extends MyClass&gt;</h2><p>首先通过下面的代码来揭示子类型通配符的特性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubtypeWildcard</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;? extends Fruit&gt; list1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list1.add(<span class="keyword">new</span> Apple());<span class="comment">//compile error</span></span><br><span class="line">        list1.add(<span class="keyword">new</span> Fruit());<span class="comment">//compile error</span></span><br><span class="line">        list1.add(<span class="keyword">new</span> Orange());<span class="comment">//compile error</span></span><br><span class="line">        list1.add(<span class="keyword">new</span> Object());<span class="comment">//compile error</span></span><br><span class="line">        list1.add(<span class="keyword">null</span>);<span class="comment">//ok</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class SubtypeWildcard &#123;
+    public static void main(String[] args) &#123;
+        List&lt;? extends Fruit&gt; list1=new ArrayList&lt;&gt;();
+        list1.add(new Apple());//compile error
+        list1.add(new Fruit());//compile error
+        list1.add(new Orange());//compile error
+        list1.add(new Object());//compile error
+        list1.add(null);//ok
+    &#125;
+&#125;
+</code></pre>
 <p>如上，list1中的类型参数为<code>&lt;? extends Fruit&gt;</code>,我们称指定了泛型的<strong>上界</strong>为Fruit,表示某种继承自Fruit的类型，按照常理，list1应该可以放一些Apple或者Orange类，但是事实并非如此，list1不能放任何对象，除了null。</p>
 <p>对于这一现象的解释是：<code>&lt;? extends Fruit&gt;</code>表示某种继承自Fruit的类型，但是通配符引用的是明确的类型，它意味着某种list1没有明确表明的类型，可能是Apple,可能是Orange,可能是继承自Fruit的任何类型，当我们想在list1中放入一个对象时，编译器无法保证这个list1是否可以持有这种类型。例如我们向其中添加一个Apple对象，但是如果List是一个<code>List&lt;Orange&gt;</code>，这时就会造成混乱。</p>
 <p>但是从list1中读一个对象总是安全的，因为子类型通配符保证了从list1中取出的一定是某一种Fruit,我们也可以对取出的对象进行转型，但是可能会得到一个ClassCastException异常。如下所示。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubtypeWildcard</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Fruit&gt; list1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list1.add(<span class="keyword">new</span> Apple());</span><br><span class="line">        list1.add(<span class="keyword">new</span> Fruit());</span><br><span class="line">        list1.add(<span class="keyword">new</span> Orange());</span><br><span class="line"></span><br><span class="line">        List&lt;? extends Fruit&gt; list2=list1;</span><br><span class="line">        Fruit f=list1.get(<span class="number">0</span>);<span class="comment">//ok</span></span><br><span class="line">        f=list1.get(<span class="number">1</span>);<span class="comment">//ok</span></span><br><span class="line">        <span class="comment">//f=(Apple)list1.get(2);//ClassCastException</span></span><br><span class="line">        f=(Orange)list1.get(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class SubtypeWildcard &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Fruit&gt; list1=new ArrayList&lt;&gt;();
+        list1.add(new Apple());
+        list1.add(new Fruit());
+        list1.add(new Orange());
 
+        List&lt;? extends Fruit&gt; list2=list1;
+        Fruit f=list1.get(0);//ok
+        f=list1.get(1);//ok
+        //f=(Apple)list1.get(2);//ClassCastException
+        f=(Orange)list1.get(2);
+
+    &#125;
+&#125;
+</code></pre>
 <h2 id="泛型通配符之超类型通配符-lt-super-MyClass-gt"><a href="#泛型通配符之超类型通配符-lt-super-MyClass-gt" class="headerlink" title="泛型通配符之超类型通配符&lt;? super MyClass&gt;"></a>泛型通配符之超类型通配符&lt;? super MyClass&gt;</h2><p>超类通配符又称为逆变，它的特性由如下代码引出：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SupertypeWildcard</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;? <span class="keyword">super</span> Apple&gt; list1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list1.add(<span class="keyword">new</span> Apple());</span><br><span class="line">        list1.add(<span class="keyword">new</span> HongFuShi());</span><br><span class="line">        list1.add(<span class="keyword">new</span> Orange());<span class="comment">//compile error</span></span><br><span class="line">        list1.add(<span class="keyword">new</span> Fruit());<span class="comment">//compile error</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class SupertypeWildcard &#123;
+    public static void main(String[] args) &#123;
+        List&lt;? super Apple&gt; list1=new ArrayList&lt;&gt;();
+        list1.add(new Apple());
+        list1.add(new HongFuShi());
+        list1.add(new Orange());//compile error
+        list1.add(new Fruit());//compile error
+    &#125;
+&#125;
+</code></pre>
 <p>超类型通配符<code>&lt;? super Apple&gt;</code>表示list1持有的是Apple基类型的对象，我们说指定了泛型的<strong>下界</strong>，即lsit1是Apple的某种基类型的List,这样你就可以向其中添加Apple或者Apple的子类了。这是安全的。因为一个子类可以协变到其父类。但是如上代码说看到的，向其中添加Fruit或者Orange是不安全的，同样是因为不能够确定Apple父类是哪一种具体的类型。</p>
 <p>如上所述，向拥有超类型通配符的容器添加对象是安全的，但是从容器中取出一个对象却是不安全的。因为编译器依旧不能知道原始的类型是什么，因为 Fruit和Object都是Apple的父类，所以这时候调用 get 方法时就只能拿出一个 Object 对象，因为它是根类型，再没有父类了，这时候就需要动态判断元素的类型来做后续处理了。进行强制类型转换同样可能得到ClassCastException异常。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SupertypeWildcard</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;? <span class="keyword">super</span> Apple&gt; list1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list1.add(<span class="keyword">new</span> Apple());</span><br><span class="line">        list1.add(<span class="keyword">new</span> HongFuShi());</span><br><span class="line">        Fruit f1=list1.get(<span class="number">0</span>);<span class="comment">//compile error</span></span><br><span class="line">        Apple f2=list1.get(<span class="number">0</span>);<span class="comment">//compile error</span></span><br><span class="line">        Object f3=(Apple)list1.get(<span class="number">0</span>);<span class="comment">//ok</span></span><br><span class="line">        Object f3=(HongFuShi)list1.get(<span class="number">0</span>);<span class="comment">//ClassCastException</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class SupertypeWildcard &#123;
+    public static void main(String[] args) &#123;
+        List&lt;? super Apple&gt; list1=new ArrayList&lt;&gt;();
+        list1.add(new Apple());
+        list1.add(new HongFuShi());
+        Fruit f1=list1.get(0);//compile error
+        Apple f2=list1.get(0);//compile error
+        Object f3=(Apple)list1.get(0);//ok
+        Object f3=(HongFuShi)list1.get(0);//ClassCastException
+    &#125;
+&#125;
+</code></pre>
 <h2 id="泛型通配符之无界通配符以及List-lt-gt-和List、List-lt-Ojbect-gt-的区别"><a href="#泛型通配符之无界通配符以及List-lt-gt-和List、List-lt-Ojbect-gt-的区别" class="headerlink" title="泛型通配符之无界通配符以及List&lt;?&gt;和List、List&lt; Ojbect&gt;的区别"></a>泛型通配符之无界通配符以及List&lt;?&gt;和List、List&lt; Ojbect&gt;的区别</h2><p>《Effective Java 第二版》中对于List（原生态类型）、<code>List&lt;Object&gt;</code>（参数化类型）和<code>List&lt;?&gt;</code>（无界通配符）有非常详细的讲解。<br>List表示可以持有任何类型的对象，它逃避了泛型的类型检查，是不安全的，允许使用原生态类型只是为了兼容旧代码，在Java5之后的代码中不应该再使用原生态类型。<br><code>List&lt;Object&gt;</code>在功能上和原生态类型相同，可以添加任意类型的对象，但是它拥有泛型所具备的类型安全性。<br><code>List&lt;?&gt;</code>使用了<strong>无界通配符</strong>,表示持有某种未知类型的对象，但是由于是泛型的，所以和<code>List&lt;Object&gt;</code>一样拥有类型安全性，由于向原生态类型（List）中加入不同类型的元素会导致程序运行时异常，无界通配符类型(<code>List&lt;?&gt;</code>)为了防止你破坏集合的类型约束，不允许向集合中添加任何对象以防止安全性被破坏（除了null之外），而且也无法确定你会得到什么类型。    </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnboundedWildcard</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;?&gt; list1=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list1.add(<span class="keyword">new</span> Apple());<span class="comment">//compile error</span></span><br><span class="line">        </span><br><span class="line">        List list2=<span class="keyword">new</span> ArrayList();</span><br><span class="line">        list2.add(<span class="keyword">new</span> Object());</span><br><span class="line">        list2.add(<span class="keyword">new</span> Apple());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">import java.util.*;
+public class UnboundedWildcard &#123;
+    public static void main(String[] args) &#123;
+        List&lt;?&gt; list1=new ArrayList&lt;&gt;();
+        list1.add(new Apple());//compile error
+        
+        List list2=new ArrayList();
+        list2.add(new Object());
+        list2.add(new Apple());
+    &#125;
+&#125;
+</code></pre>
 <p>如上代码所示，list1由于有了无界通配符，编译器无法知道list1应该持有何种具体的类型，因而拒绝向list中添加任何类型。</p>
 <p>总的来说，在Java5 之后的代码不应该使用原生态类型，值得注意的是，这条规则有两个<strong>例外</strong>：    </p>
 <ul>
 <li><p>在使用类字面常量.class时必须使用原生态类型：List.class、String[].class、int.class是合法的，而<code>List&lt;String&gt;.class</code>、<code>List&lt;?&gt;</code>是非法的，因为类字面常量中使用了泛型。</p>
 </li>
 <li><p>在使用关键字instanceof时应该使用原生态类型，因为泛型的类型信息在运行时会被擦除，所以在使用参数化类型上使用instanceof是非法的，而在无界通配符上使用instanceof是合法的，但是其意义和作用和原生态类型一样，所以应该是使用原生态类型，在使用instanceof进行比较之后，应该立即将参数转换为无界通配符类型，而不是转换为原始类型，这是一个受检查转换，不会导致异常，代码实例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(o <span class="keyword">instanceof</span> Set)&#123;<span class="comment">//shuld use raw type</span></span><br><span class="line">	Set&lt;?&gt; temp=(Set&lt;?&gt;)o;</span><br><span class="line">    temp...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<pre><code class="java">if(o instanceof Set)&#123;//shuld use raw type
+  Set&lt;?&gt; temp=(Set&lt;?&gt;)o;
+  temp...
+&#125;
+</code></pre>
 </li>
 </ul>
 <h2 id="数据与列表的区别之协变性和不可变性以及可具体化和不可具体化"><a href="#数据与列表的区别之协变性和不可变性以及可具体化和不可具体化" class="headerlink" title="数据与列表的区别之协变性和不可变性以及可具体化和不可具体化"></a>数据与列表的区别之协变性和不可变性以及可具体化和不可具体化</h2><p><strong>数组的协变性</strong>是指如果Sub是Super的子类型，则Sub[]也是Super[]的子类型。而<code>List&lt;Sub&gt;</code>则不是<code>List&lt;Super&gt;</code>的子类型，这种特性称之为<strong>不可变性</strong>。<br>数组的协变性会导致数组因持有错误的类型但是编译通过而运行时抛出<code>java.lang.ArrayStoreException</code>异常：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ojbect[] str=<span class="keyword">new</span> String[]&#123;<span class="string">&quot;123&quot;</span>,<span class="string">&quot;456&quot;</span>&#125;;</span><br><span class="line">str[<span class="number">0</span>]=<span class="number">1</span>;<span class="comment">//compile success but runtime throw Exception</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">Ojbect[] str=new String[]&#123;&quot;123&quot;,&quot;456&quot;&#125;;
+str[0]=1;//compile success but runtime throw Exception
+</code></pre>
 <p>而不可变性则不会出现这种错误：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Object&gt; str=<span class="keyword">new</span> ArrayList&lt;String&gt;();<span class="comment">//compile error </span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">ArrayList&lt;Object&gt; str=new ArrayList&lt;String&gt;();//compile error 
+</code></pre>
 <p>这是因为<code>List&lt;String&gt;</code>不是<code>List&lt;Object&gt;</code>的子类型，并且在编译时就可以知晓错误。    </p>
 <p><strong>可具体化的</strong>是指在编译时不知道所持有的对象类型，在运行时才知道所持有的对象类型，数组属于可具体化的，而<strong>不可具体化的</strong>指在运行时知道的所持有的对象类型信息少于编译时知道所持有的对象类型信息。泛型则是不可具体化的。<br>由于上述数组和泛型相对立的属性，导致数组和泛型不能很好的配合使用，例如不能够创建泛型数组（<code>new List&lt;E&gt;[]</code>、<code>new List&lt;String&gt;[]</code>），类型参数数组(<code>new E[]</code>)。值得注意的是唯一的例外是<strong>创建无界通配符的数组是合法的</strong>，例如<code>new List&lt;?&gt;[]</code>、<code>new Map&lt;?,?&gt;[]</code>是合法的。</p>
 <h2 id="创建类型参数数组（E-）的两种方法"><a href="#创建类型参数数组（E-）的两种方法" class="headerlink" title="创建类型参数数组（E[]）的两种方法"></a>创建类型参数数组（E[]）的两种方法</h2><p>由于泛型是不可变且不可具体化的，而数组是协变的且可具体化的，所以数组在编译时没有类型安全性而提供了运行时的类型安全性，泛型则提供了编译时的类型安全性而没有运行时的类型安全性。由于这种对立的特性，不能够创建类型参数数组：<code>E[] e=new E[8];</code>,同时在泛型代码中应该优先使用列表而不是数组。但是有一些情况不可或缺的要使用到数组，例如ArrayList的底层数据和HashMap的散列桶集合，其实有两种方法来创建类型参数数组：</p>
 <ul>
 <li><p>第一种方法是直接创建Object[]，然后将其转型为E[]:<code>E[] e=(E[]) new Object[10]</code>,但是这种方法在整体而言是不安全的,你必须自己确保程序的类型安全性，即必须要确保e在类的私有域中并且不会被返回到客户端中，同时只能存储类型为E的对象，实例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> E[] elements;<span class="comment">//类型参数数组引用应该保存在私有域中</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Test&lt;String&gt; test=<span class="keyword">new</span> Test&lt;&gt;();</span><br><span class="line">        test.setArr(<span class="string">&quot;absdf&quot;</span>);</span><br><span class="line">        </span><br><span class="line">	String[] str=test.getEle();<span class="comment">//compile error:java.lang.ClassCastException</span></span><br><span class="line">        <span class="comment">//elements引用不能传递到客户端，</span></span><br><span class="line">    尽管类型正确，但是还是会报类型转换异常</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setArr</span><span class="params">(E e)</span></span>&#123;<span class="comment">//只能通过setArr方法来存储类型为E的对象</span></span><br><span class="line">        elements= (E[]) <span class="keyword">new</span> Object[<span class="number">10</span>];</span><br><span class="line">        elements[<span class="number">0</span>]=e;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> E[] getEle()&#123;</span><br><span class="line">    	<span class="keyword">return</span> elements;</span><br><span class="line">    &#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class Test&lt;E&gt; &#123;
+  private E[] elements;//类型参数数组引用应该保存在私有域中
+  
+  public static void main(String[] args)&#123;
+      Test&lt;String&gt; test=new Test&lt;&gt;();
+      test.setArr(&quot;absdf&quot;);
+      
+  String[] str=test.getEle();//compile error:java.lang.ClassCastException
+       //elements引用不能传递到客户端，
+   尽管类型正确，但是还是会报类型转换异常
+  &#125;
+
+  
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public void setArr(E e)&#123;//只能通过setArr方法来存储类型为E的对象
+      elements= (E[]) new Object[10];
+      elements[0]=e;
+  &#125;
+  
+  public E[] getEle()&#123;
+      return elements;
+  &#125;    
+&#125;
+</code></pre>
 </li>
 <li><p>第二中方法是在类的内部使用Ojbect[]数组,在需要得到类型E对象的地方进行强制转换：<code>E e=(E)elements[0]</code>，这种方法在每个需要得到类型E的对象的地方都需要显式的进行转换，相比第一种方法更加繁琐。</p>
 </li>
@@ -699,7 +784,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         <a class='prev' href='/2018/07/02/%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E9%80%92%E5%BD%92%E5%AE%9E%E7%8E%B0/'>
           <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>字符串全排列的递归实现</p>
           <p class='content'>数据结构与算法分析第三版中，有一道习题很有趣，想了半天也没想出来，网上搜了答案后恍然大悟，题目描述如下：
-123456练习1.6 编写带有下列声明的例程：public void permute(...</p>
+
+ 练习1.6 编写带有下列声明的例程：
+ public void permute(St...</p>
         </a>
       
       
@@ -813,7 +900,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -825,9 +912,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1076,12 +1163,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1210,8 +1297,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1280,7 +1365,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1399,62 +1484,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1486,7 +1515,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1514,11 +1543,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

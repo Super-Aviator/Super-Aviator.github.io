@@ -551,10 +551,35 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>外观设计模式的类图如下：<br><img src="data:image/png;base64,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BHb1k+h8lacvGcmXuwyLdxPn6PpXU+N59j1/6fMsePzDGw8UoQ3ZBmwEG5I1DUkD0AL4Bafx6NmDt9NYdhyYjoPX6czzLPVkvBvNlOUl4yntZtp79djvhQdP9cpx8zuOz2a74eNPZ9CZ3xJsLNuAjWBDsqYhaQBaAECvsg3YCDYkaxqSBqAFAPQq24CNYEOypiFpAFoAQK+yDdgINiRrGpIGoAUA9CrbgI1gQ7KmIWkAWgBAr7IN2Ag2JGsakgagBQD0KtuAjWBDsqYhaQBaAECvsg3YCDYkaxqSBqAFAPQq24CNYEOypiFpAFoAQK+yDdgINiRrGpIGAED3sjGwPlnTkDQAALqXjYH1yZqGpAEA0L1sDKxP1gAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD0yywIANAvsyAAQL/MggAA/TILAgD06v/+7/8BBD/MoH43D8IAAAAASUVORK5CYII=" alt="外观设计模式"></p>
 <p>客户端通过外观类，可以轻松的对子系统中的类进行操纵。通过外观设计模式，简化了客户端的使用。</p>
 <h2 id="外观模式的例子"><a href="#外观模式的例子" class="headerlink" title="外观模式的例子"></a>外观模式的例子</h2><p>对于一套已经拥有的家庭音影系统，如果你需要看一部电影，你需要做如下的操作：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">screen.up():<span class="comment">//打开显示器</span></span><br><span class="line">light.down();<span class="comment">//关灯</span></span><br><span class="line">...  	<span class="comment">//其他的操作</span></span><br><span class="line">dvd.play();<span class="comment">//播放电影</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">screen.up()://打开显示器
+light.down();//关灯
+...      //其他的操作
+dvd.play();//播放电影
+</code></pre>
 <p>在看一部电影时，需要做许多的准备工作，非常的繁琐，那通过外观类，可以将这些操作封装到一个类中，对外提供方法来对操作进行一次性的执行：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeTheaterFacade</span> </span>&#123;</span><br><span class="line">     <span class="keyword">private</span> Screen screen;</span><br><span class="line">    <span class="keyword">private</span> Light light;</span><br><span class="line">    <span class="keyword">private</span> DvdPlayer dvd;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HomeTheater</span><span class="params">(Screen screen, Light light, DvdPlayer dvd)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.screen = screen;</span><br><span class="line">        <span class="keyword">this</span>.light = light;</span><br><span class="line">        <span class="keyword">this</span>.dvd = dvd;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watchMovie</span><span class="params">()</span></span>&#123;</span><br><span class="line">        screen.up();<span class="comment">//打开屏幕</span></span><br><span class="line">        light.down();<span class="comment">//关灯</span></span><br><span class="line">        dvd.play();<span class="comment">//播放电影</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    	HomeTheaterFacade homeTheaterFacade=<span class="keyword">new</span> HomeTheaterFacade();</span><br><span class="line">        homeTheaterFacade.wacthMovie();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class HomeTheaterFacade &#123;
+     private Screen screen;
+    private Light light;
+    private DvdPlayer dvd;
 
+    public HomeTheater(Screen screen, Light light, DvdPlayer dvd) &#123;
+        this.screen = screen;
+        this.light = light;
+        this.dvd = dvd;
+    &#125;
+
+    public void watchMovie()&#123;
+        screen.up();//打开屏幕
+        light.down();//关灯
+        dvd.play();//播放电影
+    &#125;
+    
+    public static void main(String[] args)&#123;
+        HomeTheaterFacade homeTheaterFacade=new HomeTheaterFacade();
+        homeTheaterFacade.wacthMovie();
+    &#125;
+&#125;
+</code></pre>
 <h2 id="最少知识原则"><a href="#最少知识原则" class="headerlink" title="最少知识原则"></a>最少知识原则</h2><blockquote>
 <p>最少知识 只与你的密友交谈</p>
 </blockquote>
@@ -568,9 +593,15 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <p>对于下面的代码：</p>
 <ul>
-<li>方式一<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTemp</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> station.getThrermometer().getTemperature();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>方式二<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTemp</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> station.getTemperature();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<li>方式一<pre><code class="java">public float getTemp()&#123;
+  return station.getThrermometer().getTemperature();
+&#125;
+</code></pre>
+</li>
+<li>方式二<pre><code class="java">public float getTemp()&#123;
+  return station.getTemperature();
+&#125;
+</code></pre>
 </li>
 </ul>
 <p>方式一中的方法getTemp()首先从气象站获得温度计，然后从温度计对象中获得温度，在使用了最少知识原则后，在气象站中直接添加了getTemperature()方法，避免了访问Thrermnmeter对象。</p>
@@ -801,7 +832,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -813,9 +844,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1064,12 +1095,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1198,8 +1229,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1268,7 +1297,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1387,62 +1416,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1474,7 +1447,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1502,11 +1475,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

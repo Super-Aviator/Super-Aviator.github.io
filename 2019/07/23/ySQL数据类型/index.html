@@ -554,29 +554,89 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><h2 id="JSON类型"><a href="#JSON类型" class="headerlink" title="JSON类型"></a>JSON类型</h2><p>Mysql5.7中新增了JSON数据格式，专门用于保存JSON字符串，结合<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/json.html">官方文档</a>，来看一下这种数据格式相对于TEXT有什么优势以及几个常用的用于处理JSON字符串的JSON函数吧：</p>
 <p>上面的文字表名JSON格式存储的大小和LONGBOB、LONGTEXT格式的大小差不多，同时长度的最大保存大小为系统变量max_allowed_packet的值，当在内存操作时，可能会大于这个值。同时，<strong>JSON格式的数据不能是NOT-NULL的，经过我的测试证实了这一点，即JSON格式的数据默认是NULL的。</strong>，MySQL内部使用utf8mb4字符集和utf8mb4_bin排序规则处理JSON上下文中使用的字符串。 其他字符集中的字符串将根据需要转换为utf8mb4。（对于ascii或utf8字符集中的字符串，不需要转换，因为ascii和utf8是utf8mb4的子集。）</p>
 <p><strong>注意：</strong>当插入的JSON对象字符串的键重复时，只会保留最后一个该键的键值对，例如：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> t1 (c1 JSON);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> t1 <span class="keyword">VALUES</span>(<span class="string">&#x27;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;&#125;&#x27;</span>),(<span class="string">&#x27;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;, &quot;x&quot;: [3, 5, 7]&#125;&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> c1 <span class="keyword">FROM</span> t1;</span><br><span class="line"><span class="operator">&gt;</span><span class="operator">+</span><span class="comment">-----------+</span></span><br><span class="line"> <span class="operator">|</span> c1        <span class="operator">|</span></span><br><span class="line"> <span class="operator">+</span><span class="comment">-----------+</span></span><br><span class="line"> | &#123;&quot;x&quot;: 17&#125; |</span><br><span class="line"> | &#123;&quot;x&quot;: 17&#125; |</span><br><span class="line"> <span class="operator">+</span><span class="comment">-----------+</span></span><br></pre></td></tr></table></figure>
+<pre><code class="sql">CREATE TABLE t1 (c1 JSON);
 
+INSERT INTO t1 VALUES(&#39;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;&#125;&#39;),(&#39;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;, &quot;x&quot;: [3, 5, 7]&#125;&#39;);
+
+SELECT c1 FROM t1;
+&gt;+-----------+
+ | c1        |
+ +-----------+
+ | &#123;&quot;x&quot;: 17&#125; |
+ | &#123;&quot;x&quot;: 17&#125; |
+ +-----------+
+</code></pre>
 <h3 id="Mysql中常用的JSON函数"><a href="#Mysql中常用的JSON函数" class="headerlink" title="Mysql中常用的JSON函数"></a>Mysql中常用的JSON函数</h3><ul>
 <li><p>JSON_VALID<br>JSON_VALID用于判断参数中的JSON字符串是否是合法的，如果合法返回1，如果非法，返回0，如果参数为空，则报错。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_VALID(<span class="string">&#x27;[&quot;KEY&quot;:1]&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">SELECT</span> JSON_VALID(<span class="string">&#x27;[&quot;KEY&quot;:1&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_VALID();</span><br><span class="line"><span class="operator">&gt;</span> error</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>JSON_TYPE<br>JSON_TYPE()函数返回参数中JSON字符串的类型，如果参数为空或者不是JSON类型的字符串，则报错：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(&quot;[1,2,3]&quot;);</span><br><span class="line"><span class="operator">&gt;</span> ARRRAY</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(<span class="string">&#x27;&#123;&quot;k1&quot;:23&#125;&#x27;</span>);</span><br><span class="line"><span class="operator">&gt;</span> OBJECT</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE();</span><br><span class="line"><span class="operator">&gt;</span> Error Code: <span class="number">1582.</span> Incorrect <span class="keyword">parameter</span> count <span class="keyword">in</span> the <span class="keyword">call</span> <span class="keyword">to</span> native <span class="keyword">function</span> <span class="string">&#x27;JSON_TYPE&#x27;</span>	<span class="number">0.000</span> sec</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_TYPE(&quot;[1,2,3]&quot;)<span class="operator">=</span><span class="string">&#x27;ARRAY&#x27;</span>;</span><br><span class="line"><span class="operator">&gt;</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>JSON_ARRAY<br>JSON_ARRAY会返回包含所有参数的JSON数组字符串，当参数为空时返回空JSON数组，当参数不为JSON字符串格式时报错。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_ARRAY</span>(<span class="string">&#x27;A&#x27;</span>,<span class="number">23</span>,<span class="number">45.3</span>);</span><br><span class="line"><span class="operator">&gt;</span> [&quot;A&quot;, <span class="number">23</span>, <span class="number">45.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_ARRAY</span>();</span><br><span class="line"><span class="operator">&gt;</span> []</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>JSON_OBJECT<br>JSON_OBJECT函数和JSON_ARRAY函数类似，返回参数对构成的JSON对象，<strong>JSON要求键必须是字符串类型。</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_OBJECT</span>(<span class="string">&#x27;key1&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;key2&#x27;</span>,<span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line">&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">JSON_OBJECT</span>();</span><br><span class="line">&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>JSON_MERGE<br>JSON_MERGE函数返回两个或多个JSON字符串拼接之后的字符串,当参数都是JSON对象时，拼接之后结果的JSON_TYPE为OBJECT,当参数含有JSON数组时，返回结果的JSON_TYPE为JSON数组。<strong>当拼接的JSON对象中包含有相同的键时，该键对应的值会以数组的形式保存。</strong>，<strong>当拼接的参数是单个数值而非JSON字符串或者单个字母时，该函数的结果相当于JSON_ARRAY。首先会将单个的数字用[]包围，然后对其进行合并</strong>    </p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#x27;</span>,<span class="string">&#x27;[1,2,3]&#x27;</span>);</span><br><span class="line">&gt; [&#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;, 1, 2, 3]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#x27;</span>,<span class="string">&#x27;&#123;&quot;key3&quot;:123&#125;&#x27;</span>);</span><br><span class="line">&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;, &quot;key3&quot;: 123&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> JSON_MERGE(<span class="string">&#x27;&#123;&quot;a&quot;:1&#125;&#x27;</span>,<span class="string">&#x27;&#123;&quot;a&quot;:2&#125;&#x27;</span>,<span class="string">&#x27;[&quot;A&quot;]&#x27;</span>);</span><br><span class="line">&gt; [&#123;&quot;a&quot;: [1, 2]&#125;, &quot;A&quot;]</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">SELECT JSON_VALID(&#39;[&quot;KEY&quot;:1]&#39;);
+&gt; 1
 
+SELECT JSON_VALID(&#39;[&quot;KEY&quot;:1&#39;);
+&gt; 0
+</code></pre>
 </li>
 </ul>
-<p>所有的JSON函数的返回结果都可以使用变量进行保存，方便以后使用，例如：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="variable">@J</span> <span class="operator">=</span> JSON_MERGE(<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="variable">@J</span>;</span><br><span class="line"><span class="operator">&gt;</span> [<span class="number">1</span>, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p>SELECT JSON_VALID();</p>
+<blockquote>
+<p>error</p>
+</blockquote>
+<pre><code>
+- JSON_TYPE
+JSON_TYPE()函数返回参数中JSON字符串的类型，如果参数为空或者不是JSON类型的字符串，则报错：
+```sql
+SELECT JSON_TYPE(&quot;[1,2,3]&quot;);
+&gt; ARRRAY
 
+SELECT JSON_TYPE(&#39;&#123;&quot;k1&quot;:23&#125;&#39;);
+&gt; OBJECT
+
+SELECT JSON_TYPE();
+&gt; Error Code: 1582. Incorrect parameter count in the call to native function &#39;JSON_TYPE&#39;    0.000 sec
+
+SELECT JSON_TYPE(&quot;[1,2,3]&quot;)=&#39;ARRAY&#39;;
+&gt; 1
+</code></pre>
+<ul>
+<li>JSON_ARRAY<br>JSON_ARRAY会返回包含所有参数的JSON数组字符串，当参数为空时返回空JSON数组，当参数不为JSON字符串格式时报错。<pre><code class="sql">SELECT JSON_ARRAY(&#39;A&#39;,23,45.3);
+&gt; [&quot;A&quot;, 23, 45.3]
+</code></pre>
+</li>
+</ul>
+<p>SELECT JSON_ARRAY();</p>
+<blockquote>
+<p>[]</p>
+</blockquote>
+<pre><code>
+- JSON_OBJECT
+JSON_OBJECT函数和JSON_ARRAY函数类似，返回参数对构成的JSON对象，**JSON要求键必须是字符串类型。**
+```sql
+SELECT JSON_OBJECT(&#39;key1&#39;,1,&#39;key2&#39;,&#39;hello&#39;);
+&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;
+
+SELECT JSON_OBJECT();
+&gt; &#123;&#125;
+</code></pre>
+<ul>
+<li>JSON_MERGE<br>JSON_MERGE函数返回两个或多个JSON字符串拼接之后的字符串,当参数都是JSON对象时，拼接之后结果的JSON_TYPE为OBJECT,当参数含有JSON数组时，返回结果的JSON_TYPE为JSON数组。<strong>当拼接的JSON对象中包含有相同的键时，该键对应的值会以数组的形式保存。</strong>，<strong>当拼接的参数是单个数值而非JSON字符串或者单个字母时，该函数的结果相当于JSON_ARRAY。首先会将单个的数字用[]包围，然后对其进行合并</strong>    <pre><code class="sql">SELECT JSON_MERGE(&#39;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#39;,&#39;[1,2,3]&#39;);
+&gt; [&#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;, 1, 2, 3]
+</code></pre>
+</li>
+</ul>
+<p>SELECT JSON_MERGE(‘{“key1”:1,”key2”:”hello”}’,’{“key3”:123}’);</p>
+<blockquote>
+<p>{“key1”: 1, “key2”: “hello”, “key3”: 123}</p>
+</blockquote>
+<p>SELECT JSON_MERGE(‘{“a”:1}’,’{“a”:2}’,’[“A”]’);</p>
+<blockquote>
+<p>[{“a”: [1, 2]}, “A”]</p>
+</blockquote>
+<pre><code>
+所有的JSON函数的返回结果都可以使用变量进行保存，方便以后使用，例如：
+```sql
+SET @J = JSON_MERGE(&#39;1&#39;,&#39;2&#39;);
+SELECT @J;
+&gt; [1, 2]
+</code></pre>
 <h1 id="MySQL表设计的要点"><a href="#MySQL表设计的要点" class="headerlink" title="MySQL表设计的要点"></a>MySQL表设计的要点</h1><p>日常的开发过程中需要自己设计表，但是自己太菜了，设计的时候毫不隐晦的说，都是瞎鸡儿设计的。。。（如果组长看到了，会不会过来捶我，哈哈哈）；今天下班比较早，根据知乎上的文章，学习一下MySQL表的设计要点，后面如果有新的知识点继续补充。</p>
 <h2 id="问题1-为什么一定要设一个主键？"><a href="#问题1-为什么一定要设一个主键？" class="headerlink" title="问题1:为什么一定要设一个主键？"></a>问题1:为什么一定要设一个主键？</h2><p><strong>回答:</strong><br>因为你不设主键的情况下，innodb也会帮你生成一个隐藏列，作为自增主键。所以啦，反正都要生成一个主键，那你还不如自己指定一个主键，在有些情况下，就能显式的用上主键索引，提高查询效率！</p>
 <h2 id="问题2-主键是用自增还是UUID"><a href="#问题2-主键是用自增还是UUID" class="headerlink" title="问题2:主键是用自增还是UUID?"></a>问题2:主键是用自增还是UUID?</h2><p><strong>回答:</strong><br>肯定答自增啊。innodb 中的主键是聚簇索引。如果主键是自增的，那么每次插入新的记录，记录就会顺序添加到当前索引节点的后续位置，当一页写满，就会自动开辟一个新的页。如果不是自增主键，那么可能会在中间插入，就会引发页的分裂，产生很多表碎片！。</p>
@@ -591,14 +651,18 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ol>
 <h2 id="问题5-货币字段用什么类型"><a href="#问题5-货币字段用什么类型" class="headerlink" title="问题5:货币字段用什么类型?"></a>问题5:货币字段用什么类型?</h2><p>回答:如果货币单位是分，可以用Int类型。如果坚持用元，用Decimal。</p>
 <p>千万不要答float和double，因为float和double是以二进制存储的，所以有一定的误差。 打个比方，你建一个列如下</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t` (</span><br><span class="line">  `price` <span class="type">float</span>(<span class="number">10</span>,<span class="number">2</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">CREATE TABLE `t` (
+  `price` float(10,2) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre>
 <p>然后insert给price列一个数据为1234567.23，你会发现显示出来的数据变为1234567.25，精度失准！</p>
 <h2 id="问题6-时间字段用什么类型"><a href="#问题6-时间字段用什么类型" class="headerlink" title="问题6:时间字段用什么类型?"></a>问题6:时间字段用什么类型?</h2><p>回答:此题无固定答案，应结合自己项目背景来答！把理由讲清楚就行！</p>
 <ol>
 <li><p>varchar，如果用varchar类型来存时间，优点在于显示直观。但是坑的地方也是挺多的。比如，插入的数据没有校验，你可能某天就发现一条数据为2013111的数据，请问这是代表2013年1月11日，还是2013年11月1日？ 其次，做时间比较运算，你需要用STR_TO_DATE等函数将其转化为时间类型，你会发现这么写是无法命中索引的。数据量一大，是个坑！</p>
 </li>
 <li><p>timestamp，该类型是四个字节的整数，它能表示的时间范围为1970-01-01 08:00:01到2038-01-19 11:14:07。2038年以后的时间，是无法用timestamp类型存储的。 但是它有一个优势，timestamp类型是带有时区信息的。一旦你系统中的时区发生改变，例如你修改了时区</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> TIME_ZONE <span class="operator">=</span> &quot;america/new_york&quot;;</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">SET TIME_ZONE = &quot;america/new_york&quot;;
+</code></pre>
 <p> 你会发现，项目中的该字段的值自己会发生变更。这个特性用来做一些国际化大项目，跨时区的应用时，特别注意！</p>
 </li>
 <li><p>datetime，datetime储存占用8个字节，它存储的时间范围为1000-01-01 00:00:00 ~ 9999-12-31 23:59:59。显然，存储时间范围更大。但是它坑的地方在于，他存储的是时间绝对值，不带有时区信息。如果你改变数据库的时区，该项的值不会自己发生变更！</p>
@@ -621,7 +685,11 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>Mysql难以优化引用可空列查询，它会使索引、索引统计和值更加复杂。可空列需要更多的存储空间，还需要mysql内部进行特殊处理。可空列被索引后，每条记录都需要一个额外的字节，还能导致MYisam 中固定大小的索引变成可变大小的索引。 —— 出自《高性能mysql第二版》</p>
 </blockquote>
 <p>(2)查询会出现一些不可预料的结果 这里举一个例子，大家就懂了。假设，表结构如下</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> table_2 (</span><br><span class="line">     `id` <span class="type">INT</span> (<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NULL</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">create table table_2 (
+     `id` INT (11) NOT NULL,
+    name varchar(20) NULL
+)
+</code></pre>
 <p>表数据是这样的<br><img src="/images/demo1.png" class="lazyload" data-srcset="/images/demo1.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="upload successful"><br>你执行语句<code>select count(name) from table_2;</code><br>你会发现结果为2，但是实际上是有四条数据的！</p>
 <p>类似的查询问题，其实有很多，不一一列举。 记住，因为null列的存在，会出现很多出人意料的结果，从而浪费开发时间去排查Bug.</p>
 <h1 id="COUNT-1-、COUNT-、COUNT-FILE-的区别"><a href="#COUNT-1-、COUNT-、COUNT-FILE-的区别" class="headerlink" title="COUNT(1)、COUNT(*)、COUNT(FILE)的区别"></a>COUNT(1)、COUNT(*)、COUNT(FILE)的区别</h1><p>COUNT(1)与COUNT(*)的执行效果、性能是一样的，会统计数据库表中所有数据的函数（<strong>包括NULL的情况</strong>），而COUNT(FILE)则只会统计该字段的非NULL的数据的行数，执行效率上也会比前两者慢很多倍。</p>
@@ -849,7 +917,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -861,9 +929,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1112,12 +1180,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1246,8 +1314,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1316,7 +1382,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1435,62 +1501,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1522,7 +1532,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1550,11 +1560,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

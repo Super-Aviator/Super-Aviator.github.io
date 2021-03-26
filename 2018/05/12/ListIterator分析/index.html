@@ -546,29 +546,120 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <p>ListIterator是比Iterator更灵活的迭代器</p>
 <h2 id="概述（summary）"><a href="#概述（summary）" class="headerlink" title="概述（summary）"></a>概述（summary）</h2><p>&emsp;&emsp;ListIterator接口是Iterator的子接口，在所有List子类中都有实现。与Iterator不同的是，ListIterator支持在遍历集合的同时add和set操作。</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="接口中的方法"><a href="#接口中的方法" class="headerlink" title="接口中的方法"></a>接口中的方法</h3><p>&emsp;&emsp;首先查看Iterator接口和ListIterator接口中的三个方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">E <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;<span class="comment">//r默认会抛出不支持操作的异常，可以覆盖此方法</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;remove&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">-------</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">E <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasPrevious</span><span class="params">()</span></span>;<span class="comment">//新增</span></span><br><span class="line">    <span class="function">E <span class="title">previous</span><span class="params">()</span></span>;<span class="comment">//新增</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">()</span></span>;<span class="comment">//新增</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">previousIndex</span><span class="params">()</span></span>;<span class="comment">//新增</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">set</span><span class="params">(E e)</span></span>;<span class="comment">//新增</span></span><br><span class="line">·    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(E e)</span></span>;<span class="comment">//新增</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface Iterator&lt;E&gt; &#123;
+    boolean hasNext();
+    E next();
+    default void remove() &#123;//r默认会抛出不支持操作的异常，可以覆盖此方法
+        throw new UnsupportedOperationException(&quot;remove&quot;);
+    &#125;
+&#125;
+-------
+public interface ListIterator&lt;E&gt; extends Iterator&lt;E&gt; &#123;
+    boolean hasNext();
+    E next();
+    boolean hasPrevious();//新增
+    E previous();//新增
+    int nextIndex();//新增
+    int previousIndex();//新增
+    void remove();
+    void set(E e);//新增
+·    void add(E e);//新增
+&#125;
+</code></pre>
 <hr>
 <h2 id="方法解析"><a href="#方法解析" class="headerlink" title="方法解析"></a>方法解析</h2><h3 id="重要方法"><a href="#重要方法" class="headerlink" title="重要方法"></a>重要方法</h3><p>&emsp;&emsp;在ArrayList中Itr实现了Iterator接口，其中有两个非常重要的变量，cursor和lastRet,cursor保存了当前的下标，默认为0，lastRet保存了上次操作的下标，默认为-1。 ListItr实现了ListIterator接口并继承了Itr类。所有新增的方法都在此类总实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cursor;       <span class="comment">// index of next element to return</span></span><br><span class="line">    <span class="keyword">int</span> lastRet = -<span class="number">1</span>; <span class="comment">// index of last element returned; -1 if no such</span></span><br><span class="line">    </span><br><span class="line">---------</span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">extends</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    ListItr(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        cursor = index;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private class Itr implements Iterator&lt;E&gt; &#123;
+    int cursor;       // index of next element to return
+    int lastRet = -1; // index of last element returned; -1 if no such
+    
+---------
+private class ListItr extends Itr implements ListIterator&lt;E&gt; &#123;
+    ListItr(int index) &#123;
+        super();
+        cursor = index;
+    &#125;
+</code></pre>
 <p>&emsp;&emsp;重点的方法是add和set方法，add方法是修改cursor下标所指向的对象，  而set方法是修改lastRet所指向的下标，那么问题来了，当一开始就调用set会发生什么？答案是抛出异常java.lang.IllegalStateException。因为此时lastRet的值为-1. 那么我们就需要时刻注意lastRet和cursot的值。</p>
 <h3 id="方法细节"><a href="#方法细节" class="headerlink" title="方法细节"></a>方法细节</h3><p>&emsp;&emsp;首先我们来看add方法，add方法源码如下，方法大致行为为将cursor指向的数以及后面的所有的数向后移动一位，然后将待插入的值插入到cursor下标中。同时将lastRet下标置为-1.所以在执行add方法之后不能执行set方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    checkForComodification();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> i = cursor;</span><br><span class="line">        ArrayList.<span class="keyword">this</span>.add(i, e);<span class="comment">//添加元素e，如果长度不够会自动grow延长数组大小。</span></span><br><span class="line">        cursor = i + <span class="number">1</span>;<span class="comment">//cursor加一</span></span><br><span class="line">        lastRet = -<span class="number">1</span>;<span class="comment">//lastRet置为一</span></span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public void add(E e) &#123;
+    checkForComodification();
 
+    try &#123;
+        int i = cursor;
+        ArrayList.this.add(i, e);//添加元素e，如果长度不够会自动grow延长数组大小。
+        cursor = i + 1;//cursor加一
+        lastRet = -1;//lastRet置为一
+        expectedModCount = modCount;
+    &#125; catch (IndexOutOfBoundsException ex) &#123;
+        throw new ConcurrentModificationException();
+    &#125;
+&#125;
+</code></pre>
 <p>&emsp;&emsp;set方法源码如下，它首先判断lastRet的值，如果&lt;0就抛出异常，否则就执行set。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lastRet &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">    checkForComodification();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ArrayList.<span class="keyword">this</span>.set(lastRet, e);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public void set(E e) &#123;
+    if (lastRet &lt; 0)
+        throw new IllegalStateException();
+    checkForComodification();
 
+    try &#123;
+        ArrayList.this.set(lastRet, e);
+    &#125; catch (IndexOutOfBoundsException ex) &#123;
+        throw new ConcurrentModificationException();
+    &#125;
+&#125;
+</code></pre>
 <p>&emsp;&emsp;然后我们来看Itr中的next方法，顾名思义，此方法会将cursor方法加一然后返回指向的值，lastRet指向的是cursor加一之前的值。具体实现如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    checkForComodification();<span class="comment">//先检查是否可以修改</span></span><br><span class="line">    <span class="keyword">int</span> i = cursor;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= size)<span class="comment">//判断cursor是否合法</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    Object[] elementData = ArrayList.<span class="keyword">this</span>.elementData;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= elementData.length)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    cursor = i + <span class="number">1</span>;<span class="comment">//将cursor加一</span></span><br><span class="line">    <span class="keyword">return</span> (E) elementData[lastRet = i];<span class="comment">//将cursor原来的值赋给lastRet，然后返回cursor的值。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public E next() &#123;
+    checkForComodification();//先检查是否可以修改
+    int i = cursor;
+    if (i &gt;= size)//判断cursor是否合法
+        throw new NoSuchElementException();
+    Object[] elementData = ArrayList.this.elementData;
+    if (i &gt;= elementData.length)
+        throw new ConcurrentModificationException();
+    cursor = i + 1;//将cursor加一
+    return (E) elementData[lastRet = i];//将cursor原来的值赋给lastRet，然后返回cursor的值。
+&#125;
+</code></pre>
 <p>&emsp;&emsp;在previous中先将cursor减去一保存在i中，然后判断是否在数组下标以内如果不在就抛出异常，所有在创建ListIterator时如果指定下标，下标最大长度是list的长度；如果下标在范围内，就将i赋给cursor，然后将现在的cursor值赋给lastRet，并返回cursor的值。与next不同的是，previous中lastRet和cursor的值是相同的。而next中lastRet的值比cursor值小一。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    checkForComodification();</span><br><span class="line">    <span class="keyword">int</span> i = cursor - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    Object[] elementData = ArrayList.<span class="keyword">this</span>.elementData;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= elementData.length)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    cursor = i;</span><br><span class="line">    <span class="keyword">return</span> (E) elementData[lastRet = i];<span class="comment">//将cursor的值赋给lastRet。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public E previous() &#123;
+    checkForComodification();
+    int i = cursor - 1;
+    if (i &lt; 0)
+        throw new NoSuchElementException();
+    Object[] elementData = ArrayList.this.elementData;
+    if (i &gt;= elementData.length)
+        throw new ConcurrentModificationException();
+    cursor = i;
+    return (E) elementData[lastRet = i];//将cursor的值赋给lastRet。
+&#125;
+</code></pre>
 <p>&emsp;&emsp;remove方法移除lastRet所指向的下标同时将lastRet的下标置为-1.所以同样在remove方法执行之后不能执行set方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lastRet &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">    checkForComodification();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ArrayList.<span class="keyword">this</span>.remove(lastRet);</span><br><span class="line">        cursor = lastRet;</span><br><span class="line">        lastRet = -<span class="number">1</span>;</span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public void remove() &#123;
+    if (lastRet &lt; 0)
+        throw new IllegalStateException();
+    checkForComodification();
 
+    try &#123;
+        ArrayList.this.remove(lastRet);
+        cursor = lastRet;
+        lastRet = -1;
+        expectedModCount = modCount;
+    &#125; catch (IndexOutOfBoundsException ex) &#123;
+        throw new ConcurrentModificationException();
+    &#125;
+&#125;
+</code></pre>
 <p>&emsp;&emsp;nextiIndex()以及previousIndex()返回的是cursor以及cursor减一的值。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">           <span class="keyword">return</span> cursor;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">previousIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">           <span class="keyword">return</span> cursor - <span class="number">1</span>;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java"> public int nextIndex() &#123;
+            return cursor;
+        &#125;
+
+        public int previousIndex() &#123;
+            return cursor - 1;
+        &#125;
+</code></pre>
+
   
   
     
@@ -795,7 +886,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -807,9 +898,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1058,12 +1149,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1192,8 +1283,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1262,7 +1351,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1381,62 +1470,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1468,7 +1501,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1496,11 +1529,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

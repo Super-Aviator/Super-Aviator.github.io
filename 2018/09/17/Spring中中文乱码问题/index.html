@@ -545,22 +545,92 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/hehejason/article/details/52326842">参考博客</a><br>对于POST请求，在@Controller注解的控制器中，可以使用@ResponseBody注解直接返回一个字符串，但是存在字符编码的问题。在得到的字符串中的中文全部是？表示。其解决的办法如下：</p>
 <h2 id="POST请求的乱码原因"><a href="#POST请求的乱码原因" class="headerlink" title="POST请求的乱码原因"></a>POST请求的乱码原因</h2><p>因为在方法中我们返回的是字符串，所以Spring在通过<code>AnnotationMethodHandlerAdapter</code>去寻找对应的<code>HttpMessageConverter</code>时，会找到<code>StringHttpMessageConverter</code>，通过查看源码得知，该类的默认编码格式是 ISO-8859-1，部分源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringHttpMessageConverter</span> <span class="keyword">extends</span> <span class="title">AbstractHttpMessageConverter</span></span></span><br><span class="line"><span class="class">&lt;<span class="title">String</span>&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset DEFAULT_CHARSET = </span><br><span class="line">    Charset.forName(<span class="string">&quot;ISO-8859-1&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Charset defaultCharset;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Charset&gt; availableCharsets;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> writeAcceptCharset = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * A default constructor that uses &quot;ISO-8859-1&quot; as the default charset.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> #StringHttpMessageConverter(Charset)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringHttpMessageConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(DEFAULT_CHARSET);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * A constructor accepting a default charset to use if the requested </span></span><br><span class="line"><span class="comment">     * content</span></span><br><span class="line"><span class="comment">     * type does not specify one.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringHttpMessageConverter</span><span class="params">(Charset defaultCharset)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="keyword">new</span> MediaType(<span class="string">&quot;text&quot;</span>, <span class="string">&quot;plain&quot;</span>, defaultCharset), MediaType.ALL);</span><br><span class="line">        <span class="keyword">this</span>.defaultCharset = defaultCharset;</span><br><span class="line">        <span class="keyword">this</span>.availableCharsets = <span class="keyword">new</span> ArrayList&lt;Charset&gt;</span><br><span class="line">                (Charset.availableCharsets().values());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class StringHttpMessageConverter extends AbstractHttpMessageConverter
+&lt;String&gt;&#123;
+    public static final Charset DEFAULT_CHARSET = 
+    Charset.forName(&quot;ISO-8859-1&quot;);
+    private final Charset defaultCharset;
+    private final List&lt;Charset&gt; availableCharsets;
+    private boolean writeAcceptCharset = true;
 
+    /**
+     * A default constructor that uses &quot;ISO-8859-1&quot; as the default charset.
+     *
+     * @see #StringHttpMessageConverter(Charset)
+     */
+    public StringHttpMessageConverter() &#123;
+        this(DEFAULT_CHARSET);
+    &#125;
+
+    /**
+     * A constructor accepting a default charset to use if the requested 
+     * content
+     * type does not specify one.
+     */
+    public StringHttpMessageConverter(Charset defaultCharset) &#123;
+        super(new MediaType(&quot;text&quot;, &quot;plain&quot;, defaultCharset), MediaType.ALL);
+        this.defaultCharset = defaultCharset;
+        this.availableCharsets = new ArrayList&lt;Charset&gt;
+                (Charset.availableCharsets().values());
+    &#125;
+</code></pre>
 <h2 id="POST请求中文乱码的解决办法"><a href="#POST请求中文乱码的解决办法" class="headerlink" title="POST请求中文乱码的解决办法"></a>POST请求中文乱码的解决办法</h2><h3 id="使用xml配置文件（推荐使用）"><a href="#使用xml配置文件（推荐使用）" class="headerlink" title="使用xml配置文件（推荐使用）"></a>使用xml配置文件（推荐使用）</h3><p>在 spring mvc 配置文件中，添加如下配置：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mvc:message-converters</span> <span class="attr">register-defaults</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;mvc:annotation-driven&gt;
+  &lt;mvc:message-converters register-defaults=&quot;true&quot;&gt;
+    &lt;bean class=&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;&gt;
+      &lt;constructor-arg value=&quot;UTF-8&quot; /&gt;
+    &lt;/bean&gt;
+  &lt;/mvc:message-converters&gt;
+&lt;/mvc:annotation-driven&gt;
+</code></pre>
 <p>说明：其实是指定 StringHttpMessageConverter 类构造函数的参数值为 UTF-8，该方法对代码侵入性低，且一劳永逸，故推荐！</p>
 <h3 id="使用注解的方式"><a href="#使用注解的方式" class="headerlink" title="使用注解的方式"></a>使用注解的方式</h3><p>在 @RequestMapping 中添加 produces 字段，如下：</p>
 <p>@RequestMapping(value = “/xxxx.do”, produces = “text/html;charset=UTF-8”)</p>
 <p>但是此方法需要为每一个返回String字符串的Controller控制器添加此字段，所以比较繁琐。</p>
 <h3 id="使用HttpServletResponse"><a href="#使用HttpServletResponse" class="headerlink" title="使用HttpServletResponse"></a>使用HttpServletResponse</h3><p>采用原始的做法，在方法中，增加 <code>HttpServletResponse</code> 参数，然后由 <code>HttpServletResponse</code> 对象输出回复内容，如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;/xxxx.do&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">fetchFlowPackage</span><span class="params">(<span class="meta">@RequestParam(required = true)</span> String param,</span></span></span><br><span class="line"><span class="function"><span class="params">				HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">	response.setHeader(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);</span><br><span class="line">	response.setContentType(<span class="string">&quot;text/html;charset=UTF-8&quot;</span>);</span><br><span class="line">	response.setCharacterEncoding(<span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		PrintWriter out = <span class="keyword">null</span>;</span><br><span class="line">		out = response.getWriter();</span><br><span class="line">		out.write(<span class="string">&quot;回复的内容xxxx&quot;</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@RequestMapping(value = &quot;/xxxx.do&quot;)
+@ResponseBody
+public String fetchFlowPackage(@RequestParam(required = true) String param,
+                HttpServletResponse response) &#123;
+    response.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
+    response.setContentType(&quot;text/html;charset=UTF-8&quot;);
+    response.setCharacterEncoding(&quot;UTF-8&quot;);
+ 
+    try &#123;
+        PrintWriter out = null;
+        out = response.getWriter();
+        out.write(&quot;回复的内容xxxx&quot;);
+    &#125; catch (IOException e) &#123;
+        e.printStackTrace();
+    &#125;
+    return null;
+&#125;
+</code></pre>
 <h2 id="GET请求中文乱码的解决办法"><a href="#GET请求中文乱码的解决办法" class="headerlink" title="GET请求中文乱码的解决办法"></a>GET请求中文乱码的解决办法</h2><p>以上解决方法都是针对POST请求的，而对于GET请求尝试过很多办法：修改TOMCAT配置文件、@ResponseBody中使用注解、使用Filter等等都没有解决乱码问题，因为GET请求不经过<code>StringHttpMessageConverter</code>进行转换，需要使用增加HTTP头部的方式进行转码,而如果使用Filter进行头部的添加，一劳永逸，结果试了一下也没有结局问题，而在网上的<a target="_blank" rel="noopener" href="https://www.iteye.com/problems/15107">扫地僧的回复中</a>得知:</p>
 <blockquote>
 <p>filter是请求到达前做一次处理，请求完成后再做一次处理，<br>而<code>httpResponse.setCharacterEncoding(encoding); </code>// encoding为utf-8<br><code>httpResponse.setContentType(&quot;text/html; charset=utf-8&quot;); </code> 必须在请求处理完成前设置才能有效的，所以用filter是不行的。</p>
 </blockquote>
-<p> 我想到的解决办法是在Controller中使用HttpServletResponse对象直接写入String，代码如下：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/user-info&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetUserInfo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(method = RequestMethod. GET )</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getUserInfo</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span> <span class="keyword">long</span> id,</span></span></span><br><span class="line"><span class="function"><span class="params">    HttpServletResponse response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        response.setContentType(<span class="string">&quot;text/html;charset=UTF-8&quot;</span>);<span class="comment">//写入头部</span></span><br><span class="line">        response.setCharacterEncoding(<span class="string">&quot;UTF-8&quot;</span>);<span class="comment">//设置编码格式，必须在请求处理完成前设置才有效</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String result = <span class="keyword">new</span> UserDAOImp().getUserInfo(id, <span class="number">0</span>);</span><br><span class="line">            System.out.println(result);</span><br><span class="line">            response.getWriter().write(result);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            response .getWriter().write(<span class="keyword">new</span> UserDAOImp().getUserInfo(id, <span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p> 我想到的解决办法是在Controller中使用HttpServletResponse对象直接写入String，代码如下：</p>
+<pre><code class="java">@Controller
+@RequestMapping(value = &quot;/user-info&quot;)
+public class GetUserInfo &#123;
+
+   @RequestMapping(method = RequestMethod. GET )
+   public void getUserInfo(@RequestParam(&quot;id&quot;) long id,
+   HttpServletResponse response) throws IOException &#123;
+       response.setContentType(&quot;text/html;charset=UTF-8&quot;);//写入头部
+       response.setCharacterEncoding(&quot;UTF-8&quot;);//设置编码格式，必须在请求处理完成前设置才有效
+
+       try &#123;
+           String result = new UserDAOImp().getUserInfo(id, 0);
+           System.out.println(result);
+           response.getWriter().write(result);
+       &#125; catch (Exception e) &#123;
+           e.printStackTrace();
+           response .getWriter().write(new UserDAOImp().getUserInfo(id, 1));
+       &#125;
+   &#125;
+</code></pre>
 
   
   
@@ -785,7 +855,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -797,9 +867,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1048,12 +1118,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1182,8 +1252,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1252,7 +1320,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1371,62 +1439,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1458,7 +1470,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1486,11 +1498,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

@@ -546,28 +546,457 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <p>二叉查找树的具体实现</p>
 <h2 id="二叉查找树的定义"><a href="#二叉查找树的定义" class="headerlink" title="二叉查找树的定义"></a>二叉查找树的定义</h2><p>&emsp;&emsp;二叉查找树中的结点有五个字段值，left字段指向其左子树，right指向其右子树，key保存其键,为了保持键有序，规定所有的键都继承自Comparable<Key>接口，value保存其值，N保存的是该结点左子树和其右子树以及自身的键的个数。<br>&emsp;&emsp;在二叉查找树中，其左子数结点中的键Key都小于根结点，右子树中的键都大于跟结点。</p>
 <hr>
-<h2 id="API列表"><a href="#API列表" class="headerlink" title="API列表"></a>API列表</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BST</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;,<span class="title">Value</span>&gt;</span></span><br><span class="line"><span class="class">返回值         方法名               说明</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">		《无序和有序（部分）符号表<span class="title">API</span>》</span></span><br><span class="line"><span class="class"><span class="title">void</span>        <span class="title">put</span>(<span class="title">Key</span> <span class="title">key</span>,<span class="title">Value</span>)      将键值对存入树中</span></span><br><span class="line"><span class="class"><span class="title">Value</span>       <span class="title">get</span>(<span class="title">Kye</span> <span class="title">key</span>)            得到<span class="title">key</span>对应的值</span></span><br><span class="line"><span class="class"><span class="title">void</span>        <span class="title">delete</span>(<span class="title">Key</span> <span class="title">key</span>)         删除<span class="title">key</span>对应的键值对</span></span><br><span class="line"><span class="class"><span class="title">boolean</span>     <span class="title">contains</span>(<span class="title">Key</span> <span class="title">key</span>)       查找<span class="title">key</span>是否存在于树中</span></span><br><span class="line"><span class="class"><span class="title">boolean</span>     <span class="title">isEmpty</span>()               检测是否为空</span></span><br><span class="line"><span class="class"><span class="title">int</span>         <span class="title">size</span>()                  返回键值对的数目</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">		《有序符号表<span class="title">API</span>》</span></span><br><span class="line"><span class="class"><span class="title">Key</span>         <span class="title">min</span>()                   返回最小的键</span></span><br><span class="line"><span class="class"><span class="title">Key</span>         <span class="title">max</span>()                   返回最大的键</span></span><br><span class="line"><span class="class"><span class="title">Key</span>         <span class="title">floor</span>(<span class="title">Key</span> <span class="title">key</span>)          返回小于等于<span class="title">key</span>的键</span></span><br><span class="line"><span class="class"><span class="title">key</span>         <span class="title">ceiling</span>(<span class="title">Key</span> <span class="title">key</span>)        返回大于等于<span class="title">key</span>的键</span></span><br><span class="line"><span class="class"><span class="title">int</span>         <span class="title">rank</span>(<span class="title">Key</span> <span class="title">key</span>)           返回小于<span class="title">key</span>的键</span></span><br><span class="line"><span class="class"><span class="title">Key</span>         <span class="title">select</span>(<span class="title">int</span> <span class="title">k</span>)           返回排名为<span class="title">k</span>的键（从0开始计算）</span></span><br><span class="line"><span class="class"><span class="title">void</span>        <span class="title">deleteMin</span>()             删除树中最小键值对</span></span><br><span class="line"><span class="class"><span class="title">void</span>        <span class="title">deleteMax</span>()             删除树中最大键值对</span></span><br><span class="line"><span class="class"><span class="title">int</span>         <span class="title">size</span>(<span class="title">Key</span> <span class="title">lo</span>,<span class="title">Key</span> <span class="title">hi</span>)     返回<span class="title">lo</span>和<span class="title">hi</span>之间的键值对的数量</span></span><br><span class="line"><span class="class"><span class="title">Iterable</span>&lt;<span class="title">Key</span>&gt; <span class="title">keys</span>(<span class="title">Key</span> <span class="title">lo</span>,<span class="title">Key</span> <span class="title">hi</span>)   返回<span class="title">lo</span>和<span class="title">hi</span>之间的键的迭代器，已排序</span></span><br><span class="line"><span class="class"><span class="title">Iterable</span>&lt;<span class="title">Key</span>&gt; <span class="title">keys</span>()                返回所有<span class="title">key</span>的迭代器</span></span><br></pre></td></tr></table></figure>
+<h2 id="API列表"><a href="#API列表" class="headerlink" title="API列表"></a>API列表</h2><pre><code class="java">public class BST&lt;Key extends Comparable&lt;Key&gt;,Value&gt;
+返回值         方法名               说明
 
+        《无序和有序（部分）符号表API》
+void        put(Key key,Value)      将键值对存入树中
+Value       get(Kye key)            得到key对应的值
+void        delete(Key key)         删除key对应的键值对
+boolean     contains(Key key)       查找key是否存在于树中
+boolean     isEmpty()               检测是否为空
+int         size()                  返回键值对的数目
+
+        《有序符号表API》
+Key         min()                   返回最小的键
+Key         max()                   返回最大的键
+Key         floor(Key key)          返回小于等于key的键
+key         ceiling(Key key)        返回大于等于key的键
+int         rank(Key key)           返回小于key的键
+Key         select(int k)           返回排名为k的键（从0开始计算）
+void        deleteMin()             删除树中最小键值对
+void        deleteMax()             删除树中最大键值对
+int         size(Key lo,Key hi)     返回lo和hi之间的键值对的数量
+Iterable&lt;Key&gt; keys(Key lo,Key hi)   返回lo和hi之间的键的迭代器，已排序
+Iterable&lt;Key&gt; keys()                返回所有key的迭代器
+</code></pre>
 <hr>
 <h2 id="几个重要的操作的实现"><a href="#几个重要的操作的实现" class="headerlink" title="几个重要的操作的实现"></a>几个重要的操作的实现</h2><p>二叉查找树还支持键的有序的操作，需要实现一些有序性操作的API。</p>
 <h3 id="删除操作-delete"><a href="#删除操作-delete" class="headerlink" title="删除操作(delete)"></a>删除操作(delete)</h3><p>在二叉查找树中删除一个结点的处理方式如下：</p>
 <ul>
-<li>如果被删除结点不存在，则不进行任何操作</li>
-<li>如果被删除结点存在，但是没有左右子结点，则可以将此节点直接删除</li>
-<li>如果被删除结点只有左子结点或者只有右子结点，则直接返回此结点的子结点。</li>
-<li>如果被删除结点既有左子结点，又有右子结点，则首先找到此结点右子树中最小的那个结点，然后将最小结点放到被删除结点的位置。<br>代码实现如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//删除键值key所对应的键值对</span></span><br><span class="line">        <span class="keyword">if</span>(root==<span class="keyword">null</span>)  <span class="keyword">return</span>;</span><br><span class="line">        root= delete(root,key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">delete</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>) x.left=delete(x.left,key);</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&gt;<span class="number">0</span>) x.right=delete(x.right,key);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(x.left==<span class="keyword">null</span>)    <span class="keyword">return</span> x.right;<span class="comment">//当x为叶结点时特殊考虑!!</span></span><br><span class="line">            <span class="keyword">if</span>(x.right==<span class="keyword">null</span>)   <span class="keyword">return</span> x.left;<span class="comment">//!!</span></span><br><span class="line">            Node k=x;</span><br><span class="line">            x=min(k.right);</span><br><span class="line">            x.right=deleteMin(k.right);</span><br><span class="line">            x.left=k.left;</span><br><span class="line">        &#125;</span><br><span class="line">        x.N=size(x.left)+size(x.right)+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<li><p>如果被删除结点不存在，则不进行任何操作</p>
+</li>
+<li><p>如果被删除结点存在，但是没有左右子结点，则可以将此节点直接删除</p>
+</li>
+<li><p>如果被删除结点只有左子结点或者只有右子结点，则直接返回此结点的子结点。</p>
+</li>
+<li><p>如果被删除结点既有左子结点，又有右子结点，则首先找到此结点右子树中最小的那个结点，然后将最小结点放到被删除结点的位置。<br>代码实现如下：</p>
+<pre><code class="java">public void delete(Key key)&#123;//删除键值key所对应的键值对
+      if(root==null)  return;
+      root= delete(root,key);
+  &#125;
 
+  private Node delete(Node x,Key key)&#123;
+      if(x==null) return null;
+      int t=key.compareTo(x.key);
+      if(t&lt;0) x.left=delete(x.left,key);
+      else    if(t&gt;0) x.right=delete(x.right,key);
+      else&#123;
+          if(x.left==null)    return x.right;//当x为叶结点时特殊考虑!!
+          if(x.right==null)   return x.left;//!!
+          Node k=x;
+          x=min(k.right);
+          x.right=deleteMin(k.right);
+          x.left=k.left;
+      &#125;
+      x.N=size(x.left)+size(x.right)+1;
+      return x;
+  &#125;
+</code></pre>
 </li>
 </ul>
 <h3 id="向下取整-floor-和向上取整-ceiling"><a href="#向下取整-floor-和向上取整-ceiling" class="headerlink" title="向下取整(floor)和向上取整(ceiling)"></a>向下取整(floor)和向上取整(ceiling)</h3><p>在有序符号表中，常常需要对键进行向下取整和向上取整，即小于等于和大于等于。其实现如下所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">floor</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line"><span class="comment">//返回小于等于key的元素的键值</span></span><br><span class="line">        Node x=floor(root,key);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">floor</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t==<span class="number">0</span>)    <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&lt;<span class="number">0</span>) <span class="keyword">return</span> floor(x.left,key);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            Node k=floor(x.right,key);</span><br><span class="line">            <span class="keyword">return</span> k==<span class="keyword">null</span>?x:k;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>向上取整</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">ceiling</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line"><span class="comment">//返回大于等于key的元素的键值</span></span><br><span class="line">        Node x=ceiling(root,key);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">ceiling</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t==<span class="number">0</span>)    <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&gt;<span class="number">0</span>) <span class="keyword">return</span> ceiling(x.right,key);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            Node k=ceiling(x.left,key);</span><br><span class="line">            <span class="keyword">return</span> k==<span class="keyword">null</span>?x:k;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="选择-select-和排名操作-rank"><a href="#选择-select-和排名操作-rank" class="headerlink" title="选择(select)和排名操作(rank)"></a>选择(select)和排名操作(rank)</h4><p> select(i)用于查找二叉查找树中位置大小为i的键，或者通过rank(K key)查找小于键key的键的数量。<br> 在select中，如果当前结点的N的值大于i,则递归的在结点的左子树中选择位置大小为i的结点，如果N小于i，则递归的在右子树中查找位置大小为i-size(x.left)-1的键：<br> select方法<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">select</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">       Node x=select(root,i);</span><br><span class="line">       <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">private</span> Node <span class="title">select</span><span class="params">(Node x,<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">int</span> t=size(x.left);</span><br><span class="line">       <span class="keyword">if</span>(t&gt;i) <span class="keyword">return</span> select(x.left,i);</span><br><span class="line">       <span class="keyword">if</span>(t==i)    <span class="keyword">return</span> x;</span><br><span class="line">       <span class="keyword">return</span> select(x.right,i-t-<span class="number">1</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
-<p> rank方法<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rank</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//返回小于key的键的数量</span></span><br><span class="line">      <span class="keyword">return</span> rank(root,key);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">rank</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">      <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">      <span class="keyword">if</span>(t&gt;<span class="number">0</span>)     <span class="keyword">return</span> size(x.left)+<span class="number">1</span>+rank(x.right,key);</span><br><span class="line">      <span class="keyword">if</span>(t&lt;<span class="number">0</span>)     <span class="keyword">return</span> rank(x.left,key);</span><br><span class="line">      <span class="keyword">return</span> size(x.left);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="范围查找"><a href="#范围查找" class="headerlink" title="范围查找"></a>范围查找</h3><p> 范围查找能够查找位于键lo和hi之间的元素，其具体实现如下所示：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Queue&lt;Key&gt; queue=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">       keys(root,min(),max(),queue);</span><br><span class="line">       <span class="keyword">return</span> queue;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">(Key lo,Key hi)</span></span>&#123;<span class="comment">//索引lo到hi之间的值</span></span><br><span class="line">       Queue&lt;Key&gt; queue=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">       keys(root,lo,hi,queue);</span><br><span class="line">       <span class="keyword">return</span> queue;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">keys</span><span class="params">(Node x,Key lo,Key hi,Queue&lt;Key&gt; queue)</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">       <span class="keyword">int</span> cmplo=lo.compareTo(x.key);</span><br><span class="line">       <span class="keyword">int</span> cmphi=hi.compareTo(x.key);</span><br><span class="line">       <span class="keyword">if</span>(cmplo&lt;<span class="number">0</span>) keys(x.left,lo,hi,queue);</span><br><span class="line">       <span class="keyword">if</span>(cmplo&lt;=<span class="number">0</span>&amp;&amp;cmphi&gt;=<span class="number">0</span>)  queue.add(x.key);</span><br><span class="line">       <span class="keyword">if</span>(cmphi&gt;<span class="number">0</span>) keys(x.right,lo,hi,queue);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="所有API的代码实现"><a href="#所有API的代码实现" class="headerlink" title="所有API的代码实现"></a>所有API的代码实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BSTT</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;,<span class="title">Value</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Node root;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> Key key;</span><br><span class="line">        <span class="keyword">private</span> Value val;</span><br><span class="line">        <span class="keyword">private</span> Node left,right;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> N;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(Key key,Value val,<span class="keyword">int</span> N)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.key=key;</span><br><span class="line">            <span class="keyword">this</span>.val=val;</span><br><span class="line">            <span class="keyword">this</span>.N=N;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size(root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">(Node x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> x.N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">(Key lo,Key hi)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size(root,lo,hi);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">(Node x,Key lo,Key hi)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> cmplo=lo.compareTo(x.key);</span><br><span class="line">        <span class="keyword">int</span> cmphi=hi.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(cmplo&lt;<span class="number">0</span>) i+=size(x.left,lo,hi);</span><br><span class="line">        <span class="keyword">if</span>(cmplo&lt;=<span class="number">0</span>&amp;&amp;cmphi&gt;=<span class="number">0</span>)  i++;</span><br><span class="line">        <span class="keyword">if</span>(cmphi&gt;<span class="number">0</span>) i+=size(x.right,lo,hi);</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> root==<span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">min</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Node x=min(root);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">min</span><span class="params">(Node x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>)   <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span>(x.left==<span class="keyword">null</span>)  <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">return</span> min(x.left);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">max</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Node x=max(root);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">max</span><span class="params">(Node x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>)   <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span>(x.right==<span class="keyword">null</span>)  <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">return</span> max(x.right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> contains(root,key)==<span class="keyword">null</span>?<span class="keyword">false</span>:<span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">contains</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>) <span class="keyword">return</span> contains(x.left,key);</span><br><span class="line">        <span class="keyword">if</span>(t&gt;<span class="number">0</span>) <span class="keyword">return</span> contains(x.right,key);</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Key key,Value val)</span></span>&#123;</span><br><span class="line">        root=put(root,key,val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">put</span><span class="params">(Node x,Key key,Value val)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">new</span> Node(key,val,<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>) x.left=put(x.left,key,val);</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&gt;<span class="number">0</span>) x.right=put(x.right,key,val);</span><br><span class="line">        <span class="keyword">else</span>    x.val=val;</span><br><span class="line">        x.N=<span class="number">1</span>+size(x.left)+size(x.right);</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Value <span class="title">get</span><span class="params">(Key key)</span></span>&#123;</span><br><span class="line">        Node x=get(root,key);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">get</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>) <span class="keyword">return</span> get(x.left,key);</span><br><span class="line">        <span class="keyword">if</span>(t&gt;<span class="number">0</span>) <span class="keyword">return</span> get(x.right,key);</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">floor</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//返回小于等于key的元素的键值</span></span><br><span class="line">        Node x=floor(root,key);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">floor</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t==<span class="number">0</span>)    <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&lt;<span class="number">0</span>) <span class="keyword">return</span> floor(x.left,key);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            Node k=floor(x.right,key);</span><br><span class="line">            <span class="keyword">return</span> k==<span class="keyword">null</span>?x:k;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">ceiling</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//返回大于等于key的元素的键值</span></span><br><span class="line">        Node x=ceiling(root,key);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">ceiling</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t==<span class="number">0</span>)    <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&gt;<span class="number">0</span>) <span class="keyword">return</span> ceiling(x.right,key);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            Node k=ceiling(x.left,key);</span><br><span class="line">            <span class="keyword">return</span> k==<span class="keyword">null</span>?x:k;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">select</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">        Node x=select(root,i);</span><br><span class="line">        <span class="keyword">return</span> x==<span class="keyword">null</span>?<span class="keyword">null</span>:x.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">select</span><span class="params">(Node x,<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=size(x.left);</span><br><span class="line">        <span class="keyword">if</span>(t&gt;i) <span class="keyword">return</span> select(x.left,i);</span><br><span class="line">        <span class="keyword">if</span>(t==i)    <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">return</span> select(x.right,i-t-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rank</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//返回小于key的键的数量</span></span><br><span class="line">        <span class="keyword">return</span> rank(root,key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">rank</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&gt;<span class="number">0</span>)     <span class="keyword">return</span> size(x.left)+<span class="number">1</span>+rank(x.right,key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>)     <span class="keyword">return</span> rank(x.left,key);</span><br><span class="line">        <span class="keyword">return</span> size(x.left);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">deleteMin</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(root==<span class="keyword">null</span>)  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        Node node=<span class="keyword">new</span> Node();</span><br><span class="line">        root=deleteMin(root,node);</span><br><span class="line">        <span class="keyword">return</span> node.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">deleteMin</span><span class="params">(Node x,Node node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x.left==<span class="keyword">null</span>) &#123;</span><br><span class="line">            node.key=x.key;</span><br><span class="line">            <span class="keyword">return</span> x.right;</span><br><span class="line">        &#125;</span><br><span class="line">        x.left = deleteMin(x.left,node);</span><br><span class="line">        x.N=size(x.left)+size(x.right)+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">deleteMin</span><span class="params">(Node x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span>(x.left==<span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> x.right;</span><br><span class="line">        &#125;</span><br><span class="line">        x.left = deleteMin(x.left);</span><br><span class="line">        x.N=size(x.left)+size(x.right)+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">deleteMax</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(root==<span class="keyword">null</span>)  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        Node node=<span class="keyword">new</span> Node();</span><br><span class="line">        root = deleteMax(root,node);</span><br><span class="line">        <span class="keyword">return</span> node.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">deleteMax</span><span class="params">(Node x,Node node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x.right==<span class="keyword">null</span>) &#123;</span><br><span class="line">            node.key=x.key;</span><br><span class="line">            <span class="keyword">return</span> x.left;</span><br><span class="line">        &#125;</span><br><span class="line">        x.right = deleteMax(x.right,node);</span><br><span class="line">        x.N=size(x.left)+size(x.right)+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Node current=root;</span><br><span class="line">        StringBuilder sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        sb.append(<span class="string">&quot;[ &quot;</span>);</span><br><span class="line">        print(current,sb);</span><br><span class="line">        sb.replace(sb.length()-<span class="number">1</span>,sb.length(),<span class="string">&quot; ]&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> StringBuilder <span class="title">print</span><span class="params">(Node x,StringBuilder sb)</span></span>&#123;<span class="comment">//中序遍历</span></span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> sb;</span><br><span class="line">        print(x.left,sb);</span><br><span class="line">        sb.append(x.key+<span class="string">&quot;:&quot;</span>+x.val+<span class="string">&quot;,&quot;</span>);</span><br><span class="line">        print(x.right,sb);</span><br><span class="line">        <span class="keyword">return</span> sb;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Key key)</span></span>&#123;<span class="comment">//删除键值key所对应的键值对</span></span><br><span class="line">        root= delete(root,key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">delete</span><span class="params">(Node x,Key key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> t=key.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(t&lt;<span class="number">0</span>) x.left=delete(x.left,key);</span><br><span class="line">        <span class="keyword">else</span>    <span class="keyword">if</span>(t&gt;<span class="number">0</span>) x.right=delete(x.right,key);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(x.left==<span class="keyword">null</span>)    <span class="keyword">return</span> x.right;<span class="comment">//当x为叶结点时特殊考虑!!</span></span><br><span class="line">            <span class="keyword">if</span>(x.right==<span class="keyword">null</span>)   <span class="keyword">return</span> x.left;<span class="comment">//!!</span></span><br><span class="line">            Node k=x;</span><br><span class="line">            x=min(k.right);</span><br><span class="line">            x.right=deleteMin(k.right);</span><br><span class="line">            x.left=k.left;</span><br><span class="line">        &#125;</span><br><span class="line">        x.N=size(x.left)+size(x.right)+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Queue&lt;Key&gt; queue=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        keys(root,min(),max(),queue);</span><br><span class="line">        <span class="keyword">return</span> queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Key&gt; <span class="title">keys</span><span class="params">(Key lo,Key hi)</span></span>&#123;<span class="comment">//索引lo到hi之间的值</span></span><br><span class="line">        Queue&lt;Key&gt; queue=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        keys(root,lo,hi,queue);</span><br><span class="line">        <span class="keyword">return</span> queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">keys</span><span class="params">(Node x,Key lo,Key hi,Queue&lt;Key&gt; queue)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> cmplo=lo.compareTo(x.key);</span><br><span class="line">        <span class="keyword">int</span> cmphi=hi.compareTo(x.key);</span><br><span class="line">        <span class="keyword">if</span>(cmplo&lt;<span class="number">0</span>) keys(x.left,lo,hi,queue);</span><br><span class="line">        <span class="keyword">if</span>(cmplo&lt;=<span class="number">0</span>&amp;&amp;cmphi&gt;=<span class="number">0</span>)  queue.add(x.key);</span><br><span class="line">        <span class="keyword">if</span>(cmphi&gt;<span class="number">0</span>) keys(x.right,lo,hi,queue);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;<span class="comment">//测试代码</span></span><br><span class="line">        BSTT&lt;Integer,String&gt; bst=<span class="keyword">new</span> BSTT&lt;&gt;();</span><br><span class="line">        bst.put(<span class="number">1</span>,<span class="string">&quot;one&quot;</span>);</span><br><span class="line">        bst.put(<span class="number">2</span>,<span class="string">&quot;two&quot;</span>);</span><br><span class="line">        bst.put(<span class="number">3</span>,<span class="string">&quot;three&quot;</span>);</span><br><span class="line">        bst.put(<span class="number">4</span>,<span class="string">&quot;four&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.size():&quot;</span>+bst.size());</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.get(2):&quot;</span>+bst.get(<span class="number">2</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.contains(3):&quot;</span>+bst.contains(<span class="number">3</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.isEmpty():&quot;</span>+bst.isEmpty());</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.max():&quot;</span>+bst.max());</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.min():&quot;</span>+bst.min());</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.floor(5):&quot;</span>+bst.floor(<span class="number">5</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.ceiling(7):&quot;</span>+bst.ceiling(<span class="number">7</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.select(1):&quot;</span>+bst.select(<span class="number">1</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;bst.rank(3):&quot;</span>+bst.rank(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">        System.out.println(bst.deleteMax()+<span class="string">&quot;bst.deleteMax():&quot;</span>+bst);</span><br><span class="line">        System.out.print(bst.deleteMin()+<span class="string">&quot;bst.deleteMin():&quot;</span>+bst);</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;bst.delete(3):&quot;</span>);</span><br><span class="line">        bst.delete(<span class="number">3</span>);</span><br><span class="line">        System.out.println(bst);</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;bst.keys():&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(Integer key:bst.keys())</span><br><span class="line">            System.out.print(key+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        System.out.println();</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;bst.keys(1,3):&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(Integer key:bst.keys(<span class="number">1</span>,<span class="number">3</span>))</span><br><span class="line">            System.out.print(key+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        System.out.println();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;bst.size(-1,5):&quot;</span>+bst.size(<span class="number">1</span>,<span class="number">5</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public Key floor(Key key)&#123;
+//返回小于等于key的元素的键值
+        Node x=floor(root,key);
+        return x==null?null:x.key;
+    &#125;
 
+    private Node floor(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t==0)    return x;
+        else    if(t&lt;0) return floor(x.left,key);
+        else &#123;
+            Node k=floor(x.right,key);
+            return k==null?x:k;
+        &#125;
+    &#125;
+</code></pre>
+<p>向上取整</p>
+<pre><code class="java">public Key ceiling(Key key)&#123;
+//返回大于等于key的元素的键值
+        Node x=ceiling(root,key);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node ceiling(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t==0)    return x;
+        else    if(t&gt;0) return ceiling(x.right,key);
+        else&#123;
+            Node k=ceiling(x.left,key);
+            return k==null?x:k;
+        &#125;
+    &#125;
+</code></pre>
+<h4 id="选择-select-和排名操作-rank"><a href="#选择-select-和排名操作-rank" class="headerlink" title="选择(select)和排名操作(rank)"></a>选择(select)和排名操作(rank)</h4><p> select(i)用于查找二叉查找树中位置大小为i的键，或者通过rank(K key)查找小于键key的键的数量。<br> 在select中，如果当前结点的N的值大于i,则递归的在结点的左子树中选择位置大小为i的结点，如果N小于i，则递归的在右子树中查找位置大小为i-size(x.left)-1的键：<br> select方法</p>
+<pre><code class="java">public Key select(int i)&#123;
+       Node x=select(root,i);
+       return x==null?null:x.key;
+   &#125;
+
+   private Node select(Node x,int i)&#123;
+       if(x==null) return null;
+       int t=size(x.left);
+       if(t&gt;i) return select(x.left,i);
+       if(t==i)    return x;
+       return select(x.right,i-t-1);
+   &#125;
+</code></pre>
+<p> rank方法</p>
+<pre><code class="java"> public int rank(Key key)&#123;//返回小于key的键的数量
+       return rank(root,key);
+   &#125;
+
+   private int rank(Node x,Key key)&#123;
+       if(x==null) return 0;
+       int t=key.compareTo(x.key);
+       if(t&gt;0)     return size(x.left)+1+rank(x.right,key);
+       if(t&lt;0)     return rank(x.left,key);
+       return size(x.left);
+   &#125;
+</code></pre>
+<h3 id="范围查找"><a href="#范围查找" class="headerlink" title="范围查找"></a>范围查找</h3><p> 范围查找能够查找位于键lo和hi之间的元素，其具体实现如下所示：</p>
+<pre><code class="java">public Iterable&lt;Key&gt; keys()&#123;
+       Queue&lt;Key&gt; queue=new LinkedList&lt;&gt;();
+       keys(root,min(),max(),queue);
+       return queue;
+   &#125;
+
+   public Iterable&lt;Key&gt; keys(Key lo,Key hi)&#123;//索引lo到hi之间的值
+       Queue&lt;Key&gt; queue=new LinkedList&lt;&gt;();
+       keys(root,lo,hi,queue);
+       return queue;
+   &#125;
+
+   private void keys(Node x,Key lo,Key hi,Queue&lt;Key&gt; queue)&#123;
+       if(x==null) return;
+       int cmplo=lo.compareTo(x.key);
+       int cmphi=hi.compareTo(x.key);
+       if(cmplo&lt;0) keys(x.left,lo,hi,queue);
+       if(cmplo&lt;=0&amp;&amp;cmphi&gt;=0)  queue.add(x.key);
+       if(cmphi&gt;0) keys(x.right,lo,hi,queue);
+   &#125;
+</code></pre>
+<h2 id="所有API的代码实现"><a href="#所有API的代码实现" class="headerlink" title="所有API的代码实现"></a>所有API的代码实现</h2><pre><code class="java">import java.util.LinkedList;
+import java.util.Queue;
+public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
+    private Node root;
+    class Node&#123;
+        private Key key;
+        private Value val;
+        private Node left,right;
+        private int N;
+
+        public Node(Key key,Value val,int N)&#123;
+            this.key=key;
+            this.val=val;
+            this.N=N;
+        &#125;
+
+        public Node()&#123;&#125;
+    &#125;
+
+    public int size()&#123;
+        return size(root);
+    &#125;
+
+    private int size(Node x)&#123;
+        if(x==null) return 0;
+        return x.N;
+    &#125;
+
+    public int size(Key lo,Key hi)&#123;
+        return size(root,lo,hi);
+    &#125;
+
+    private int size(Node x,Key lo,Key hi)&#123;
+        if(x==null) return 0;
+        int i=0;
+        int cmplo=lo.compareTo(x.key);
+        int cmphi=hi.compareTo(x.key);
+        if(cmplo&lt;0) i+=size(x.left,lo,hi);
+        if(cmplo&lt;=0&amp;&amp;cmphi&gt;=0)  i++;
+        if(cmphi&gt;0) i+=size(x.right,lo,hi);
+        return i;
+    &#125;
+
+    public boolean isEmpty()&#123;
+        return root==null;
+    &#125;
+
+    public Key min()&#123;
+        Node x=min(root);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node min(Node x)&#123;
+        if(x==null)   return null;
+        if(x.left==null)  return x;
+        return min(x.left);
+    &#125;
+
+    public Key max()&#123;
+        Node x=max(root);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node max(Node x)&#123;
+        if(x==null)   return null;
+        if(x.right==null)  return x;
+        return max(x.right);
+    &#125;
+
+    public boolean contains(Key key)&#123;
+        return contains(root,key)==null?false:true;
+    &#125;
+
+    private Node contains(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t&lt;0) return contains(x.left,key);
+        if(t&gt;0) return contains(x.right,key);
+        return x;
+    &#125;
+
+    public void put(Key key,Value val)&#123;
+        root=put(root,key,val);
+    &#125;
+
+    private Node put(Node x,Key key,Value val)&#123;
+        if(x==null) return new Node(key,val,1);
+        int t=key.compareTo(x.key);
+        if(t&lt;0) x.left=put(x.left,key,val);
+        else    if(t&gt;0) x.right=put(x.right,key,val);
+        else    x.val=val;
+        x.N=1+size(x.left)+size(x.right);
+        return x;
+    &#125;
+
+    public Value get(Key key)&#123;
+        Node x=get(root,key);
+        return x==null?null:x.val;
+    &#125;
+
+    private Node get(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t&lt;0) return get(x.left,key);
+        if(t&gt;0) return get(x.right,key);
+        return x;
+    &#125;
+
+    public Key floor(Key key)&#123;//返回小于等于key的元素的键值
+        Node x=floor(root,key);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node floor(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t==0)    return x;
+        else    if(t&lt;0) return floor(x.left,key);
+        else &#123;
+            Node k=floor(x.right,key);
+            return k==null?x:k;
+        &#125;
+    &#125;
+
+    public Key ceiling(Key key)&#123;//返回大于等于key的元素的键值
+        Node x=ceiling(root,key);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node ceiling(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t==0)    return x;
+        else    if(t&gt;0) return ceiling(x.right,key);
+        else&#123;
+            Node k=ceiling(x.left,key);
+            return k==null?x:k;
+        &#125;
+    &#125;
+
+    public Key select(int i)&#123;
+        Node x=select(root,i);
+        return x==null?null:x.key;
+    &#125;
+
+    private Node select(Node x,int i)&#123;
+        if(x==null) return null;
+        int t=size(x.left);
+        if(t&gt;i) return select(x.left,i);
+        if(t==i)    return x;
+        return select(x.right,i-t-1);
+    &#125;
+
+
+    public int rank(Key key)&#123;//返回小于key的键的数量
+        return rank(root,key);
+    &#125;
+
+    private int rank(Node x,Key key)&#123;
+        if(x==null) return 0;
+        int t=key.compareTo(x.key);
+        if(t&gt;0)     return size(x.left)+1+rank(x.right,key);
+        if(t&lt;0)     return rank(x.left,key);
+        return size(x.left);
+    &#125;
+
+    public Key deleteMin()&#123;
+        if(root==null)  return null;
+        Node node=new Node();
+        root=deleteMin(root,node);
+        return node.key;
+    &#125;
+
+    private Node deleteMin(Node x,Node node)&#123;
+        if(x.left==null) &#123;
+            node.key=x.key;
+            return x.right;
+        &#125;
+        x.left = deleteMin(x.left,node);
+        x.N=size(x.left)+size(x.right)+1;
+        return x;
+    &#125;
+
+    private Node deleteMin(Node x)&#123;
+        if(x==null) return null;
+        if(x.left==null) &#123;
+            return x.right;
+        &#125;
+        x.left = deleteMin(x.left);
+        x.N=size(x.left)+size(x.right)+1;
+        return x;
+    &#125;
+
+    public Key deleteMax()&#123;
+        if(root==null)  return null;
+        Node node=new Node();
+        root = deleteMax(root,node);
+        return node.key;
+    &#125;
+
+    private Node deleteMax(Node x,Node node)&#123;
+        if(x.right==null) &#123;
+            node.key=x.key;
+            return x.left;
+        &#125;
+        x.right = deleteMax(x.right,node);
+        x.N=size(x.left)+size(x.right)+1;
+        return x;
+    &#125;
+
+    public String toString()&#123;
+        Node current=root;
+        StringBuilder sb=new StringBuilder();
+        sb.append(&quot;[ &quot;);
+        print(current,sb);
+        sb.replace(sb.length()-1,sb.length(),&quot; ]&quot;);
+        return sb.toString();
+    &#125;
+
+    private StringBuilder print(Node x,StringBuilder sb)&#123;//中序遍历
+        if(x==null) return sb;
+        print(x.left,sb);
+        sb.append(x.key+&quot;:&quot;+x.val+&quot;,&quot;);
+        print(x.right,sb);
+        return sb;
+    &#125;
+
+    public void delete(Key key)&#123;//删除键值key所对应的键值对
+        root= delete(root,key);
+    &#125;
+
+    private Node delete(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t&lt;0) x.left=delete(x.left,key);
+        else    if(t&gt;0) x.right=delete(x.right,key);
+        else&#123;
+            if(x.left==null)    return x.right;//当x为叶结点时特殊考虑!!
+            if(x.right==null)   return x.left;//!!
+            Node k=x;
+            x=min(k.right);
+            x.right=deleteMin(k.right);
+            x.left=k.left;
+        &#125;
+        x.N=size(x.left)+size(x.right)+1;
+        return x;
+    &#125;
+
+    public Iterable&lt;Key&gt; keys()&#123;
+        Queue&lt;Key&gt; queue=new LinkedList&lt;&gt;();
+        keys(root,min(),max(),queue);
+        return queue;
+    &#125;
+
+    public Iterable&lt;Key&gt; keys(Key lo,Key hi)&#123;//索引lo到hi之间的值
+        Queue&lt;Key&gt; queue=new LinkedList&lt;&gt;();
+        keys(root,lo,hi,queue);
+        return queue;
+    &#125;
+
+    private void keys(Node x,Key lo,Key hi,Queue&lt;Key&gt; queue)&#123;
+        if(x==null) return;
+        int cmplo=lo.compareTo(x.key);
+        int cmphi=hi.compareTo(x.key);
+        if(cmplo&lt;0) keys(x.left,lo,hi,queue);
+        if(cmplo&lt;=0&amp;&amp;cmphi&gt;=0)  queue.add(x.key);
+        if(cmphi&gt;0) keys(x.right,lo,hi,queue);
+    &#125;
+
+    public static void main(String[] args)&#123;//测试代码
+        BSTT&lt;Integer,String&gt; bst=new BSTT&lt;&gt;();
+        bst.put(1,&quot;one&quot;);
+        bst.put(2,&quot;two&quot;);
+        bst.put(3,&quot;three&quot;);
+        bst.put(4,&quot;four&quot;);
+        System.out.println(&quot;bst.size():&quot;+bst.size());
+        System.out.println(&quot;bst.get(2):&quot;+bst.get(2));
+        System.out.println(&quot;bst.contains(3):&quot;+bst.contains(3));
+        System.out.println(&quot;bst.isEmpty():&quot;+bst.isEmpty());
+        System.out.println(&quot;bst.max():&quot;+bst.max());
+        System.out.println(&quot;bst.min():&quot;+bst.min());
+        System.out.println(&quot;bst.floor(5):&quot;+bst.floor(5));
+        System.out.println(&quot;bst.ceiling(7):&quot;+bst.ceiling(7));
+        System.out.println(&quot;bst.select(1):&quot;+bst.select(1));
+        System.out.println(&quot;bst.rank(3):&quot;+bst.rank(5));
+
+        System.out.println(bst.deleteMax()+&quot;bst.deleteMax():&quot;+bst);
+        System.out.print(bst.deleteMin()+&quot;bst.deleteMin():&quot;+bst);
+
+        System.out.print(&quot;bst.delete(3):&quot;);
+        bst.delete(3);
+        System.out.println(bst);
+
+        System.out.print(&quot;bst.keys():&quot;);
+        for(Integer key:bst.keys())
+            System.out.print(key+&quot; &quot;);
+        System.out.println();
+
+        System.out.print(&quot;bst.keys(1,3):&quot;);
+        for(Integer key:bst.keys(1,3))
+            System.out.print(key+&quot; &quot;);
+        System.out.println();
+
+        System.out.println(&quot;bst.size(-1,5):&quot;+bst.size(1,5));
+    &#125;
+&#125;
+</code></pre>
 <h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>二叉查找树的实现不是非常困难，而正常情况下的查找和插入的时间复杂度能够达到对数级别$1.39lgN$,但是当插入键的顺序为有序时，则二叉查找树会退化为链表，从而查找和插入操作的时间复杂度变为N，在大规模数据中这是不可接受的。<br>二叉查找树的替代方案是使用平衡二叉树。平衡二叉树能够将相邻结点的到达根节点的差保持在一定的范围内。从而避免二叉树由于不平衡而带来的性能损失。</p>
 
   
@@ -796,7 +1225,7 @@ URI与URL、URN定义&emsp;&emsp;WEB服务器资源都有一个名字，这样�
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -808,9 +1237,9 @@ URI与URL、URN定义&emsp;&emsp;WEB服务器资源都有一个名字，这样�
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1059,12 +1488,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1193,8 +1622,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1263,7 +1690,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1382,62 +1809,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1469,7 +1840,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1497,11 +1868,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

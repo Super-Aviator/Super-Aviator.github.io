@@ -670,25 +670,70 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </tr>
 </tbody></table>
 <p>在<strong>JUnit5</strong>中这些方法都有多个重载方法(JUnit4不支持)，可以提供额外的消息来作为断言不满足时的提示消息(Message)，还可以接受 Java 8 中的函数式编程接口 Supplier来获取要判断的值和显示的消息。下面代码给出了简单断言的使用示例:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="meta">@DisplayName(&quot;simple assertion&quot;)</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">simple</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       assertEquals(<span class="number">3</span>, <span class="number">1</span> + <span class="number">2</span>, <span class="string">&quot;simple math&quot;</span>);<span class="comment">//接受String作为提示</span></span><br><span class="line">       assertEquals(<span class="number">1</span>,<span class="number">2</span>-<span class="number">1</span>,()-&gt;<span class="string">&quot;simple math&quot;</span>);<span class="comment">//接受Java8的Supplier接口作为提示</span></span><br><span class="line">       assertNotEquals(<span class="number">3</span>, <span class="number">1</span> + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">       assertNotSame(<span class="keyword">new</span> Object(), <span class="keyword">new</span> Object());</span><br><span class="line">       Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">       assertSame(obj, obj);</span><br><span class="line">       assertSame(obj, obj,<span class="string">&quot;not same new Object()&quot;</span>);<span class="comment">//接受String作为提示</span></span><br><span class="line">       assertSame(obj, obj,()-&gt;<span class="string">&quot;not same new Object()&quot;</span>);<span class="comment">//接受Java8的Supplier接口</span></span><br><span class="line"></span><br><span class="line">       assertFalse(<span class="number">1</span> &gt; <span class="number">2</span>);</span><br><span class="line">       assertTrue(<span class="number">1</span> &lt; <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">       assertNull(<span class="keyword">null</span>);</span><br><span class="line">       assertNotNull(<span class="keyword">new</span> Object());</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;simple assertion&quot;)
+    public void simple() &#123;
+        assertEquals(3, 1 + 2, &quot;simple math&quot;);//接受String作为提示
+        assertEquals(1,2-1,()-&gt;&quot;simple math&quot;);//接受Java8的Supplier接口作为提示
+        assertNotEquals(3, 1 + 1);
 
+        assertNotSame(new Object(), new Object());
+        Object obj = new Object();
+        assertSame(obj, obj);
+        assertSame(obj, obj,&quot;not same new Object()&quot;);//接受String作为提示
+        assertSame(obj, obj,()-&gt;&quot;not same new Object()&quot;);//接受Java8的Supplier接口
+
+        assertFalse(1 &gt; 2);
+        assertTrue(1 &lt; 2);
+
+        assertNull(null);
+        assertNotNull(new Object());
+ 
+ ...
+    &#125;
+</code></pre>
 <hr>
 <p>第二类是通过 assertArrayEquals 方法来判断两个对象或原始类型的<strong>数组</strong>是否相等,或者通过assertIterableEquals方法来判断两个<strong>可迭代对象</strong>是否相等，如下所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;array assertion&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">array</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertArrayEquals(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>&#125;);<span class="comment">//同样也可以指定消息或者使用Supplier接口。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;iterable assertion&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">iterable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertIterableEquals(Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>),Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>),<span class="string">&quot;Iterable Not Equal&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<pre><code class="java">    @Test
+    @DisplayName(&quot;array assertion&quot;)
+    public void array() &#123;
+        assertArrayEquals(new int[]&#123;1, 2&#125;, new int[] &#123;1, 2&#125;);//同样也可以指定消息或者使用Supplier接口。
+    &#125;
+    
+    
+    @Test
+    @DisplayName(&quot;iterable assertion&quot;)
+    public void iterable() &#123;
+        assertIterableEquals(Arrays.asList(1,2,3),Arrays.asList(1,2,3),&quot;Iterable Not Equal&quot;);
+    &#125;
+</code></pre>
 <hr>
 <p>第三类是通过assertAll方法来判断一组断言是否满足。assertAll 方法接受多个<code>org.junit.jupiter.api.Executable（方法签名为void-&gt;void）</code>函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言，assertAll的第一个参数是标题（heading），表示一组Executtable共有的属性，如下代码所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;assert all&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">all</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertAll(<span class="string">&quot;Math&quot;</span>,</span><br><span class="line">            () -&gt; assertEquals(<span class="number">2</span>, <span class="number">1</span> + <span class="number">1</span>),</span><br><span class="line">            () -&gt; assertTrue(<span class="number">1</span> &gt; <span class="number">0</span>)</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    @Test
+    @DisplayName(&quot;assert all&quot;)
+    public void all() &#123;
+        assertAll(&quot;Math&quot;,
+                () -&gt; assertEquals(2, 1 + 1),
+                () -&gt; assertTrue(1 &gt; 0)
+        );
+    &#125;
+</code></pre>
 <hr>
 <p>第四类是通过 assertThrows 或 expectThrows 来判断是否抛出期望的异常类型。两个方法的参数都是所期望的异常类型和对应的 Executable 接口的实现对象，区别在于 expectThrows 方法会<strong>返回抛出的异常对象</strong>。在下面代码中，1/0 会抛出 ArithmeticException 异常，下面代码使用assertThrows 用来验证这一点。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;throws exception&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exception</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertThrows(ArithmeticException.class, () -&gt; System.out.println(<span class="number">1</span> / <span class="number">0</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    @Test
+    @DisplayName(&quot;throws exception&quot;)
+    public void exception() &#123;
+        assertThrows(ArithmeticException.class, () -&gt; System.out.println(1 / 0));
+    &#125;
+</code></pre>
 <hr>
 <p>第五类是fail方法，用来直接使一个测试方法失败，如下代码所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;fail&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shouldFail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fail(<span class="string">&quot;This should fail&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    @Test
+    @DisplayName(&quot;fail&quot;)
+    public void shouldFail() &#123;
+        fail(&quot;This should fail&quot;);
+    &#125;
+</code></pre>
 <h1 id="JUnit中测试异常-Exception-和超时-Timeout"><a href="#JUnit中测试异常-Exception-和超时-Timeout" class="headerlink" title="JUnit中测试异常(Exception)和超时(Timeout)"></a>JUnit中测试异常(Exception)和超时(Timeout)</h1><p>在<strong>JUnit4</strong>中（JUnit5不支持），可以对@Test注解进行扩展，使用expected和timeout属性，以便支持测试方法是否抛出特定异常和检测方法的运行时间。</p>
 <ul>
 <li><p>@Test(expected=xx.class)：xx.class表示想要抛出的异常类，表示测试的方法抛出此异常时，认为是正常的测试通过的，如果没有抛出特定异常，则测试不通过。</p>
@@ -932,7 +977,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -944,9 +989,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1195,12 +1240,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1329,8 +1374,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1399,7 +1442,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1518,62 +1561,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1605,7 +1592,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1633,11 +1620,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

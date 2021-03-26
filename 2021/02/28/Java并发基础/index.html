@@ -544,10 +544,33 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   
   <h1 id="线程创建的三种方式"><a href="#线程创建的三种方式" class="headerlink" title="线程创建的三种方式"></a>线程创建的三种方式</h1><ol>
-<li>实现Runnable接口</li>
-<li>继承Thread类并重写run方法</li>
-<li>使用FutureTask方式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2021-03-13 12:34</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FutureTaskTest</span> <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        FutureTask&lt;String&gt; futureTask=<span class="keyword">new</span> FutureTask&lt;&gt;(<span class="keyword">new</span> FutureTaskTest());</span><br><span class="line">        Thread thread=<span class="keyword">new</span> Thread(futureTask);</span><br><span class="line">        thread.start();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(futureTask.get());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>实现Runnable接口</p>
+</li>
+<li><p>继承Thread类并重写run方法</p>
+</li>
+<li><p>使用FutureTask方式</p>
+<pre><code class="java">/**
+ * @author 熊乾坤
+ * @since 2021-03-13 12:34
+ */
+public class FutureTaskTest implements Callable&lt;String&gt; &#123;
+    @Override
+    public String call() throws Exception &#123;
+        return &quot;hello&quot;;
+    &#125;
 
+    public static void main(String[] args) &#123;
+        FutureTask&lt;String&gt; futureTask=new FutureTask&lt;&gt;(new FutureTaskTest());
+        Thread thread=new Thread(futureTask);
+        thread.start();
+        try &#123;
+            System.out.println(futureTask.get());
+        &#125; catch (InterruptedException | ExecutionException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 </li>
 </ol>
 <p>只有调用Thread类的start方法，才会创建线程，否则是在调用线程中执行run方法；同时调用start方法之后，只是将线程设置为就绪状态，只有获得CPU资源之后才会处于运行状态；</p>
@@ -556,14 +579,30 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p><strong>void interrupt()方法</strong>👀️中断线程，该方法设置线程的中断标识为true并立即返回，但是线程并没有被中断，会继续往下执行。如果线程因为调用了join、sleep、wait系列的函数而被挂起，调用线程的interrupt方法则会抛出InterruptedException异常并返回。</p>
 </li>
 <li><p><strong>boolean isterrupt()方法</strong> 👀️ 检测线程是否被中断，如果是则返回true，否则返回false.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isInterrupted</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">//这里传递false表示不清理中断标识</span></span><br><span class="line">    <span class="keyword">return</span> isInterrupted(<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<pre><code class="java">public boolean isInterrupted() &#123;
+//这里传递false表示不清理中断标识
+    return isInterrupted(false);
+&#125;
+</code></pre>
+</li>
 <li><p><strong>boolean interrupted()方法</strong>👀️ 检测当前线程是否被中断，如果是则返回true,否则返回false。该方法如果发现线程被中断，<strong>则会清理中断标识</strong>；该方法是static方法，可以通过Thread类直接调用；该方法是判断<strong>当前线程</strong>的终端标识，而非调用interrupted方法的线程的中断标识。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">interrupted</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//传入true表示清理中断标识；并且判断的当前线程的中断标识；</span></span><br><span class="line">    <span class="keyword">return</span> currentThread().isInterrupted(<span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public static boolean interrupted() &#123;
+    //传入true表示清理中断标识；并且判断的当前线程的中断标识；
+    return currentThread().isInterrupted(true);
+&#125;
+</code></pre>
 </li>
 </ul>
-<h2 id="使用中断使线程优雅退出"><a href="#使用中断使线程优雅退出" class="headerlink" title="使用中断使线程优雅退出"></a>使用中断使线程优雅退出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(!Thread.currentThread().isInterrupted()&amp;&amp;more work to <span class="keyword">do</span>)&#123;</span><br><span class="line">        <span class="comment">//do more work</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">    <span class="comment">//线程被中断</span></span><br><span class="line">&#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">//进行清理工作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h2 id="使用中断使线程优雅退出"><a href="#使用中断使线程优雅退出" class="headerlink" title="使用中断使线程优雅退出"></a>使用中断使线程优雅退出</h2><pre><code class="java">try&#123;
+    while(!Thread.currentThread().isInterrupted()&amp;&amp;more work to do)&#123;
+        //do more work
+    &#125;
+&#125;catch(InterruptedException e)&#123;
+    //线程被中断
+&#125;finally &#123;
+    //进行清理工作
+&#125;
+</code></pre>
 <h1 id="JMM-Java-Memory-Model"><a href="#JMM-Java-Memory-Model" class="headerlink" title="JMM(Java Memory Model)"></a>JMM(Java Memory Model)</h1><h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><h2 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h2><h1 id="synchronize"><a href="#synchronize" class="headerlink" title="synchronize"></a>synchronize</h1><p>synchronize在JDK5.0早期版本中性能远不如ReentrantLock，但从JDK6.0开始，JDK在synchronized上做了大量优化，两者性能相差并不大。</p>
 <p><strong>synchronize内存语义：</strong>进入synchronized块时，将块内用到的变量从线程的工作内存中清除,这样在synchronized块内使用到该变量时就不会从线程的工作内存中获取，而是直接从主内存中获取。退出synchronized块时，将块内修改过的变量刷新到内存。</p>
 <p>上面的语义其实也是加锁的语义。</p>
@@ -588,8 +627,29 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>关于CAS操作有个经典的ABA问题，具体如下：假如线程I使用CAS修改初始值为A的变量X，那么线程I会首先去获取当前变量X的值（为A〕，然后使用CAS操作尝试修改X的值为B，如果使用CAS操作成功了，那么程序运行一定是正确的吗？其实未必，这是因为有可能在线程I获取变量X的值A后，在执行CAS前，线程II使用CAS修改了变量X的值为B，然后又使用CAS修改了变量X的值为A。所以虽然线程I执行CAS时X的值是A，但是这个A己经不是线程I获取时的A了。这就是ABA问题。</p>
 <p>ABA问题的产生是因为变量的状态值产生了环形转换，就是变量的值可以从A到B,然后再从B到A。如果变量的值只能朝着一个方向转换，比如A到B,B到C，不构成环形，就不会存在问题。JDK中的 <code>AtomicStampedReference</code>类给每个变量的状态值都配备了一个时间戳，从而避免了ABA问题的产生。</p>
 <h2 id="通过反射使用Unsafe类"><a href="#通过反射使用Unsafe类" class="headerlink" title="通过反射使用Unsafe类"></a>通过反射使用Unsafe类</h2><p>在Unsafe类的内部，使用类加载器限定了只有Bootstrap类加载器加载的类才能使用Unsafe，所以自己编写的代码无法使用Unsafe，需要使用反射才能使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 熊乾坤</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2021-03-16 23:51</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnsafeUse</span> </span>&#123;</span><br><span class="line">    <span class="comment">//声明一个待修改的变量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">long</span> status = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> NoSuchFieldException, IllegalAccessException </span>&#123;</span><br><span class="line">        Field field = Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        <span class="comment">//使用反射拿到Unsafe类的theUnsafe引用</span></span><br><span class="line">        Unsafe unsafe = (Unsafe) field.get(Unsafe.class);</span><br><span class="line">        UnsafeUse unsafeUse = <span class="keyword">new</span> UnsafeUse();</span><br><span class="line">        <span class="keyword">long</span> statusOffset = unsafe.objectFieldOffset(UnsafeUse.class.getDeclaredField(<span class="string">&quot;status&quot;</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;CAS结果：&quot;</span> + unsafe.compareAndSwapLong(unsafeUse, statusOffset , <span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;修改后的值：&quot;</span> + unsafeUse.status);</span><br><span class="line">        <span class="comment">//再测一次CAS失败的情况</span></span><br><span class="line">        System.out.println(<span class="string">&quot;CAS结果：&quot;</span> + unsafe.compareAndSwapLong(unsafeUse, statusOffset , <span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;修改后的值：&quot;</span> + unsafeUse.status);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">/**
+ * @author 熊乾坤
+ * @since 2021-03-16 23:51
+ */
+public class UnsafeUse &#123;
+    //声明一个待修改的变量
+    private volatile long status = 0;
 
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException &#123;
+        Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);
+        field.setAccessible(true);
+        //使用反射拿到Unsafe类的theUnsafe引用
+        Unsafe unsafe = (Unsafe) field.get(Unsafe.class);
+        UnsafeUse unsafeUse = new UnsafeUse();
+        long statusOffset = unsafe.objectFieldOffset(UnsafeUse.class.getDeclaredField(&quot;status&quot;));
+        System.out.println(&quot;CAS结果：&quot; + unsafe.compareAndSwapLong(unsafeUse, statusOffset , 0, 1));
+        System.out.println(&quot;修改后的值：&quot; + unsafeUse.status);
+        //再测一次CAS失败的情况
+        System.out.println(&quot;CAS结果：&quot; + unsafe.compareAndSwapLong(unsafeUse, statusOffset , 0, 1));
+        System.out.println(&quot;修改后的值：&quot; + unsafeUse.status);
+    &#125;
+&#125;
+</code></pre>
 <h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a><a href="">伪共享</a></h1>
   
   
@@ -620,10 +680,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-22T18:21:45+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-26T00:15:06+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 22, 2021</p>
+    <p>更新于：Mar 26, 2021</p>
   </a>
 </div>
 
@@ -751,6 +811,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
 
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%AD%E6%96%AD%E4%BD%BF%E7%BA%BF%E7%A8%8B%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA"><span class="toc-text">使用中断使线程优雅退出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-text">原子性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-text">可见性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-text">有序性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E4%BD%BF%E7%94%A8Unsafe%E7%B1%BB"><span class="toc-text">通过反射使用Unsafe类</span></a></li></ol>
+    </div>
+  </section>
+
 
   
 
@@ -812,7 +886,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -824,9 +898,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1075,12 +1149,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1209,8 +1283,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1279,7 +1351,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1398,62 +1470,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1485,7 +1501,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1513,11 +1529,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,

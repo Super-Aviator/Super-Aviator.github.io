@@ -555,26 +555,289 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>需要注意的是缓冲区操作需要时刻注意position、limit的位置，以及flip,clear,rewind几种方法的合理使用。</p>
 <h3 id="非阻塞模式的通道"><a href="#非阻塞模式的通道" class="headerlink" title="非阻塞模式的通道"></a>非阻塞模式的通道</h3><p>常规的Socket,ServerSocket是阻塞的，所以在读取操作或accpet操作会一直阻塞。而ScoketChannel,ServerScoketChannel可以通过SelectableChannel接口中的configureBlocking(false)方法将其设置为非阻塞模式。</p>
 <p>与阻塞模式不同的是，非阻塞模式会立即返回一个结果，而不是让线程睡眠直到结果出现。非阻塞模式的缺点是需要使用轮训的方式来查看结果。其常用的方式如下所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>((<span class="keyword">true</span>)&#123;</span><br><span class="line">	SocketChannle socketChannel = serverSocketChannel.accpet();</span><br><span class="line">   <span class="keyword">if</span>(scoketChannel==<span class="keyword">null</span>)	<span class="keyword">continue</span>;</span><br><span class="line">   <span class="comment">//dosomething </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">while((true)&#123;
+    SocketChannle socketChannel = serverSocketChannel.accpet();
+   if(scoketChannel==null)    continue;
+   //dosomething 
+&#125;
+</code></pre>
 <p>因为accept方法会立即返回，如果此时没有链接，那么将返回null,如果有连接时将返回一个SocketChannel。</p>
 <p>如果使用选择器（Selector）,可以只使用一个线程去轮训所有的通道，并在有结果返回时做出相应读取操作。</p>
 <h3 id="读写线程"><a href="#读写线程" class="headerlink" title="读写线程"></a>读写线程</h3><p>在服务端和客户端，每一条TCP链接都需要使用两个线程去读Socket中的数据或向Socket中写入数据。</p>
 <p>需要注意的是非阻塞模式下的读操作同样是立即返回的，所以读入的字节数可能为0，需要特殊处理。</p>
 <p>而写操作需要将System.in包装成BufferedReader,而其readLine方法是阻塞的，所以在你按下回车之前，写线程会阻塞在readLine方法上，等待你的输入，这也是截图中，客户端正在等待用户输入的一行会出现服务器发来的消息的原因。</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.net.InetAddress;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.InetSocketAddress;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.ServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//获取服务端的IP地址</span></span><br><span class="line">        System.out.println(<span class="string">&quot;你的IP地址为 &quot;</span> + InetAddress.getLocalHost().getHostAddress());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//自定义端口号，默认为1234</span></span><br><span class="line">        <span class="keyword">int</span> port = <span class="number">1234</span>;</span><br><span class="line">        Scanner reader = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.print(<span class="string">&quot;端口(默认1234)：&quot;</span>);</span><br><span class="line">        String tempPortString = reader.nextLine();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> tempPort = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (tempPortString.length() != <span class="number">0</span>) &#123;</span><br><span class="line">            tempPort = Integer.valueOf(tempPortString);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (tempPort &lt;= <span class="number">65535</span> &amp;&amp; tempPort &gt;= <span class="number">1024</span>) port = tempPort;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建ServerSocketChannel并绑定端口。</span></span><br><span class="line">        ServerSocketChannel server = ServerSocketChannel.open();</span><br><span class="line">        server.socket().bind(<span class="keyword">new</span> InetSocketAddress(port));</span><br><span class="line">        server.configureBlocking(<span class="keyword">false</span>);<span class="comment">//设置为非阻塞模式</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                SocketChannel socket = server.accept();</span><br><span class="line">                <span class="comment">//ServerSocketChannel非阻塞模式下accept会立即返回，如果此时没有链接将返回null</span></span><br><span class="line">                <span class="keyword">if</span>(socket==<span class="keyword">null</span>)    <span class="keyword">continue</span>;</span><br><span class="line">                socket.configureBlocking(<span class="keyword">false</span>);<span class="comment">//设置为非阻塞模式</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (socket.finishConnect())</span><br><span class="line">                    System.err.println(socket.getRemoteAddress() +</span><br><span class="line">                    <span class="string">&quot; 已经连接！(输入exit结束聊天)&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">//获取IP地址</span></span><br><span class="line">                String temp = socket.getRemoteAddress().toString();</span><br><span class="line">                String IP = temp.substring(temp.indexOf(<span class="string">&#x27;/&#x27;</span>) + <span class="number">1</span>, temp.indexOf(<span class="string">&#x27;:&#x27;</span>));</span><br><span class="line"></span><br><span class="line">                <span class="comment">//开启读线程和写线程</span></span><br><span class="line">                <span class="keyword">new</span> ServerReadHandlerThread(socket, IP);</span><br><span class="line">                <span class="keyword">new</span> ServerWriteHandlerThread(socket, IP);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ServerReadHandlerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> SocketChannel server;</span><br><span class="line">    <span class="keyword">private</span> String header;</span><br><span class="line">    <span class="keyword">private</span> ByteBuffer buffer = ByteBuffer.allocateDirect(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ServerReadHandlerThread</span><span class="params">(SocketChannel server, String IP)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.server = server;</span><br><span class="line">        header = IP;</span><br><span class="line">        start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                buffer.clear();</span><br><span class="line">                <span class="comment">//非阻塞模式下可能读取字节数为0,需要使用轮训的方式</span></span><br><span class="line">                <span class="keyword">while</span> (server.read(buffer) &lt;= <span class="number">0</span>) ;</span><br><span class="line"></span><br><span class="line">                buffer.flip();</span><br><span class="line">                printMeg(buffer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            System.out.println(header + <span class="string">&quot; 连接断开！&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (server.isConnected()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    server.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">printMeg</span><span class="params">(ByteBuffer buffer)</span> </span>&#123;</span><br><span class="line">        System.out.print(<span class="string">&quot;\n--------------------\n&quot;</span> + header + <span class="string">&quot;:&quot;</span>);</span><br><span class="line">        <span class="keyword">while</span> (buffer.hasRemaining())</span><br><span class="line">            System.out.print(buffer.getChar());</span><br><span class="line">        System.out.println(<span class="string">&quot;\n--------------------&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ServerWriteHandlerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> SocketChannel server;</span><br><span class="line">    <span class="keyword">private</span> String header;</span><br><span class="line">    <span class="keyword">private</span> ByteBuffer buffer = ByteBuffer.allocateDirect(<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">private</span> BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ServerWriteHandlerThread</span><span class="params">(SocketChannel server, String IP)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.server = server;</span><br><span class="line">        header = IP;</span><br><span class="line">        start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                System.out.print(<span class="string">&quot;请输入：&quot;</span>);</span><br><span class="line">                String meg = in.readLine();</span><br><span class="line">                <span class="keyword">if</span> (!server.isConnected()) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (meg.equals(<span class="string">&quot;exit&quot;</span>)) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                buffer.clear();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; meg.length(); i++)</span><br><span class="line">                    buffer.putChar(meg.charAt(i));</span><br><span class="line">                buffer.flip();</span><br><span class="line">                <span class="keyword">while</span> (buffer.hasRemaining())</span><br><span class="line">                    server.write(buffer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            System.out.println(header + <span class="string">&quot; 连接断开！&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (server.isConnected())</span><br><span class="line">                    server.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><pre><code class="java">import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.util.Scanner;
 
-<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.net.InetSocketAddress;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">//默认主机和端口号</span></span><br><span class="line">        String host = <span class="string">&quot;localhost&quot;</span>;</span><br><span class="line">        <span class="keyword">int</span> port = <span class="number">1234</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//自定义主机和端口号</span></span><br><span class="line">        Scanner reader = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.print(<span class="string">&quot;ip地址(默认localhost)：&quot;</span>);</span><br><span class="line">        String tempHost = reader.nextLine();</span><br><span class="line">        <span class="keyword">if</span> (tempHost.length() != <span class="number">0</span>) host = tempHost;</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;端口(默认1234)：&quot;</span>);</span><br><span class="line">        String tempPortString = reader.nextLine();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> tempPort = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (tempPortString.length() != <span class="number">0</span>) &#123;</span><br><span class="line">            tempPort = Integer.valueOf(tempPortString);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (tempPort &lt;= <span class="number">65535</span> &amp;&amp; tempPort &gt;= <span class="number">1024</span>) port = tempPort;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//建立链接</span></span><br><span class="line">        SocketChannel client = SocketChannel.open(<span class="keyword">new</span> InetSocketAddress(host, port));</span><br><span class="line">        client.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">while</span> (!client.finishConnect()) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;连接中。。。&quot;</span>);</span><br><span class="line">            Thread.sleep(<span class="number">100</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;\r&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;连接成功！(输入exit结束聊天)&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        String temp = client.getRemoteAddress().toString();</span><br><span class="line">        String IP = temp.substring(temp.indexOf(<span class="string">&#x27;/&#x27;</span>) + <span class="number">1</span>, temp.indexOf(<span class="string">&#x27;:&#x27;</span>));</span><br><span class="line">        <span class="keyword">new</span> ClientReadHandlerThread(client, IP);</span><br><span class="line">        <span class="keyword">new</span> ClientWriteHandlerThread(client, IP);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClientReadHandlerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> SocketChannel server;</span><br><span class="line">    <span class="keyword">private</span> ByteBuffer buffer = ByteBuffer.allocateDirect(<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">private</span> String header;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClientReadHandlerThread</span><span class="params">(SocketChannel server, String IP)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.server = server;</span><br><span class="line">        header = IP;</span><br><span class="line">        start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                buffer.clear();</span><br><span class="line">                <span class="keyword">while</span> (server.read(buffer) &lt;= <span class="number">0</span>) ;</span><br><span class="line"></span><br><span class="line">                buffer.flip();</span><br><span class="line">                printMeg(buffer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            System.out.println(header + <span class="string">&quot; 连接断开！&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (server.isConnected()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    server.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">printMeg</span><span class="params">(ByteBuffer buffer)</span> </span>&#123;</span><br><span class="line">        System.out.print(<span class="string">&quot;\n--------------------\n&quot;</span> + header + <span class="string">&quot;:&quot;</span>);</span><br><span class="line">        <span class="keyword">while</span> (buffer.hasRemaining())</span><br><span class="line">            System.out.print(buffer.getChar());</span><br><span class="line">        System.out.println(<span class="string">&quot;\n--------------------&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClientWriteHandlerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> SocketChannel server;</span><br><span class="line">    <span class="keyword">private</span> String header;</span><br><span class="line">    <span class="keyword">private</span> ByteBuffer buffer = ByteBuffer.allocateDirect(<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">private</span> BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClientWriteHandlerThread</span><span class="params">(SocketChannel server, String IP)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.server = server;</span><br><span class="line">        header = IP;</span><br><span class="line">        start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                System.out.print(<span class="string">&quot;请输入：&quot;</span>);</span><br><span class="line">                String meg = in.readLine();</span><br><span class="line">                <span class="keyword">if</span> (!server.isConnected()) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (meg.equals(<span class="string">&quot;exit&quot;</span>)) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                buffer.clear();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; meg.length(); i++)</span><br><span class="line">                    buffer.putChar(meg.charAt(i));</span><br><span class="line">                buffer.flip();</span><br><span class="line">                <span class="keyword">while</span> (buffer.hasRemaining())</span><br><span class="line">                    server.write(buffer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            System.out.println(header + <span class="string">&quot; 连接断开！&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (server.isConnected())</span><br><span class="line">                    server.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+public class Server &#123;
+    public static void main(String[] args) throws IOException &#123;
+        //获取服务端的IP地址
+        System.out.println(&quot;你的IP地址为 &quot; + InetAddress.getLocalHost().getHostAddress());
+
+        //自定义端口号，默认为1234
+        int port = 1234;
+        Scanner reader = new Scanner(System.in);
+        System.out.print(&quot;端口(默认1234)：&quot;);
+        String tempPortString = reader.nextLine();
+
+        int tempPort = 0;
+        if (tempPortString.length() != 0) &#123;
+            tempPort = Integer.valueOf(tempPortString);
+        &#125;
+        if (tempPort &lt;= 65535 &amp;&amp; tempPort &gt;= 1024) port = tempPort;
+
+        //创建ServerSocketChannel并绑定端口。
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(new InetSocketAddress(port));
+        server.configureBlocking(false);//设置为非阻塞模式
+
+        while (true) &#123;
+            try &#123;
+                SocketChannel socket = server.accept();
+                //ServerSocketChannel非阻塞模式下accept会立即返回，如果此时没有链接将返回null
+                if(socket==null)    continue;
+                socket.configureBlocking(false);//设置为非阻塞模式
+
+                if (socket.finishConnect())
+                    System.err.println(socket.getRemoteAddress() +
+                    &quot; 已经连接！(输入exit结束聊天)&quot;);
+
+                //获取IP地址
+                String temp = socket.getRemoteAddress().toString();
+                String IP = temp.substring(temp.indexOf(&#39;/&#39;) + 1, temp.indexOf(&#39;:&#39;));
+
+                //开启读线程和写线程
+                new ServerReadHandlerThread(socket, IP);
+                new ServerWriteHandlerThread(socket, IP);
+            &#125; catch (IOException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+class ServerReadHandlerThread extends Thread &#123;
+    private SocketChannel server;
+    private String header;
+    private ByteBuffer buffer = ByteBuffer.allocateDirect(100);
 
 
+    public ServerReadHandlerThread(SocketChannel server, String IP) &#123;
+        this.server = server;
+        header = IP;
+        start();
+    &#125;
+
+    public void run() &#123;
+        try &#123;
+            while (true) &#123;
+                buffer.clear();
+                //非阻塞模式下可能读取字节数为0,需要使用轮训的方式
+                while (server.read(buffer) &lt;= 0) ;
+
+                buffer.flip();
+                printMeg(buffer);
+            &#125;
+        &#125; catch (IOException e) &#123;
+            System.out.println(header + &quot; 连接断开！&quot;);
+        &#125; finally &#123;
+            if (server.isConnected()) &#123;
+                try &#123;
+                    server.close();
+                &#125; catch (IOException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    private void printMeg(ByteBuffer buffer) &#123;
+        System.out.print(&quot;\n--------------------\n&quot; + header + &quot;:&quot;);
+        while (buffer.hasRemaining())
+            System.out.print(buffer.getChar());
+        System.out.println(&quot;\n--------------------&quot;);
+    &#125;
+&#125;
+
+class ServerWriteHandlerThread extends Thread &#123;
+    private SocketChannel server;
+    private String header;
+    private ByteBuffer buffer = ByteBuffer.allocateDirect(100);
+    private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    public ServerWriteHandlerThread(SocketChannel server, String IP) &#123;
+        this.server = server;
+        header = IP;
+        start();
+    &#125;
+
+    public void run() &#123;
+        try &#123;
+            while (true) &#123;
+                System.out.print(&quot;请输入：&quot;);
+                String meg = in.readLine();
+                if (!server.isConnected()) break;
+                if (meg.equals(&quot;exit&quot;)) break;
+
+                buffer.clear();
+                for (int i = 0; i &lt; meg.length(); i++)
+                    buffer.putChar(meg.charAt(i));
+                buffer.flip();
+                while (buffer.hasRemaining())
+                    server.write(buffer);
+            &#125;
+        &#125; catch (IOException e) &#123;
+            System.out.println(header + &quot; 连接断开！&quot;);
+        &#125; finally &#123;
+            try &#123;
+                if (server.isConnected())
+                    server.close();
+            &#125; catch (IOException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><pre><code class="java">import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
+import java.nio.ByteBuffer;
+
+public class Client &#123;
+    public static void main(String[] args) throws IOException, InterruptedException &#123;
+        //默认主机和端口号
+        String host = &quot;localhost&quot;;
+        int port = 1234;
+
+        //自定义主机和端口号
+        Scanner reader = new Scanner(System.in);
+        System.out.print(&quot;ip地址(默认localhost)：&quot;);
+        String tempHost = reader.nextLine();
+        if (tempHost.length() != 0) host = tempHost;
+
+        System.out.print(&quot;端口(默认1234)：&quot;);
+        String tempPortString = reader.nextLine();
+
+        int tempPort = 0;
+        if (tempPortString.length() != 0) &#123;
+            tempPort = Integer.valueOf(tempPortString);
+        &#125;
+        if (tempPort &lt;= 65535 &amp;&amp; tempPort &gt;= 1024) port = tempPort;
 
 
+        //建立链接
+        SocketChannel client = SocketChannel.open(new InetSocketAddress(host, port));
+        client.configureBlocking(false);
+        while (!client.finishConnect()) &#123;
+            System.out.println(&quot;连接中。。。&quot;);
+            Thread.sleep(100);
+            System.out.println(&quot;\r&quot;);
+        &#125;
 
 
+        System.out.println(&quot;连接成功！(输入exit结束聊天)&quot;);
 
 
+        String temp = client.getRemoteAddress().toString();
+        String IP = temp.substring(temp.indexOf(&#39;/&#39;) + 1, temp.indexOf(&#39;:&#39;));
+        new ClientReadHandlerThread(client, IP);
+        new ClientWriteHandlerThread(client, IP);
+    &#125;
+&#125;
+
+class ClientReadHandlerThread extends Thread &#123;
+    private SocketChannel server;
+    private ByteBuffer buffer = ByteBuffer.allocateDirect(100);
+    private String header;
+
+    public ClientReadHandlerThread(SocketChannel server, String IP) &#123;
+        this.server = server;
+        header = IP;
+        start();
+    &#125;
 
 
+    public void run() &#123;
+        try &#123;
+            while (true) &#123;
+                buffer.clear();
+                while (server.read(buffer) &lt;= 0) ;
 
+                buffer.flip();
+                printMeg(buffer);
+            &#125;
+        &#125; catch (IOException e) &#123;
+            System.out.println(header + &quot; 连接断开！&quot;);
+        &#125; finally &#123;
+            if (server.isConnected()) &#123;
+                try &#123;
+                    server.close();
+                &#125; catch (IOException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    private void printMeg(ByteBuffer buffer) &#123;
+        System.out.print(&quot;\n--------------------\n&quot; + header + &quot;:&quot;);
+        while (buffer.hasRemaining())
+            System.out.print(buffer.getChar());
+        System.out.println(&quot;\n--------------------&quot;);
+    &#125;
+&#125;
+
+class ClientWriteHandlerThread extends Thread &#123;
+    private SocketChannel server;
+    private String header;
+    private ByteBuffer buffer = ByteBuffer.allocateDirect(100);
+    private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    public ClientWriteHandlerThread(SocketChannel server, String IP) &#123;
+        this.server = server;
+        header = IP;
+        start();
+    &#125;
+
+    public void run() &#123;
+        try &#123;
+            while (true) &#123;
+                System.out.print(&quot;请输入：&quot;);
+                String meg = in.readLine();
+                if (!server.isConnected()) break;
+                if (meg.equals(&quot;exit&quot;)) break;
+
+                buffer.clear();
+                for (int i = 0; i &lt; meg.length(); i++)
+                    buffer.putChar(meg.charAt(i));
+                buffer.flip();
+                while (buffer.hasRemaining())
+                    server.write(buffer);
+            &#125;
+        &#125; catch (IOException e) &#123;
+            System.out.println(header + &quot; 连接断开！&quot;);
+        &#125; finally &#123;
+            try &#123;
+                if (server.isConnected())
+                    server.close();
+            &#125; catch (IOException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 
   
   
@@ -801,7 +1064,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>博客內容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW">姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0) 協議</a></p>
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
@@ -813,9 +1076,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        本站使用
+        Use
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作為主題
+        as theme
       
     
       
@@ -1064,12 +1327,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>複製文本</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>複製鏈接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新標籤頁打開</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>複製圖片地址</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
         <hr id='hr-src'>
       </li>
       
@@ -1198,8 +1461,6 @@ var loadCSS = function( href, before, media, attributes ){
       
         
       
-        
-      
     </ul>
   </div>
 
@@ -1268,7 +1529,7 @@ var loadCSS = function( href, before, media, attributes ){
       if (href.length == 0) {
         // 选中文本
         if (window.getSelection().toString()) {
-          if ('true' == 'true') {
+          if ('false' == 'true') {
             copyText.style.display = 'block';
             hrText.style.display = 'block';
           }
@@ -1387,62 +1648,6 @@ var loadCSS = function( href, before, media, attributes ){
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-    var clipboard = new ClipboardJS('.btn-copy', {
-        target: function (trigger) {
-            return trigger.nextElementSibling
-        }
-    });
-    function wait(callback, seconds) {
-        var timelag = null;
-        timelag = window.setTimeout(callback, seconds)
-    }
-    function pjax_initCopyCode() {
-		if($(".highlight .code pre").length+$(".article pre code").length==0)return;
-        var copyHtml = '';
-        copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-        copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
-        copyHtml += '</button>';
-        $(".highlight .code pre").before(copyHtml);
-        $(".article pre code").before(copyHtml);
-        clipboard.off('success').on('success', function (e) {
-            let $btn = $(e.trigger);
-            $btn.addClass('copied');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-check-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPIED';
-            wait(function () {
-                $icon.removeClass('fa-check-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        });
-        clipboard.off('error').on('error', function (e) {
-            e.clearSelection();
-            let $btn = $(e.trigger);
-            $btn.addClass('copy-failed');
-            let $icon = $($btn.find('i'));
-            $icon.removeClass('fa-copy');
-            $icon.addClass('fa-times-circle');
-            let $span = $($btn.find('span'));
-            $span[0].innerText = 'COPY FAILED';
-            wait(function () {
-                $icon.removeClass('fa-times-circle');
-                $icon.addClass('fa-copy');
-                $span[0].innerText = 'COPY'
-            }, 2000)
-        })
-    }
-    $(function () {
-        pjax_initCopyCode()
-    });
-	volantis.pjax.push(pjax_initCopyCode)
-</script>
-
-
 
 
    <script type="text/javascript">
@@ -1474,7 +1679,7 @@ var loadCSS = function( href, before, media, attributes ){
 
   
   
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js"></script>
+<script src="/js/valine.js"></script>
 
 
 <script>
@@ -1502,11 +1707,11 @@ var loadCSS = function( href, before, media, attributes ){
     let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
     let path = pdata.commentPath;
     if (path.length == 0) {
-      let defaultPath = '';
+      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
       path = defaultPath || decodeURI(window.location.pathname);
     }
     var valine = new Valine();
-    valine.init(Object.assign({"js":"https://cdn.jsdelivr.net/npm/valine@1.4/dist/Valine.min.js","path":null,"placeholder":"快来抬杠吧~","appId":"tdvWJBBuADYM47lgYJgtBRcu-gzGzoHsz","appKey":"EldANV5xahyFQ3YpJyQKGiWV","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":true,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
       el: '#valine_container',
       path: path,
       placeholder: pagePlaceholder,
