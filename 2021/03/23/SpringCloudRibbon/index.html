@@ -543,8 +543,119 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
   
   
-  <p>aaa</p>
+  <h1 id="负载均衡器"><a href="#负载均衡器" class="headerlink" title="负载均衡器"></a>负载均衡器</h1><h1 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h1><h1 id="简单的源码分析"><a href="#简单的源码分析" class="headerlink" title="简单的源码分析"></a>简单的源码分析</h1><h2 id="LoadBalanced注解"><a href="#LoadBalanced注解" class="headerlink" title="@LoadBalanced注解"></a>@LoadBalanced注解</h2><p>该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置</p>
+<pre><code class="java">/**
+ * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient.
+ * @author Spencer Gibb
+ */
+@Target(&#123; ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD &#125;)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Qualifier
+public @interface LoadBalanced &#123;
 
+&#125;
+</code></pre>
+<h2 id="LoadBalancerAutoConfiguration自动配置"><a href="#LoadBalancerAutoConfiguration自动配置" class="headerlink" title="LoadBalancerAutoConfiguration自动配置"></a>LoadBalancerAutoConfiguration自动配置</h2><h2 id="LoadBalancerClient接口"><a href="#LoadBalancerClient接口" class="headerlink" title="LoadBalancerClient接口"></a>LoadBalancerClient接口</h2><p>这个接口有一个具体的时间类RibbonLoadBalancerClient；该实现类的execution方法中，将具体的负载均衡交给ILoadBanlancer接口的实现类去实现：</p>
+<pre><code class="java">public &lt;T&gt; T execute(String serviceId, LoadBalancerRequest&lt;T&gt; request, Object hint)
+        throws IOException &#123;
+    ILoadBalancer loadBalancer = getLoadBalancer(serviceId);
+    Server server = getServer(loadBalancer, hint);
+    if (server == null) &#123;
+        throw new IllegalStateException(&quot;No instances available for &quot; + serviceId);
+    &#125;
+    RibbonServer ribbonServer = new RibbonServer(serviceId, server,
+            isSecure(server, serviceId),
+            serverIntrospector(serviceId).getMetadata(server));
+    return execute(serviceId, ribbonServer, request);
+&#125;
+</code></pre>
+<p>上面的getLoadBalancer方法中，通过服务名找到对应的ILoadBalancer的实现类，在getServer方法中，去通过一定的策略找到服务对应的实例。</p>
+<h1 id="ILoadBalancer-负载均衡器"><a href="#ILoadBalancer-负载均衡器" class="headerlink" title="ILoadBalancer-负载均衡器"></a>ILoadBalancer-负载均衡器</h1><p>负载均衡器接口中的方法如下：</p>
+<pre><code class="java">public interface ILoadBalancer &#123;
+        //向负载均衡器中增加服务实例
+    public void addServers(List&lt;Server&gt; newServers);
+        //通过某种策略，从负载均衡器中找出一个具体的实例
+    public Server chooseServer(Object key);
+       //通知某个服务已经停止服务
+    public void markServerDown(Server server);
+    @Deprecated
+    public List&lt;Server&gt; getServerList(boolean availableOnly);
+       //获取正常服务的列表
+        public List&lt;Server&gt; getReachableServers();
+       //获取所有已知服务的列表
+    public List&lt;Server&gt; getAllServers();
+&#125;
+</code></pre>
+<p>该接口有如下几个实现类：</p>
+<h3 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h3><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是改抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,STATUS_NOT_UP的三个服务实例列表，并增加了如下三个方法：</p>
+<ul>
+<li><strong>public Server chooseServer();</strong> 根据key查找服务，该抽象类中直接调用ILoadBalancer接口的chooseServer接口，传的key为null。</li>
+<li><strong>public abstract List&lt; Server&gt;getServerList(ServerGroup serverGroup);</strong> 查找某个服务分组下的所有服务实例。</li>
+<li><strong>public abstract LoadBalancerStats getLoadBalancerStats();</strong> 获取负载均衡器的详细信息。包含了统计数据和负载均衡器运行情况。</li>
+</ul>
+<h3 id="BaseLoadBalancer"><a href="#BaseLoadBalancer" class="headerlink" title="BaseLoadBalancer"></a><strong>BaseLoadBalancer</strong></h3><ul>
+<li><p>该类是负载均衡器最基本的实现类；该类中维护了一个包含所有实例和正常服务的实例，并使用可重入锁进行同步：</p>
+<pre><code class="java"> @Monitor(name = PREFIX + &quot;AllServerList&quot;, type = DataSourceType.INFORMATIONAL
+ protected volatile List&lt;Server&gt; allServerList = Collections
+         .synchronizedList(new ArrayList&lt;Server&gt;());
+ @Monitor(name = PREFIX + &quot;UpServerList&quot;, type = DataSourceType.INFORMATIONAL)
+ protected volatile List&lt;Server&gt; upServerList = Collections
+         .synchronizedList(new ArrayList&lt;Server&gt;());
+
+protected ReadWriteLock allServerLock = new ReentrantReadWriteLock();
+protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
+</code></pre>
+</li>
+<li><p>该类定义了判断服务是否正常的IPing对象,在BaseLoadBalancer中默认为null，需要再构造参数中注入。</p>
+</li>
+<li><p>定义了IPing对象的执行策略IPingStrategy，在BaseLoadBalancer中默认使用静态内部类SerialPingStrategy实现。该实现使用线性遍历的方式对服务进行检测。该策略在IPing实现速度不理想或者服务列表过大时会影响服务性能，可以实现IPingStrategy接口去扩展。</p>
+</li>
+<li><p>定义了负载均衡策略IRule对象。在BaseLoadBalancer类的chooseServer方法中，使用的是IRule接口的choose方法去实现。默认的IRule实现为RoundRobinRule，该实现类会对服务进行轮训操作，轮训失败重试的次数最多为10次：</p>
+<pre><code class="java">public Server choose(ILoadBalancer lb, Object key) &#123;
+    if (lb == null) &#123;
+        log.warn(&quot;no load balancer&quot;);
+        return null;
+    &#125;
+    Server server = null;
+    int count = 0;
+    while (server == null &amp;&amp; count++ &lt; 10) &#123;
+        List&lt;Server&gt; reachableServers = lb.getReachableServers();
+        List&lt;Server&gt; allServers = lb.getAllServers();
+        int upCount = reachableServers.size();
+        int serverCount = allServers.size();
+        if ((upCount == 0) || (serverCount == 0)) &#123;
+            log.warn(&quot;No up servers available from load balancer: &quot; + lb);
+            return null;
+        &#125;
+        int nextServerIndex = incrementAndGetModulo(serverCount);
+        server = allServers.get(nextServerIndex);
+        if (server == null) &#123;
+            /* Transient. */
+            Thread.yield();
+            continue;
+        &#125;
+        if (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;
+            return (server);
+        &#125;
+        // Next.
+        server = null;
+    &#125;
+    if (count &gt;= 10) &#123;
+        log.warn(&quot;No available alive servers after 10 tries from load balancer: &quot;
+                + lb);
+    &#125;
+    return server;
+&#125;
+</code></pre>
+</li>
+<li><p>在BaseLoadBalancer构造函数中启动了一个定时任务，用于检查Server是否健康，默认为10秒执行一次。</p>
+</li>
+<li><p>依次实现了chooseServer、markServerDown、getReachableServers、getAllservers方法。</p>
+</li>
+</ul>
+<h3 id="DynamicServerListLoadBalancer"><a href="#DynamicServerListLoadBalancer" class="headerlink" title="DynamicServerListLoadBalancer"></a><strong>DynamicServerListLoadBalancer</strong></h3><h3 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h3><h3 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer  Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong>  Ribbon默认的负载均衡器</h3><h2 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h2><h2 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h2>
   
   
     
@@ -574,10 +685,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-23T21:55:37+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-27T16:40:19+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 23, 2021</p>
+    <p>更新于：Mar 27, 2021</p>
   </a>
 </div>
 
@@ -692,6 +803,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
 
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalanced%E6%B3%A8%E8%A7%A3"><span class="toc-text">@LoadBalanced注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">LoadBalancerAutoConfiguration自动配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerClient接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AbstractLoadBalancer"><span class="toc-text">AbstractLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BaseLoadBalancer"><span class="toc-text">BaseLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DynamicServerListLoadBalancer"><span class="toc-text">DynamicServerListLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoOpLoadBalancer"><span class="toc-text">NoOpLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZoneAwareLoadBalancer-Ribbon%E9%BB%98%E8%AE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">ZoneAwareLoadBalancer  Ribbon默认的负载均衡器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerFeignClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerFeignClient接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerInterceptor%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-text">LoadBalancerInterceptor拦截器</span></a></li></ol>
+    </div>
+  </section>
+
 
   
 
@@ -753,7 +878,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+        <div><p>博客内容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
 </div>
       
     
@@ -765,9 +890,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       
     
       
-        Use
+        本站使用
         <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        as theme
+        作为主题
       
     
       
@@ -1016,12 +1141,12 @@ var loadCSS = function( href, before, media, attributes ){
   <div id="rightmenu-wrapper">
     <ul class="list-v rightmenu" id="rightmenu-content">
       <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>Copy Text</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>复制文本</a>
         <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>Copy Link</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>Open Link in New Tab</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>复制链接</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新标签页打开</a>
         <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>Copy Image Link</a>
+        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>复制图片地址</a>
         <hr id='hr-src'>
       </li>
       
