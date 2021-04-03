@@ -748,7 +748,7 @@ public void release(int permits);
 Lock readLock=reentrantReadWriteLock.readLock();
 Lock writeLock=reentrantReadWriteLock.writeLock();
 </code></pre>
-<h1 id="CountDownLatch"><a href="#CountDownLatch" class="headerlink" title="CountDownLatch"></a>CountDownLatch</h1><p>倒计时器主要用来控制线程等待计数器倒计时结束后才开始执行。</p>
+<h1 id="CountDownLatch-倒计时器"><a href="#CountDownLatch-倒计时器" class="headerlink" title="CountDownLatch-倒计时器"></a>CountDownLatch-倒计时器</h1><p>倒计时器主要用来控制线程等待计数器倒计时结束后才开始执行。</p>
 <p><strong>需要注意CountDownLatch与join方法有如下几点不同:</strong></p>
 <ol>
 <li>线程A调用线程B的join方法后，必须等到B线程运行结束后A线程才能继续运行；而CountDownLatch可以在线程B运行过程中就开始运行。</li>
@@ -784,10 +784,10 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-26T09:12:25+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-04-03T19:57:07+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 26, 2021</p>
+    <p>更新于：Apr 3, 2021</p>
   </a>
 </div>
 

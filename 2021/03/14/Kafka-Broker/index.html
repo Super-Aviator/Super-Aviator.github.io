@@ -589,8 +589,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>此配置和broker的 <code>delete.topic.enable</code>有关，如果为false，则会忽略改删除操作，为true才会进行删除，默认为true。</p>
 <p>删除命令不支持删除内部主题 <code>__consumer_offsets</code>和 <code>__transaction_state</code>。</p>
 <p>使用 <code>--if-exists</code>参数用来忽略topic不存在时产生的异常。</p>
-<h2 id="配置管理：kafka-configs-sh"><a href="#配置管理：kafka-configs-sh" class="headerlink" title="配置管理：kafka-configs.sh"></a>配置管理：kafka-configs.sh</h2><h1 id="分区管理"><a href="#分区管理" class="headerlink" title="分区管理"></a>分区管理</h1><p>在创建主题和分区的时候，改分区及其副本会尽可能均匀分布到Kafka集群的各个broker节点上，对应的leader副本的分配也比较均匀，例如一个主题有三个分区，那个三个分区的leader副本都会均匀的分配到各个broker中去。</p>
-<p><strong>针对同一个分区，一个broker节点中不可能出现它的多个副本(如果创建主题时副本数多于broker数，则会报错：<code>InvalidReplicationFactorException: Replication factor: 4 larger than available brokers: </code>)**，即Kafka集群中的一个broker中最多只能有它的一个副本，我们可以将leader服务所在的broker节点叫做</strong>分区的leader节点<strong>，而follower副本所在的节点叫做</strong>分区的follower节点**。</p>
+<h2 id="配置管理：kafka-configs-sh"><a href="#配置管理：kafka-configs-sh" class="headerlink" title="配置管理：kafka-configs.sh"></a>配置管理：kafka-configs.sh</h2><h1 id="分区管理"><a href="#分区管理" class="headerlink" title="分区管理"></a>分区管理</h1><p>在创建主题和分区的时候，该分区及其副本会尽可能均匀分布到Kafka集群的各个broker节点上，对应的leader副本的分配也比较均匀，例如一个主题有三个分区，那个三个分区的leader副本都会均匀的分配到各个broker中去。</p>
+<p>针对同一个分区，一个broker节点中不可能出现它的多个副本(如果创建主题时副本数多于broker数，则会报错：<code>InvalidReplicationFactorException: Replication factor: 4 larger than available brokers: </code>)，即Kafka集群中的一个broker中最多只能有它的一个副本，我们可以将leader服务所在的broker节点叫做<strong>分区的leader节点</strong>，而follower副本所在的节点叫做 <strong>分区的follower节点</strong>。</p>
 <h1 id="优先副本"><a href="#优先副本" class="headerlink" title="优先副本"></a>优先副本</h1><p>当某个broker宕机或者崩溃之后，分区的leader节点发送故障时，其中一个follower节点就会成为新的leade节点，这样就会导致集群的负载不均衡，从而影响集群的健壮性和稳定性，当原来的leader节点恢复之后重新加入集群，也只能作为新的follower节点不能再对外提供服务。比如主题topic-create的leader节点分布如下：</p>
 <pre><code class="shell">Topic: topic-create    PartitionCount: 2    ReplicationFactor: 2    Configs: 
     Topic: topic-create    Partition: 0    Leader: 1    Replicas: 1,2    Isr: 1,2
@@ -608,10 +608,14 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </blockquote>
 <p>所谓的优先副本的选举是指通过一定的方式促使优先副本选举为leader副本，以此来促进集群的负载均衡，这一行为也称之为“<code>分区平衡</code>”</p>
 <p>可以使用配置：<code>auto.leader.rebalance.enable</code>来控制是否自动进行分区平衡，也可以手动使用 <code>kafka-perferred-replica-election.sh</code>脚本手动进行分区平衡。</p>
-<h1 id="日志索引与清理"><a href="#日志索引与清理" class="headerlink" title="日志索引与清理"></a>日志索引与清理</h1><p>Kafka中一个分区对应kafka-logs文件中的一个文件夹即对应一个日志（Log），为了防止日志过大，一个日志对一个多个日志分段（LogSegment），每个日志分段在文件夹中最少包含一个日志文件.log和两个索引文件：偏移量索引文件.index和时间戳索引文件.timeindex，还包括另外的其他文件事务索引文件等。 </p>
+<h1 id="日志索引与清理"><a href="#日志索引与清理" class="headerlink" title="日志索引与清理"></a>日志索引与清理</h1><h2 id="日志索引文件"><a href="#日志索引文件" class="headerlink" title="日志索引文件"></a>日志索引文件</h2><p>Kafka中一个分区对应kafka-logs文件中的一个文件夹即对应一个日志（Log），为了防止日志过大，一个日志对一个多个日志分段（LogSegment），每个日志分段在文件夹中最少包含一个日志文件.log和两个索引文件：偏移量索引文件.index和时间戳索引文件.timeindex，还包括另外的其他文件事务索引文件等。</p>
 <p>日志是顺序写入的，只有最后一个日志分段能够写入，之前的日志分段都是无法写入的；每个日志分段都有一个基准偏移量baseOffset，用来表示当前LogSegment中第一条消息的偏移量。偏移量是一个64位的长整型，日志文件都是根据偏移量命名的，长度为20位。</p>
+<p>kafka中的索引文件都是以稀疏索引的方式构建的，并不保证每条数据都有对应的缩影项，而是每当写入一定量（broker的<code>log.index.interval.bytes</code>配置指定，默认为4kb）的消息时，偏移量缩影文件和时间戳缩影文件分别增加一个偏移量索引项和时间戳索引项，增大或减少<code>log.index.interval.bytes</code>的值能够增大或减小索引项的密度。</p>
 <p>当日志分段满足如下条件时，会新建一个日志分段：</p>
-
+<p>//TODO</p>
+<p>偏移量和时间戳都是单调递增存储的，查询指定偏移量时，使用二分法来快速定位偏移量的位置，如果不在文件中，则返回小于指定偏移量的最大偏移量。时间戳查询也是二分法查找大不大于该时间的最大偏移量，而要找到对饮的物理位置还需要更具偏移量再次定位。</p>
+<h2 id="偏移量索引"><a href="#偏移量索引" class="headerlink" title="偏移量索引"></a>偏移量索引</h2><p>一个索引项占用8字节，分为relativeOffset相对偏移量占用4字节和position物理地址占用4字节。四字节为Integer.MAX_VALUE。</p>
+<h2 id="时间戳索引"><a href="#时间戳索引" class="headerlink" title="时间戳索引"></a>时间戳索引</h2>
   
   
     
@@ -641,10 +645,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-24T17:21:43+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-04-03T19:49:02+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 24, 2021</p>
+    <p>更新于：Apr 3, 2021</p>
   </a>
 </div>
 
@@ -770,7 +774,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98%E7%AE%A1%E7%90%86%EF%BC%9Akafka-topic-sh"><span class="toc-text">主题管理：kafka-topic.sh</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%88%86%E5%8C%BA%E2%80%93-create"><span class="toc-text">创建分区– create</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5-%E2%80%93describe"><span class="toc-text">查看分区策略 –describe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E4%B8%BB%E9%A2%98%E5%88%97%E8%A1%A8%E2%80%93list"><span class="toc-text">查看主题列表–list</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA-%E2%80%93alter"><span class="toc-text">修改分区 –alter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%B8%BB%E9%A2%98-%E2%80%93delete"><span class="toc-text">删除主题 –delete</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%9Akafka-configs-sh"><span class="toc-text">配置管理：kafka-configs.sh</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98%E7%AE%A1%E7%90%86%EF%BC%9Akafka-topic-sh"><span class="toc-text">主题管理：kafka-topic.sh</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%88%86%E5%8C%BA%E2%80%93-create"><span class="toc-text">创建分区– create</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5-%E2%80%93describe"><span class="toc-text">查看分区策略 –describe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E4%B8%BB%E9%A2%98%E5%88%97%E8%A1%A8%E2%80%93list"><span class="toc-text">查看主题列表–list</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%86%E5%8C%BA-%E2%80%93alter"><span class="toc-text">修改分区 –alter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%B8%BB%E9%A2%98-%E2%80%93delete"><span class="toc-text">删除主题 –delete</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%9Akafka-configs-sh"><span class="toc-text">配置管理：kafka-configs.sh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%B4%A2%E5%BC%95%E6%96%87%E4%BB%B6"><span class="toc-text">日志索引文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%8F%E7%A7%BB%E9%87%8F%E7%B4%A2%E5%BC%95"><span class="toc-text">偏移量索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E6%88%B3%E7%B4%A2%E5%BC%95"><span class="toc-text">时间戳索引</span></a></li></ol>
     </div>
   </section>
 

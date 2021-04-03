@@ -543,7 +543,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
   
   
-  <h1 id="负载均衡器"><a href="#负载均衡器" class="headerlink" title="负载均衡器"></a>负载均衡器</h1><h1 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h1><h1 id="简单的源码分析"><a href="#简单的源码分析" class="headerlink" title="简单的源码分析"></a>简单的源码分析</h1><h2 id="LoadBalanced注解"><a href="#LoadBalanced注解" class="headerlink" title="@LoadBalanced注解"></a>@LoadBalanced注解</h2><p>该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置</p>
+  <h1 id="负载均衡器"><a href="#负载均衡器" class="headerlink" title="负载均衡器"></a>负载均衡器</h1><h1 id="简单的源码分析"><a href="#简单的源码分析" class="headerlink" title="简单的源码分析"></a>简单的源码分析</h1><h2 id="LoadBalanced注解"><a href="#LoadBalanced注解" class="headerlink" title="@LoadBalanced注解"></a>@LoadBalanced注解</h2><p>该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置</p>
 <pre><code class="java">/**
  * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient.
  * @author Spencer Gibb
@@ -589,7 +589,7 @@ public @interface LoadBalanced &#123;
 &#125;
 </code></pre>
 <p>该接口有如下几个实现类：</p>
-<h3 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h3><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是改抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,STATUS_NOT_UP的三个服务实例列表，并增加了如下三个方法：</p>
+<h3 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h3><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是该抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,<code>STATUS_NOT_UP</code>的三个服务实例列表，并增加了如下三个方法：</p>
 <ul>
 <li><strong>public Server chooseServer();</strong> 根据key查找服务，该抽象类中直接调用ILoadBalancer接口的chooseServer接口，传的key为null。</li>
 <li><strong>public abstract List&lt; Server&gt;getServerList(ServerGroup serverGroup);</strong> 查找某个服务分组下的所有服务实例。</li>
@@ -597,7 +597,7 @@ public @interface LoadBalanced &#123;
 </ul>
 <h3 id="BaseLoadBalancer"><a href="#BaseLoadBalancer" class="headerlink" title="BaseLoadBalancer"></a><strong>BaseLoadBalancer</strong></h3><ul>
 <li><p>该类是负载均衡器最基本的实现类；该类中维护了一个包含所有实例和正常服务的实例，并使用可重入锁进行同步：</p>
-<pre><code class="java"> @Monitor(name = PREFIX + &quot;AllServerList&quot;, type = DataSourceType.INFORMATIONAL
+<pre><code class="java">@Monitor(name = PREFIX + &quot;AllServerList&quot;, type = DataSourceType.INFORMATIONAL
  protected volatile List&lt;Server&gt; allServerList = Collections
          .synchronizedList(new ArrayList&lt;Server&gt;());
  @Monitor(name = PREFIX + &quot;UpServerList&quot;, type = DataSourceType.INFORMATIONAL)
@@ -655,7 +655,56 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 <li><p>依次实现了chooseServer、markServerDown、getReachableServers、getAllservers方法。</p>
 </li>
 </ul>
-<h3 id="DynamicServerListLoadBalancer"><a href="#DynamicServerListLoadBalancer" class="headerlink" title="DynamicServerListLoadBalancer"></a><strong>DynamicServerListLoadBalancer</strong></h3><h3 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h3><h3 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer  Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong>  Ribbon默认的负载均衡器</h3><h2 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h2><h2 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h2>
+<h3 id="DynamicServerListLoadBalancer-动态服务列表负载均衡器"><a href="#DynamicServerListLoadBalancer-动态服务列表负载均衡器" class="headerlink" title="DynamicServerListLoadBalancer-动态服务列表负载均衡器"></a><strong>DynamicServerListLoadBalancer</strong>-动态服务列表负载均衡器</h3><p>DynamicServerListLoadBalancer继承自BaseLoadBalancer类，他是对基础负载均衡器的扩展，在该负载均衡器中，提供了动态更新服务实例的功能。通知他还具备对服务实例进行过滤的功能，可以通过过滤器来选择性的获取一批实例清单。</p>
+<p>该负载均衡器中还定义了ServerListUpdater接口用于定义实现服务的更新，有默认两个实现类：</p>
+<ul>
+<li><strong>PollingServerListUpdater</strong> 默认的更新策略，通过定时任务的方式对服务列表进行更新;有两个重要参数<code>initialDelayMs</code>和<code>refreshIntervalMs</code>，前者表示在实例初始化之后延迟为多少秒后开始执行，默认为1000毫秒，后者表示每隔多少毫秒周期性的执行，默认为30*1000毫秒；</li>
+<li><strong>EurekaNotificationServerListUpdater</strong> 使用Eureka的时间通知的方式对服务列表进行更新；</li>
+</ul>
+<p>在通过上面的方式获取到服务列表之后，这里又使用ServerListFilter过滤器对服务实例进行进一步过滤，包括<code>AbstracServerListFilter</code>、<code>ZoneAfffinityServerListFilter</code>、<code>ZonePreferenceServerListFilter</code>、<code>DefaultNIWSServerListFilter</code>、<code>ServerListSubsetFilter</code>；除了ZonePreferenceServerListFilter的实现是SpringCloudRibbon中新增的，其余都是NetFlexRibbon中原生实现类。</p>
+<ul>
+<li><strong>AbstracServerListFilter</strong> 基础的过滤器，定义了负载均衡器状态对象LoadBalancerStats。</li>
+<li><strong>ZoneAfffinityServerListFilter</strong> 该过滤器基于“区域感知”的方式实现服务实例的过滤。他会更具提供服务的实例所处的区域与消费者自身所处的的区域进行比较，过滤掉不属于同一区域的实例。</li>
+<li><strong>DefaultNIWSServerListFilter</strong> 该过滤器完全继承自ZoneAfffinityServerListFilter过滤器，是默认的NIWS（Netflex Internal Web Service）过滤器。</li>
+<li><strong>ServerListSubsetFilter</strong> 该过滤器也继承自ZoneAfffinityServerListFilter，适用于拥有大规模服务器集群（上百或者更多）的系统。该过滤器通过区域感知获取服务列表之后，会剔除不健康的实例，然后保存剩下的实例集合。</li>
+<li><strong>ZonePreferenceServerListFilter</strong>  SpringCloud新增的过滤器，在Eureka整合Ribbon时默认的过滤器。实现了将通过配置或者Eureka实例元数据所属的区域来过滤出同区域的服务实例。该过滤器也继承自ZoneAfffinityServerListFilter，在通过父类获取到区域感知的实例集合之后，然后便利集合，取出根据消费者配置预设的区域Zone来进行过滤。如果过滤后结果为空，则直接返回父类获取的结果，否则返回过滤后的结果。</li>
+</ul>
+<h3 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h3><h3 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer -Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong> -Ribbon默认的负载均衡器</h3><p>ZoneAwareLoadBalancer是对DynamicServerListLoadBalancer的扩展，在DynamicServerListLoadBalancer中，依旧使用的BaseLoadBalancer中使用的线性轮询的方式获取服务实例，这种算法没有Zone的概念，所以会周期性的产生跨区域访问的问题，产生更高的延迟，所以在多区域部署的情况下一定会有性能问题。</p>
+<p>ZoneAwareLoadBalancer负载均衡器默认使用的是ZoneAvoidanceRule负载均衡策略!</p>
+<h1 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h1><p>Ribbon中定义了特别多的负载均衡策略，一起来crazy study。</p>
+<p><a target="_blank" rel="noopener" href="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/29/42fc4a06-6c84-4991-96e8-358b9378637a.png">20210329221454.png</a></p>
+<h2 id="AbstractLoadBalancerRule-抽象的负载均衡策略"><a href="#AbstractLoadBalancerRule-抽象的负载均衡策略" class="headerlink" title="AbstractLoadBalancerRule-抽象的负载均衡策略"></a>AbstractLoadBalancerRule-抽象的负载均衡策略</h2><p>该实现类类中定义了一个ILoadBalancer对象，该对象能够获取到一些负载均衡中维护的信息来作为分配依据。</p>
+<h2 id="RandomRule-随机选择策略"><a href="#RandomRule-随机选择策略" class="headerlink" title="RandomRule-随机选择策略"></a>RandomRule-随机选择策略</h2><p>该负载均衡策略为随机获取一个实例进行访问，在具体的实现中，通过ILoadBalancer获取upList和allList实例列表，并通过rand.nextInt来作为upList下标获取具体实例。具体选择逻辑在一个while(server==null)中，可能会存在死循环获取不到实例的Bug。</p>
+<h2 id="RoundRobinRule-线性轮询策略"><a href="#RoundRobinRule-线性轮询策略" class="headerlink" title="RoundRobinRule-线性轮询策略"></a>RoundRobinRule-线性轮询策略</h2><p>该策略实现了线性轮询个的方式一次选择每个服务实例的功能。在实现中使用了count计数器，当尝试10次依旧选择不到server时，就会结束尝试，并打印警告信息。</p>
+<h2 id="RetryRule-重试策略"><a href="#RetryRule-重试策略" class="headerlink" title="RetryRule-重试策略"></a>RetryRule-重试策略</h2><p>该策略实现了一个具备重试机制的实例选择功能。在内部还定义了一个IRule对象，默认使用了RoundRobinRule实例。在开始选择实例时，记录时间戳timeStamp，然后使用timeStamp+maxRetryMillis参数（默认为500）作为阈值重复进行选择，期间如果选择到实例，则返回，否则当时间超过时，则返回null。</p>
+<h2 id="WeightedResponseTimeRule-响应时间权重策略"><a href="#WeightedResponseTimeRule-响应时间权重策略" class="headerlink" title="WeightedResponseTimeRule- 响应时间权重策略"></a>WeightedResponseTimeRule- 响应时间权重策略</h2><ul>
+<li><strong>定时任务</strong>：在策略初始化时，会默认启动一个定时任务，为每个服务计算权重，默认每隔30秒计算一次。</li>
+<li><strong>权重计算</strong>：根据算法计算服务的</li>
+<li><strong>实例选择</strong>：根据算法分析出的权重选择一个实例</li>
+</ul>
+<h2 id="ClientConfigEnbaledRoundRibbonRule"><a href="#ClientConfigEnbaledRoundRibbonRule" class="headerlink" title="ClientConfigEnbaledRoundRibbonRule"></a>ClientConfigEnbaledRoundRibbonRule</h2><p>该策略与RoundRibbonRule在实现上类似，一般不直接使用，他存在的目的为：<strong>一些高级的策略可以使用该类作为父类，当一些策略无法实施时，可以选择该父类的实现作为保障。</strong></p>
+<h2 id="BestAvailableRule-最空闲实例策略"><a href="#BestAvailableRule-最空闲实例策略" class="headerlink" title="BestAvailableRule-最空闲实例策略"></a>BestAvailableRule-最空闲实例策略</h2><p>该策略继承自ClientConfigEnbaledRoundRibbonRule，实现了注入负载均衡器的统计对象LoadBalancerStats。然后通过该对象<strong>获取请求数量最小的实例（即最空闲的实例）</strong> 并返回，注意，如果LoadBalancerStats对象无法注入，则该策略无法执行，就会使用父类的策略</p>
+<h2 id="PredicateBasedRule"><a href="#PredicateBasedRule" class="headerlink" title="PredicateBasedRule"></a>PredicateBasedRule</h2><p>这是一个抽象策略，继承自ClientConfigEnbaledRoundRibbonRule，是一个基于Predicate实现的接口，该抽象策略定义了大致选择实例的方式为：先使用Predicate来过滤掉一些实例，然后再使用轮询的方式随机选择一个实例进行访问。下面几种策略都是Predicate的具体实现。</p>
+<h2 id="AvailabilityFilterRule"><a href="#AvailabilityFilterRule" class="headerlink" title="AvailabilityFilterRule"></a>AvailabilityFilterRule</h2><p>使用AvailabilityPredicate对实例进行过滤，具体果过滤策略如下：</p>
+<ul>
+<li>是否故障，即断路器是否生效已断开。</li>
+<li>实例的并发数是否大于阈值，默认为2的32次方-1，可通过参数 <code>&lt; clientName&gt;.&lt; nameSpace&gt;.ActiveConnectionsLimit</code>参数来修改。</li>
+</ul>
+<p>上面两个条件有一个满足就返回false，表示该节点可能存在故障。都不满足则返回true。</p>
+<p>同时在该策略中，对choose方法也做了改进：它并没有像在父类中那样，先遍历所有的节点进行过滤，然后在过滤后的集合中选择实例。而是先以线性的方式选择一个实例， 接着用过滤条件来判断该实例是否满足要求，若满足就直接使用该实例，若不满足要求就再选择下一个实例，并检查是否满足要求，如此循环进行，当这个过程重复了10次还是没有找到符合要求的实例，就采用父类的实现方案。</p>
+<p><strong>简单地说，该策略通过线性抽样的方式直接尝试寻找可用且较空闲的实例来使用，优化了父类每次都要便利所有实例的开销。</strong></p>
+<h2 id="ZoneAvoidanceRule"><a href="#ZoneAvoidanceRule" class="headerlink" title="ZoneAvoidanceRule"></a>ZoneAvoidanceRule</h2><p>该策略也是<code>PredicateBaseRule</code>的实现类。使用了组合条件对服务进行过滤，优先使用<code>ZoneAvoidancePredicate</code>作为主过滤条件，然后使用<code>AvailabilityPredicate</code>作为次过滤条件。具体实现逻辑如下：</p>
+<ul>
+<li>使用主过滤条件对所有实例过滤并返回过滤后的实例清单。</li>
+<li>依次使用次过滤条件列表中的过滤条件对主过滤条件的结果进行过滤。</li>
+<li>每次过滤之后(包括主过滤条件和次过滤条件)，都需要判断下面两个条件，只要有一个符合就不再进行过滤，将当前结果返回供线性轮询算法选择:<ul>
+<li>过滤后的实例总数&gt;=最小过滤实例数(minimalFilteredServers`, 默认为1)。</li>
+<li>.过滤后的实例比例&gt;最小过滤百分比(<code>minimalFilteredPercentage</code>, 默认为0)。</li>
+</ul>
+</li>
+</ul>
+<p>ZoneAvoidanceRule负载均衡策略如下：</p>
+<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><h1 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h1><h1 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h1>
   
   
     
@@ -685,10 +734,10 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-27T16:40:19+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-04-01T00:08:48+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 27, 2021</p>
+    <p>更新于：Apr 1, 2021</p>
   </a>
 </div>
 
@@ -813,7 +862,7 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalanced%E6%B3%A8%E8%A7%A3"><span class="toc-text">@LoadBalanced注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">LoadBalancerAutoConfiguration自动配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerClient接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AbstractLoadBalancer"><span class="toc-text">AbstractLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BaseLoadBalancer"><span class="toc-text">BaseLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DynamicServerListLoadBalancer"><span class="toc-text">DynamicServerListLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoOpLoadBalancer"><span class="toc-text">NoOpLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZoneAwareLoadBalancer-Ribbon%E9%BB%98%E8%AE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">ZoneAwareLoadBalancer  Ribbon默认的负载均衡器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerFeignClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerFeignClient接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerInterceptor%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-text">LoadBalancerInterceptor拦截器</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalanced%E6%B3%A8%E8%A7%A3"><span class="toc-text">@LoadBalanced注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">LoadBalancerAutoConfiguration自动配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerClient接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AbstractLoadBalancer"><span class="toc-text">AbstractLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BaseLoadBalancer"><span class="toc-text">BaseLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DynamicServerListLoadBalancer-%E5%8A%A8%E6%80%81%E6%9C%8D%E5%8A%A1%E5%88%97%E8%A1%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">DynamicServerListLoadBalancer-动态服务列表负载均衡器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoOpLoadBalancer"><span class="toc-text">NoOpLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZoneAwareLoadBalancer-Ribbon%E9%BB%98%E8%AE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">ZoneAwareLoadBalancer -Ribbon默认的负载均衡器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AbstractLoadBalancerRule-%E6%8A%BD%E8%B1%A1%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-text">AbstractLoadBalancerRule-抽象的负载均衡策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RandomRule-%E9%9A%8F%E6%9C%BA%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-text">RandomRule-随机选择策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RoundRobinRule-%E7%BA%BF%E6%80%A7%E8%BD%AE%E8%AF%A2%E7%AD%96%E7%95%A5"><span class="toc-text">RoundRobinRule-线性轮询策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RetryRule-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5"><span class="toc-text">RetryRule-重试策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WeightedResponseTimeRule-%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4%E6%9D%83%E9%87%8D%E7%AD%96%E7%95%A5"><span class="toc-text">WeightedResponseTimeRule- 响应时间权重策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClientConfigEnbaledRoundRibbonRule"><span class="toc-text">ClientConfigEnbaledRoundRibbonRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BestAvailableRule-%E6%9C%80%E7%A9%BA%E9%97%B2%E5%AE%9E%E4%BE%8B%E7%AD%96%E7%95%A5"><span class="toc-text">BestAvailableRule-最空闲实例策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PredicateBasedRule"><span class="toc-text">PredicateBasedRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AvailabilityFilterRule"><span class="toc-text">AvailabilityFilterRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZoneAvoidanceRule"><span class="toc-text">ZoneAvoidanceRule</span></a></li></ol>
     </div>
   </section>
 
