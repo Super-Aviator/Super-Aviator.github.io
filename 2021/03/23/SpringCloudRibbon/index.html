@@ -1,549 +1,241 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
-  <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1'>
-  <meta charset="utf-8">
-  <!-- SEO相关 -->
-  
-    
-  
-  <!-- 渲染优化 -->
-  <meta http-equiv='x-dns-prefetch-control' content='on' />
-  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <meta name="renderer" content="webkit">
-  <meta name="force-rendering" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-  <meta name="HandheldFriendly" content="True" >
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  
-  <link rel="preload" href="/css/first.css" as="style">
-  
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-  <!-- 页面元数据 -->
-  
-  <title>SpringCloudRibbon - 飞行员</title>
-  
-    <meta name="keywords" content="Ribbon,SpringCloud">
-  
+<link rel="stylesheet" href="/css/main.css">
 
-  
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <!-- feed -->
-  
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
 
-  <!-- import meta -->
-  
+  <meta name="description" content="LoadBalancerAutoConfiguration自动配置源码分析@LoadBalanced注解该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置： &#x2F;**  * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient.  *">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloudRibbon">
+<meta property="og:url" content="https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/index.html">
+<meta property="og:site_name" content="孤独飞行员">
+<meta property="og:description" content="LoadBalancerAutoConfiguration自动配置源码分析@LoadBalanced注解该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置： &#x2F;**  * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient.  *">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-23T13:55:37.000Z">
+<meta property="article:modified_time" content="2021-04-04T06:29:10.802Z">
+<meta property="article:author" content="熊乾坤">
+<meta property="article:tag" content="SpringCloud">
+<meta property="article:tag" content="Ribbon">
+<meta name="twitter:card" content="summary">
 
-  <!-- link -->
-  
+<link rel="canonical" href="https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/">
 
-  <!-- import link -->
-  
 
-  
-    
-<link rel="stylesheet" href="/css/first.css">
-
-  
-
-  
-  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
-  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
-  
-
-  <script id="loadcss"></script>
-
-  
-<script>
-if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
-    document.write(
-	'<style>'+
-		'html{'+
-			'overflow-x: hidden !important;'+
-			'overflow-y: hidden !important;'+
-		'}'+
-		'.kill-ie{'+
-			'text-align:center;'+
-			'height: 100%;'+
-			'margin-top: 15%;'+
-			'margin-bottom: 5500%;'+
-		'}'+
-	'</style>'+
-    '<div class="kill-ie">'+
-        '<h1><b>抱歉，您的浏览器无法访问本站</b></h1>'+
-        '<h3>微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>'+
-        '继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</h3><br/>'+
-        '<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/WindowsForBusiness/End-of-IE-support"><strong>了解详情 ></strong></a>'+
-    '</div>');
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
 </script>
 
+  <title>SpringCloudRibbon | 孤独飞行员</title>
+  
 
-<noscript>
-	<style>
-		html{
-			overflow-x: hidden !important;
-			overflow-y: hidden !important;
-		}
-		.kill-noscript{
-			text-align:center;
-			height: 100%;
-			margin-top: 15%;
-			margin-bottom: 5500%;
-		}
-	</style>
-    <div class="kill-noscript">
-        <h1><b>抱歉，您的浏览器无法访问本站</b></h1>
-        <h3>本页面需要浏览器支持（启用）JavaScript</h3><br/>
-        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
-    </div>
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
 </noscript>
 
 </head>
 
-  <body>
-    
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
-  <div class='container'>
-  <div id='wrapper'>
-    <div class='nav-sub'>
-      <p class="title"></p>
-      <ul class='switcher nav-list-h m-phone' id="pjax-header-nav-list">
-        <li><a id="s-comment" class="fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
-        
-          <li><a id="s-toc" class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
-        
-      </ul>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-		<div class="nav-main">
-      
-        
-        <a class="title flat-box" target="_self" href='/'>
-          
-            <img no-lazy class='logo' src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
-          
-          
-          
-        </a>
-      
-
-			<div class='menu navigation'>
-				<ul class='nav-list-h m-pc'>
-          
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/
-                  
-                  
-                  
-                    id="home"
-                  >
-                  <i class='fas fa-rss fa-fw'></i>博客
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
-                  
-                  
-                  
-                    id="categories"
-                  >
-                  <i class='fas fa-folder-open fa-fw'></i>分类
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
-                  
-                  
-                  
-                    id="tags"
-                  >
-                  <i class='fas fa-tags fa-fw'></i>标签
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
-                  
-                  
-                  
-                    id="archives"
-                  >
-                  <i class='fas fa-archive fa-fw'></i>归档
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
-                  
-                  
-                  
-                    id="friends"
-                  >
-                  <i class='fas fa-link fa-fw'></i>友链
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
-                  
-                  
-                  
-                    id="about"
-                  >
-                  <i class='fas fa-info-circle fa-fw'></i>关于
-                </a>
-                
-              </li>
-            
-          
-          
-            
-            
-              <li>
-                <a class="menuitem flat-box header toggle-mode-btn">
-                  <i class='fas fa-moon fa-fw'></i>暗黑模式
-                </a>
-              <li>
-            
-          
-          
-				</ul>
-			</div>
-
-      <div class="m_search">
-        <form name="searchform" class="form u-search-form">
-          <i class="icon fas fa-search fa-fw"></i>
-          <input type="text" class="input u-search-input" placeholder="搜到算我输" />
-        </form>
-      </div>
-
-			<ul class='switcher nav-list-h m-phone'>
-				
-					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
-				
-				<li>
-          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
-          <ul class="menu-phone list-v navigation white-box">
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/
-                  
-                  
-                  
-                    id="home"
-                  >
-                  <i class='fas fa-rss fa-fw'></i>博客
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
-                  
-                  
-                  
-                    id="categories"
-                  >
-                  <i class='fas fa-folder-open fa-fw'></i>分类
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
-                  
-                  
-                  
-                    id="tags"
-                  >
-                  <i class='fas fa-tags fa-fw'></i>标签
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
-                  
-                  
-                  
-                    id="archives"
-                  >
-                  <i class='fas fa-archive fa-fw'></i>归档
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
-                  
-                  
-                  
-                    id="friends"
-                  >
-                  <i class='fas fa-link fa-fw'></i>友链
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
-                  
-                  
-                  
-                    id="about"
-                  >
-                  <i class='fas fa-info-circle fa-fw'></i>关于
-                </a>
-                
-              </li>
-            
-          
-            
-              
-            
-              <li>
-                <a class="menuitem flat-box header toggle-mode-btn">
-                  <i class='fas fa-moon fa-fw'></i>暗黑模式
-                </a>
-              <li>
-            
-          
-            
-          </ul>
-        </li>
-			</ul>
-		</div>
-	</div>
   </div>
-</header>
 
-    <div id="l_body">
-      <div id="l_cover">
-  
-    
-        <div id="full" class='cover-wrapper post search' style="display: none;">
-          
-            <div id='cover-backstretch'></div>
-          
-          <div class='cover-body'>
-  <div class='top'>
-    
-    
-      <p class="title">孤独飞行员</p>
-    
-    
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孤独飞行员</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
   </div>
-  <div class='bottom'>
-    
-      <div class="m_search">
-        <form name="searchform" class="form u-search-form">
-          <input type="text" class="input u-search-input" placeholder="搜到算我输" />
-          <i class="icon fas fa-search fa-fw"></i>
-        </form>
-      </div>
-    
-    <div class='menu navigation'>
-      <div class='list-h'>
-        
-          
-            <a href="/v4/getting-started/"
-              
-              
-              id="v4getting-started">
-              <p>文档</p>
-            </a>
-          
-            <a href="/faqs/"
-              
-              
-              id="faqs">
-              <p>帮助</p>
-            </a>
-          
-            <a href="/examples/"
-              
-              
-              id="examples">
-              <p>示例</p>
-            </a>
-          
-            <a href="/contributors/"
-              
-              
-              id="contributors">
-              <p>社区</p>
-            </a>
-          
-            <a href="/archives/"
-              
-              
-              id="archives">
-              <p>博客</p>
-            </a>
-          
-            <a target="_blank" rel="noopener" href="https://github.com/volantis-x/hexo-theme-volantis/"
-              
-              
-              id="https:githubcomvolantis-xhexo-theme-volantis">
-              <p>源码</p>
-            </a>
-          
-        
-      </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
     </div>
   </div>
 </div>
 
-          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringCloudRibbon
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-23 21:55:37" itemprop="dateCreated datePublished" datetime="2021-03-23T21:55:37+08:00">2021-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-04 14:29:10" itemprop="dateModified" datetime="2021-04-04T14:29:10+08:00">2021-04-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MicroService/" itemprop="url" rel="index"><span itemprop="name">MicroService</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/23/SpringCloudRibbon/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/23/SpringCloudRibbon/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
         </div>
-    
-  
-  </div>
+      </header>
 
-      <div id="safearea">
-        <div class="body-wrapper" id="pjax-container">
-          
-
-<div class='l_main'>
-  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
-  
-
-
-  
-  <div class="article-meta" id="top">
     
     
     
-      <h1 class="title">
-        SpringCloudRibbon
-      </h1>
-      <div class='new-meta-box'>
-        
-          
-            
-<div class='new-meta-item author'>
-  <a class='author' href="/" rel="nofollow">
-    <img no-lazy src="">
-    <p>请设置文章作者</p>
-  </a>
-</div>
+    <div class="post-body" itemprop="articleBody">
 
-          
-        
-          
-            
-  <div class='new-meta-item category'>
-    <a class='notlink'>
-      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <a class="category-link" href="/categories/MicroService/">MicroService</a>
-    </a>
-  </div>
-
-
-          
-        
-          
-            <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Mar 23, 2021</p>
-  </a>
-</div>
-
-          
-        
-          
-            
-  <div class="new-meta-item browse leancloud">
-    <a class='notlink'>
       
-      <div id="lc-pv" data-title="SpringCloudRibbon" data-path="/2021/03/23/SpringCloudRibbon/">
-        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
-        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
-        次浏览
-      </div>
-    </a>
-  </div>
-
-
-          
-        
-          
-            
-<div class="new-meta-item comments-count">
-  
-  <a href="/2021/03/23/SpringCloudRibbon/#comments">
-    <i class="fas fa-comment-dots fa-fw"></i>
-    <span class="valine-comment-count" data-xid="/2021/03/23/SpringCloudRibbon/">0</span>
-    <span class="leancloud-comments-count">&nbsp;</span>
-  </a>
-</div>
-
-
-          
-        
-      </div>
-    
-  </div>
-
-
-  
-  
-  <h1 id="负载均衡器"><a href="#负载均衡器" class="headerlink" title="负载均衡器"></a>负载均衡器</h1><h1 id="简单的源码分析"><a href="#简单的源码分析" class="headerlink" title="简单的源码分析"></a>简单的源码分析</h1><h2 id="LoadBalanced注解"><a href="#LoadBalanced注解" class="headerlink" title="@LoadBalanced注解"></a>@LoadBalanced注解</h2><p>该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置</p>
+        <h1 id="LoadBalancerAutoConfiguration自动配置"><a href="#LoadBalancerAutoConfiguration自动配置" class="headerlink" title="LoadBalancerAutoConfiguration自动配置"></a>LoadBalancerAutoConfiguration自动配置</h1><h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="LoadBalanced注解"><a href="#LoadBalanced注解" class="headerlink" title="@LoadBalanced注解"></a>@LoadBalanced注解</h2><p>该注解是一个标记注解，用来标识RestTemplate使用LoadBalancerClient接口去配置：</p>
 <pre><code class="java">/**
  * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient.
  * @author Spencer Gibb
@@ -557,7 +249,7 @@ public @interface LoadBalanced &#123;
 
 &#125;
 </code></pre>
-<h2 id="LoadBalancerAutoConfiguration自动配置"><a href="#LoadBalancerAutoConfiguration自动配置" class="headerlink" title="LoadBalancerAutoConfiguration自动配置"></a>LoadBalancerAutoConfiguration自动配置</h2><h2 id="LoadBalancerClient接口"><a href="#LoadBalancerClient接口" class="headerlink" title="LoadBalancerClient接口"></a>LoadBalancerClient接口</h2><p>这个接口有一个具体的时间类RibbonLoadBalancerClient；该实现类的execution方法中，将具体的负载均衡交给ILoadBanlancer接口的实现类去实现：</p>
+<h2 id="LoadBalancerClient接口"><a href="#LoadBalancerClient接口" class="headerlink" title="LoadBalancerClient接口"></a>LoadBalancerClient接口</h2><p>这个接口有一个具体的实现类RibbonLoadBalancerClient；该实现类的execution方法中，将具体的负载均衡交给ILoadBanlancer接口的实现类去实现：</p>
 <pre><code class="java">public &lt;T&gt; T execute(String serviceId, LoadBalancerRequest&lt;T&gt; request, Object hint)
         throws IOException &#123;
     ILoadBalancer loadBalancer = getLoadBalancer(serviceId);
@@ -589,13 +281,13 @@ public @interface LoadBalanced &#123;
 &#125;
 </code></pre>
 <p>该接口有如下几个实现类：</p>
-<h3 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h3><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是该抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,<code>STATUS_NOT_UP</code>的三个服务实例列表，并增加了如下三个方法：</p>
+<h2 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h2><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是该抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,<code>STATUS_NOT_UP</code>的三个服务实例列表，并增加了如下三个方法：</p>
 <ul>
 <li><strong>public Server chooseServer();</strong> 根据key查找服务，该抽象类中直接调用ILoadBalancer接口的chooseServer接口，传的key为null。</li>
 <li><strong>public abstract List&lt; Server&gt;getServerList(ServerGroup serverGroup);</strong> 查找某个服务分组下的所有服务实例。</li>
 <li><strong>public abstract LoadBalancerStats getLoadBalancerStats();</strong> 获取负载均衡器的详细信息。包含了统计数据和负载均衡器运行情况。</li>
 </ul>
-<h3 id="BaseLoadBalancer"><a href="#BaseLoadBalancer" class="headerlink" title="BaseLoadBalancer"></a><strong>BaseLoadBalancer</strong></h3><ul>
+<h2 id="BaseLoadBalancer"><a href="#BaseLoadBalancer" class="headerlink" title="BaseLoadBalancer"></a><strong>BaseLoadBalancer</strong></h2><ul>
 <li><p>该类是负载均衡器最基本的实现类；该类中维护了一个包含所有实例和正常服务的实例，并使用可重入锁进行同步：</p>
 <pre><code class="java">@Monitor(name = PREFIX + &quot;AllServerList&quot;, type = DataSourceType.INFORMATIONAL
  protected volatile List&lt;Server&gt; allServerList = Collections
@@ -655,7 +347,7 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 <li><p>依次实现了chooseServer、markServerDown、getReachableServers、getAllservers方法。</p>
 </li>
 </ul>
-<h3 id="DynamicServerListLoadBalancer-动态服务列表负载均衡器"><a href="#DynamicServerListLoadBalancer-动态服务列表负载均衡器" class="headerlink" title="DynamicServerListLoadBalancer-动态服务列表负载均衡器"></a><strong>DynamicServerListLoadBalancer</strong>-动态服务列表负载均衡器</h3><p>DynamicServerListLoadBalancer继承自BaseLoadBalancer类，他是对基础负载均衡器的扩展，在该负载均衡器中，提供了动态更新服务实例的功能。通知他还具备对服务实例进行过滤的功能，可以通过过滤器来选择性的获取一批实例清单。</p>
+<h2 id="DynamicServerListLoadBalancer-动态服务列表负载均衡器"><a href="#DynamicServerListLoadBalancer-动态服务列表负载均衡器" class="headerlink" title="DynamicServerListLoadBalancer-动态服务列表负载均衡器"></a><strong>DynamicServerListLoadBalancer</strong>-动态服务列表负载均衡器</h2><p>DynamicServerListLoadBalancer继承自BaseLoadBalancer类，他是对基础负载均衡器的扩展，在该负载均衡器中，提供了动态更新服务实例的功能。通知他还具备对服务实例进行过滤的功能，可以通过过滤器来选择性的获取一批实例清单。</p>
 <p>该负载均衡器中还定义了ServerListUpdater接口用于定义实现服务的更新，有默认两个实现类：</p>
 <ul>
 <li><strong>PollingServerListUpdater</strong> 默认的更新策略，通过定时任务的方式对服务列表进行更新;有两个重要参数<code>initialDelayMs</code>和<code>refreshIntervalMs</code>，前者表示在实例初始化之后延迟为多少秒后开始执行，默认为1000毫秒，后者表示每隔多少毫秒周期性的执行，默认为30*1000毫秒；</li>
@@ -667,11 +359,11 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 <li><strong>ZoneAfffinityServerListFilter</strong> 该过滤器基于“区域感知”的方式实现服务实例的过滤。他会更具提供服务的实例所处的区域与消费者自身所处的的区域进行比较，过滤掉不属于同一区域的实例。</li>
 <li><strong>DefaultNIWSServerListFilter</strong> 该过滤器完全继承自ZoneAfffinityServerListFilter过滤器，是默认的NIWS（Netflex Internal Web Service）过滤器。</li>
 <li><strong>ServerListSubsetFilter</strong> 该过滤器也继承自ZoneAfffinityServerListFilter，适用于拥有大规模服务器集群（上百或者更多）的系统。该过滤器通过区域感知获取服务列表之后，会剔除不健康的实例，然后保存剩下的实例集合。</li>
-<li><strong>ZonePreferenceServerListFilter</strong>  SpringCloud新增的过滤器，在Eureka整合Ribbon时默认的过滤器。实现了将通过配置或者Eureka实例元数据所属的区域来过滤出同区域的服务实例。该过滤器也继承自ZoneAfffinityServerListFilter，在通过父类获取到区域感知的实例集合之后，然后便利集合，取出根据消费者配置预设的区域Zone来进行过滤。如果过滤后结果为空，则直接返回父类获取的结果，否则返回过滤后的结果。</li>
+<li><strong>ZonePreferenceServerListFilter</strong>  SpringCloud新增的过滤器，在Eureka整合Ribbon时默认的过滤器。实现了将通过配置或者Eureka实例元数据所属的区域来过滤出同区域的服务实例。该过滤器也继承自ZoneAffinityServerListFilter，在通过父类获取到区域感知的实例集合之后，然后遍历集合，取出根据消费者配置预设的区域Zone来进行过滤。如果过滤后结果为空，则直接返回父类获取的结果，否则返回过滤后的结果。</li>
 </ul>
-<h3 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h3><h3 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer -Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong> -Ribbon默认的负载均衡器</h3><p>ZoneAwareLoadBalancer是对DynamicServerListLoadBalancer的扩展，在DynamicServerListLoadBalancer中，依旧使用的BaseLoadBalancer中使用的线性轮询的方式获取服务实例，这种算法没有Zone的概念，所以会周期性的产生跨区域访问的问题，产生更高的延迟，所以在多区域部署的情况下一定会有性能问题。</p>
+<h2 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h2><h2 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer -Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong> -Ribbon默认的负载均衡器</h2><p>ZoneAwareLoadBalancer是对DynamicServerListLoadBalancer的扩展，在DynamicServerListLoadBalancer中，依旧使用的BaseLoadBalancer中使用的线性轮询的方式获取服务实例，这种算法没有Zone的概念，所以会周期性的产生跨区域访问的问题，产生更高的延迟，所以在多区域部署的情况下一定会有性能问题。</p>
 <p>ZoneAwareLoadBalancer负载均衡器默认使用的是ZoneAvoidanceRule负载均衡策略!</p>
-<h1 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h1><p>Ribbon中定义了特别多的负载均衡策略，一起来crazy study。</p>
+<h1 id="IRule-负载均衡策略"><a href="#IRule-负载均衡策略" class="headerlink" title="IRule-负载均衡策略"></a>IRule-负载均衡策略</h1><p>Ribbon中定义了特别多的负载均衡策略，一起来crazy study。</p>
 <p><a target="_blank" rel="noopener" href="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/29/42fc4a06-6c84-4991-96e8-358b9378637a.png">20210329221454.png</a></p>
 <h2 id="AbstractLoadBalancerRule-抽象的负载均衡策略"><a href="#AbstractLoadBalancerRule-抽象的负载均衡策略" class="headerlink" title="AbstractLoadBalancerRule-抽象的负载均衡策略"></a>AbstractLoadBalancerRule-抽象的负载均衡策略</h2><p>该实现类类中定义了一个ILoadBalancer对象，该对象能够获取到一些负载均衡中维护的信息来作为分配依据。</p>
 <h2 id="RandomRule-随机选择策略"><a href="#RandomRule-随机选择策略" class="headerlink" title="RandomRule-随机选择策略"></a>RandomRule-随机选择策略</h2><p>该负载均衡策略为随机获取一个实例进行访问，在具体的实现中，通过ILoadBalancer获取upList和allList实例列表，并通过rand.nextInt来作为upList下标获取具体实例。具体选择逻辑在一个while(server==null)中，可能会存在死循环获取不到实例的Bug。</p>
@@ -692,7 +384,7 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 </ul>
 <p>上面两个条件有一个满足就返回false，表示该节点可能存在故障。都不满足则返回true。</p>
 <p>同时在该策略中，对choose方法也做了改进：它并没有像在父类中那样，先遍历所有的节点进行过滤，然后在过滤后的集合中选择实例。而是先以线性的方式选择一个实例， 接着用过滤条件来判断该实例是否满足要求，若满足就直接使用该实例，若不满足要求就再选择下一个实例，并检查是否满足要求，如此循环进行，当这个过程重复了10次还是没有找到符合要求的实例，就采用父类的实现方案。</p>
-<p><strong>简单地说，该策略通过线性抽样的方式直接尝试寻找可用且较空闲的实例来使用，优化了父类每次都要便利所有实例的开销。</strong></p>
+<p><strong>简单地说，该策略通过线性抽样的方式直接尝试寻找可用且较空闲的实例来使用，优化了父类每次都要遍历所有实例的开销。</strong></p>
 <h2 id="ZoneAvoidanceRule"><a href="#ZoneAvoidanceRule" class="headerlink" title="ZoneAvoidanceRule"></a>ZoneAvoidanceRule</h2><p>该策略也是<code>PredicateBaseRule</code>的实现类。使用了组合条件对服务进行过滤，优先使用<code>ZoneAvoidancePredicate</code>作为主过滤条件，然后使用<code>AvailabilityPredicate</code>作为次过滤条件。具体实现逻辑如下：</p>
 <ul>
 <li>使用主过滤条件对所有实例过滤并返回过滤后的实例清单。</li>
@@ -704,1422 +396,280 @@ protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
 </li>
 </ul>
 <p>ZoneAvoidanceRule负载均衡策略如下：</p>
-<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><h1 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h1><h1 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h1>
-  
-  
-    
-    <div class='footer'>
-      
-      
-      
-        <div class='copyright'>
-          <blockquote>
-            
-              
-                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><h1 id="Ribbon自动化配置"><a href="#Ribbon自动化配置" class="headerlink" title="Ribbon自动化配置"></a>Ribbon自动化配置</h1><h2 id="使用配置文件进行配置"><a href="#使用配置文件进行配置" class="headerlink" title="使用配置文件进行配置"></a>使用配置文件进行配置</h2><p>在使用Ribbon时，可也以通过配置文件的方式对ribbon进行配置，格式为：&lt;clientName&gt;.ribbon.&lt;key&gt;=&lt;value&gt;，例如：<code>springbootlearn.ribbon.NFLoadBalancerPingClassName=cong.netflex.loadbalancer.PingUrl</code></p>
+<p>具体的key定义在PropertiesFactory中：</p>
+<pre><code class="java">public PropertiesFactory() &#123;
+    this.classToProperty.put(ILoadBalancer.class, &quot;NFLoadBalancerClassName&quot;);
+    this.classToProperty.put(IPing.class, &quot;NFLoadBalancerPingClassName&quot;);
+    this.classToProperty.put(IRule.class, &quot;NFLoadBalancerRuleClassName&quot;);
+    this.classToProperty.put(ServerList.class, &quot;NIWSServerListClassName&quot;);
+    this.classToProperty.put(ServerListFilter.class, &quot;NIWSServerListFilterClassName&quot;);
+&#125;
+</code></pre>
+<h2 id="替换默认配置"><a href="#替换默认配置" class="headerlink" title="替换默认配置"></a>替换默认配置</h2><h3 id="通过自定义Bean替换"><a href="#通过自定义Bean替换" class="headerlink" title="通过自定义Bean替换"></a>通过自定义Bean替换</h3><p>可以在配置类中增加自定的bean来替换掉默认的配置：</p>
+<pre><code class="java">@Configuration
+public class RibbonConfiguration &#123;
+    @Bean
+    public PingUrl getIPing()&#123;
+        return new PingUrl();
+    &#125;
+&#125;
+</code></pre>
+<h3 id="使用-RibbonClient替换"><a href="#使用-RibbonClient替换" class="headerlink" title="使用@RibbonClient替换"></a>使用@RibbonClient替换</h3><p>也可以使用@RibbinClient来对单个服务进行配置：</p>
+<pre><code class="java">@RibbonClient(name = &quot;microservice-springbootlearn&quot;, configuration = SpringBootLearnConfiguration.class)
+public class MyRibbonConfiguration &#123;
+&#125;
+</code></pre>
+<h1 id="EurekaClient中增加区域元数据"><a href="#EurekaClient中增加区域元数据" class="headerlink" title="EurekaClient中增加区域元数据"></a>EurekaClient中增加区域元数据</h1><p>在Eureka客户端中使用下面的元数据配置，就可以让客户端带有区域标识：<code>Eureka.instance.metadataMap.zone=shanghai</code></p>
+<h1 id="添加重试功能"><a href="#添加重试功能" class="headerlink" title="添加重试功能"></a>添加重试功能</h1><p>SpringCloudRibbon中同时还整合了SpringRetry模块，通过如下的配置就可以对服务进行重试功能：</p>
+<pre><code>#配置服务的ribbon超时属性,该配置只有在Feign+Hystrix中才生效
+microservice-eurekaclient:
+  ribbon:
+    connectTimeout: 1000 #请求链接的超时时间
+    readTimeout: 1000 #请求处理的超时时间
+    okToRetryOnAllOperations: true #是否对所有失败都进行重试
+    maxAutoRetriesNextServer: 0 #重试失败时的切换实例的次数
+    maxAutoRetries: 2 #相同实例重试的次数
 
-              
-            
-          </blockquote>
-        </div>
-      
-      
+hystrix:
+  command:
+    # default的配置所有熔断方法都生效
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000 #设置断路器的超时时间，默认为1000毫秒
+</code></pre>
+<p>值得注意的是，如果想要重试生效，必须将Hystrix的超时时间设置为比Ribbon超时时间大，否则请求会直接熔断，无法进行重试！</p>
+<h1 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h1><h1 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h1>
     </div>
-  
-  
+
+    
+    
     
 
-
-  <div class='article-meta' id="bottom">
-    <div class='new-meta-box'>
-      
-        
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-04-01T00:08:48+08:00">
-  <a class='notlink'>
-    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 1, 2021</p>
-  </a>
-</div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringCloud/" rel="tag"># SpringCloud</a>
+              <a href="/tags/Ribbon/" rel="tag"># Ribbon</a>
+          </div>
 
         
-      
-        
-          
-  
-  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/Ribbon/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>Ribbon</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/SpringCloud/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>SpringCloud</p></a></div>
 
 
         
-      
-        
-          
-  <div class="new-meta-item share -mob-share-list">
-  <div class="-mob-share-list share-body">
-    
-      
-        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
-          
-          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/&title=SpringCloudRibbon - 飞行员&summary="
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
-          
-          target="_blank" href="http://service.weibo.com/share/share.php?url=https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/&title=SpringCloudRibbon - 飞行员&summary="
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
-          
-        </a>
-      
-    
-      
-    
-      
-        <a class="-mob-share-telegram" title="" rel="external nofollow noopener noreferrer noopener"
-          
-            target="_blank" href="https://t.me/share/url?url=https://super-aviator.github.io/2021/03/23/SpringCloudRibbon/&text=SpringCloudRibbon - 飞行员"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/telegram.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/telegram.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
-          
-        </a>
-      
-    
-  </div>
-</div>
-
-
-
-        
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/23/SpringCloudFeign/" rel="prev" title="SpringCloudFeign">
+      <i class="fa fa-chevron-left"></i> SpringCloudFeign
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/24/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91%E8%AE%BE%E7%BD%AELinux%E4%BA%A4%E6%8D%A2%E5%88%86%E5%8C%BA/" rel="next" title="【转载】设置Linux交换分区">
+      【转载】设置Linux交换分区 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-  </div>
-
-
-  
-  
-
-  
-    <div class="prev-next">
-      
-        <a class='prev' href='/2021/03/24/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91%E8%AE%BE%E7%BD%AELinux%E4%BA%A4%E6%8D%A2%E5%88%86%E5%8C%BA/'>
-          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>【转载】设置Linux交换分区</p>
-          <p class='content'>设置交换分区Linux下可以创建两种类型的交换空间，一种是swap分区，一种是swap文件。前者适合有空闲的分区可以使用，后者适合于没有空的硬盘分区，硬盘的空间都已经分配完毕。例如：安装redh...</p>
-        </a>
-      
-      
-        <a class='next' href='/2021/03/23/SpringCloudFeign/'>
-          <p class='title'>SpringCloudFeign<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-          <p class='content'></p>
-        </a>
-      
-    </div>
-  
-</article>
-
-
-  
-
-  <article class="post white-box reveal shadow" id="comments">
-    <p ct><i class='fas fa-comments'></i> 评论</p>
+      </footer>
     
-    <div id="valine_container" class="valine_thread">
-  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
-</div>
-
   </article>
-
-
-
-
-
-
-</div>
-<aside class='l_side'>
   
   
-    
-    
-
-
-
-  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
-    
-  <header>
-    
-      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
-    
-  </header>
-
-
-    <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalanced%E6%B3%A8%E8%A7%A3"><span class="toc-text">@LoadBalanced注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">LoadBalancerAutoConfiguration自动配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadBalancerClient%E6%8E%A5%E5%8F%A3"><span class="toc-text">LoadBalancerClient接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AbstractLoadBalancer"><span class="toc-text">AbstractLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BaseLoadBalancer"><span class="toc-text">BaseLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DynamicServerListLoadBalancer-%E5%8A%A8%E6%80%81%E6%9C%8D%E5%8A%A1%E5%88%97%E8%A1%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">DynamicServerListLoadBalancer-动态服务列表负载均衡器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoOpLoadBalancer"><span class="toc-text">NoOpLoadBalancer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZoneAwareLoadBalancer-Ribbon%E9%BB%98%E8%AE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-text">ZoneAwareLoadBalancer -Ribbon默认的负载均衡器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AbstractLoadBalancerRule-%E6%8A%BD%E8%B1%A1%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-text">AbstractLoadBalancerRule-抽象的负载均衡策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RandomRule-%E9%9A%8F%E6%9C%BA%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-text">RandomRule-随机选择策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RoundRobinRule-%E7%BA%BF%E6%80%A7%E8%BD%AE%E8%AF%A2%E7%AD%96%E7%95%A5"><span class="toc-text">RoundRobinRule-线性轮询策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RetryRule-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5"><span class="toc-text">RetryRule-重试策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WeightedResponseTimeRule-%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4%E6%9D%83%E9%87%8D%E7%AD%96%E7%95%A5"><span class="toc-text">WeightedResponseTimeRule- 响应时间权重策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClientConfigEnbaledRoundRibbonRule"><span class="toc-text">ClientConfigEnbaledRoundRibbonRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BestAvailableRule-%E6%9C%80%E7%A9%BA%E9%97%B2%E5%AE%9E%E4%BE%8B%E7%AD%96%E7%95%A5"><span class="toc-text">BestAvailableRule-最空闲实例策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PredicateBasedRule"><span class="toc-text">PredicateBasedRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AvailabilityFilterRule"><span class="toc-text">AvailabilityFilterRule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZoneAvoidanceRule"><span class="toc-text">ZoneAvoidanceRule</span></a></li></ol>
-    </div>
-  </section>
-
-
   
 
 
-</aside>
 
-
-
-		  
-		  <!--此文件用来存放一些不方便取值的变量-->
-<!--思路大概是将值藏到重加载的区域内-->
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
 
 <script>
-  window.pdata={}
-  pdata.ispage=true;
-  pdata.postTitle="SpringCloudRibbon";
-  pdata.commentPath="";
-  pdata.commentPlaceholder="";
-  // header 这里无论是否开启pjax都需要
-  var l_header=document.getElementById("l_header");
-  
-  l_header.classList.add("show");
-  
-  
-    // cover
-    var cover_wrapper=document.querySelector('.cover-wrapper');
-    
-    cover_wrapper.id="none";
-    cover_wrapper.style.display="none";
-    
-  
-</script>
-
-        </div>
-        
-  
-  <footer class="footer clearfix">
-    <br><br>
-    
-      
-        <div class="aplayer-container">
-          
-
-
-        </div>
-      
-    
-      
-        <br>
-        <div class="social-wrapper">
-          
-            
-          
-            
-          
-            
-          
-        </div>
-      
-    
-      
-        <div><p>博客内容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
-</div>
-      
-    
-      
-        
-          <div><p><span id="lc-sv">本站总访问量为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 次</span> <span id="lc-uv">访客数为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 人</span></p>
-</div>
-        
-      
-    
-      
-        本站使用
-        <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
-        作为主题
-      
-    
-      
-        <div class='copyright'>
-        <p><a href="/">Copyright © 2017-2020 XXX</a></p>
-
-        </div>
-      
-    
-  </footer>
-
-
-        <a id="s-top" class="fas fa-arrow-up fa-fw" href="javascript:void(0)"></a>
-      </div>
-    </div>
-    <div>
-      <script>
-/************这个文件存放不需要重载的全局变量和全局函数*********/
-window.volantis={};
-window.volantis.loadcss=document.getElementById("loadcss");
-/******************** Pjax ********************************/
-function VPjax(){
-	this.list=[] // 存放回调函数
-	this.start=()=>{
-	  for(var i=0;i<this.list.length;i++){
-		this.list[i].run();
-	  }
-	}
-	this.push=(fn,name)=>{
-		var f=new PjaxItem(fn,name);
-		this.list.push(f);
-	}
-	// 构造一个可以run的对象
-	function PjaxItem(fn,name){
-		// 函数名称
-		this.name = name || fn.name
-		// run方法
-		this.run=()=>{
-			fn()
-		}
-	}
-}
-volantis.pjax={}
-volantis.pjax.method={
-	complete: new VPjax(),
-	error: new VPjax(),
-	send: new VPjax()
-}
-volantis.pjax={
-	...volantis.pjax,
-	push: volantis.pjax.method.complete.push,
-	error: volantis.pjax.method.error.push,
-	send: volantis.pjax.method.send.push
-}
-/********************脚本懒加载函数********************************/
-// 已经加入了setTimeout
-function loadScript(src, cb) {
-	setTimeout(function() {
-		var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
-		var script = document.createElement('script');
-		script.setAttribute('type','text/javascript');
-		if (cb) script.onload = cb;
-		script.setAttribute('src', src);
-		HEAD.appendChild(script);
-	});
-}
-//https://github.com/filamentgroup/loadCSS
-var loadCSS = function( href, before, media, attributes ){
-	var doc = window.document;
-	var ss = doc.createElement( "link" );
-	var ref;
-	if( before ){
-		ref = before;
-	}
-	else {
-		var refs = ( doc.body || doc.getElementsByTagName( "head" )[ 0 ] ).childNodes;
-		ref = refs[ refs.length - 1];
-	}
-	var sheets = doc.styleSheets;
-	if( attributes ){
-		for( var attributeName in attributes ){
-			if( attributes.hasOwnProperty( attributeName ) ){
-				ss.setAttribute( attributeName, attributes[attributeName] );
-			}
-		}
-	}
-	ss.rel = "stylesheet";
-	ss.href = href;
-	ss.media = "only x";
-	function ready( cb ){
-		if( doc.body ){
-			return cb();
-		}
-		setTimeout(function(){
-			ready( cb );
-		});
-	}
-	ready( function(){
-		ref.parentNode.insertBefore( ss, ( before ? ref : ref.nextSibling ) );
-	});
-	var onloadcssdefined = function( cb ){
-		var resolvedHref = ss.href;
-		var i = sheets.length;
-		while( i-- ){
-			if( sheets[ i ].href === resolvedHref ){
-				return cb();
-			}
-		}
-		setTimeout(function() {
-			onloadcssdefined( cb );
-		});
-	};
-	function loadCB(){
-		if( ss.addEventListener ){
-			ss.removeEventListener( "load", loadCB );
-		}
-		ss.media = media || "all";
-	}
-	if( ss.addEventListener ){
-		ss.addEventListener( "load", loadCB);
-	}
-	ss.onloadcssdefined = onloadcssdefined;
-	onloadcssdefined( loadCB );
-	return ss;
-};
-</script>
-<script>
-  
-  loadCSS("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/css/all.min.css", window.volantis.loadcss);
-  
-  
-  
-  
-  loadCSS("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/styles/solarized-light.min.css", window.volantis.loadcss);
-  
-</script>
-<!-- required -->
-
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5/dist/jquery.min.js"></script>
-
-<script>
-  function pjax_fancybox() {
-    $(".md .gallery").find("img").each(function () { //渲染 fancybox
-      var element = document.createElement("a"); // a 标签
-      $(element).attr("class", "fancybox");
-      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
-      $(element).attr("href", $(this).attr("src"));
-      if ($(this).attr("data-original")) {
-        $(element).attr("href", $(this).attr("data-original"));
-      }
-      $(element).attr("data-fancybox", "images");
-      var caption = "";   // 描述信息
-      if ($(this).attr('alt')) {  // 判断当前页面是否存在描述信息
-        $(element).attr('data-caption', $(this).attr('alt'));
-        caption = $(this).attr('alt');
-      }
-      var div = document.createElement("div");
-      $(div).addClass("fancybox");
-      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
-      var span = document.createElement("span");
-      $(span).addClass("image-caption");
-      $(span).text(caption); // 加描述
-      $(this).after(span);  // 再套一层描述
-      $(this).wrap(element);  // 最后套 a 标签
-    })
-    $(".md .gallery").find("img").fancybox({
-      selector: '[data-fancybox="images"]',
-      hash: false,
-      loop: false,
-      closeClick: true,
-      helpers: {
-        overlay: {closeClick: true}
-      },
-      buttons: [
-        "zoom",
-        "close"
-      ]
-    });
-  };
-  function SCload_fancybox() {
-    if ($(".md .gallery").find("img").length == 0) return;
-    loadCSS("https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css", document.getElementById("loadcss"));
-    loadScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', pjax_fancybox)
-  };
-  $(function () {
-    SCload_fancybox();
-  });
-  function Pjax_SCload_fancybox(){
-	if (typeof $.fancybox == "undefined") {
-	 SCload_fancybox();
-    } else {
-	 pjax_fancybox();
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
     }
-  }
-  volantis.pjax.push(Pjax_SCload_fancybox)
-  volantis.pjax.send(()=>{
-      if (typeof $.fancybox != "undefined") {
-        $.fancybox.close();    // 关闭弹窗
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
       }
-  },'fancybox')
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
 
-
-<!-- internal -->
-
-  
-  
-  
-    
-<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
-
-    <script type="text/javascript">
-        var imgs=["https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/001.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/002.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/003.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/004.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/005.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/006.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/012.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/016.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/019.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/025.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/033.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/034.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/035.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/038.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/039.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/042.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/046.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/051.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/052.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/054.jpg", "https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/056.jpg"];
-        if ('true' == 'true') {
-          function shuffle(arr){
-            /*From countercurrent-time*/
-            var n = arr.length;
-            while(n--) {
-              var index = Math.floor(Math.random() * n);
-              var temp = arr[index];
-              arr[index] = arr[n];
-              arr[n] = temp;
-            }
-          }
-          shuffle(imgs);
-        }
-	  function Pjax_backstretch(){
-        
-          $('#cover-backstretch').backstretch(
-            imgs,
-          {
-            duration: "10000",
-            fade: "1500"
-          });
-        
-	  }
-	  loadScript("https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js",Pjax_backstretch)
-    </script>
-  
-
-
-
-  
-  
-
-  <div id="rightmenu-wrapper">
-    <ul class="list-v rightmenu" id="rightmenu-content">
-      <li class='option'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-text' onclick="document.execCommand('copy')"><i class='fa fa-copy fa-fw'></i>复制文本</a>
-        <hr id='hr-text'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-href'><i class='fa fa-link fa-fw'></i>复制链接</a>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-open-href'><i class='fa fa-external-link-square-alt fa-fw'></i>在新标签页打开</a>
-        <hr id='hr-href'>
-        <a class='vlts-menu opt fix-cursor-default' id='menu-copy-src'><i class='fa fa-image fa-fw'></i>复制图片地址</a>
-        <hr id='hr-src'>
-      </li>
-      
-        <li class='navigation'>
-          <a class='nav icon-only fix-cursor-default' onclick='history.back()'><i class='fa fa-arrow-left fa-fw'></i></a>
-          <a class='nav icon-only fix-cursor-default' onclick='history.forward()'><i class='fa fa-arrow-right fa-fw'></i></a>
-          <a class='nav icon-only fix-cursor-default' onclick='window.location.reload()'><i class='fa fa-redo fa-fw'></i></a>
-          <a class='nav icon-only fix-cursor-default' href='/'><i class='fa fa-home fa-fw'></i></a>
-        </li>
-      
-      <hr>
-      
-        
-      
-        
+        </div>
           
-    <li>
-      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/faqs/
-        
-        
-        
-        
-          id="https:volantisjsorgfaqs"
-        >
-        <i class='fa fa-question fa-fw'></i> 常见问题
-      </a>
-    </li>
   
-        
-      
-        
-          
-    <li>
-      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/examples/
-        
-        
-        
-        
-          id="https:volantisjsorgexamples"
-        >
-        <i class='fa fa-rss fa-fw'></i> 示例博客
-      </a>
-    </li>
-  
-        
-      
-        
-          
-    <li>
-      <a class='vlts-menu fix-cursor-default ' href=https://volantis.js.org/contributors/
-        
-        
-        
-        
-          id="https:volantisjsorgcontributors"
-        >
-        <i class='fa fa-fan fa-spin fa-fw'></i> 加入社区
-      </a>
-    </li>
-  
-        
-      
-        
-          <hr>
-        
-      
-        
-          
-    <li>
-      <a class='vlts-menu fix-cursor-default ' href=https://github.com/volantis-x/volantis-docs/
-        
-        
-        
-        
-          id="https:githubcomvolantis-xvolantis-docs"
-        >
-        <i class='fa fa-code-branch fa-fw'></i> 本站源码
-      </a>
-    </li>
-  
-        
-      
-        
-      
-        
-          <hr>
-        
-      
-        
-          
-    <li>
-      <a class='vlts-menu fix-cursor-default ' 
-        
-        
-        
-          onclick="document.execCommand('print')"
-        
-        >
-        <i class='fa fa-print fa-fw'></i> 打印页面
-      </a>
-    </li>
-  
-        
-      
-        
-          <hr>
-        
-      
-        
-          
-    <li>
-      <a class='vlts-menu fix-cursor-default toggle-mode-btn' 
-        
-        
-        
-        >
-        <i class='fas fa-moon fa-fw'></i> Dark mode
-      </a>
-    </li>
-  
-        
-      
-        
-          <hr>
-        
-      
-        
-      
-    </ul>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <script>
-    window.document.oncontextmenu = function (event) {
-      if (event.ctrlKey) return true;
-      if (/Android|webOS|BlackBerry/i.test(navigator.userAgent)) return true;
-      return popMenu(event);
-    };
-    document.addEventListener("click", function (event) {
-      var mymenu = document.getElementById('rightmenu-wrapper');
-      mymenu.style.display = "none";
-    });
-    function popMenu(event) {
-      var mymenu = document.getElementById('rightmenu-wrapper');
-      var menuContent = document.getElementById('rightmenu-content');
-      var screenWidth = document.documentElement.clientWidth || document.body.clientWidth;
-      var screenHeight = document.documentElement.clientHeight || document.body.clientHeight;
-      mymenu.style.left = event.clientX + "px"; // 获取鼠标位置
-      mymenu.style.top = event.clientY + "px";
-      mymenu.style.display = 'block';
-      if (event.clientX * 2 > screenWidth) {
-        menuContent.classList.add('left');
-      } else {
-        menuContent.classList.remove('left');
-      }
-      if (event.clientY * 2 > screenHeight) {
-        menuContent.classList.add('top');
-      } else {
-        menuContent.classList.remove('top');
-      }
-
-      let hrText = document.getElementById('hr-text');
-      let hrSrc = document.getElementById('hr-src');
-      let hrHref = document.getElementById('hr-href');
-
-      // 选中图片
-      let copySrc = document.getElementById('menu-copy-src');
-      if (copySrc != undefined) {
-        if (event.target.currentSrc) {
-          copySrc.style.display = 'block';
-          copySrc.addEventListener("click", function (e) {
-            copyString(event.target.currentSrc);
-          },{once: true});
-          hrSrc.style.display = 'block';
-        } else {
-          copySrc.style.display = 'none';
-          hrSrc.style.display = 'none';
-        }
-      }
-
-      // 选中按钮
-      // 判断是不是按钮
-      let href = '';
-      if (event.path) {
-        for (i = 0; i < event.path.length; i++) {
-          if (event.path[i].href != undefined && event.path[i].href.length > 0) {
-            href = event.path[i].href;
-          }
-        }
-      }
-
-      let copyText = document.getElementById('menu-copy-text');
-      copyText.style.display = 'none';
-      hrText.style.display = 'none';
-      if (href.length == 0) {
-        // 选中文本
-        if (window.getSelection().toString()) {
-          if ('false' == 'true') {
-            copyText.style.display = 'block';
-            hrText.style.display = 'block';
-          }
-        }
-      }
-
-      // 在新标签页打开
-      let openHref = document.getElementById('menu-open-href');
-      if (openHref != undefined) {
-        if (href.length > 0) {
-          openHref.style.display = 'block';
-          openHref.addEventListener("click", function (e) {
-            window.open(href);
-          },{once: true});
-          hrHref.style.display = 'block';
-        } else {
-          openHref.style.display = 'none';
-          hrHref.style.display = 'none';
-        }
-      }
-      // 复制链接
-      let copyHref = document.getElementById('menu-copy-href');
-      if (copyHref != undefined) {
-        if (href.length > 0) {
-          copyHref.style.display = 'block';
-          copyHref.addEventListener("click", function (e) {
-            copyString(href);
-          },{once: true});
-        } else {
-          copyHref.style.display = 'none';
-        }
-      }
-      // 有音乐播放器 see: layout/_third-party/aplayer/script.ejs
-      
-      return false; // 该行代码确保系统自带的右键菜单不会被调出
-    }
-    function hideMenu() {
-      document.getElementById('rightmenu-wrapper').style.display = 'none';
-    }
-    function copyString(str) {
-      const input = document.createElement('input');
-      input.setAttribute('readonly', 'readonly');
-      document.body.appendChild(input);
-      input.setAttribute('value', str);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-    }
-    document.execCommand('click');
-  </script>
-
-
-
-
-<script>
-  function loadIssuesJS() {
-    if ($(".md").find(".issues-api").length == 0) return;
-	
-	  loadScript('/js/issues.js');
-	
-  };
-  $(function () {
-    loadIssuesJS();
-  });
-  volantis.pjax.push(()=>{
-	if (typeof IssuesAPI == "undefined") {
-	  loadIssuesJS();
-	}
-  },"IssuesJS")
-</script>
-
-
-
-  <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
-<script>
-  // https://www.npmjs.com/package/vanilla-lazyload
-  // Set the options globally
-  // to make LazyLoad self-initialize
-  window.lazyLoadOptions = {
-    elements_selector: ".lazyload",
-    threshold: 0
-  };
-  // Listen to the initialization event
-  // and get the instance of LazyLoad
-  window.addEventListener(
-    "LazyLoad::Initialized",
-    function (event) {
-      window.lazyLoadInstance = event.detail.instance;
-    },
-    false
-  );
-  document.addEventListener('DOMContentLoaded', function () {
-    lazyLoadInstance.update();
-  });
-  document.addEventListener('pjax:complete', function () {
-    lazyLoadInstance.update();
-  });
-</script>
-
-
-
-
-  
-
-<script>
-  window.FPConfig = {
-	delay: 0,
-	ignoreKeywords: [],
-	maxRPS: 5,
-	hoverDelay: 25
-  };
-</script>
-<script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
-
-
-
-
-
-
-
-   <script type="text/javascript">
-  loadScript("https://cdn.jsdelivr.net/npm/scrollreveal@4.0.6/dist/scrollreveal.min.js")
-  function pjax_scrollrebeal() {
-    ScrollReveal().reveal('.l_main .reveal', {
-      distance: '32px',
-      duration: '800',
-      interval: '20',
-      scale: '1',
-      easing: 'ease-out'
-    });
-  }
-  $(function () {
-  var checkScrollReveal = setInterval(function () {
-    if ($("#safearea").css("display")!="block") return
-    if (typeof ScrollReveal=="undefined") return
-    clearInterval(checkScrollReveal)
-	pjax_scrollrebeal();
-  }, 100)
-  });
-  volantis.pjax.push(pjax_scrollrebeal)
-</script>
-
-
-
-
-
-
-  
-  
-<script src="/js/valine.js"></script>
-
-
-<script>
-  function emoji(path, idx, ext) {
-    return path + "/" + path + "-" + idx + "." + ext;
-  }
-  var emojiMaps = {};
-  for (var i = 1; i <= 54; i++) {
-    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
-  }
-  for (var i = 1; i <= 101; i++) {
-    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
-  }
-  for (var i = 1; i <= 116; i++) {
-    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
-  }
-  for (var i = 1; i <= 125; i++) {
-    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
-  }
-  for (var i = 1; i <= 4; i++) {
-    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
-  }
-  function pjax_valine() {
-    if(!document.querySelectorAll("#valine_container")[0])return;
-    let pagePlaceholder = pdata.commentPlaceholder || "快来抬杠吧~";
-    let path = pdata.commentPath;
-    if (path.length == 0) {
-      let defaultPath = 'https://3wissyuw.lc-cn-e1-shared.com';
-      path = defaultPath || decodeURI(window.location.pathname);
-    }
-    var valine = new Valine();
-    valine.init(Object.assign({"path":"https://3wissyuw.lc-cn-e1-shared.com","placeholder":"快来抬杠吧~","appId":"o6g891hxXze8WG1xu174Bxc4-MdYXbMMI","appKey":"HSOYHT8PzTeNo7stIuLIuYvO","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
-      el: '#valine_container',
-      path: path,
-      placeholder: pagePlaceholder,
-      emojiCDN: 'https://cdn.jsdelivr.net/gh/volantis-x/cdn-emoji/valine/',
-      emojiMaps: emojiMaps,
-    }))
-  }
-  $(function () {
-    pjax_valine();
-  });
-  volantis.pjax.push(pjax_valine);
-</script>
-
-
-
-
-
-
-  
-<script src="/js/app.js"></script>
-
-
-
-<!-- optional -->
-
-  <script>
-const SearchServiceimagePath="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@master/img/";
-const ROOT =  ("/" || "/").endsWith('/') ? ("/" || "/") : ("//" || "/" );
-
-$('.input.u-search-input').one('focus',function(){
-	
-		loadScript('/js/search/hexo.js',setSearchService);
-	
-})
-
-function listenSearch(){
-  
-    customSearch = new HexoSearch({
-      imagePath: SearchServiceimagePath
-    });
-  
-}
-function setSearchService() {
-	listenSearch();
-	
-		document.addEventListener("pjax:success", listenSearch);
-	
-}
-</script>
-
-
-
-
-
-
-
-  
-<script src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@2/js/comment_typing.js"></script>
-
-
-
-
-  
-
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/highlight.min.js"></script>
-
-<script>hljs.initHighlightingOnLoad();</script>
-
-<script>
-volantis.pjax.push(()=>{
-	document.querySelectorAll('pre code').forEach((block) => {
-	  hljs.highlightBlock(block);
-	});
-},"highlightjs")
-</script>
-
-
-
-  <script defer>
-
-  const LCCounter = {
-    app_id: 'u9j57bwJod4EDmXWdxrwuqQT-MdYXbMMI',
-    app_key: 'jfHtEKVE24j0IVCGHbvuFClp',
-    custom_api_server: '',
-
-    // 查询存储的记录
-    getRecord(Counter, url, title) {
-      return new Promise(function (resolve, reject) {
-        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({url})))
-          .then(resp => resp.json())
-          .then(({results, code, error}) => {
-            if (code === 401) {
-              throw error;
-            }
-            if (results && results.length > 0) {
-              var record = results[0];
-              resolve(record);
-            } else {
-              Counter('post', '/classes/Counter', {url, title: title, times: 0})
-                .then(resp => resp.json())
-                .then((record, error) => {
-                  if (error) {
-                    throw error;
-                  }
-                  resolve(record);
-                }).catch(error => {
-                console.error('Failed to create', error);
-                reject(error);
-              });
-            }
-          }).catch((error) => {
-          console.error('LeanCloud Counter Error:', error);
-          reject(error);
-        });
-      })
-    },
-
-    // 发起自增请求
-    increment(Counter, incrArr) {
-      return new Promise(function (resolve, reject) {
-        Counter('post', '/batch', {
-          "requests": incrArr
-        }).then((res) => {
-          res = res.json();
-          if (res.error) {
-            throw res.error;
-          }
-          resolve(res);
-        }).catch((error) => {
-          console.error('Failed to save visitor count', error);
-          reject(error);
-        });
-      });
-    },
-
-    // 构建自增请求体
-    buildIncrement(objectId) {
-      return {
-        "method": "PUT",
-        "path": `/1.1/classes/Counter/${ objectId }`,
-        "body": {
-          "times": {
-            '__op': 'Increment',
-            'amount': 1
-          }
-        }
-      }
-    },
-
-    // 校验是否为有效的 UV
-    validUV() {
-      var key = 'LeanCloudUVTimestamp';
-      var flag = localStorage.getItem(key);
-      if (flag) {
-        // 距离标记小于 24 小时则不计为 UV
-        if (new Date().getTime() - parseInt(flag) <= 86400000) {
-          return false;
-        }
-      }
-      localStorage.setItem(key, new Date().getTime().toString());
-      return true;
-    },
-
-    addCount(Counter) {
-      var enableIncr = '' === 'true' && window.location.hostname !== 'localhost';
-      enableIncr = true;
-      var getterArr = [];
-      var incrArr = [];
-      // 请求 PV 并自增
-      var pvCtn = document.querySelector('#lc-sv');
-      if (pvCtn || enableIncr) {
-        var pvGetter = this.getRecord(Counter, 'https://super-aviator.github.io' + '/#lc-sv', 'Visits').then((record) => {
-          incrArr.push(this.buildIncrement(record.objectId))
-          var eles = document.querySelectorAll('#lc-sv #number');
-          if (eles.length > 0) {
-            eles.forEach((el,index,array)=>{
-              el.innerText = record.times + 1;
-              if (pvCtn) {
-                pvCtn.style.display = 'inline';
-              }
-            })
-          }
-        });
-        getterArr.push(pvGetter);
-      }
-
-      // 请求 UV 并自增
-      var uvCtn = document.querySelector('#lc-uv');
-      if (uvCtn || enableIncr) {
-        var uvGetter = this.getRecord(Counter, 'https://super-aviator.github.io' + '/#lc-uv', 'Visitors').then((record) => {
-          var vuv = this.validUV();
-          vuv && incrArr.push(this.buildIncrement(record.objectId))
-          var eles = document.querySelectorAll('#lc-uv #number');
-          if (eles.length > 0) {
-            eles.forEach((el,index,array)=>{
-              el.innerText = record.times + (vuv ? 1 : 0);
-              if (uvCtn) {
-                uvCtn.style.display = 'inline';
-              }
-            })
-          }
-        });
-        getterArr.push(uvGetter);
-      }
-
-      // 请求文章的浏览数，如果是当前页面就自增
-      var allPV = document.querySelectorAll('#lc-pv');
-      if (allPV.length > 0 || enableIncr) {
-        for (i = 0; i < allPV.length; i++) {
-          let pv = allPV[i];
-          let title = pv.getAttribute('data-title');
-          var url = 'https://super-aviator.github.io' + pv.getAttribute('data-path');
-          if (url) {
-            var viewGetter = this.getRecord(Counter, url, title).then((record) => {
-              // 是当前页面就自增
-              let curPath = window.location.pathname;
-              if (curPath.includes('index.html')) {
-                curPath = curPath.substring(0, curPath.lastIndexOf('index.html'));
-              }
-              if (pv.getAttribute('data-path') == curPath) {
-                incrArr.push(this.buildIncrement(record.objectId));
-              }
-              if (pv) {
-                var ele = pv.querySelector('#lc-pv #number');
-                if (ele) {
-                  if (pv.getAttribute('data-path') == curPath) {
-                    ele.innerText = (record.times || 0) + 1;
-                  } else {
-                    ele.innerText = record.times || 0;
-                  }
-                  pv.style.display = 'inline';
-                }
-              }
-            });
-            getterArr.push(viewGetter);
-          }
-        }
-      }
-
-      // 如果启动计数自增，批量发起自增请求
-      if (enableIncr) {
-        Promise.all(getterArr).then(() => {
-          incrArr.length > 0 && this.increment(Counter, incrArr);
-        })
-      }
-
-    },
-
-
-    fetchData(api_server) {
-      var Counter = (method, url, data) => {
-        return fetch(`${ api_server }/1.1${ url }`, {
-          method,
-          headers: {
-            'X-LC-Id': this.app_id,
-            'X-LC-Key': this.app_key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-      this.addCount(Counter);
-    },
-
-    refreshCounter() {
-      var api_server = this.app_id.slice(-9) !== '-MdYXbMMI' ? this.custom_api_server : `https://${ this.app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
-      if (api_server) {
-        this.fetchData(api_server);
-      } else {
-        fetch('https://app-router.leancloud.cn/2/route?appId=' + this.app_id)
-          .then(resp => resp.json())
-          .then(({api_server}) => {
-            this.fetchData('https://' + api_server);
-          });
-      }
-    }
-
-  };
-
-  LCCounter.refreshCounter();
-
-  document.addEventListener('pjax:complete', function () {
-    LCCounter.refreshCounter();
-  });
-</script>
-
-
-
-
-  <script>
-const rootElement = document.documentElement;
-const darkModeStorageKey = "user-color-scheme";
-const rootElementDarkModeAttributeName = "data-user-color-scheme";
-
-const setLS = (k, v) => {
-    localStorage.setItem(k, v);
-};
-
-const removeLS = (k) => {
-    localStorage.removeItem(k);
-};
-
-const getLS = (k) => {
-    return localStorage.getItem(k);
-};
-
-const getModeFromCSSMediaQuery = () => {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
-
-const resetRootDarkModeAttributeAndLS = () => {
-  rootElement.removeAttribute(rootElementDarkModeAttributeName);
-  removeLS(darkModeStorageKey);
-};
-
-const validColorModeKeys = {
-  dark: true,
-  light: true,
-};
-
-const applyCustomDarkModeSettings = (mode) => {
-  const currentSetting = mode || getLS(darkModeStorageKey);
-
-  if (currentSetting === getModeFromCSSMediaQuery()) {
-    resetRootDarkModeAttributeAndLS();
-  } else if (validColorModeKeys[currentSetting]) {
-    rootElement.setAttribute(rootElementDarkModeAttributeName, currentSetting);
-  } else {
-    resetRootDarkModeAttributeAndLS();
-  }
-};
-
-const invertDarkModeObj = {
-  dark: "light",
-  light: "dark",
-};
-
-/**
- * get target mode
- */
-const toggleCustomDarkMode = () => {
-  let currentSetting = getLS(darkModeStorageKey);
-
-  if (validColorModeKeys[currentSetting]) {
-    currentSetting = invertDarkModeObj[currentSetting];
-  } else if (currentSetting === null) {
-    currentSetting = invertDarkModeObj[getModeFromCSSMediaQuery()];
-  } else {
-    return;
-  }
-  setLS(darkModeStorageKey, currentSetting);
-  return currentSetting;
-};
-
-/**
- * bind click event for toggle button
- */
-var btn=$("#wrapper .toggle-mode-btn,#rightmenu-wrapper .toggle-mode-btn");
-function bindToggleButton() {
-    btn.on('click',(e) => {
-      const mode = toggleCustomDarkMode();
-      applyCustomDarkModeSettings(mode);
-    });
-}
-
-applyCustomDarkModeSettings();
-document.addEventListener("DOMContentLoaded", bindToggleButton);
-volantis.pjax.push(bindToggleButton);
-volantis.pjax.send(()=>{
-	btn.unbind('click');
-},'toggle-mode-btn-unbind');
-</script>
-
-
-
-
-
-
-
-
-<script>
-function listennSidebarTOC() {
-  const navItems = document.querySelectorAll(".toc li");
-  if (!navItems.length) return;
-  const sections = [...navItems].map((element) => {
-    const link = element.querySelector(".toc-link");
-    const target = document.getElementById(
-      decodeURI(link.getAttribute("href")).replace("#", "")
-    );
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      window.scrollTo({
-		top: target.offsetTop + 100,
-		
-		behavior: "smooth"
-		
-	  });
-    });
-    return target;
-  });
-
-  function activateNavByIndex(target) {
-    if (target.classList.contains("active-current")) return;
-
-    document.querySelectorAll(".toc .active").forEach((element) => {
-      element.classList.remove("active", "active-current");
-    });
-    target.classList.add("active", "active-current");
-    let parent = target.parentNode;
-    while (!parent.matches(".toc")) {
-      if (parent.matches("li")) parent.classList.add("active");
-      parent = parent.parentNode;
-    }
-  }
-
-  function findIndex(entries) {
-    let index = 0;
-    let entry = entries[index];
-    if (entry.boundingClientRect.top > 0) {
-      index = sections.indexOf(entry.target);
-      return index === 0 ? 0 : index - 1;
-    }
-    for (; index < entries.length; index++) {
-      if (entries[index].boundingClientRect.top <= 0) {
-        entry = entries[index];
-      } else {
-        return sections.indexOf(entry.target);
-      }
-    }
-    return sections.indexOf(entry.target);
-  }
-
-  function createIntersectionObserver(marginTop) {
-    marginTop = Math.floor(marginTop + 10000);
-    let intersectionObserver = new IntersectionObserver(
-      (entries, observe) => {
-        let scrollHeight = document.documentElement.scrollHeight + 100;
-        if (scrollHeight > marginTop) {
-          observe.disconnect();
-          createIntersectionObserver(scrollHeight);
-          return;
-        }
-        let index = findIndex(entries);
-        activateNavByIndex(navItems[index]);
-      },
-      {
-        rootMargin: marginTop + "px 0px -100% 0px",
-        threshold: 0,
-      }
-    );
-    sections.forEach((element) => {
-      element && intersectionObserver.observe(element);
-    });
-  }
-  createIntersectionObserver(document.documentElement.scrollHeight);
-}
-
-document.addEventListener("DOMContentLoaded", listennSidebarTOC);
-document.addEventListener("pjax:success", listennSidebarTOC);
-</script>
-
-<!-- more -->
-
- 
-	   
-	    
-
-
-<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
-
-
-<script>
-    var pjax;
-    document.addEventListener('DOMContentLoaded', function () {
-      pjax = new Pjax({
-        elements: 'a[href]:not([href^="#"]):not([href="javascript:void(0)"]):not([pjax-fancybox])',
-        selectors: [
-          "title",
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LoadBalancerAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">LoadBalancerAutoConfiguration自动配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LoadBalanced%E6%B3%A8%E8%A7%A3"><span class="nav-number">2.1.</span> <span class="nav-text">@LoadBalanced注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LoadBalancerClient%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.</span> <span class="nav-text">LoadBalancerClient接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ILoadBalancer-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">ILoadBalancer-负载均衡器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AbstractLoadBalancer"><span class="nav-number">3.1.</span> <span class="nav-text">AbstractLoadBalancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BaseLoadBalancer"><span class="nav-number">3.2.</span> <span class="nav-text">BaseLoadBalancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DynamicServerListLoadBalancer-%E5%8A%A8%E6%80%81%E6%9C%8D%E5%8A%A1%E5%88%97%E8%A1%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">DynamicServerListLoadBalancer-动态服务列表负载均衡器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NoOpLoadBalancer"><span class="nav-number">3.4.</span> <span class="nav-text">NoOpLoadBalancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZoneAwareLoadBalancer-Ribbon%E9%BB%98%E8%AE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="nav-number">3.5.</span> <span class="nav-text">ZoneAwareLoadBalancer -Ribbon默认的负载均衡器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IRule-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="nav-number">4.</span> <span class="nav-text">IRule-负载均衡策略</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AbstractLoadBalancerRule-%E6%8A%BD%E8%B1%A1%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="nav-number">4.1.</span> <span class="nav-text">AbstractLoadBalancerRule-抽象的负载均衡策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RandomRule-%E9%9A%8F%E6%9C%BA%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="nav-number">4.2.</span> <span class="nav-text">RandomRule-随机选择策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RoundRobinRule-%E7%BA%BF%E6%80%A7%E8%BD%AE%E8%AF%A2%E7%AD%96%E7%95%A5"><span class="nav-number">4.3.</span> <span class="nav-text">RoundRobinRule-线性轮询策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RetryRule-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5"><span class="nav-number">4.4.</span> <span class="nav-text">RetryRule-重试策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeightedResponseTimeRule-%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4%E6%9D%83%E9%87%8D%E7%AD%96%E7%95%A5"><span class="nav-number">4.5.</span> <span class="nav-text">WeightedResponseTimeRule- 响应时间权重策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ClientConfigEnbaledRoundRibbonRule"><span class="nav-number">4.6.</span> <span class="nav-text">ClientConfigEnbaledRoundRibbonRule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BestAvailableRule-%E6%9C%80%E7%A9%BA%E9%97%B2%E5%AE%9E%E4%BE%8B%E7%AD%96%E7%95%A5"><span class="nav-number">4.7.</span> <span class="nav-text">BestAvailableRule-最空闲实例策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PredicateBasedRule"><span class="nav-number">4.8.</span> <span class="nav-text">PredicateBasedRule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AvailabilityFilterRule"><span class="nav-number">4.9.</span> <span class="nav-text">AvailabilityFilterRule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZoneAvoidanceRule"><span class="nav-number">4.10.</span> <span class="nav-text">ZoneAvoidanceRule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">4.11.</span> <span class="nav-text">TODO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ribbon%E8%87%AA%E5%8A%A8%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">Ribbon自动化配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">5.1.</span> <span class="nav-text">使用配置文件进行配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE"><span class="nav-number">5.2.</span> <span class="nav-text">替换默认配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E8%87%AA%E5%AE%9A%E4%B9%89Bean%E6%9B%BF%E6%8D%A2"><span class="nav-number">5.2.1.</span> <span class="nav-text">通过自定义Bean替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-RibbonClient%E6%9B%BF%E6%8D%A2"><span class="nav-number">5.2.2.</span> <span class="nav-text">使用@RibbonClient替换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#EurekaClient%E4%B8%AD%E5%A2%9E%E5%8A%A0%E5%8C%BA%E5%9F%9F%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">6.</span> <span class="nav-text">EurekaClient中增加区域元数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%87%8D%E8%AF%95%E5%8A%9F%E8%83%BD"><span class="nav-number">7.</span> <span class="nav-text">添加重试功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LoadBalancerFeignClient%E6%8E%A5%E5%8F%A3"><span class="nav-number">8.</span> <span class="nav-text">LoadBalancerFeignClient接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LoadBalancerInterceptor%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">9.</span> <span class="nav-text">LoadBalancerInterceptor拦截器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="熊乾坤"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">熊乾坤</p>
+  <div class="site-description" itemprop="description">熊乾坤的博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/category/">
           
-          "#pjax-container",
-          "#pjax-header-nav-list"
-        ],
-        cacheBust: false,   // url 地址追加时间戳，用以避免浏览器缓存
-        timeout: 5000
-      });
-    });
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tag/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
 
-    document.addEventListener('pjax:send', function (e) {
-      //window.stop(); // 相当于点击了浏览器的停止按钮
 
-      try {
-        var currentUrl = window.location.pathname;
-        var targetUrl = e.triggerElement.href;
-        var banUrl = [""];
-        if (banUrl[0] != "") {
-          banUrl.forEach(item => {
-            if(currentUrl.indexOf(item) != -1 || targetUrl.indexOf(item) != -1) {
-              window.location.href = targetUrl;
-            }
-          });
-        }
-      } catch (error) {}
 
-      window.subData = null; // 移除标题（用于一二级导航栏切换处）
+      </div>
 
-      volantis.$switcher.removeClass('active'); // 关闭移动端激活的搜索框
-      volantis.$header.removeClass('z_search-open'); // 关闭移动端激活的搜索框
-      volantis.$wrapper.removeClass('sub'); // 跳转页面时关闭二级导航
-
-      // 解绑事件 避免重复监听
-      volantis.$topBtn.unbind('click');
-      $('.menu a').unbind('click');
-      $(window).unbind('resize');
-      $(window).unbind('scroll');
-      $(document).unbind('scroll');
-      $(document).unbind('click');
-      $('body').unbind('click');
-	  // 使用 volantis.pjax.send 方法传入pjax:send回调函数 参见layout/_partial/scripts/global.ejs
-	  volantis.pjax.method.send.start();
-    });
-
-    document.addEventListener('pjax:complete', function () {
-      $('.nav-main').find('.list-v').not('.menu-phone').removeAttr("style",""); // 移除小尾巴的移除
-      $('.menu-phone.list-v').removeAttr("style",""); // 移除小尾巴的移除
-      $('script[data-pjax], .pjax-reload script').each(function () {
-        $(this).parent().append($(this).remove());
-      });
-      try{
-		// 使用 volantis.pjax.push 方法传入重载函数 参见layout/_partial/scripts/global.ejs
-		volantis.pjax.method.complete.start();
-      } catch (e) {
-        console.log(e);
-      }
-    });
-
-    document.addEventListener('pjax:error', function (e) {
-	  // 使用 volantis.pjax.error 方法传入pjax:error回调函数 参见layout/_partial/scripts/global.ejs
-	  volantis.pjax.method.error.start();
-      window.location.href = e.triggerElement.href;
-    });
-</script>
- 
-	  
     </div>
-  </body>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">熊乾坤</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o6g891hxXze8WG1xu174Bxc4-MdYXbMMI',
+      appKey     : 'HSOYHT8PzTeNo7stIuLIuYvO',
+      placeholder: "快来评论吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
 </html>

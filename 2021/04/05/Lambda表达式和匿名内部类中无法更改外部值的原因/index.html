@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="什么情况下无法编译&#x2F;&#x2F; 在匿名内部类外更改匿名内部类中使用到的值的时候 int a &#x3D; 12; Function&lt;Integer, Integer&gt; f &#x3D; x -&gt; x + a; a &#x3D; 14;  &#x2F;&#x2F; 在匿名内部类中更改外部的值 int a &#x3D; 16; Function&lt;Integer, Integer&gt; f &#x3D; x -&gt; &amp;#123; a++; retur">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lambda表达式和匿名内部类中无法更改外部值的原因">
+<meta property="og:url" content="https://super-aviator.github.io/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/index.html">
+<meta property="og:site_name" content="孤独飞行员">
+<meta property="og:description" content="什么情况下无法编译&#x2F;&#x2F; 在匿名内部类外更改匿名内部类中使用到的值的时候 int a &#x3D; 12; Function&lt;Integer, Integer&gt; f &#x3D; x -&gt; x + a; a &#x3D; 14;  &#x2F;&#x2F; 在匿名内部类中更改外部的值 int a &#x3D; 16; Function&lt;Integer, Integer&gt; f &#x3D; x -&gt; &amp;#123; a++; retur">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-04T16:05:18.000Z">
+<meta property="article:modified_time" content="2021-04-04T16:53:32.224Z">
+<meta property="article:author" content="熊乾坤">
+<meta property="article:tag" content="Java疑惑解答">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://super-aviator.github.io/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Lambda表达式和匿名内部类中无法更改外部值的原因 | 孤独飞行员</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孤独飞行员</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lambda表达式和匿名内部类中无法更改外部值的原因
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-05 00:05:18 / 修改时间：00:53:32" itemprop="dateCreated datePublished" datetime="2021-04-05T00:05:18+08:00">2021-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="什么情况下无法编译"><a href="#什么情况下无法编译" class="headerlink" title="什么情况下无法编译"></a>什么情况下无法编译</h1><pre><code class="java">// 在匿名内部类外更改匿名内部类中使用到的值的时候
+int a = 12;
+Function&lt;Integer, Integer&gt; f = x -&gt; x + a;
+a = 14;
+
+// 在匿名内部类中更改外部的值
+int a = 16;
+Function&lt;Integer, Integer&gt; f = x -&gt; &#123; a++; return x + a; &#125;
+</code></pre>
+<p>以上两种情况都无法通过编译，匿名内部类中使用到的外部值是无法更改的。</p>
+<h1 id="无法编译的原因"><a href="#无法编译的原因" class="headerlink" title="无法编译的原因"></a>无法编译的原因</h1><p>在java7中，匿名内部类中使用的外部值必须有final修饰，java8取消了这种限制，但是通过反编译工具可以发现实际上生成的class文件中自动给匿名内部类中使用到的值加上了final，可以看作这是java8的语法糖。</p>
+<pre><code class="java">// 原本的代码
+int a = 4;
+Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
+    @Override
+    public Integer apply(Integer x) &#123;
+        return x + a;
+    &#125;
+&#125;;
+
+// 反编译得到的代码
+final int n = 4;
+Function&lt;Integer, Integer&gt; function = new Function&lt;Integer, Integer&gt;()&#123;
+    @Override
+    public Integer apply(Integer n2) &#123;
+        return n2 + n;
+    &#125;
+&#125;;
+</code></pre>
+<h1 id="深入探究"><a href="#深入探究" class="headerlink" title="深入探究"></a>深入探究</h1><p>上面的结论可以解释无法更改的原因，但是我们还无法知道为什么要这么设计，如果不这么设计会产生什么影响。</p>
+<p>这里，我们不妨先思考以下，匿名内部类是如何得到外部的值的。假如我们手动创建一个对象，要怎样才能够把外部的值传递给这个对象呢？一般情况下只能够通过方法传递进去。但是我们调用匿名内部类的方法的时候是没有传递外部值进去的。所以只有可能是通过构造器传入的。当编译器发现我们在匿名内部类中使用到了外部值的时候会自动为匿名内部类添加构造器用于将外部的值传递进去。而通过反编译工具可以验证我们的想法。</p>
+<pre><code class="java">// 源代码
+import java.util.function.*;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        int a = 4;
+        Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
+            @Override
+            public Integer apply(Integer x) &#123;
+                return x + a;
+            &#125;
+        &#125;;
+        System.out.println(f.apply(2));
+    &#125;
+&#125;
+
+// 反编译的 Main$1.class 的代码
+/*
+ * Decompiled with CFR 0.148.
+ */
+import java.util.function.Function;
+
+static final class Main.1
+implements Function&lt;Integer, Integer&gt; &#123;
+    final /* synthetic */ int val$a;
+
+    Main.1(int n) &#123;
+        this.val$a = n;
+    &#125;
+
+    @Override
+    public Integer apply(Integer n) &#123;
+        return n + this.val$a;
+    &#125;
+&#125;
+</code></pre>
+<p>到这里，以构造器的方式传递值进去的想法得到了验证。我们再来看以下无法通过编译的代码</p>
+<pre><code class="java">int a = 4;
+Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
+    @Override
+    public Integer apply(Integer x) &#123;
+        return x + a;
+    &#125;
+&#125;;
+a = 12;
+System.out.println(f.apply(2));
+</code></pre>
+<p>假设这段代码能够编译，按照我们的直观理解，最后输出的应该是 14（因为 f.apply 得到的是 a+x，x 传入的是 2，而 a 被我们更改成了 12）</p>
+<p>我们回过头看上面的构造器传递值，实际上匿名内部类中得到的值是一份拷贝，那么匿名内部类中的 a 和外部的 a 实际上是两个不同地址里的值，它们不过是值相等罢了。那么，如果以上代码得到编译，实际上得到的输出应该为 6，因为 a 为 4 的时候被当作构造参数传进去了，后面更改 a 不会对它内部造成影响。这样的结果是不符合人的直观感觉的，容易造成混乱，故设计成必须由 final 修饰。</p>
+<p>除了以上原因之外，实际上有一个语法语义上的设计原因。匿名内部类可以看作是 java 早期对函数式的一种复杂化实现。以函数式编程的观点来看，能够使用所处环境的外部的值的函数被称为闭包。因此，以上的匿名内部类对象 f 是一个闭包，其所使用的值 a 来自于外部，被称为自由变量，在函数式编程的语义上，自由变量是不可变的。因此设计成 final 更加合理。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java%E7%96%91%E6%83%91%E8%A7%A3%E7%AD%94/" rel="tag"># Java疑惑解答</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/04/Kafka-Producer/" rel="prev" title="Kafka-Producer">
+      <i class="fa fa-chevron-left"></i> Kafka-Producer
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E6%97%A0%E6%B3%95%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">什么情况下无法编译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E6%B3%95%E7%BC%96%E8%AF%91%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">2.</span> <span class="nav-text">无法编译的原因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6"><span class="nav-number">3.</span> <span class="nav-text">深入探究</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="熊乾坤"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">熊乾坤</p>
+  <div class="site-description" itemprop="description">熊乾坤的博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/category/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tag/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">熊乾坤</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o6g891hxXze8WG1xu174Bxc4-MdYXbMMI',
+      appKey     : 'HSOYHT8PzTeNo7stIuLIuYvO',
+      placeholder: "快来评论吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
