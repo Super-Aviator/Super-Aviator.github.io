@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="熊乾坤的博客">
@@ -101,6 +101,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -117,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -135,11 +136,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -149,7 +177,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -159,6 +187,94 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/04/06/JavaSE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/06/JavaSE/" class="post-title-link" itemprop="url">JavaSE</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-06 20:52:59 / 修改时间：22:41:33" itemprop="dateCreated datePublished" datetime="2021-04-06T20:52:59+08:00">2021-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/06/JavaSE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/06/JavaSE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="finally-catch语句中return的先后顺序"><a href="#finally-catch语句中return的先后顺序" class="headerlink" title="finally-catch语句中return的先后顺序"></a>finally-catch语句中return的先后顺序</h1><ol>
+<li>catch块或者try块中有return，而finally块中也有return，这时都是会走finllay块中的return。</li>
+<li>catch中或者try中有return，而finally中没有return，这种情况需要分两种情况：<ol>
+<li>如果finally块对try块或者catch块中的<code>基本类型</code>变量有修改，这时不会影响try块或者catch块中的返回结果；</li>
+<li>如果finally块对try块或者catch块中的<code>引用类型</code>变量有改动，会影响try块或者catch块中的返回结果；
+          <!--noindex-->
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -188,7 +304,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-04-05 00:05:18 / 修改时间：00:53:32" itemprop="dateCreated datePublished" datetime="2021-04-05T00:05:18+08:00">2021-04-05</time>
+              <time title="创建时间：2021-04-05 00:05:18 / 修改时间：19:52:52" itemprop="dateCreated datePublished" datetime="2021-04-05T00:05:18+08:00">2021-04-05</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -235,77 +351,9 @@ int a = 16;
 Function&lt;Integer, Integer&gt; f = x -&gt; &#123; a++; return x + a; &#125;
 </code></pre>
 <p>以上两种情况都无法通过编译，匿名内部类中使用到的外部值是无法更改的。</p>
-<h1 id="无法编译的原因"><a href="#无法编译的原因" class="headerlink" title="无法编译的原因"></a>无法编译的原因</h1><p>在java7中，匿名内部类中使用的外部值必须有final修饰，java8取消了这种限制，但是通过反编译工具可以发现实际上生成的class文件中自动给匿名内部类中使用到的值加上了final，可以看作这是java8的语法糖。</p>
-<pre><code class="java">// 原本的代码
-int a = 4;
-Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
-    @Override
-    public Integer apply(Integer x) &#123;
-        return x + a;
-    &#125;
-&#125;;
-
-// 反编译得到的代码
-final int n = 4;
-Function&lt;Integer, Integer&gt; function = new Function&lt;Integer, Integer&gt;()&#123;
-    @Override
-    public Integer apply(Integer n2) &#123;
-        return n2 + n;
-    &#125;
-&#125;;
-</code></pre>
-<h1 id="深入探究"><a href="#深入探究" class="headerlink" title="深入探究"></a>深入探究</h1><p>上面的结论可以解释无法更改的原因，但是我们还无法知道为什么要这么设计，如果不这么设计会产生什么影响。</p>
-<p>这里，我们不妨先思考以下，匿名内部类是如何得到外部的值的。假如我们手动创建一个对象，要怎样才能够把外部的值传递给这个对象呢？一般情况下只能够通过方法传递进去。但是我们调用匿名内部类的方法的时候是没有传递外部值进去的。所以只有可能是通过构造器传入的。当编译器发现我们在匿名内部类中使用到了外部值的时候会自动为匿名内部类添加构造器用于将外部的值传递进去。而通过反编译工具可以验证我们的想法。</p>
-<pre><code class="java">// 源代码
-import java.util.function.*;
-public class Main &#123;
-    public static void main(String[] args) &#123;
-        int a = 4;
-        Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
-            @Override
-            public Integer apply(Integer x) &#123;
-                return x + a;
-            &#125;
-        &#125;;
-        System.out.println(f.apply(2));
-    &#125;
-&#125;
-
-// 反编译的 Main$1.class 的代码
-/*
- * Decompiled with CFR 0.148.
- */
-import java.util.function.Function;
-
-static final class Main.1
-implements Function&lt;Integer, Integer&gt; &#123;
-    final /* synthetic */ int val$a;
-
-    Main.1(int n) &#123;
-        this.val$a = n;
-    &#125;
-
-    @Override
-    public Integer apply(Integer n) &#123;
-        return n + this.val$a;
-    &#125;
-&#125;
-</code></pre>
-<p>到这里，以构造器的方式传递值进去的想法得到了验证。我们再来看以下无法通过编译的代码</p>
-<pre><code class="java">int a = 4;
-Function&lt;Integer, Integer&gt; f = new Function&lt;Integer, Integer&gt;() &#123;
-    @Override
-    public Integer apply(Integer x) &#123;
-        return x + a;
-    &#125;
-&#125;;
-a = 12;
-System.out.println(f.apply(2));
-</code></pre>
-<p>假设这段代码能够编译，按照我们的直观理解，最后输出的应该是 14（因为 f.apply 得到的是 a+x，x 传入的是 2，而 a 被我们更改成了 12）</p>
-<p>我们回过头看上面的构造器传递值，实际上匿名内部类中得到的值是一份拷贝，那么匿名内部类中的 a 和外部的 a 实际上是两个不同地址里的值，它们不过是值相等罢了。那么，如果以上代码得到编译，实际上得到的输出应该为 6，因为 a 为 4 的时候被当作构造参数传进去了，后面更改 a 不会对它内部造成影响。这样的结果是不符合人的直观感觉的，容易造成混乱，故设计成必须由 final 修饰。</p>
-<p>除了以上原因之外，实际上有一个语法语义上的设计原因。匿名内部类可以看作是 java 早期对函数式的一种复杂化实现。以函数式编程的观点来看，能够使用所处环境的外部的值的函数被称为闭包。因此，以上的匿名内部类对象 f 是一个闭包，其所使用的值 a 来自于外部，被称为自由变量，在函数式编程的语义上，自由变量是不可变的。因此设计成 final 更加合理。</p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -429,10 +477,16 @@ System.out.println(f.apply(2));
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-28 15:16:40 / 修改时间：21:42:43" itemprop="dateCreated datePublished" datetime="2021-03-28T15:16:40+08:00">2021-03-28</time>
+              <time title="创建时间：2021-03-28 15:16:40" itemprop="dateCreated datePublished" datetime="2021-03-28T15:16:40+08:00">2021-03-28</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-05 19:53:17" itemprop="dateModified" datetime="2021-04-05T19:53:17+08:00">2021-04-05</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -469,7 +523,9 @@ System.out.println(f.apply(2));
 
       
           <h1 id="重置电脑"><a href="#重置电脑" class="headerlink" title="重置电脑"></a>重置电脑</h1><p>在新买的二手电脑到手之后，登录了MicroSoft账户，然后本地的账户未设置密码，WIndowsHello也未设置PIN码，在电脑重启之后，我淦，发现没办法登录电脑了，使用MicroSoft账户登录时，会报网络未连接的问题，这个时候感觉只能重置电脑解决了，需要进入安全模式，然后重置电脑：<br>首先按住shift键，然后点击 <code>电源键-&gt;重启</code>；<br>重启后就自动进入了安全模式咯</p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -613,7 +669,7 @@ System.out.println(f.apply(2));
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-04 14:29:10" itemprop="dateModified" datetime="2021-04-04T14:29:10+08:00">2021-04-04</time>
+                <time title="修改时间：2021-04-05 19:52:15" itemprop="dateModified" datetime="2021-04-05T19:52:15+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -664,199 +720,9 @@ public @interface LoadBalanced &#123;
 
 &#125;
 </code></pre>
-<h2 id="LoadBalancerClient接口"><a href="#LoadBalancerClient接口" class="headerlink" title="LoadBalancerClient接口"></a>LoadBalancerClient接口</h2><p>这个接口有一个具体的实现类RibbonLoadBalancerClient；该实现类的execution方法中，将具体的负载均衡交给ILoadBanlancer接口的实现类去实现：</p>
-<pre><code class="java">public &lt;T&gt; T execute(String serviceId, LoadBalancerRequest&lt;T&gt; request, Object hint)
-        throws IOException &#123;
-    ILoadBalancer loadBalancer = getLoadBalancer(serviceId);
-    Server server = getServer(loadBalancer, hint);
-    if (server == null) &#123;
-        throw new IllegalStateException(&quot;No instances available for &quot; + serviceId);
-    &#125;
-    RibbonServer ribbonServer = new RibbonServer(serviceId, server,
-            isSecure(server, serviceId),
-            serverIntrospector(serviceId).getMetadata(server));
-    return execute(serviceId, ribbonServer, request);
-&#125;
-</code></pre>
-<p>上面的getLoadBalancer方法中，通过服务名找到对应的ILoadBalancer的实现类，在getServer方法中，去通过一定的策略找到服务对应的实例。</p>
-<h1 id="ILoadBalancer-负载均衡器"><a href="#ILoadBalancer-负载均衡器" class="headerlink" title="ILoadBalancer-负载均衡器"></a>ILoadBalancer-负载均衡器</h1><p>负载均衡器接口中的方法如下：</p>
-<pre><code class="java">public interface ILoadBalancer &#123;
-        //向负载均衡器中增加服务实例
-    public void addServers(List&lt;Server&gt; newServers);
-        //通过某种策略，从负载均衡器中找出一个具体的实例
-    public Server chooseServer(Object key);
-       //通知某个服务已经停止服务
-    public void markServerDown(Server server);
-    @Deprecated
-    public List&lt;Server&gt; getServerList(boolean availableOnly);
-       //获取正常服务的列表
-        public List&lt;Server&gt; getReachableServers();
-       //获取所有已知服务的列表
-    public List&lt;Server&gt; getAllServers();
-&#125;
-</code></pre>
-<p>该接口有如下几个实现类：</p>
-<h2 id="AbstractLoadBalancer"><a href="#AbstractLoadBalancer" class="headerlink" title="AbstractLoadBalancer"></a><strong>AbstractLoadBalancer</strong></h2><p>ILoadBalancer接口的抽象实现；所有负载均衡器都是该抽象类的子类；该类中维护了枚举类为：<code>ALL</code>,<code>STATUS_UP</code>,<code>STATUS_NOT_UP</code>的三个服务实例列表，并增加了如下三个方法：</p>
-<ul>
-<li><strong>public Server chooseServer();</strong> 根据key查找服务，该抽象类中直接调用ILoadBalancer接口的chooseServer接口，传的key为null。</li>
-<li><strong>public abstract List&lt; Server&gt;getServerList(ServerGroup serverGroup);</strong> 查找某个服务分组下的所有服务实例。</li>
-<li><strong>public abstract LoadBalancerStats getLoadBalancerStats();</strong> 获取负载均衡器的详细信息。包含了统计数据和负载均衡器运行情况。</li>
-</ul>
-<h2 id="BaseLoadBalancer"><a href="#BaseLoadBalancer" class="headerlink" title="BaseLoadBalancer"></a><strong>BaseLoadBalancer</strong></h2><ul>
-<li><p>该类是负载均衡器最基本的实现类；该类中维护了一个包含所有实例和正常服务的实例，并使用可重入锁进行同步：</p>
-<pre><code class="java">@Monitor(name = PREFIX + &quot;AllServerList&quot;, type = DataSourceType.INFORMATIONAL
- protected volatile List&lt;Server&gt; allServerList = Collections
-         .synchronizedList(new ArrayList&lt;Server&gt;());
- @Monitor(name = PREFIX + &quot;UpServerList&quot;, type = DataSourceType.INFORMATIONAL)
- protected volatile List&lt;Server&gt; upServerList = Collections
-         .synchronizedList(new ArrayList&lt;Server&gt;());
-
-protected ReadWriteLock allServerLock = new ReentrantReadWriteLock();
-protected ReadWriteLock upServerLock = new ReentrantReadWriteLock();
-</code></pre>
-</li>
-<li><p>该类定义了判断服务是否正常的IPing对象,在BaseLoadBalancer中默认为null，需要再构造参数中注入。</p>
-</li>
-<li><p>定义了IPing对象的执行策略IPingStrategy，在BaseLoadBalancer中默认使用静态内部类SerialPingStrategy实现。该实现使用线性遍历的方式对服务进行检测。该策略在IPing实现速度不理想或者服务列表过大时会影响服务性能，可以实现IPingStrategy接口去扩展。</p>
-</li>
-<li><p>定义了负载均衡策略IRule对象。在BaseLoadBalancer类的chooseServer方法中，使用的是IRule接口的choose方法去实现。默认的IRule实现为RoundRobinRule，该实现类会对服务进行轮训操作，轮训失败重试的次数最多为10次：</p>
-<pre><code class="java">public Server choose(ILoadBalancer lb, Object key) &#123;
-    if (lb == null) &#123;
-        log.warn(&quot;no load balancer&quot;);
-        return null;
-    &#125;
-    Server server = null;
-    int count = 0;
-    while (server == null &amp;&amp; count++ &lt; 10) &#123;
-        List&lt;Server&gt; reachableServers = lb.getReachableServers();
-        List&lt;Server&gt; allServers = lb.getAllServers();
-        int upCount = reachableServers.size();
-        int serverCount = allServers.size();
-        if ((upCount == 0) || (serverCount == 0)) &#123;
-            log.warn(&quot;No up servers available from load balancer: &quot; + lb);
-            return null;
-        &#125;
-        int nextServerIndex = incrementAndGetModulo(serverCount);
-        server = allServers.get(nextServerIndex);
-        if (server == null) &#123;
-            /* Transient. */
-            Thread.yield();
-            continue;
-        &#125;
-        if (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;
-            return (server);
-        &#125;
-        // Next.
-        server = null;
-    &#125;
-    if (count &gt;= 10) &#123;
-        log.warn(&quot;No available alive servers after 10 tries from load balancer: &quot;
-                + lb);
-    &#125;
-    return server;
-&#125;
-</code></pre>
-</li>
-<li><p>在BaseLoadBalancer构造函数中启动了一个定时任务，用于检查Server是否健康，默认为10秒执行一次。</p>
-</li>
-<li><p>依次实现了chooseServer、markServerDown、getReachableServers、getAllservers方法。</p>
-</li>
-</ul>
-<h2 id="DynamicServerListLoadBalancer-动态服务列表负载均衡器"><a href="#DynamicServerListLoadBalancer-动态服务列表负载均衡器" class="headerlink" title="DynamicServerListLoadBalancer-动态服务列表负载均衡器"></a><strong>DynamicServerListLoadBalancer</strong>-动态服务列表负载均衡器</h2><p>DynamicServerListLoadBalancer继承自BaseLoadBalancer类，他是对基础负载均衡器的扩展，在该负载均衡器中，提供了动态更新服务实例的功能。通知他还具备对服务实例进行过滤的功能，可以通过过滤器来选择性的获取一批实例清单。</p>
-<p>该负载均衡器中还定义了ServerListUpdater接口用于定义实现服务的更新，有默认两个实现类：</p>
-<ul>
-<li><strong>PollingServerListUpdater</strong> 默认的更新策略，通过定时任务的方式对服务列表进行更新;有两个重要参数<code>initialDelayMs</code>和<code>refreshIntervalMs</code>，前者表示在实例初始化之后延迟为多少秒后开始执行，默认为1000毫秒，后者表示每隔多少毫秒周期性的执行，默认为30*1000毫秒；</li>
-<li><strong>EurekaNotificationServerListUpdater</strong> 使用Eureka的时间通知的方式对服务列表进行更新；</li>
-</ul>
-<p>在通过上面的方式获取到服务列表之后，这里又使用ServerListFilter过滤器对服务实例进行进一步过滤，包括<code>AbstracServerListFilter</code>、<code>ZoneAfffinityServerListFilter</code>、<code>ZonePreferenceServerListFilter</code>、<code>DefaultNIWSServerListFilter</code>、<code>ServerListSubsetFilter</code>；除了ZonePreferenceServerListFilter的实现是SpringCloudRibbon中新增的，其余都是NetFlexRibbon中原生实现类。</p>
-<ul>
-<li><strong>AbstracServerListFilter</strong> 基础的过滤器，定义了负载均衡器状态对象LoadBalancerStats。</li>
-<li><strong>ZoneAfffinityServerListFilter</strong> 该过滤器基于“区域感知”的方式实现服务实例的过滤。他会更具提供服务的实例所处的区域与消费者自身所处的的区域进行比较，过滤掉不属于同一区域的实例。</li>
-<li><strong>DefaultNIWSServerListFilter</strong> 该过滤器完全继承自ZoneAfffinityServerListFilter过滤器，是默认的NIWS（Netflex Internal Web Service）过滤器。</li>
-<li><strong>ServerListSubsetFilter</strong> 该过滤器也继承自ZoneAfffinityServerListFilter，适用于拥有大规模服务器集群（上百或者更多）的系统。该过滤器通过区域感知获取服务列表之后，会剔除不健康的实例，然后保存剩下的实例集合。</li>
-<li><strong>ZonePreferenceServerListFilter</strong>  SpringCloud新增的过滤器，在Eureka整合Ribbon时默认的过滤器。实现了将通过配置或者Eureka实例元数据所属的区域来过滤出同区域的服务实例。该过滤器也继承自ZoneAffinityServerListFilter，在通过父类获取到区域感知的实例集合之后，然后遍历集合，取出根据消费者配置预设的区域Zone来进行过滤。如果过滤后结果为空，则直接返回父类获取的结果，否则返回过滤后的结果。</li>
-</ul>
-<h2 id="NoOpLoadBalancer"><a href="#NoOpLoadBalancer" class="headerlink" title="NoOpLoadBalancer"></a><strong>NoOpLoadBalancer</strong></h2><h2 id="ZoneAwareLoadBalancer-Ribbon默认的负载均衡器"><a href="#ZoneAwareLoadBalancer-Ribbon默认的负载均衡器" class="headerlink" title="ZoneAwareLoadBalancer -Ribbon默认的负载均衡器"></a><strong>ZoneAwareLoadBalancer</strong> -Ribbon默认的负载均衡器</h2><p>ZoneAwareLoadBalancer是对DynamicServerListLoadBalancer的扩展，在DynamicServerListLoadBalancer中，依旧使用的BaseLoadBalancer中使用的线性轮询的方式获取服务实例，这种算法没有Zone的概念，所以会周期性的产生跨区域访问的问题，产生更高的延迟，所以在多区域部署的情况下一定会有性能问题。</p>
-<p>ZoneAwareLoadBalancer负载均衡器默认使用的是ZoneAvoidanceRule负载均衡策略!</p>
-<h1 id="IRule-负载均衡策略"><a href="#IRule-负载均衡策略" class="headerlink" title="IRule-负载均衡策略"></a>IRule-负载均衡策略</h1><p>Ribbon中定义了特别多的负载均衡策略，一起来crazy study。</p>
-<p><a target="_blank" rel="noopener" href="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/29/42fc4a06-6c84-4991-96e8-358b9378637a.png">20210329221454.png</a></p>
-<h2 id="AbstractLoadBalancerRule-抽象的负载均衡策略"><a href="#AbstractLoadBalancerRule-抽象的负载均衡策略" class="headerlink" title="AbstractLoadBalancerRule-抽象的负载均衡策略"></a>AbstractLoadBalancerRule-抽象的负载均衡策略</h2><p>该实现类类中定义了一个ILoadBalancer对象，该对象能够获取到一些负载均衡中维护的信息来作为分配依据。</p>
-<h2 id="RandomRule-随机选择策略"><a href="#RandomRule-随机选择策略" class="headerlink" title="RandomRule-随机选择策略"></a>RandomRule-随机选择策略</h2><p>该负载均衡策略为随机获取一个实例进行访问，在具体的实现中，通过ILoadBalancer获取upList和allList实例列表，并通过rand.nextInt来作为upList下标获取具体实例。具体选择逻辑在一个while(server==null)中，可能会存在死循环获取不到实例的Bug。</p>
-<h2 id="RoundRobinRule-线性轮询策略"><a href="#RoundRobinRule-线性轮询策略" class="headerlink" title="RoundRobinRule-线性轮询策略"></a>RoundRobinRule-线性轮询策略</h2><p>该策略实现了线性轮询个的方式一次选择每个服务实例的功能。在实现中使用了count计数器，当尝试10次依旧选择不到server时，就会结束尝试，并打印警告信息。</p>
-<h2 id="RetryRule-重试策略"><a href="#RetryRule-重试策略" class="headerlink" title="RetryRule-重试策略"></a>RetryRule-重试策略</h2><p>该策略实现了一个具备重试机制的实例选择功能。在内部还定义了一个IRule对象，默认使用了RoundRobinRule实例。在开始选择实例时，记录时间戳timeStamp，然后使用timeStamp+maxRetryMillis参数（默认为500）作为阈值重复进行选择，期间如果选择到实例，则返回，否则当时间超过时，则返回null。</p>
-<h2 id="WeightedResponseTimeRule-响应时间权重策略"><a href="#WeightedResponseTimeRule-响应时间权重策略" class="headerlink" title="WeightedResponseTimeRule- 响应时间权重策略"></a>WeightedResponseTimeRule- 响应时间权重策略</h2><ul>
-<li><strong>定时任务</strong>：在策略初始化时，会默认启动一个定时任务，为每个服务计算权重，默认每隔30秒计算一次。</li>
-<li><strong>权重计算</strong>：根据算法计算服务的</li>
-<li><strong>实例选择</strong>：根据算法分析出的权重选择一个实例</li>
-</ul>
-<h2 id="ClientConfigEnbaledRoundRibbonRule"><a href="#ClientConfigEnbaledRoundRibbonRule" class="headerlink" title="ClientConfigEnbaledRoundRibbonRule"></a>ClientConfigEnbaledRoundRibbonRule</h2><p>该策略与RoundRibbonRule在实现上类似，一般不直接使用，他存在的目的为：<strong>一些高级的策略可以使用该类作为父类，当一些策略无法实施时，可以选择该父类的实现作为保障。</strong></p>
-<h2 id="BestAvailableRule-最空闲实例策略"><a href="#BestAvailableRule-最空闲实例策略" class="headerlink" title="BestAvailableRule-最空闲实例策略"></a>BestAvailableRule-最空闲实例策略</h2><p>该策略继承自ClientConfigEnbaledRoundRibbonRule，实现了注入负载均衡器的统计对象LoadBalancerStats。然后通过该对象<strong>获取请求数量最小的实例（即最空闲的实例）</strong> 并返回，注意，如果LoadBalancerStats对象无法注入，则该策略无法执行，就会使用父类的策略</p>
-<h2 id="PredicateBasedRule"><a href="#PredicateBasedRule" class="headerlink" title="PredicateBasedRule"></a>PredicateBasedRule</h2><p>这是一个抽象策略，继承自ClientConfigEnbaledRoundRibbonRule，是一个基于Predicate实现的接口，该抽象策略定义了大致选择实例的方式为：先使用Predicate来过滤掉一些实例，然后再使用轮询的方式随机选择一个实例进行访问。下面几种策略都是Predicate的具体实现。</p>
-<h2 id="AvailabilityFilterRule"><a href="#AvailabilityFilterRule" class="headerlink" title="AvailabilityFilterRule"></a>AvailabilityFilterRule</h2><p>使用AvailabilityPredicate对实例进行过滤，具体果过滤策略如下：</p>
-<ul>
-<li>是否故障，即断路器是否生效已断开。</li>
-<li>实例的并发数是否大于阈值，默认为2的32次方-1，可通过参数 <code>&lt; clientName&gt;.&lt; nameSpace&gt;.ActiveConnectionsLimit</code>参数来修改。</li>
-</ul>
-<p>上面两个条件有一个满足就返回false，表示该节点可能存在故障。都不满足则返回true。</p>
-<p>同时在该策略中，对choose方法也做了改进：它并没有像在父类中那样，先遍历所有的节点进行过滤，然后在过滤后的集合中选择实例。而是先以线性的方式选择一个实例， 接着用过滤条件来判断该实例是否满足要求，若满足就直接使用该实例，若不满足要求就再选择下一个实例，并检查是否满足要求，如此循环进行，当这个过程重复了10次还是没有找到符合要求的实例，就采用父类的实现方案。</p>
-<p><strong>简单地说，该策略通过线性抽样的方式直接尝试寻找可用且较空闲的实例来使用，优化了父类每次都要遍历所有实例的开销。</strong></p>
-<h2 id="ZoneAvoidanceRule"><a href="#ZoneAvoidanceRule" class="headerlink" title="ZoneAvoidanceRule"></a>ZoneAvoidanceRule</h2><p>该策略也是<code>PredicateBaseRule</code>的实现类。使用了组合条件对服务进行过滤，优先使用<code>ZoneAvoidancePredicate</code>作为主过滤条件，然后使用<code>AvailabilityPredicate</code>作为次过滤条件。具体实现逻辑如下：</p>
-<ul>
-<li>使用主过滤条件对所有实例过滤并返回过滤后的实例清单。</li>
-<li>依次使用次过滤条件列表中的过滤条件对主过滤条件的结果进行过滤。</li>
-<li>每次过滤之后(包括主过滤条件和次过滤条件)，都需要判断下面两个条件，只要有一个符合就不再进行过滤，将当前结果返回供线性轮询算法选择:<ul>
-<li>过滤后的实例总数&gt;=最小过滤实例数(minimalFilteredServers`, 默认为1)。</li>
-<li>.过滤后的实例比例&gt;最小过滤百分比(<code>minimalFilteredPercentage</code>, 默认为0)。</li>
-</ul>
-</li>
-</ul>
-<p>ZoneAvoidanceRule负载均衡策略如下：</p>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><h1 id="Ribbon自动化配置"><a href="#Ribbon自动化配置" class="headerlink" title="Ribbon自动化配置"></a>Ribbon自动化配置</h1><h2 id="使用配置文件进行配置"><a href="#使用配置文件进行配置" class="headerlink" title="使用配置文件进行配置"></a>使用配置文件进行配置</h2><p>在使用Ribbon时，可也以通过配置文件的方式对ribbon进行配置，格式为：&lt;clientName&gt;.ribbon.&lt;key&gt;=&lt;value&gt;，例如：<code>springbootlearn.ribbon.NFLoadBalancerPingClassName=cong.netflex.loadbalancer.PingUrl</code></p>
-<p>具体的key定义在PropertiesFactory中：</p>
-<pre><code class="java">public PropertiesFactory() &#123;
-    this.classToProperty.put(ILoadBalancer.class, &quot;NFLoadBalancerClassName&quot;);
-    this.classToProperty.put(IPing.class, &quot;NFLoadBalancerPingClassName&quot;);
-    this.classToProperty.put(IRule.class, &quot;NFLoadBalancerRuleClassName&quot;);
-    this.classToProperty.put(ServerList.class, &quot;NIWSServerListClassName&quot;);
-    this.classToProperty.put(ServerListFilter.class, &quot;NIWSServerListFilterClassName&quot;);
-&#125;
-</code></pre>
-<h2 id="替换默认配置"><a href="#替换默认配置" class="headerlink" title="替换默认配置"></a>替换默认配置</h2><h3 id="通过自定义Bean替换"><a href="#通过自定义Bean替换" class="headerlink" title="通过自定义Bean替换"></a>通过自定义Bean替换</h3><p>可以在配置类中增加自定的bean来替换掉默认的配置：</p>
-<pre><code class="java">@Configuration
-public class RibbonConfiguration &#123;
-    @Bean
-    public PingUrl getIPing()&#123;
-        return new PingUrl();
-    &#125;
-&#125;
-</code></pre>
-<h3 id="使用-RibbonClient替换"><a href="#使用-RibbonClient替换" class="headerlink" title="使用@RibbonClient替换"></a>使用@RibbonClient替换</h3><p>也可以使用@RibbinClient来对单个服务进行配置：</p>
-<pre><code class="java">@RibbonClient(name = &quot;microservice-springbootlearn&quot;, configuration = SpringBootLearnConfiguration.class)
-public class MyRibbonConfiguration &#123;
-&#125;
-</code></pre>
-<h1 id="EurekaClient中增加区域元数据"><a href="#EurekaClient中增加区域元数据" class="headerlink" title="EurekaClient中增加区域元数据"></a>EurekaClient中增加区域元数据</h1><p>在Eureka客户端中使用下面的元数据配置，就可以让客户端带有区域标识：<code>Eureka.instance.metadataMap.zone=shanghai</code></p>
-<h1 id="添加重试功能"><a href="#添加重试功能" class="headerlink" title="添加重试功能"></a>添加重试功能</h1><p>SpringCloudRibbon中同时还整合了SpringRetry模块，通过如下的配置就可以对服务进行重试功能：</p>
-<pre><code>#配置服务的ribbon超时属性,该配置只有在Feign+Hystrix中才生效
-microservice-eurekaclient:
-  ribbon:
-    connectTimeout: 1000 #请求链接的超时时间
-    readTimeout: 1000 #请求处理的超时时间
-    okToRetryOnAllOperations: true #是否对所有失败都进行重试
-    maxAutoRetriesNextServer: 0 #重试失败时的切换实例的次数
-    maxAutoRetries: 2 #相同实例重试的次数
-
-hystrix:
-  command:
-    # default的配置所有熔断方法都生效
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000 #设置断路器的超时时间，默认为1000毫秒
-</code></pre>
-<p>值得注意的是，如果想要重试生效，必须将Hystrix的超时时间设置为比Ribbon超时时间大，否则请求会直接熔断，无法进行重试！</p>
-<h1 id="LoadBalancerFeignClient接口"><a href="#LoadBalancerFeignClient接口" class="headerlink" title="LoadBalancerFeignClient接口"></a>LoadBalancerFeignClient接口</h1><h1 id="LoadBalancerInterceptor拦截器"><a href="#LoadBalancerInterceptor拦截器" class="headerlink" title="LoadBalancerInterceptor拦截器"></a>LoadBalancerInterceptor拦截器</h1>
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1162,7 +1028,7 @@ hystrix:
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-04 16:00:21" itemprop="dateModified" datetime="2021-04-04T16:00:21+08:00">2021-04-04</time>
+                <time title="修改时间：2021-04-05 19:55:01" itemprop="dateModified" datetime="2021-04-05T19:55:01+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1205,71 +1071,9 @@ hystrix:
 </code></pre>
 <p>然后在配置文件中，新增如下配置 <code>ExecStart=中追加-H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock</code>：<br><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/19/42ee0c50-2b3d-48cf-bc7d-3b93f77226ed.png" alt="QQ图片20210319230142.png"><br>修改后保存文件，然后通知docker服务做出的修改<code>systemctl daemon-reload</code>重启docker服务<code>service docker restart</code></p>
 <p>注意：如果老版本的dokcer修改此配置后，无法启动或者只支持远程连接，命令行无法使用，则可能需要升级docker至最新的版本即可解决，血的教训。（PS：升级之后之前的容器还在不会丢，不要慌，不然会显得很菜很伞兵T_T）</p>
-<h2 id="升级Docker"><a href="#升级Docker" class="headerlink" title="升级Docker"></a><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6e5da590aeda" title="简书">升级Docker</a></h2><h3 id="1、查看系统要求"><a href="#1、查看系统要求" class="headerlink" title="1、查看系统要求"></a>1、查看系统要求</h3><p>Docker 要求 CentOS 系统的内核版本高于 3.10 ,查看CentOS的内核版本。</p>
-<pre><code class="sh">uname -a
-</code></pre>
-<h3 id="2、删除旧版本"><a href="#2、删除旧版本" class="headerlink" title="2、删除旧版本"></a>2、删除旧版本</h3><pre><code class="sh">yum remove docker  docker-common docker-selinux docker-engine
-</code></pre>
-<h3 id="3、安装需要的软件包"><a href="#3、安装需要的软件包" class="headerlink" title="3、安装需要的软件包"></a>3、安装需要的软件包</h3><p>yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的</p>
-<pre><code class="sh">sudo yum install -y yum-utils device-mapper-persistent-data lvm2
-</code></pre>
-<h3 id="4、设置Docker-yum源"><a href="#4、设置Docker-yum源" class="headerlink" title="4、设置Docker yum源"></a>4、设置Docker yum源</h3><pre><code class="sh">sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-</code></pre>
-<h4 id="5、查看所有仓库中所有docker版本"><a href="#5、查看所有仓库中所有docker版本" class="headerlink" title="5、查看所有仓库中所有docker版本"></a>5、查看所有仓库中所有docker版本</h4><p>可以查看所有仓库中所有docker版本,并选择特定的版本安装。</p>
-<pre><code class="sh">yum list docker-ce --showduplicates | sort -r
-</code></pre>
-<h3 id="6、安装docker"><a href="#6、安装docker" class="headerlink" title="6、安装docker"></a>6、安装docker</h3><pre><code class="sh">sudo yum install docker-ce
-</code></pre>
-<p>由于repo中默认只开启stable仓库，故这里安装的是最新稳18.03.0.ce-1.el7.centos。</p>
-<p>如果要安装特定版本：</p>
-<pre><code class="sh">sudo yum install docker-ce-18.06.1.ce
-</code></pre>
-<h3 id="7、启动"><a href="#7、启动" class="headerlink" title="7、启动"></a>7、启动</h3><h4 id="设置为开机启动"><a href="#设置为开机启动" class="headerlink" title="设置为开机启动"></a>设置为开机启动</h4><pre><code class="sh">systemctl enable docker
-</code></pre>
-<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><pre><code class="sh">systemctl start docker
-</code></pre>
-<h4 id="查看启动状态"><a href="#查看启动状态" class="headerlink" title="查看启动状态"></a>查看启动状态</h4><pre><code class="sh">systemctl status docker
-</code></pre>
-<h4 id="查看版本"><a href="#查看版本" class="headerlink" title="查看版本"></a>查看版本</h4><pre><code class="sh">docker version
-</code></pre>
-<h1 id="防火墙端口开放"><a href="#防火墙端口开放" class="headerlink" title="防火墙端口开放"></a>防火墙端口开放</h1><p>因为使用的云服务器，所以需要注意将项目映射的端口和主机端口加入白名单才能访问：</p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/7e040c09-c35d-41ef-8442-33cefd7d3b46.png" alt="QQ图片20210320002030.png"></p>
-<h1 id="编写Dockerfile文件"><a href="#编写Dockerfile文件" class="headerlink" title="编写Dockerfile文件"></a>编写Dockerfile文件</h1><p>然后需要再springboot项目的更目录中新建dockerfile文件：</p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/e1b7a361-c6a0-4124-b84f-73ab9f4623a5.png" alt="QQ截图20210320002113.png"></p>
-<pre><code class="yaml"># Docker image for springboot application
-# VERSION 0.0.1
-# Author: bolingcavalry
-
-### 基础镜像，使用alpine操作系统，openjkd使用8u201
-FROM openjdk:8u201-jdk-alpine3.9
-
-#作者
-MAINTAINER BolingCavalry &lt;2372389705@qq.com&gt;
-
-#系统编码
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-
-#声明一个挂载点，容器内此路径会对应宿主机的某个文件夹
-VOLUME /tmp
-
-#应用构建成功后的jar文件被复制到镜像内，名字也改成了app.jar
-ADD target/*.jar app.jar
-
-#启动容器时的进程
-ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;/app.jar&quot;]
-
-#暴露8080端口
-EXPOSE 8080
-</code></pre>
-<h1 id="IDEA配置"><a href="#IDEA配置" class="headerlink" title="IDEA配置"></a>IDEA配置</h1><p>在IDEA中，需要下载Docker插件，之后连接上远程的Docker：</p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/410a8666-8165-458d-ab1c-fbfe6079416f.png" alt="QQ截图20210320002420.png"></p>
-<p>接下来需要在idea中新增一个启动配置：</p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/9c77b07f-201a-45b2-8e87-144e742e9461.png" alt="QQ图片20210320002813.png"></p>
-<p>最下面的maven命令为：<code>clean package -U -DskipTests</code>，打错了。。</p>
-<h1 id="部署项目"><a href="#部署项目" class="headerlink" title="部署项目"></a>部署项目</h1><p>然后点击启动，即可完成部署：</p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/20/7d538c27-fb24-4000-91c3-1325f51f8491.png" alt="QQ图片20210320002942.png"></p>
-<p>首次部署时需要拉去镜像，比较慢，后面就快了。</p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1319,7 +1123,7 @@ EXPOSE 8080
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-04 15:57:08" itemprop="dateModified" datetime="2021-04-04T15:57:08+08:00">2021-04-04</time>
+                <time title="修改时间：2021-04-05 22:36:11" itemprop="dateModified" datetime="2021-04-05T22:36:11+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1369,83 +1173,9 @@ EXPOSE 8080
 <p>执行命令后，会在log.dir和log.dirs配置的目录下创建相应主题的分区。默认情况下这个目录为/tmp/kafka-logs/</p>
 <p>topic长度不能超过249；</p>
 <p>可以将创建topic的脚本在代码中使用 <code>kafka.topic.TopicCommand.main</code>方法传递参数去执行。</p>
-<h3 id="查看分区策略-–describe"><a href="#查看分区策略-–describe" class="headerlink" title="查看分区策略 –describe"></a>查看分区策略 –describe</h3><pre><code class="shell">bin/kafka-topics.sh \
---zookeeper localhost:2181 \
---describe \
---topic topic-create \
---under-replicated-partitions \
-</code></pre>
-<p>如果不使用–topic指定主题名称，则会展示所有主题的分区策略；<code>--under-replicated-partitions</code>参数表示只显示有失效副本的分区，即ISR分区；</p>
-<h3 id="查看主题列表–list"><a href="#查看主题列表–list" class="headerlink" title="查看主题列表–list"></a>查看主题列表–list</h3><pre><code class="java">bin/kafka-topics.sh \
---zookeeper localhost:2181 \
---list
-</code></pre>
-<h3 id="修改分区-–alter"><a href="#修改分区-–alter" class="headerlink" title="修改分区 –alter"></a>修改分区 –alter</h3><pre><code class="shell">bin/kafka-topics.sh \
---zookeeper 101.37.172.37:2181 \
---alter \
---topic topic-create \
---config max.message.bytes=20000 \
---delete-config max.message.bytes \
---partitions 5 \
---if-exists \
-</code></pre>
-<p>使用–if-exists参数可以防止topic不存在时报错。</p>
-<p>配合–config参数可以修改topic的配置。</p>
-<p>使用–partitions参数可以修改主题分区，目前kafka只支持增加分区而不支持减少分区，否则会报出invalidPartitionException异常。</p>
-<p>使用–delete-config参数可以删除手动增加的配置，从而使用默认的配置。</p>
-<h3 id="删除主题-–delete"><a href="#删除主题-–delete" class="headerlink" title="删除主题 –delete"></a>删除主题 –delete</h3><pre><code class="shell">bin/kafka-topics.sh \
---zookeeper 101.37.172.37:2181 \
---delete \
---topic test1 \
---if-exists \
-</code></pre>
-<p>此配置和broker的 <code>delete.topic.enable</code>有关，如果为false，则会忽略改删除操作，为true才会进行删除，默认为true。</p>
-<p>删除命令不支持删除内部主题 <code>__consumer_offsets</code>和 <code>__transaction_state</code>。</p>
-<p>使用 <code>--if-exists</code>参数用来忽略topic不存在时产生的异常。</p>
-<h2 id="配置管理：kafka-configs-sh"><a href="#配置管理：kafka-configs-sh" class="headerlink" title="配置管理：kafka-configs.sh"></a>配置管理：kafka-configs.sh</h2><h1 id="分区管理"><a href="#分区管理" class="headerlink" title="分区管理"></a>分区管理</h1><p>在创建主题和分区的时候，该分区及其副本会尽可能均匀分布到Kafka集群的各个broker节点上，对应的leader副本的分配也比较均匀，例如一个主题有三个分区，那个三个分区的leader副本都会均匀的分配到各个broker中去。</p>
-<p>针对同一个分区，一个broker节点中不可能出现它的多个副本(如果创建主题时副本数多于broker数，则会报错：<code>InvalidReplicationFactorException: Replication factor: 4 larger than available brokers: </code>)，即Kafka集群中的一个broker中最多只能有它的一个副本，我们可以将leader服务所在的broker节点叫做<strong>分区的leader节点</strong>，而follower副本所在的节点叫做 <strong>分区的follower节点</strong>。</p>
-<h1 id="优先副本"><a href="#优先副本" class="headerlink" title="优先副本"></a>优先副本</h1><p>当某个broker宕机或者崩溃之后，分区的leader节点发送故障时，其中一个follower节点就会成为新的leade节点，这样就会导致集群的负载不均衡，从而影响集群的健壮性和稳定性，当原来的leader节点恢复之后重新加入集群，也只能作为新的follower节点不能再对外提供服务。比如主题topic-create的leader节点分布如下：</p>
-<pre><code class="shell">Topic: topic-create    PartitionCount: 2    ReplicationFactor: 2    Configs: 
-    Topic: topic-create    Partition: 0    Leader: 1    Replicas: 1,2    Isr: 1,2
-    Topic: topic-create    Partition: 1    Leader: 2    Replicas: 2,1    Isr: 2,1
-</code></pre>
-<p>当将borker为2的节点重启，那么主题topic-createleader新的节点分布如下：</p>
-<pre><code class="shell">Topic: topic-create    PartitionCount: 2    ReplicationFactor: 2    Configs: 
-    Topic: topic-create    Partition: 0    Leader: 1    Replicas: 1,2    Isr: 1,2
-    Topic: topic-create    Partition: 1    Leader: 1    Replicas: 2,1    Isr: 2,1
-</code></pre>
-<p>此时节点1的负载会变高，集群的原本均衡的负载变成了失衡。</p>
-<p>为了有效的治理负载失衡的情况，Kafka引入了 <code>优先副本（preferred replica）</code>的概念。即：</p>
-<blockquote>
-<p>所谓 的优先副本是指在 AR 集合列表中的第一个副本。 比如上面主题 topic-create 中分区0 的AR 集合列表（replicas）为［1,2］,那么分区0的优先副本即为1。<strong>理想情况下，优先副本就是该分区的leader副本</strong>，所以也可以称之为 preferred leader。 Kafka要确保所有主题的优先副本在 Kafka 集群中均匀分布，这样就保证了所有分区的leader均衡分布。如果 leader 分布过于集中，就会造成集群负载不均衡。</p>
-</blockquote>
-<p>所谓的优先副本的选举是指通过一定的方式促使优先副本选举为leader副本，以此来促进集群的负载均衡，这一行为也称之为“<code>分区平衡</code>”</p>
-<p>可以使用配置：<code>auto.leader.rebalance.enable</code>来控制是否自动进行分区平衡，也可以手动使用 <code>kafka-perferred-replica-election.sh</code>脚本手动进行分区平衡。</p>
-<h1 id="日志索引与清理"><a href="#日志索引与清理" class="headerlink" title="日志索引与清理"></a>日志索引与清理</h1><h2 id="日志索引文件"><a href="#日志索引文件" class="headerlink" title="日志索引文件"></a>日志索引文件</h2><p>Kafka中一个分区对应kafka-logs文件中的一个文件夹即对应一个日志（Log），为了防止日志过大，一个日志对一个多个日志分段（LogSegment），每个日志分段在文件夹中最少包含一个日志文件.log和两个索引文件：偏移量索引文件.index和时间戳索引文件.timeindex，还包括另外的其他文件事务索引文件等。</p>
-<p>日志是顺序写入的，只有最后一个日志分段能够写入，之前的日志分段都是无法写入的；每个日志分段都有一个基准偏移量baseOffset，用来表示当前LogSegment中第一条消息的偏移量。偏移量是一个64位的长整型，日志文件都是根据偏移量命名的，长度为20位。</p>
-<p>kafka中的索引文件都是以稀疏索引的方式构建的，并不保证每条数据都有对应的缩影项，而是每当写入一定量（broker的<code>log.index.interval.bytes</code>配置指定，默认为4kb）的消息时，偏移量缩影文件和时间戳缩影文件分别增加一个偏移量索引项和时间戳索引项，增大或减少<code>log.index.interval.bytes</code>的值能够增大或减小索引项的密度。</p>
-<p>当日志分段满足如下条件时，会新建一个日志分段：</p>
-<p>//TODO</p>
-<p>偏移量和时间戳都是单调递增存储的，查询指定偏移量时，使用二分法来快速定位偏移量的位置，如果不在文件中，则返回小于指定偏移量的最大偏移量。时间戳查询也是二分法查找大不大于该时间的最大偏移量，而要找到对应的物理位置还需要根据偏移量再次定位。</p>
-<h2 id="偏移量索引"><a href="#偏移量索引" class="headerlink" title="偏移量索引"></a>偏移量索引</h2><p>一个索引项占用8字节，分为<code>relativeOffset</code>相对偏移量占用4字节和position物理地址占用4字节。四字节为Integer.MAX_VALUE。</p>
-<h2 id="时间戳索引"><a href="#时间戳索引" class="headerlink" title="时间戳索引"></a>时间戳索引</h2><h1 id="日志清理"><a href="#日志清理" class="headerlink" title="日志清理"></a>日志清理</h1><p>kafka一个分区副本就相当于一个Log，而一个Log又分为多个日志分段，日志清理分为两个策略：</p>
-<ul>
-<li>日志删除（Log Retention）按照一定的保留策略直接删除不符合条件的日志分段。</li>
-<li>日志压缩（Log Compaction）针对每个消息的Key进行压缩，相同的Key不同Value的日志只保留最后一个版本。</li>
-</ul>
-<p>日志清理的策略可以通过<code>log.cleanup.policy</code>配置，默认为<code>delete</code>，也可以手动修改为compact或者<code>delete,compact</code>同时，需要配合<code>log.cleaner.enable</code>配置为true；<strong>注意：日志清理也可以配置为主题级别</strong>。</p>
-<h2 id="日志删除"><a href="#日志删除" class="headerlink" title="日志删除"></a>日志删除</h2><p>kafka中有个专门检测和删除不符合保留条件的日志分段文件的任务。这个任务的运行周期可以通过<code>log.retention.check.interval.ms</code>配置，默认为300000，即5分钟。默认的保留策略有三种：基于时间的保留策略、基于日志大小的保留策略、基于日志起始偏移量的保留策略。</p>
-<h3 id="基于时间的日志保留策略"><a href="#基于时间的日志保留策略" class="headerlink" title="基于时间的日志保留策略"></a>基于时间的日志保留策略</h3><p>kafka通过broker配置的RetentionMs来确定日志是否需要被删除，通过<code>log.retention.ms</code>、 <code>log.retention.minutes</code>和<code>log.retention.hours</code>三个参数指定，有限度从高到低；默认情况下只配置了<code>log.retention.hours</code>参数， 其值为168，故默认情况下日志分段文件的保留时间为7天。</p>
-<p>查找过期的日志分段文件，并不是简单地根据日志分段的最近修改时间 lastModifiedTime<br>来计算的 ， 而是根据日志分段中最大的时间戳 largestTimeStamp 来计算的。因为日志分段的 lastModifiedTime 可以被有意或无意地修改，比如执行了 touch 操作，或者分区副本进行了重新分配， lastModifiedTime 并不能真实地反映出日志分段在磁盘的保留时间 。要获取日志分段中的最大时间戳 largestTimeStamp的值，首先要查询该日志分段所对应的时间戳索引文件，查找时间戳索引文件中最后一条索引项，若最后一条索引项的时间戳字段值大于0，则取其值，否则才设置为最近修改时间 lastModifiedTime 。<br>若待删除的日志分段的总数等于该日志文件中所有的日志分段的数量，那么说明所有的日志分段都己过期， 但该日志文件中还要有一个日志分段用于接收消息的写入，即必须要保证有一个活跃的日志分段 activeSegment，在此种情况下，会先切分出一个新的日志分段作为activeSegment，然后执行删除操作。</p>
-<p>删除日志分段时，首先会从Log对象中所维护日志分段的跳跃表中移除待删除的日志分段，<br>以保证没有线程对这些日志分段进行读取操作 。 然后将日志分段所对应的所有文件添加上”.deleted”的后缀（当然也包括对应的索引文件）。最后交由一个以“delete-file”命名的延迟任务来删除这些以”.deleted “为后缀的文件，这个任务的延迟执行时间可以通过<code>file.delete.delay.ms</code>参数来调配，此参数的默认值为60000， 即1分钟。</p>
-<h3 id="基于日志大小的日志保留策略"><a href="#基于日志大小的日志保留策略" class="headerlink" title="基于日志大小的日志保留策略"></a>基于日志大小的日志保留策略</h3><p>日志删除任务会检查当前日志的大小是否超过设定的阔值（retentionSize）来寻找可删除的日志分段的文件集合（deletableSegments），retentionSize可以通过broker端参数<code>log .retention.bytes</code> 来配置，默认值为-1，表示无穷大。注意<code>log.retention.bytes</code>配置的是Log中所有日志文件的总大小，而不是单个日志分段的大小。单个日志分段的大小由broker端参数<code>log.segment.bytes</code> 来限制，默认值为1073741824, 即1GB 。</p>
-<p>基于日志大小的保留策略 基于日志大小的保留策略与基于时间的保留策略类似，首先计算日志文件的总大小 size和retentionSize的差值diff，即计算需要删除的日志总大小，然后从日志文件中的第一个日志分段开始进行查找可删除的日志分段的文件集合deletableSegments。查找出deletableSegments之后就执行删除操作。</p>
-<h3 id="基于日志起始偏移量的保留策略"><a href="#基于日志起始偏移量的保留策略" class="headerlink" title="基于日志起始偏移量的保留策略"></a>基于日志起始偏移量的保留策略</h3><p>一般情况下，日志文件的起始偏移量<code>logStartOffset</code>等于第一个日志分段的baseOffset，但这并不是绝对的， <code>logStartOffset</code>的值可以通过DeleteRecordsRequest请求（比如使用 KafkaAdminClient 的 deleteR巳cords()方法、使用kafka-delete-records . sh脚本）、日志的清理和截断等操作进行修改。</p>
-<p>基于日志起始偏移量的保留策略的判断依据是<strong>某日志分段的下一个日志分段的起始偏移量<br>baseOffset 是否小于等于 logStartOffset，若是，则可以删除此日志分段</strong>假设 logStartOffset 等于 25，日志分段1的起始偏移量为0，日志分段2的起始偏移量为11 ，日志分段3的起始偏移量为23，通过如下动作收集可删除的日志分段的文件集合deletableSegments :</p>
-<p>(1）从头开始遍历每个日志分段，日志分段1的下一个日志分段的起始偏移量为 1 1 ，小<br>于 logStartOffset的大小，将日志分段1加入deletableSegments 。</p>
-<p>(2）日志分段2的下一个日志偏移量的起始偏移量为23，也小于logStartOffset的大小，<br>将日志分段2页加入deletableSegments。</p>
-<p>(3）日志分段3的下一个日志偏移量在logStartOffset的右侧，故从日志分段3开始的所有日志分段都不会加入deletableSegments。</p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1495,7 +1225,7 @@ EXPOSE 8080
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-05 00:04:34" itemprop="dateModified" datetime="2021-04-05T00:04:34+08:00">2021-04-05</time>
+                <time title="修改时间：2021-04-05 19:54:13" itemprop="dateModified" datetime="2021-04-05T19:54:13+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1534,218 +1264,9 @@ EXPOSE 8080
       
           <h1 id="Future、CompletableFuture"><a href="#Future、CompletableFuture" class="headerlink" title="Future、CompletableFuture"></a>Future、CompletableFuture</h1><h1 id="ThreadLocal-线程本地变量"><a href="#ThreadLocal-线程本地变量" class="headerlink" title="ThreadLocal-线程本地变量"></a>ThreadLocal-线程本地变量</h1><p><strong>本质：</strong> 在Thread类中，会自带一个ThreadLocalMap（定制化的一种HashMap）类型的threadLocals和InheritableThreadLocals属性，在ThreadLocal中set进去的值并不是放在ThreadLocal中，而是保存在Thread类自己的threadLocals中，同样get获取的值也只是从调用的线程中的threadLocals中去取值，而ThreadLocal只是一个工具壳。</p>
 <p>ThreadLocal被设计成map结构，表示一个线程可以关联多个ThreadLocal变量，因ThreadLocalMap中的key是ThreadLocal的this指针。</p>
-<h2 id="方法源码"><a href="#方法源码" class="headerlink" title="方法源码"></a>方法源码</h2><ul>
-<li><strong>void set(T value)</strong></li>
-</ul>
-<p>set方法在第一次调用时，会调用crateMap方法初始化Map</p>
-<pre><code class="java">public void set(T value) &#123;
-    //获取当前线程
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null)
-        //如果已经初始化过，则直接set即可
-        map.set(this, value);
-    else
-        //表示第一次调用，初始化threadLocals变量
-        createMap(t, value);
-&#125;
-</code></pre>
-<p>createMap方法如下：</p>
-<pre><code class="java">void createMap(Thread t, T firstValue) &#123;
-    t.threadLocals = new ThreadLocalMap(this, firstValue);
-&#125;
-</code></pre>
-<p>getMap方法则直接获取的当前线程的threadLocals变量：</p>
-<pre><code class="java">ThreadLocalMap getMap(Thread t) &#123;
-    return t.threadLocals;
-&#125;
-</code></pre>
-<ul>
-<li><strong>T get()</strong></li>
-</ul>
-<p>get方法如果发现当前线程有初始化过threadLocals变量，则会从中获取对应ThreadLocal的值：</p>
-<pre><code class="java">public T get() &#123;
-    //获取当前线程
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null) &#123;
-        ThreadLocalMap.Entry e = map.getEntry(this);
-        if (e != null) &#123;
-            @SuppressWarnings(&quot;unchecked&quot;)
-            T result = (T)e.value;
-            return result;
-        &#125;
-    &#125;
-    return setInitialValue();
-&#125;
-</code></pre>
-<p>如果发现未初始化threadLocals，则会初始化一次，value为null</p>
-<pre><code class="java">private T setInitialValue() &#123;
-    //这里value直接返回null
-    T value = initialValue();
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null)
-        //如果当前现线程的threadLocals不为空，则直接把value设置为null
-        map.set(this, value);
-    else
-        //否则初始化threadLocals变量，value为null
-        createMap(t, value);
-    return value;
-&#125;
-</code></pre>
-<ul>
-<li><strong>void remove()</strong></li>
-</ul>
-<p>remove方法判断当前线程的threadLocals变量不为空时，则删除对应的ThreadLocal变量。</p>
-<pre><code class="java">public void remove() &#123;
-    ThreadLocalMap m = getMap(Thread.currentThread());
-    if (m != null)
-        m.remove(this);
-&#125;
-</code></pre>
-<p><strong>总结：</strong> 在每个线程内部都有一个名为threadLocals的成员变量，该变量的类型为 HashMap，其中key为我们定义的ThreadLocal变量的this引用，value则为我们使用set方法设置的值。每个线程的本地变量存放在线程自己的内存变量threadLocals中，如果当前线程一直不消亡，那么这些本地变量会一直存在，所以可能会造成内存溢出，因此使用完毕后要记得调用ThreadLocal的remove 方法删除对应线程的ThreadLocals中的本地变量。在ThreadLocalRandom中，也是借鉴ThreadLocal的思想实现的。</p>
-<h1 id="支持继承的InheritableThreadLocal"><a href="#支持继承的InheritableThreadLocal" class="headerlink" title="支持继承的InheritableThreadLocal"></a>支持继承的InheritableThreadLocal</h1><p>ThreadLocal是不支持继承的，即再父线程中设置了ThreadLocal变量，然后再子线程中则无法获取到父线程中设置到的值，这时，需要使用InheritableThreadLocal来替换掉ThreadLcaol。</p>
-<p>InheritableThreadLocal继承自ThreadLocal，并重写了三个方法：</p>
-<pre><code class="java">public class InheritableThreadLocal&lt;T&gt; extends ThreadLocal&lt;T&gt; &#123;
-    protected T childValue(T parentValue) &#123;
-        return parentValue;
-    &#125;
-
-    ThreadLocalMap getMap(Thread t) &#123;
-       return t.inheritableThreadLocals;
-    &#125;
-
-    void createMap(Thread t, T firstValue) &#123;
-        t.inheritableThreadLocals = new ThreadLocalMap(this, firstValue);
-    &#125;
-&#125;
-</code></pre>
-<p>getMap和createMap将threadLocals变量替换为使用inheritableThreadLocals变量，后续get、set方法使用的不再是threadLocals而是inheritableThreadLocals；</p>
-<p>具体的数据拷贝是在创建Thread对象的时候传递进去的：</p>
-<pre><code class="java">public Thread() &#123;
-    init(null, null, &quot;Thread-&quot; + nextThreadNum(), 0);
-&#125;
-
-private void init(ThreadGroup g, Runnable target, String name,
-                      long stackSize, AccessControlContext acc,
-                      boolean inheritThreadLocals) &#123;
-        if (name == null) &#123;
-            throw new NullPointerException(&quot;name cannot be null&quot;);
-        &#125;
-
-        this.name = name;
-        Thread parent = currentThread();
-        this.group = g;
-        this.daemon = parent.isDaemon();
-        //线程优先级也是继承的
-        this.priority = parent.getPriority();
-        this.target = target;
-        setPriority(priority);
-        //这里执行拷贝操作
-        if (inheritThreadLocals &amp;&amp; parent.inheritableThreadLocals != null)
-            this.inheritableThreadLocals =
-                ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
-        /* Stash the specified stack size in case the VM cares */
-        this.stackSize = stackSize;
-
-        /* Set thread ID */
-        tid = nextThreadID();
-    &#125;
-
-static ThreadLocalMap createInheritedMap(ThreadLocalMap parentMap) &#123;
-    return new ThreadLocalMap(parentMap);
-&#125;
-
-private ThreadLocalMap(ThreadLocalMap parentMap) &#123;
-    Entry[] parentTable = parentMap.table;
-    int len = parentTable.length;
-    setThreshold(len);
-    table = new Entry[len];
-    for (int j = 0; j &lt; len; j++) &#123;
-        Entry e = parentTable[j];
-        if (e != null) &#123;
-            @SuppressWarnings(&quot;unchecked&quot;)
-            ThreadLocal&lt;Object&gt; key = (ThreadLocal&lt;Object&gt;) e.get();
-            if (key != null) &#123;
-                //这里拷贝的过程中调用了重载的方法，返回的是e.value
-                Object value = key.childValue(e.value);
-                Entry c = new Entry(key, value);
-                int h = key.threadLocalHashCode &amp; (len - 1);
-                while (table[h] != null)
-                    h = nextIndex(h, len);
-                table[h] = c;
-                size++;
-            &#125;
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<h1 id="ReentrantLock-可重入锁"><a href="#ReentrantLock-可重入锁" class="headerlink" title="ReentrantLock-可重入锁"></a>ReentrantLock-可重入锁</h1><p>可重入锁用于替代synchronized关键字，在性能方面，JDK5及之前性能远由于synchronized，但是JDK6对synchronized做了优化，性能差距并不大。同时在使用上也更加灵活<br>可重入锁主要提供了以下特性：</p>
-<h2 id="中断响应"><a href="#中断响应" class="headerlink" title="中断响应"></a>中断响应</h2><p>在尝试获取到锁时，如果调用 <code>lockInterruptibly()</code>方法，即可在等待锁的过程中可以响应中断，当产生死锁的线程被中断时，也可以避免死锁的发送。调用 <code>isHeldByCurrentThread()</code>方法可以检测所是否被当前线程获取的：</p>
-<pre><code class="java">ReentrantLock lock=new ReentrantLock();
-try&#123;
-    lock.lockInterruptibly();
-    if(lock.isHeldByCurrentThread())&#123;
-        lock.unlock();
-    &#125;
-&#125;catch(Exception e)&#123;
-&#125;
-</code></pre>
-<h2 id="锁申请等待限时-java"><a href="#锁申请等待限时-java" class="headerlink" title="锁申请等待限时 {java}"></a>锁申请等待限时 {java}</h2><p>调用 <code>tryLock(long,TimeUnit)</code>方法，可以设置等待所得超时时间，并返回true或者false表示是否成功获取到锁。也可以有效避免死锁。</p>
-<p>同样也可以调用不带参数的tryLock方法，此方法在获取到锁时返回true，否则立即返回false，不会进行锁等待，这种方式不会引起锁等待，也不会产生死锁。</p>
-<h2 id="公平锁"><a href="#公平锁" class="headerlink" title="公平锁"></a>公平锁</h2><p>正常情况下，锁的获取都是非公平的，在使用可重入锁时，可以在构造参数中指定锁是公平的，当fair为true时，标识创建的锁为公平锁:</p>
-<pre><code>public ReentrantLock(boolean fair);
-</code></pre>
-<p>公平锁需要系统维护一个有序的等待队列，所以成本比较高，性能非常低下，因此默认情况下所示非公平的。</p>
-<p>可重入锁的实现上主要是三个要素：</p>
-<ul>
-<li>原子状态：使用CAS操作存储当前锁状态，判断锁是否已被其他线程拥有</li>
-<li>等待队列：如果没有请求到锁，就进入等待队列，如果锁被释放，则从对待队列中唤醒一个线程，继续工作</li>
-<li>阻塞原语：<code>park()</code>和<code>unpark()</code>方法用来挂起和回复线程，没有得到锁的线程会被挂起</li>
-</ul>
-<h1 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h1><p>与Object对象的wait和notify方法类似，前者与synchronized一起使用，而Condition则与ReentrantLock一起使用。ReentrantLock中的newCondision方法则可以获取一个与之关联的Condition对象，一个锁可以获取多个Condition对象，但是由于必须获取到锁才能调用对应的方法，所以同一时刻只能有一个Condition在使用咯，Condition具体包含如下几个常用方法：</p>
-<ul>
-<li><code>await()</code>:是当前线程等待，同时<code>释放当前锁</code>，其他线程调用singnal或者singnalAll方法后会重新获得锁并继续执行，当被中断时也能跳出等待</li>
-<li><code>awaitUnInterruptibly()</code>:等待过程中不会响应中断</li>
-<li><code>sigal()</code>：唤醒一个等待中的线程</li>
-<li><code>sigleAll()</code>：唤醒所有等待的线程</li>
-</ul>
-<p><strong>注意：</strong> 此方法和那啥wait、notify方法一样，当前线程也必须首先获取可重入锁，然后才能调用相应的await和singal方法。</p>
-<p>同时，再signal或者signalAll方法调用后，行线程需要重新获取锁才能运行，否则依旧无法匀巡（所以在调用signal方法之后，需要立即调用unlock方法将锁释放，让唤醒的线程获得锁才能执行）</p>
-<h1 id="Semaphore-信号量"><a href="#Semaphore-信号量" class="headerlink" title="Semaphore-信号量"></a>Semaphore-信号量</h1><p>Semaphore是更加高级的工具，在重入锁ReentrantLock或者synchronized中，一次只允许一个线程进入临界区，但是Semaphore则允许一次有多个线程进入临界区。构造函数如下：</p>
-<pre><code class="java">public Semaphore(int permits);
-public Semaphore(int permits, boolean fair);
-</code></pre>
-<p>在构造信号量时，需要指定准入数，即同时能有多少个线程获得许可，如果没有获得信号量，则会进行等待或者被中断。主要方法如下：</p>
-<pre><code class="java">public void acquire() throws InterruptedException;
-public void acquire(int permits) throws InterruptedException;
-public void acquireUninterruptibly();
-public void acquireUninterruptibly(int permits)
-public boolean tryAcquire();
-public boolean tryAcquire(long timeout, TimeUnit unit);
-public void release();
-public boolean tryAcquire(int permits)
-public boolean tryAcquire(int permits, long timeout, TimeUnit unit) throws InterruptedException;
-public void release(int permits);
-</code></pre>
-<p>在使用时需要注意避免发生信号泄漏，acquire时如果获取的信号量数比创建Semaphore时指定的初始信号量多，则当前以及后续所有线程都将阻塞；同样，如果release时释放了多的信号量，则会导致有多于初始信号量的线程进入临界区。</p>
-<h1 id="ReadWriteLock-读写锁"><a href="#ReadWriteLock-读写锁" class="headerlink" title="ReadWriteLock-读写锁"></a>ReadWriteLock-读写锁</h1><p>ReadWriteLock是JDK5中提供的读写分离锁，读写分离锁在读多写少的情况下能够有效减少锁竞争，提升系统性能。</p>
-<p>读写分离锁所有的写操作以及写操作与读操作都是互斥的，所有的读操作之间不是互斥的，所有的读操作与写操作都是互斥的。</p>
-<p>读写锁需要通过ReentrantReadWriteLock获取：</p>
-<pre><code>ReentrantReadWriteLock reentrantReadWriteLock=new ReentrantReadWriteLock();
-Lock readLock=reentrantReadWriteLock.readLock();
-Lock writeLock=reentrantReadWriteLock.writeLock();
-</code></pre>
-<h1 id="CountDownLatch-倒计时器"><a href="#CountDownLatch-倒计时器" class="headerlink" title="CountDownLatch-倒计时器"></a>CountDownLatch-倒计时器</h1><p>倒计时器主要用来控制线程等待计数器倒计时结束后才开始执行。</p>
-<p><strong>需要注意CountDownLatch与join方法有如下几点不同:</strong></p>
-<ol>
-<li>线程A调用线程B的join方法后，必须等到B线程运行结束后A线程才能继续运行；而CountDownLatch可以在线程B运行过程中就开始运行。</li>
-<li>在使用线程池运行任务时，无法直接调用线程的join方法，故使用CountDownLatch比使用join更加灵活。</li>
-</ol>
-<h1 id="LongAdder"><a href="#LongAdder" class="headerlink" title="LongAdder"></a>LongAdder</h1><p>在高并发场景下，同时有多个线程对AtomicLong对象进行自增时，只会有一个线程能够成功，势必就会造成其他线程的自旋CAS操作，浪费CPU资源，针对这种情况，JDK1.8新增了专门用于高并发场景的自增工具LongAdder。</p>
-<p>在LongAdder实现中，将一个数拆分为多个Cell，使得原本对单个变量的自增操作变成对多个变量的操作，降低资源竞争的并发量，同时如果对当前Cell的CAS失败后，会转换为对其他Cell的CAS操作，这个改变增加了当前线程重试 CAS 成功的可能性。最后，在获取 LongAdder 当前值时，是把所有 Cell 变量的 value 值累加后再加上 base 返回的。</p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1795,7 +1316,7 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-09 21:35:30" itemprop="dateModified" datetime="2021-03-09T21:35:30+08:00">2021-03-09</time>
+                <time title="修改时间：2021-04-05 19:54:04" itemprop="dateModified" datetime="2021-04-05T19:54:04+08:00">2021-04-05</time>
               </span>
 
           
@@ -1835,25 +1356,9 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
     consumer.commitSync();
 &#125;
 </code></pre>
-<h2 id="ConsumerInterceptor"><a href="#ConsumerInterceptor" class="headerlink" title="ConsumerInterceptor"></a>ConsumerInterceptor</h2><h2 id="多线程实现"><a href="#多线程实现" class="headerlink" title="多线程实现"></a>多线程实现</h2><p>KafkaConsumer不是线程安全的，除了调用wakeup方法之外，其余方法在操作前都会调动acquire方法确保只有单个线程使用，否则会报出ConcurrencyModificationException异常，源码如下：</p>
-<pre><code class="java">private void acquire() &#123;
-    long threadId = Thread.currentThread().getId();
-    //这里为了确保第一次调用acquire方法时，能正确初始化currentThread的值
-    //如果不同的线程调用，compareAndSet会失败
-    if (threadId != currentThread.get() &amp;&amp; !currentThread.compareAndSet(NO_CURRENT_THREAD, threadId))
-        throw new ConcurrentModificationException(&quot;KafkaConsumer is not safe for multi-threaded access&quot;);
-    //引用自增一
-    refcount.incrementAndGet();
-&#125;
-</code></pre>
-<p>release方法和acquire方法成对出现，分别对应加锁和解锁操作，源码如下：</p>
-<pre><code class="java">private void release() &#123;
-    //这里当没有线程引用时，设置currentThread的值为初始值，后续调用acquire方法时compareAndSet会成功
-    if (refcount.decrementAndGet() == 0)
-        currentThread.set(NO_CURRENT_THREAD);
-&#125;
-</code></pre>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1990,7 +1495,7 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-26 00:15:08" itemprop="dateModified" datetime="2021-03-26T00:15:08+08:00">2021-03-26</time>
+                <time title="修改时间：2021-04-05 19:53:55" itemprop="dateModified" datetime="2021-04-05T19:53:55+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2057,304 +1562,9 @@ public class FutureTaskTest implements Callable&lt;String&gt; &#123;
 </code></pre>
 </li>
 </ol>
-<p>只有调用Thread类的start方法，才会创建线程，否则是在调用线程中执行run方法；同时调用start方法之后，只是将线程设置为就绪状态，只有获得CPU资源之后才会处于运行状态；</p>
-<p><strong>小结：</strong> 继承的方式会收到单继承的限制，但是传参比较方便，内部获取线程直接使用this而无需使用Thread.currentThread方法；而实现Runnable接口则只能使用主线程中被声明为final的变量。如果需要线程返回结果，则使用FutureTask的方式。</p>
-<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><ul>
-<li><p><strong>void interrupt()方法</strong>👀️中断线程，该方法设置线程的中断标识为true并立即返回，但是线程并没有被中断，会继续往下执行。如果线程因为调用了join、sleep、wait系列的函数而被挂起，调用线程的interrupt方法则会抛出InterruptedException异常并返回。</p>
-</li>
-<li><p><strong>boolean isterrupt()方法</strong> 👀️ 检测线程是否被中断，如果是则返回true，否则返回false.</p>
-<pre><code class="java">public boolean isInterrupted() &#123;
-//这里传递false表示不清理中断标识
-    return isInterrupted(false);
-&#125;
-</code></pre>
-</li>
-<li><p><strong>boolean interrupted()方法</strong>👀️ 检测当前线程是否被中断，如果是则返回true,否则返回false。该方法如果发现线程被中断，<strong>则会清理中断标识</strong>；该方法是static方法，可以通过Thread类直接调用；该方法是判断<strong>当前线程</strong>的终端标识，而非调用interrupted方法的线程的中断标识。</p>
-<pre><code class="java">public static boolean interrupted() &#123;
-    //传入true表示清理中断标识；并且判断的当前线程的中断标识；
-    return currentThread().isInterrupted(true);
-&#125;
-</code></pre>
-</li>
-</ul>
-<h2 id="使用中断使线程优雅退出"><a href="#使用中断使线程优雅退出" class="headerlink" title="使用中断使线程优雅退出"></a>使用中断使线程优雅退出</h2><pre><code class="java">try&#123;
-    while(!Thread.currentThread().isInterrupted()&amp;&amp;more work to do)&#123;
-        //do more work
-    &#125;
-&#125;catch(InterruptedException e)&#123;
-    //线程被中断
-&#125;finally &#123;
-    //进行清理工作
-&#125;
-</code></pre>
-<h1 id="JMM-Java-Memory-Model"><a href="#JMM-Java-Memory-Model" class="headerlink" title="JMM(Java Memory Model)"></a>JMM(Java Memory Model)</h1><h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><h2 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h2><h1 id="synchronize"><a href="#synchronize" class="headerlink" title="synchronize"></a>synchronize</h1><p>synchronize在JDK5.0早期版本中性能远不如ReentrantLock，但从JDK6.0开始，JDK在synchronized上做了大量优化，两者性能相差并不大。</p>
-<p><strong>synchronize内存语义：</strong>进入synchronized块时，将块内用到的变量从线程的工作内存中清除,这样在synchronized块内使用到该变量时就不会从线程的工作内存中获取，而是直接从主内存中获取。退出synchronized块时，将块内修改过的变量刷新到内存。</p>
-<p>上面的语义其实也是加锁的语义。</p>
-<p>synchronized有三种常见用法：</p>
-<ul>
-<li><strong>指定加锁对象</strong>：给对象加锁，进入临界区前要获取给定对象的锁。</li>
-<li><strong>直接作用于示例方法</strong>：相当于对当前实例加锁，进入临界区前要获的当前实例的锁。</li>
-<li><strong>直接作用于静态方法</strong>：相当于对类加锁，进入临界区前要获取类的锁。</li>
-</ul>
-<p>synchronized关键字能够解决原子性、可见性、有序性三个问题，但是当使用synchronzed时如果未获取到锁，则会从用户态切换为系统态并执行阻塞操作，会引起线程上下文切换并带来线程调度开销。</p>
-<h1 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h1><p>相比于锁或者synchronized的这种比较笨重的方式解决可见性，java还提供了一种弱形式的同步：volatile。volatile可以确保对一个变量的更新立即刷新到主内存。当其他线程读取该共享变量时，会从主内存重新获取最新值。</p>
-<p>同时volatile声明的关键字还能够避免因为编译器指令重排序导致的问题：<strong>写volatile变量是，可以确保volatile写之前的操作不会被编译器重排序到volatile写操作之后</strong>。<strong>读volatile变量时，可以确保volatile读之后的操作不会被编译器重排序到volatile读之前</strong>。</p>
-<p>volatile只提供了可见性、有序性，并不能保证操作的原子性。使用原则如下：</p>
-<ul>
-<li><strong>写入变量不依赖变量的当前值。</strong> 因为如果依赖当前值，将是获取-计算-写入三步操作，而这三部操作不是原子性的，volatile不保证原子性。</li>
-<li><strong>读写变量值时没有加锁。</strong> 因为加锁已经保证了可见性，不需要再申明为volatile。</li>
-</ul>
-<h1 id="CAS（Compare-And-Swap）"><a href="#CAS（Compare-And-Swap）" class="headerlink" title="CAS（Compare And Swap）"></a>CAS（Compare And Swap）</h1><p>CAS是JDK提供的非阻塞原子性操作,他通过硬件保证了比较更新操作的原子性。JDK里面的Unsafe类提供了一系列的compareAndSwap＊方法，下面以 <code>compareAndSwapLong</code>方法为例进行简单介绍。</p>
-<ul>
-<li><strong>boolean compareAndSwapLong(Object obj,long valueOffset,long expect,long update）</strong>CAS有四个操作数，分别为：<strong>对象内存位置</strong>、<strong>对象中的变量的偏移量</strong>、<strong>变量预期值</strong>、<strong>新的值</strong>。其操作含义是，如果对象obj中内存偏移量为valueOffset的变量值为expect，则使用新的值update替换旧的值expect。这是处理器提供的一个原子性指令。</li>
-</ul>
-<p>关于CAS操作有个经典的ABA问题，具体如下：假如线程I使用CAS修改初始值为A的变量X，那么线程I会首先去获取当前变量X的值（为A〕，然后使用CAS操作尝试修改X的值为B，如果使用CAS操作成功了，那么程序运行一定是正确的吗？其实未必，这是因为有可能在线程I获取变量X的值A后，在执行CAS前，线程II使用CAS修改了变量X的值为B，然后又使用CAS修改了变量X的值为A。所以虽然线程I执行CAS时X的值是A，但是这个A己经不是线程I获取时的A了。这就是ABA问题。</p>
-<p>ABA问题的产生是因为变量的状态值产生了环形转换，就是变量的值可以从A到B,然后再从B到A。如果变量的值只能朝着一个方向转换，比如A到B,B到C，不构成环形，就不会存在问题。JDK中的 <code>AtomicStampedReference</code>类给每个变量的状态值都配备了一个时间戳，从而避免了ABA问题的产生。</p>
-<h2 id="通过反射使用Unsafe类"><a href="#通过反射使用Unsafe类" class="headerlink" title="通过反射使用Unsafe类"></a>通过反射使用Unsafe类</h2><p>在Unsafe类的内部，使用类加载器限定了只有Bootstrap类加载器加载的类才能使用Unsafe，所以自己编写的代码无法使用Unsafe，需要使用反射才能使用：</p>
-<pre><code class="java">/**
- * @author 熊乾坤
- * @since 2021-03-16 23:51
- */
-public class UnsafeUse &#123;
-    //声明一个待修改的变量
-    private volatile long status = 0;
-
-    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException &#123;
-        Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);
-        field.setAccessible(true);
-        //使用反射拿到Unsafe类的theUnsafe引用
-        Unsafe unsafe = (Unsafe) field.get(Unsafe.class);
-        UnsafeUse unsafeUse = new UnsafeUse();
-        long statusOffset = unsafe.objectFieldOffset(UnsafeUse.class.getDeclaredField(&quot;status&quot;));
-        System.out.println(&quot;CAS结果：&quot; + unsafe.compareAndSwapLong(unsafeUse, statusOffset , 0, 1));
-        System.out.println(&quot;修改后的值：&quot; + unsafeUse.status);
-        //再测一次CAS失败的情况
-        System.out.println(&quot;CAS结果：&quot; + unsafe.compareAndSwapLong(unsafeUse, statusOffset , 0, 1));
-        System.out.println(&quot;修改后的值：&quot; + unsafeUse.status);
-    &#125;
-&#125;
-</code></pre>
-<h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a><a href="">伪共享</a></h1>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/02/27/%E8%BD%AC%E8%BD%BD-%E5%85%94%E5%AD%90%E7%9A%84%E9%82%80%E8%AF%B7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/27/%E8%BD%AC%E8%BD%BD-%E5%85%94%E5%AD%90%E7%9A%84%E9%82%80%E8%AF%B7/" class="post-title-link" itemprop="url">转载-兔子的邀请</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-02-27 16:09:04" itemprop="dateCreated datePublished" datetime="2021-02-27T16:09:04+08:00">2021-02-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-05 11:33:13" itemprop="dateModified" datetime="2021-04-05T11:33:13+08:00">2021-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Daily/" itemprop="url" rel="index"><span itemprop="name">Daily</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2021/02/27/%E8%BD%AC%E8%BD%BD-%E5%85%94%E5%AD%90%E7%9A%84%E9%82%80%E8%AF%B7/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/27/%E8%BD%AC%E8%BD%BD-%E5%85%94%E5%AD%90%E7%9A%84%E9%82%80%E8%AF%B7/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <center>
-
-<p>&lt;– iframe frameborder=”no” border=”0” marginwidth=”0” marginheight=”0” width=330 height=86 src=”//music.163.com/outchain/player?type=2&amp;id=40021474&amp;auto=1&amp;height=66” -&gt;</iframe></p>
-</center>
-
-</br>
-
-<center style="font-size:25px;">《兔子的邀请》</center>
-
-<center>郑成南</center>
-
-<p>你收到过一只兔子的邀请吗？</p>
-<p>那可是一只可爱的兔子哦。一双长长的尖尖的耳朵，一双红红的亮亮的眼睛，走起路来一蹦一跳，背着一只小巧玲珑的布袋，袋子里装满了请帖。每个清晨，在太阳还没露脸的时候，他要把一张张请帖送到邀请人的手里。</p>
-<p>就是在某个冬日清早，你还在睡梦里。梦里又是如此甜蜜，似乎从没做过如此甜蜜的梦。突然咚咚咚传来一阵敲门声，险些把那扇破木门拍碎了。你被敲门声惊醒，一边生气地嘟囔着，一边急着跑去开门，门口站着的竟然是一只兔子。</p>
-<p>“真是抱歉，”兔子说，“可能打搅您的美梦了哦。”</p>
-<p>你哈欠连连，对兔子的清早来访表示极度不满。</p>
-<p>“这是给您的请帖。”兔子递上来一张金黄色的请帖。</p>
-<p>多精致的请帖啊，封面上还绣着一朵可爱的玫瑰花呢！那也是兔子自己亲手绣上去的吧。</p>
-<p>“到时候请光临寒舍，参加一个特殊的舞会哦。”兔子眨了眨可爱的红眼睛，那双红眼睛里似乎蕴藏着一片粉红色的玫瑰花海。</p>
-<p>当时，你没多想，只是擦了擦惺忪睡眼，觉得眼前这只兔子还真滑稽，参加特殊舞会？兔子还开什么舞会？真是闻所未闻哦。</p>
-<p>不过，你的手却情不自禁地伸了出去，接过了那张亲贴。金黄色的请帖在你手上显得有些沉甸甸的。你打开一看，里面用黑色小楷认认真真写着：</p>
-<blockquote>
-<p>请您务必在10月18日晚上6点光临寒舍参加特殊舞会哦！</p>
-<p>可爱的兔子奉上</p>
-</blockquote>
-<p>你冷笑了两下，仅仅只是两下。你把嗓门压得很低，原本你的嗓门就沉。所以，那只兔子根本就没听见你的冷笑，他仍然是一副兴奋而幸福的表情。</p>
-<p>“到时候一定参加哦。”你说。</p>
-<p>“记住，是10月18日6点哦。”兔子叮嘱了一句，转身跑走了。在太阳露脸之前，他要把更多的请帖送到所邀请的人手里。</p>
-<p>你拿着请帖愣愣地站着看兔子跑远，然后回屋继续睡觉。</p>
-<p>这样的好天气，你是不会错过睡觉的。对你来说，美好的事情莫过于躺在床上，做一个甜美或美好的梦。</p>
-<p>所以，那天，兔子走后，你就把那张请帖扔到一边。到了第二天，你就把这件事情忘得一干二净，以致到了10月18日，你也没有想不起舞会那回事，错过了。这件事让你后悔了一辈子。</p>
-<p>多年后，你在清理房间的时候，意外地在床地下发现了那张请帖，虽然布满了灰尘，但是，拂去灰尘之后，那层黄色依然如此亮丽，封面上的玫瑰花依然如此精致绝美。你缓缓地开启，然后那行工工整整的小楷再次出现在你的眼前：</p>
-<blockquote>
-<p>请您务必在10月18日6点光临寒舍参加特殊舞会哦！</p>
-<p>可爱的兔子奉上</p>
-</blockquote>
-<p>你的回忆就像电影倒带一般，快速地闪到了多年前的那个清晨，你在睡梦中被一只兔子吵醒，然后看到一只可爱的兔子。</p>
-<p>一双长长的尖尖的耳朵，一双红红的亮亮的眼睛，走起路来一蹦一跳，背着一只小巧玲珑的布袋，袋子里装满了请帖……</p>
-<p>即使如今，你在回忆过去，但是，回忆起来比当时更加让你清晰，也更加让你感到奇妙。因为你似乎看到了兔子眼神里的盛情，额头的微微汗珠。那天早上，或许是兔子第一个给你送请帖吧。</p>
-<p>过了多少年了啊？多少个10月18日过去了啊？兔子的舞会也早就结束了吧。你手里拿着请帖，就像拿着一张秋日里飘落下来的黄色落叶。</p>
-<p>那年以后，兔子再也没出现过了，或许他早离开这里了吧？</p>
-<p>那天，你的心情很不好，就是因为找到了那张请帖，你觉得自己辜负了一只兔子的邀请，辜负了兔子对你的信赖和期盼。整个白天，你在收拾屋子的时候，就显得心不在焉，神不守舍的。以致发生了许多不该发生的意外：</p>
-<p>在收拾厨房时，你把家里所有的十三个碟子全打碎了，虽然那些碟子原本就破陋不堪。</p>
-<p>在收拾客厅时，你把祖父留给你的唯一相框也碰散架了。祖父唯一的照片就跑出来了，祖父闭着眼睛，或许当年他在照这张照片的时候，刚好望着刺眼的阳光。不过，这张唯一的照片也好，一直挂在客厅的大墙上。</p>
-<p>这可是祖父遗留给你的唯一财产啊！你自己很心疼，就拿到后院修理。可是，你哪里用过斧头，又哪里会刨木头。用锤子钉铁钉的时候，又不知道控制力气，结果自然把整个相框都糟蹋完了。</p>
-<p>看着一堆碎木片，你心里是如此悲伤。不过，你忍痛割爱把相框扔掉了，只保留了那张照片。失去了相框的照片，就像被脱去衣服的布娃娃，看起来孤孤单单的。</p>
-<p>让你收拾屋子，真是难为你了。一天下来，除了那些笨重的东西，几乎没剩什么了。不过，除了对那个相框感到惋惜之外，其他的东西你一点都不在乎。</p>
-<p>某个早晨，你突然醒过来，一看日历，快到10月18日了。你再次想起了兔子的请帖，于是，你在枕头地下找出了那张请帖。</p>
-<p>（上次你找到请帖后，就一直把请帖压在枕头底下。）</p>
-<p>这次，你似乎下了很大决心。你要去参加兔子的特殊舞会，实现多年前的约定。</p>
-<p>你拿着请帖，走出家门，准备去找那只可爱的兔子。</p>
-<p>或许，他还在那里等我呢？或许，他每年在10月18日6点如期举行特殊舞会呢？你假设了108个“或许”，然后胸有成竹地走出了家门。</p>
-<p>你一旦决定的事，谁都无法改变。</p>
-<p>你走的时候很干脆，没带上什么东西，虽然你也考虑过兔子或许离你家很远，或许在第五个或第六个山头，那么，你步行需要十天或二十天。但是，你离开家的时候，竟然连门都没有关，因为你知道，那扇破门几年前就破得不成样子，关了跟没关是一样的，何况，家里确实没有什么值钱的东西。</p>
-<p>于是，你就放心地上路了。左边口袋里装了祖父留给的唯一照片，虽然没有了相框，可在你心里觉得依然珍贵。（这样带着似乎更加方便哦）</p>
-<p>你右边的口袋里装着那张金黄色的请帖。</p>
-<p>你离开家的时间是在清晨，或许是多年前兔子把请帖送到你手里的时候吧。这样的清晨，正是赶路的好时候，因为太阳还没有露脸，因为森林里还笼罩着一层薄薄的雾，那些高大挺拔的树看起来就若隐若现。</p>
-<p>路边的野花盛开得真好，虽然没有人欣赏，而她们孤芳自赏。这是深山密林里所有植物的生存态度，必须学会孤芳自赏。</p>
-<p>你无视路边的野花，你觉得你当务之急是赶去兔子的舞会，你已经错过了很多个舞会，这次再不能错过了。你觉得自己是个守信之人，轻易不该失约的。</p>
-<p>（因多年前的失约，你仍耿耿于怀。）</p>
-<p>你继续赶路，太阳慢慢露出脸庞。先是从树梢里探出半张脸，似乎在跟那密密麻麻的枝桠捉迷藏。接着，太阳就把整张脸都跳出来了，羞羞答答的。不久，太阳光越来越刺眼，穿过密密层层的树叶，纷纷落在树林里。</p>
-<p>太阳的光芒就像一根根光柱，在地上照出一个个圈。据说，每一个圈就是一个缩小的太阳。</p>
-<p>你一直急着赶路，你想，在下一个10月18日6点钟务必赶到兔子家里。</p>
-<p>走了一段路，你觉得自己已经走出很远了，停下来，转过身，看不到自家屋顶高高的烟囱了。</p>
-<p>兔子的家到底在哪里呢？</p>
-<p>你从右边口袋里掏出那张请帖，缓缓地开启，上面依然是一行工工整整的小楷：</p>
-<p>请您务必在10月18日6点光临寒舍参加特殊舞会哦！</p>
-<p>可爱的兔子奉上</p>
-<p>你自己看了几遍，又轻声地读了几遍，发现上面确实少了什么。</p>
-<p>请帖上竟然没有地址！</p>
-<p>这是个致命的错误，那只兔子也太粗心了吧。既然邀请人参加舞会，只写明时间，不留下地址，叫人去哪里寻找呢？</p>
-<p>你摸了摸脑袋，你认为自己的大脑袋充满了智慧，此时却也显得有些无助和踌躇了。你站在一块空地上，一抬头就看到明晃晃的太阳。此时太阳正停在半天空，你分不清东西南北，你也不知道该朝哪个方向走了。</p>
-<p>这只粗心的兔子怎么没留下地址呢？</p>
-<p>你在心里反复琢磨着这句话。你想过放弃寻找，漫无目的地寻找，好比是大海捞针，希望是非常渺茫的。</p>
-<p>可是，最终你并没有放弃，你摸了摸左边的口袋，觉得坚持到底是你家族的优良传统。这点，在祖父身上就有很好的见证。</p>
-<p>你朝着那个最高的山头走去，你认为兔子或许就住在那个山头。你想象，在那个山头后面，有一群可爱的兔子，正在举行舞会。他们手牵着手，在蟋蟀动听的声乐伴奏下，跳起了圆圈舞。他们的脚步很灵巧，身上的毛洁白如雪，在如水的月光下显得那么可爱。</p>
-<p>那个山头，在你的联想中有了神秘和生机勃勃。</p>
-<p>走了一天，你觉得累了，但是你身上有股神奇的力量。你继续向那个山头走去。可是，那座山头，看起来近在眼前，走起来却是如此遥远，似乎有意躲着你。在太阳下山之时，你只走到山脚。</p>
-<p>你抬头望望巍巍的高山，心中有稍微的恐惧，这么高的山，你能顺利爬上去吗？</p>
-<p>那天晚上，你准备在山脚住下。你清楚，只有休息足够了，才有力气爬山。于是，你找到了一块平地，去河边先喝足了水，然后摘了几张芭蕉叶摊在地上，你躺在芭蕉叶上好好的睡了一觉。</p>
-<p>你一躺下就睡着了，你从没感到那么累。因为长这么大，你从没出过这么远的门。那天晚上，你没有梦，一夜睡到第二天清晨醒来，你没有梦，这真是让人难以置信啊。</p>
-<p>第二天清晨，你是被冰冷的露水冻醒的。因为晚上睡觉时你很不老实，总是把身上的芭蕉叶踢掉。你不知道露珠其实比你更调皮，总是往你身上钻。</p>
-<p>你爬起来，揉了揉惺忪睡眼，然后又望了望那座高高的山。你准备向山头进发。</p>
-<p>进发之前，你用手摸了摸左边的口袋，祖父的照片还在。你又摸了摸右边的口袋，黄色的请帖还在。它们都还在，你就放心了。</p>
-<p>山路很崎岖，你每走一步都显得很艰难。不过，你很有信心，每向上爬一步，你就觉得离山头近一步，也觉得跟兔子的约定近了一步。</p>
-<p>中午的时候，你终于爬到了山头，你显得有些气喘。就坐在一块岩石上休息。坐在山头，你往下俯瞰，巍巍的高山，如此峻拔。山头的风真大啊，呼呼呼呼一直吹着。你惊讶着自己是如何爬上来的呢？</p>
-<p>山头很荒芜，几乎没什么树木，甚至连青草也不多。你想，或许兔子就会在这里举办舞会吧，这样的地方举办舞会可正合适。</p>
-<p>可是，你打量了所有地方，都想象不出这里有开过舞会的痕迹。</p>
-<p>这时，你看到一只山羊。当时，山羊正埋着头吃稀少的青草。因为青草稀少，山羊总是吃不饱，这点从山羊骨瘦如柴的身架就看出来了。</p>
-<p>那么，山羊为何选择生活在这里呢？山脚却是一片肥沃啊！或许，在这样的山头，最适合山羊生活，他喜欢跟自己过不去。</p>
-<p>“这里从来没有举行过什么舞会。”山羊很肯定地说，“因为我一直生活在这里，从我小时候起，一直到现在。我见过的事情比我下巴上的胡须还多，我听过的事情比我身上的毛发还多……”</p>
-<p>原来这是一只善于倾述的山羊。是啊，一直生活在这样荒芜的山头，根本没机会倾述，是会被憋坏的。</p>
-<p>面对这只年迈憨厚的山羊，你认为他说的没错。可是，你不能听着他把所见多的事情讲完。或许，他一直讲着讲着，突然倒地，老死了。因为等他讲完，确实需要很久很久。</p>
-<p>山羊邀请你留下，他确实需要你。可是，你清楚自己不能留下。因为，你一直想着右边口袋里的请帖，你清楚自己的目的。</p>
-<p>“你可以把故事说给山听啊，山会回答你的哦。”</p>
-<p>山羊就对着山咩咩地喊了几声，果然，山也跟着咩咩喊了几声。山羊很高兴，他在山头活了一辈子，却不懂得山头是有回声的。此后，他每天对着山讲故事。山也跟着把他的故事重述一遍。</p>
-<p>这只可怜的山羊，活了一辈子，到老了才活出点精彩来。</p>
-<p>“或许，兔子就在下一座山头上吧。”你想。</p>
-<p>于是，你告别了山羊，在山羊留恋的注视下，向下一座山头走去。</p>
-<p>下一座山头比这个山头更高，而你已经习惯了爬山。很快就爬到了山顶。这里的山头比之前的山头似乎显得更加荒芜，你可以肯定兔子不可能在这里开舞会。果然，你的猜测在一只老牦牛的嘴巴里得到了证实。</p>
-<p>老牦牛说自己在山头生活了一辈子。在他很小很小的时候，跟着牦牛家族来到了这里，最后牦牛家族迁移了，而他执意留下来。</p>
-<p>老牦牛说：“之前，这里可是一片肥沃的草地，自从牦牛家族来后，把所有的草都吃掉了。这个山头就像一个孩子的脑袋，青青的草就像脑袋上的头发，总是不停地破坏，头发自然就不长了，只剩了这片光秃秃的山头。”</p>
-<p>牦牛说这些话的时候，一直坐在一块凹进去的石头上，或许那块石头就是被他坐凹陷的吧。</p>
-<p>“别说一只兔子，连一只蜜蜂都没关顾过。”牦牛说。</p>
-<p>“或许他在下一座山头吧。”</p>
-<p>你告别了牦牛，又向下一座山头进发了。</p>
-<p>你认为，只要继续寻找，一定能找到那只兔子，他就在某一座山头上，在10月18日6点举行特殊舞会。</p>
-<p>在第三座山头上，你坐在一根枯败的树杆上，从右边口袋里掏出了那张金黄色请帖，你推算着，离18日只差五天了，这五天之内能找到兔子吗？</p>
-<p>第四天，你坐在第四座山头上，然后看着落山的夕阳。你从没看过夕阳，觉得太阳落山时竟然也有如此美丽的景致，你被那美丽陶醉了。</p>
-<p>第五天，你站在第五座山头，你从一条蟒蛇口中救出了一只可怜的野鼠。你把那只奄奄一息的野鼠送回家里，然后很好的照顾他。野鼠很快就恢复了健康。</p>
-<p>第六天，你走到第六座山头上。在一棵千年老树下，你听到了一首美妙的歌。那首歌是一只长尾巴鸟唱的，你从没听过如此美妙的歌。那歌声犹如纯洁的清泉叮叮咚咚地流淌，犹如可爱的婴儿熟睡时甜甜的笑声。你想认识这只长尾巴鸟，可是，长尾巴鸟唱完了歌，展翅飞走了。</p>
-<p>你愣愣地站了片刻，并没有感到遗憾，因为他的歌声会让你记忆一辈子，也会让你感动一辈子。</p>
-<p>第七天，你终于到了第七座山头上。</p>
-<p>第八天，你想着，如果今晚再找不到那只兔子，又要错过今年的舞会了，因为今天就是10月18日。</p>
-<p>你很快就到了第八座山头上。站在山头，吹拂着凉凉的风，你的心情很好，特别的好，或许你期待着今晚就会看到那只兔子。还会看到那场神秘的特殊舞会。你再次从右边口袋里掏出了那张请帖，金黄色的请帖，封面上依然是一朵精致的玫瑰花。</p>
-<p>夜幕徐徐降临，你看到赤黄的太阳就像被剥去蛋清的蛋黄，落在山的半山腰。等繁星慢慢出现在夜空的时候，山头依然很安静。</p>
-<p>这时，你有些失望了，你觉得兔子根本就不会在这座山头。因为当年你错过了约定，他离开了。或许，当年他给你送请帖的时候，根本就是个恶作剧！</p>
-<p>可是，不久，你却别眼前的情景惊呆了。你看到了一只萤火虫。这个时候，并非是萤火虫活动的季节，可是，你却看到了萤火虫。</p>
-<p>起先是一只萤火虫，闪着暗淡的光芒。接着，是一群，不久，就是一片。所有暗淡的光都聚集起来，就是一片明亮！</p>
-<p>这时，一只兔子出现了，你发现了正是当年那只兔子。你心里有股按捺不住兴奋，迅速向兔子跑去。</p>
-<p>跟当年一样，兔子没有改变，依然是一双长长的尖尖的耳朵，一双红红的亮亮的眼睛，走起路来一蹦一跳。不过，此时，兔子在跳舞，他一个人在跳圆圈舞。看起来如此滑稽。兔子尽情地舞蹈，他的舞步很笨拙，不过很有激情。那股激情是从他内心散发出来的，你看着，也被感染，你想着跳舞。你就跟着兔子一起跳了。你的舞步比兔子的更加笨拙，因为你是第一次跳舞，况且你天生就不是跳舞的料。</p>
-<p>萤火虫团团将你围住，她们的光芒很暗淡。</p>
-<p>很快，你们就停止了舞步。因为兔子累了，你也累了。</p>
-<p>“听说您找我了，我就一路跟着来了。真抱歉，让您找了那么久。”</p>
-<p>说抱歉的应该是你，兔子的话让你感到更加内疚。你从右边口袋里掏出那张请帖，说起了当年的那个清晨，你说自己失约了。</p>
-<p>“真高兴您还收藏着请帖。我送出去108张请帖，您是唯一守约的，虽然迟了多年。”</p>
-<p>你很激动，一时无语。</p>
-<p>不过，你为自己感到高兴。</p>
-<blockquote>
-<p>此文发表于2010年6月《儿童文学》下，感谢编辑木马老师，感谢CAFE-Y老师的精美插图。遗憾的是，发稿时作者写成了“郑成楠”！</p>
-</blockquote>
-<p>原文链接：<a href="blog.sina.com.cn/s/blog_49258d730100gfv2.html">《兔子的邀请》</a></p>
-<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/02/27/b5dcf8b5-e3ce-41bd-9808-70748795312a.jpg" alt="1536143105021a5s.jpg"></p>
-
+          <!--noindex-->
+          <!--/noindex-->
+        
       
     </div>
 
@@ -2440,24 +1650,29 @@ public class UnsafeUse &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -2486,7 +1701,7 @@ public class UnsafeUse &#123;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -2512,10 +1727,12 @@ public class UnsafeUse &#123;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -2525,6 +1742,8 @@ public class UnsafeUse &#123;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -2535,6 +1754,10 @@ public class UnsafeUse &#123;
 
 
 
+
+
+
+  
 
   
 

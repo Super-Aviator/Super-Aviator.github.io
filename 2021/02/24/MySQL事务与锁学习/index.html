@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="MySQL中的事务由存储引擎层进行管理，所以在同一个事务中混合使用事务型和非事务性的表是不可靠的，例如需要回滚时，事务型的表则无法撤销操作，造成数据不一致的情况； 事务的ACID属性 原子性事务被视为一个不可分割的最小执行单元，整个事务中的所有操作要么全部成功，要么全部回滚，不存在只执行一半的情况 一致性数据库总是从一个一致性状态转换到另一个一致性状态；例如事务执行到一半系统崩溃，所做的修改也不会">
@@ -106,6 +106,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -122,12 +123,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -140,11 +141,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -154,7 +182,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -339,8 +367,9 @@ UNLOCK TABLES;
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
           </div>
 
         
@@ -415,7 +444,7 @@ UNLOCK TABLES;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84ACID%E5%B1%9E%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">事务的ACID属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">并发事务带来的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E4%B8%A2%E5%A4%B1"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">更新丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%8F%E8%AF%BB"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">脏读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%EF%BC%88%E9%92%88%E5%AF%B9UPDATE%E5%92%8CDELETE%E7%9A%84%E8%A1%8C%EF%BC%89"><span class="nav-number">2.0.0.3.</span> <span class="nav-text">不可重复读（针对UPDATE和DELETE的行）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%BB%E8%AF%BB%EF%BC%88%E9%92%88%E5%AF%B9INSERT%E7%9A%84%E8%A1%8C%EF%BC%89"><span class="nav-number">2.0.0.4.</span> <span class="nav-text">幻读（针对INSERT的行）</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">事务的四种隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#READ-UNCOMMITED-%E6%9C%AA%E6%8F%90%E4%BA%A4%E8%AF%BB"><span class="nav-number">3.1.</span> <span class="nav-text">READ UNCOMMITED(未提交读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#READ-COMMITED-%E5%B7%B2%E6%8F%90%E4%BA%A4%E5%BA%A6%E3%80%81%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">3.2.</span> <span class="nav-text">READ COMMITED(已提交度、不可重复读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REPEATABLE-READ-%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">3.3.</span> <span class="nav-text">REPEATABLE READ(可重复读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SERIALIZABLE-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">3.4.</span> <span class="nav-text">SERIALIZABLE(序列化)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVCC%EF%BC%88Molti-Version-Concurrency-Control%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">MVCC（Molti Version Concurrency Control）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MyISAM%E8%A1%A8%E9%94%81"><span class="nav-number">5.</span> <span class="nav-text">MyISAM表锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%8F%92%E5%85%A5%EF%BC%88Concurrency-Insert%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">并发插入（Concurrency Insert）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%81%E8%B0%83%E5%BA%A6"><span class="nav-number">5.2.</span> <span class="nav-text">锁调度</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InnoDB%E8%A1%8C%E9%94%81"><span class="nav-number">6.</span> <span class="nav-text">InnoDB行锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB%E8%A1%8C%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">InnoDB行锁的实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Next-Key%E9%94%81"><span class="nav-number">6.1.1.</span> <span class="nav-text">Next-Key锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InnoDB%E8%A1%A8%E9%94%81"><span class="nav-number">7.</span> <span class="nav-text">InnoDB表锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">8.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E5%8F%91%E7%94%9F%E5%90%8E%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">9.</span> <span class="nav-text">死锁发生后的解决方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84ACID%E5%B1%9E%E6%80%A7"><span class="nav-text">事务的ACID属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">并发事务带来的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E4%B8%A2%E5%A4%B1"><span class="nav-text">更新丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%8F%E8%AF%BB"><span class="nav-text">脏读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%EF%BC%88%E9%92%88%E5%AF%B9UPDATE%E5%92%8CDELETE%E7%9A%84%E8%A1%8C%EF%BC%89"><span class="nav-text">不可重复读（针对UPDATE和DELETE的行）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%BB%E8%AF%BB%EF%BC%88%E9%92%88%E5%AF%B9INSERT%E7%9A%84%E8%A1%8C%EF%BC%89"><span class="nav-text">幻读（针对INSERT的行）</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-text">事务的四种隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#READ-UNCOMMITED-%E6%9C%AA%E6%8F%90%E4%BA%A4%E8%AF%BB"><span class="nav-text">READ UNCOMMITED(未提交读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#READ-COMMITED-%E5%B7%B2%E6%8F%90%E4%BA%A4%E5%BA%A6%E3%80%81%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-text">READ COMMITED(已提交度、不可重复读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REPEATABLE-READ-%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-text">REPEATABLE READ(可重复读)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SERIALIZABLE-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-text">SERIALIZABLE(序列化)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVCC%EF%BC%88Molti-Version-Concurrency-Control%EF%BC%89"><span class="nav-text">MVCC（Molti Version Concurrency Control）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MyISAM%E8%A1%A8%E9%94%81"><span class="nav-text">MyISAM表锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%8F%92%E5%85%A5%EF%BC%88Concurrency-Insert%EF%BC%89"><span class="nav-text">并发插入（Concurrency Insert）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%81%E8%B0%83%E5%BA%A6"><span class="nav-text">锁调度</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InnoDB%E8%A1%8C%E9%94%81"><span class="nav-text">InnoDB行锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB%E8%A1%8C%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">InnoDB行锁的实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Next-Key%E9%94%81"><span class="nav-text">Next-Key锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InnoDB%E8%A1%A8%E9%94%81"><span class="nav-text">InnoDB表锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E5%8F%91%E7%94%9F%E5%90%8E%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-text">死锁发生后的解决方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -431,24 +460,29 @@ UNLOCK TABLES;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -477,7 +511,7 @@ UNLOCK TABLES;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -503,10 +537,12 @@ UNLOCK TABLES;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -516,6 +552,8 @@ UNLOCK TABLES;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -526,6 +564,10 @@ UNLOCK TABLES;
 
 
 
+
+
+
+  
 
   
 

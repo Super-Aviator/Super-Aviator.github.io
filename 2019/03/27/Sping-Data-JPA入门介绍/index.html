@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="参考文章：  Spring Data JPA的官方文档 IMB Develop 博客 CSDN博客  目前的公司的项目需要用到Spring Data JPA，记得刚开始看的时候感觉一脸懵逼，后来稍微看懂了以后感觉项目中如果业务逻辑比较简单的话，使用JPA比Mybatis更省事省力，它不需要使用JDBC中的那套麻烦的API，甚至也不需要写Mybatis那样的映射，定义好接口就可以直接用，感觉非常神奇">
@@ -109,6 +109,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -125,12 +126,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -143,11 +144,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -157,7 +185,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -712,10 +740,11 @@ public class UserRepositoryIntegrationTest &#123;
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Java-Web/" rel="tag"># Java Web</a>
-              <a href="/tags/Spring/" rel="tag"># Spring</a>
-              <a href="/tags/Spring-Data-JPA/" rel="tag"># Spring Data JPA</a>
+              <a href="/tags/Java-Web/" rel="tag"><i class="fa fa-tag"></i> Java Web</a>
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+              <a href="/tags/Spring-Data-JPA/" rel="tag"><i class="fa fa-tag"></i> Spring Data JPA</a>
           </div>
 
         
@@ -790,7 +819,7 @@ public class UserRepositoryIntegrationTest &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">配置数据源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJDBC%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">配置JDBC驱动程序定义的数据源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJNDI%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.2.</span> <span class="nav-text">配置JNDI数据源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">配置连接池的数据源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BD%93%E7%AE%A1%E7%90%86%E5%99%A8%EF%BC%88EntityManager%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">配置实体管理器（EntityManager）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E6%8E%A5%E5%8F%A3%E7%BB%A7%E6%89%BFRepository%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">继承接口继承Repository接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Repository%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.1.</span> <span class="nav-text">Repository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CrudRepository%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.2.</span> <span class="nav-text">CrudRepository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PagingAndSortingRepository%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.3.</span> <span class="nav-text">PagingAndSortingRepository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9"><span class="nav-number">3.4.</span> <span class="nav-text">如何选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%96%B9%E6%B3%95%E5%A3%B0%E6%98%8E%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.5.</span> <span class="nav-text">为接口的方法声明自定义查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%AE%9E%E4%BD%93%E7%B1%BB%EF%BC%88Entity%EF%BC%89"><span class="nav-number">3.6.</span> <span class="nav-text">定义实体类（Entity）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E8%BF%99%E4%BA%9B%E6%8E%A5%E5%8F%A3%E5%88%9B%E5%BB%BA%E4%BB%A3%E7%90%86%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">为这些接口创建代理实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97repository-%E5%AE%9E%E4%BE%8B%E6%B3%A8%E5%85%A5%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%AE%83%E3%80%82"><span class="nav-number">5.</span> <span class="nav-text">获得repository 实例注入并使用它。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E6%8E%A5%E5%8F%A3%E4%B8%AD%E7%9A%84%E9%83%A8%E5%88%86%E6%96%B9%E6%B3%95%E6%8F%90%E4%BE%9B%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.</span> <span class="nav-text">为接口中的部分方法提供自定义实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">6.1.</span> <span class="nav-text">指定自定义实现类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E7%94%A8Spring%E6%B3%A8%E8%A7%A3%E4%BA%8B%E5%8A%A1"><span class="nav-number">7.</span> <span class="nav-text">启用Spring注解事务</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-text">配置数据源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJDBC%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-text">配置JDBC驱动程序定义的数据源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJNDI%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-text">配置JNDI数据源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-text">配置连接池的数据源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BD%93%E7%AE%A1%E7%90%86%E5%99%A8%EF%BC%88EntityManager%EF%BC%89"><span class="nav-text">配置实体管理器（EntityManager）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E6%8E%A5%E5%8F%A3%E7%BB%A7%E6%89%BFRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text">继承接口继承Repository接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Repository%E6%8E%A5%E5%8F%A3"><span class="nav-text">Repository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CrudRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text">CrudRepository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PagingAndSortingRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text">PagingAndSortingRepository接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9"><span class="nav-text">如何选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%96%B9%E6%B3%95%E5%A3%B0%E6%98%8E%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9F%A5%E8%AF%A2"><span class="nav-text">为接口的方法声明自定义查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%AE%9E%E4%BD%93%E7%B1%BB%EF%BC%88Entity%EF%BC%89"><span class="nav-text">定义实体类（Entity）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E8%BF%99%E4%BA%9B%E6%8E%A5%E5%8F%A3%E5%88%9B%E5%BB%BA%E4%BB%A3%E7%90%86%E5%AE%9E%E4%BE%8B"><span class="nav-text">为这些接口创建代理实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97repository-%E5%AE%9E%E4%BE%8B%E6%B3%A8%E5%85%A5%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%AE%83%E3%80%82"><span class="nav-text">获得repository 实例注入并使用它。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E6%8E%A5%E5%8F%A3%E4%B8%AD%E7%9A%84%E9%83%A8%E5%88%86%E6%96%B9%E6%B3%95%E6%8F%90%E4%BE%9B%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0"><span class="nav-text">为接口中的部分方法提供自定义实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-text">指定自定义实现类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E7%94%A8Spring%E6%B3%A8%E8%A7%A3%E4%BA%8B%E5%8A%A1"><span class="nav-text">启用Spring注解事务</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -806,24 +835,29 @@ public class UserRepositoryIntegrationTest &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -852,7 +886,7 @@ public class UserRepositoryIntegrationTest &#123;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -878,10 +912,12 @@ public class UserRepositoryIntegrationTest &#123;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -891,6 +927,8 @@ public class UserRepositoryIntegrationTest &#123;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -901,6 +939,10 @@ public class UserRepositoryIntegrationTest &#123;
 
 
 
+
+
+
+  
 
   
 

@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="熊乾坤的博客">
@@ -101,6 +101,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -117,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -135,11 +136,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -149,7 +177,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -159,6 +187,93 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/10/17/Spring%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/17/Spring%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E5%99%A8/" class="post-title-link" itemprop="url">自定义消息转换器、自定义校验器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-17 14:53:00" itemprop="dateCreated datePublished" datetime="2019-10-17T14:53:00+08:00">2019-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:02" itemprop="dateModified" datetime="2021-02-23T21:00:02+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/10/17/Spring%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E5%99%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/10/17/Spring%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E5%99%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1573,7 +1688,7 @@ public class RequestBodyController &#123;
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:10" itemprop="dateModified" datetime="2021-02-23T21:00:10+08:00">2021-02-23</time>
+                <time title="修改时间：2021-04-06 22:51:05" itemprop="dateModified" datetime="2021-04-06T22:51:05+08:00">2021-04-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2619,312 +2734,6 @@ public class User &#123;
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/06/20/Spring-Data-JPA%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/20/Spring-Data-JPA%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">Spring Data JPA进阶学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-20 12:14:00" itemprop="dateCreated datePublished" datetime="2019-06-20T12:14:00+08:00">2019-06-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-10 13:21:30" itemprop="dateModified" datetime="2021-03-10T13:21:30+08:00">2021-03-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/06/20/Spring-Data-JPA%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/06/20/Spring-Data-JPA%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这几天静下心来深入学习一下Spring Data Jpa的深入知识，参考书籍为《Spring Data JPA从入门到精通》，感觉作者写的很乱，不过收获应该还是很多的。</p>
-<h1 id="Repository中方法的关键字"><a href="#Repository中方法的关键字" class="headerlink" title="Repository中方法的关键字"></a>Repository中方法的关键字</h1><p>Repository中的方法有很多关键字可以使用，在阅读书的时候发现了很多以前没有使用到并且没有注意到的细节问题：<br><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/03/10/4a80612f-efe1-4204-ad88-0b656d82338f.png" alt="VjOABt.png"></p>
-<ul>
-<li>小于使用LessThan关键字，大于使用GreaterThan关键字</li>
-<li>小于等于使用LessThanEqual关键字，大于等于使用GreaterThanEqual关键字</li>
-<li>时间的比较需要使用After和Before</li>
-<li>like关键字不会在参数前后加上%,StartingWith关键字会在参数前加%，EndingWith关键字会在参数后加%，而Containing关键字会在参数前后都加上%，一般用于模糊查询。</li>
-<li>In关键字的参数是Collection接口</li>
-<li>对于忽略大小写的比较，可以使用IgnoreCase关键字</li>
-</ul>
-<h1 id="数据的分页和排序"><a href="#数据的分页和排序" class="headerlink" title="数据的分页和排序"></a>数据的分页和排序</h1><p>查询数据时如果想要对数据进行分页，只需要在查询方法中加入Pagable对象，并返回Page或者Slice对象即可，调用时，参数使用PageRequest，并在构造函数中传入起始页以及每页显示的项目数即可。如果想要对分页的数据进行排序，可以在PageRequest构造器中传入Sort对象即可。</p>
-<h1 id="GeneratedValue的四种主键生成策略"><a href="#GeneratedValue的四种主键生成策略" class="headerlink" title="GeneratedValue的四种主键生成策略"></a>GeneratedValue的四种主键生成策略</h1><p>参考文章：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/hongchengshise/p/10612301.html">GenerationType四中类型</a></p>
-<p>JPA提供的四种标准用法为TABLE,SEQUENCE,IDENTITY,AUTO.</p>
-<ul>
-<li>TABLE：使用一个特定的数据库表格来保存主键。</li>
-<li>SEQUENCE：根据底层数据库的序列来生成主键，条件是数据库支持序列。</li>
-<li>IDENTITY：主键由数据库自动生成（主要是自动增长型）</li>
-<li>AUTO：主键由程序控制。</li>
-</ul>
-<h2 id="GenerationType-TABLE"><a href="#GenerationType-TABLE" class="headerlink" title="GenerationType.TABLE"></a>GenerationType.TABLE</h2><p>使用一个特定的数据库表格来保存主键,持久化引擎通过关系数据库的一张特定的表格来生成主键,这种策略的好处就是不依赖于外部环境和数据库的具体实现,在不同数据库间可以很容易的进行移植,但由于其不能充分利用数据库的特性,所以不会优先使用。该策略一般与另外一个注解一起使用@TableGenerator,@TableGenerator注解指定了生成主键的表(可以在实体类上指定也可以在主键字段或属性上指定),然后JPA将会根据注解内容自动生成一张表作为序列表(或使用现有的序列表)。如果不指定序列表,则会生成一张默认的序列表,表中的列名也是自动生成,数据库上会生成一张名为sequence的表(SEQ_NAME,SEQ_COUNT)。序列表一般只包含两个字段:第一个字段是该生成策略的名称,第二个字段是该关系表的最大序号,它会随着数据的插入逐渐累加。</p>
-<pre><code class="java">@Id
-    @Column(name=&quot;id&quot;)
-    @GeneratedValue(strategy=GenerationType.TABLE,generator=&quot;table_gen&quot;)
-    @TableGenerator(
-            name = &quot;table_gen&quot;,  
-            table=&quot;fendo_generator&quot;,  
-            pkColumnName=&quot;seq_name&quot;,     //指定主键的名字
-            pkColumnValue=&quot;fendos&quot;,      //指定下次插入主键时使用默认的值
-            valueColumnName=&quot;seq_id&quot;,    //该主键当前所生成的值，它的值将会随着每次创建累加
-            initialValue = 1,            //初始化值
-            allocationSize=1             //累加值
-            )
-    public Integer getUid() &#123;
-        return uid;
-    &#125;
-</code></pre>
-<h2 id="GenerationType-SEQUENCE"><a href="#GenerationType-SEQUENCE" class="headerlink" title="GenerationType.SEQUENCE"></a>GenerationType.SEQUENCE</h2><p>在某些数据库中,不支持主键自增长,比如Oracle,其提供了一种叫做”序列(sequence)”的机制生成主键。此时,GenerationType.SEQUENCE就可以作为主键生成策略。该策略的不足之处正好与TABLE相反,由于只有部分数据库(Oracle,PostgreSQL,DB2)支持序列对象,MYsql不支持序列,所以该策略一般不应用于其他数据库。类似的,该策略一般与另外一个注解一起使用@SequenceGenerator,@SequenceGenerator注解指定了生成主键的序列.然后JPA会根据注解内容创建一个序列(或使用一个现有的序列)。如果不指定序列,则会自动生成一个序列SEQ_GEN_SEQUENCE。</p>
-<pre><code>@Id  
-@GeneratedValue(strategy = GenerationType.SEQUENCE,generator=&quot;fendo_seq&quot;)  
-@SequenceGenerator(name=&quot;fendo_seq&quot;, sequenceName=&quot;seq_name&quot;)
-</code></pre>
-<h2 id="GenerationType-IDENTITY"><a href="#GenerationType-IDENTITY" class="headerlink" title="GenerationType.IDENTITY"></a>GenerationType.IDENTITY</h2><p>此种主键生成策略就是通常所说的主键自增长,数据库在插入数据时,会自动给主键赋值,比如MySQL可以在创建表时声明”auto_increment” 来指定主键自增长。该策略在大部分数据库中都提供了支持(指定方法或关键字可能不同),但还是有少数数据库不支持,所以可移植性略差。使用自增长主键生成策略是只需要声明strategy = GenerationType.IDENTITY即可。</p>
-<pre><code class="java">@Id  
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-</code></pre>
-<h2 id="GenerationType-AUTO"><a href="#GenerationType-AUTO" class="headerlink" title="GenerationType.AUTO"></a>GenerationType.AUTO</h2><p>把主键生成策略交给持久化引擎(persistence engine),持久化引擎会根据数据库在以上三种主键生成策略中选择其中一种。此种主键生成策略比较常用,由于JPA默认的生成策略就是GenerationType.AUTO,所以使用此种策略时.可以显式的指定@GeneratedValue(strategy = GenerationType.AUTO)也可以直接@GeneratedValue。</p>
-<pre><code class="java">@Id  
-@GeneratedValue(strategy = GenerationType.AUTO)
-</code></pre>
-<h2 id="各种数据库支持的类型"><a href="#各种数据库支持的类型" class="headerlink" title="各种数据库支持的类型"></a>各种数据库支持的类型</h2><p><img src="https://s2.ax1x.com/2019/06/20/VvNLYd.png" alt="各种数据库支持的类型"></p>
-<h1 id="使用Projections查询部分字段"><a href="#使用Projections查询部分字段" class="headerlink" title="使用Projections查询部分字段"></a>使用Projections查询部分字段</h1><p>在写代码时常常有这样的业务逻辑，就是仅仅查询实体类的部分字段，而忽略其他的字段，比如查询用户，不包括用户的密码等敏感信息。</p>
-<p>Spring Data JPA对Projections有很好的支持，使用方式如下：<br>对于如下的实体类：</p>
-<pre><code class="java">@Data
-@Entity
-public class User &#123;
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-    private String email;
-    private String address;
-&#125;
-</code></pre>
-<p>如果只想查询用户的name和email字段，首先需要定义一个接口，包含想要查询的字段的<strong>getter方法</strong>：</p>
-<pre><code class="java">/**
- * @author Aviator
- */
-@ToString
-public interface User &#123;
-    String getName();
-    String getEmail();
-&#125;
-</code></pre>
-<p>然后在Repository中，编写查询方法，方法返回的集合中包含该接口：</p>
-<pre><code class="java">public interface UserJpaRepository extends Repository&lt;User,Long&gt; &#123;
-    /**
-     * 查询所有name的用户
-     * @param name 字符串类型
-     * @return projection，查询特定字段的值,集合中的User为编写的接口。
-     */
-    List&lt;User&gt; findUserByName(String name);
-&#125;
-</code></pre>
-<p>这样就可以查询User实体类的name和email字段了：</p>
-<pre><code class="java">@RestController
-public class UserController &#123;
-
-    @Autowired
-    UserJpaRepository userRepository;
-
-    @GetMapping(&quot;/user&quot;)
-    public List&lt;UserDTO&gt; getAllUser()&#123;
-        return userRepository.findUserByName(&quot;熊乾坤&quot;);
-    &#125;
-&#125;
-</code></pre>
-<p>结果：</p>
-<pre><code class="json">[&#123;&quot;name&quot;:&quot;熊乾坤&quot;,&quot;email&quot;:&quot;2372389705@qq.com&quot;&#125;,&#123;&quot;name&quot;:&quot;熊乾坤&quot;,&quot;email&quot;:&quot;2372389705@qq.com&quot;&#125;]
-</code></pre>
-<p>除了使用接口的方式，JPA中也可以使用DTO类来实现Projections:</p>
-<pre><code class="java">@Getter
-@ToString
-public class UserDTO &#123;
-    /**
-     * 使用Projection时，字段必须为final修饰
-     */
-    private final String name, email;
-
-    public UserDTO(String name, String email) &#123;
-        this.name = name;
-        this.email = email;
-    &#125;
-&#125;
-</code></pre>
-<p><strong>值得注意的是：如果使用DTO类的方式，类中的字段必须使用final修饰，否则会抛出没有转换器的异常，要注意一下。</strong></p>
-<h1 id="使用动态Projections"><a href="#使用动态Projections" class="headerlink" title="使用动态Projections"></a>使用动态Projections</h1><p>上面学习的Projections也支持动态的操作，在Repository定义的方法中，使用泛型，就可以达到动态的映射，可以根据判定条件查询实体类的某些字段：</p>
-<pre><code class="java">public interface UserJpaRepository&lt;T&gt; extends Repository&lt;User,Long&gt; &#123;
-    /**
-     * 使用模糊查询
-     * @param name 字符串类型
-     * @param tClass 类型信息
-     * @return 用户列表
-     */
-    List&lt;T&gt; findUserByName(String name,Class&lt;T&gt; tClass);
-&#125;
-</code></pre>
-<p>此时，如果想查询User的所有字段，则调用findUserByName方法时只需要指定tClass参数为User.class,如果只需要查询User的部分参数，则tClass参数传入UserDTO.class即可。</p>
-<h1 id="合理使用-Modifying注解"><a href="#合理使用-Modifying注解" class="headerlink" title="合理使用@Modifying注解"></a>合理使用@Modifying注解</h1><p>在使用Spring Data JPA对数据库中的数据进行修改或者删除操作时，在使用@Query注解的同时，也需要使用到@Modifying注解，但是单独使用@Modifying注解时可能会因为缓存而导致一些问题。</p>
-<p>JPA 的 Repository 提供一种非常易用的机制用于 ORM 方式处理数据，但是如果需要一次性更新一批数据的部分字段，构造所有实体并逐个修改字段再存回数据库就显得有些臃肿。在 JPA 中提供了 @Query 注解用于使用 JPQL 执行数据库操作，如果数据库操作是修改数据而非查询数据，则需要再额外使用 @Modifying 注解提示 JPA 该操作是修改操作。</p>
-<p>当进行 find 操作时，JPA 在 EntityManager 中缓存了 find 生成的对象，当再次 find 时会直接返回该对象。于是可能会出现下面这种情况 ,用@Query 定义一个修改状态的方法</p>
-<pre><code class="java">public interface EntityRepository extends JpaRepository&lt;Entity, Integer&gt; &#123;
-
-    @Modifying
-    @Query(&quot;update Entity set status = &#39;IGNORED&#39; where id = ?1&quot;)
-    int updateStatus(int id);
-
-&#125;
-</code></pre>
-<p>先读取一个对象，再修改对象状态，再次读取对象</p>
-<pre><code class="java">Optional&lt;Entity&gt; entityBefore = repository.findById(1);
-
-repository.updateStatus(1);
-
-Optional&lt;Entity&gt; entityAfter = repository.findById(1);
-</code></pre>
-<p>结果会发现 entityBefore 和 entityAfter 中的 Entity 对象 id 是相同的，中间对状态的修改并没有体现出来！当然，其原因也很明确，**@Query 跟 find 和 save 系列方法是两套不同的体系**，@Query 引起的数据库变更 EntityManager 并不能发现，更进一步说，使用其它工具或者其它框架修改数据库中的数据，也不能及时反应到 JPA 的 find 系列方法上来。</p>
-<p>当然，只要有缓存机制就一定不可避免存在此类问题，这仅是个取舍问题而不要认为是 BUG。如果要解决 find 得到的值不是数据库中最新值的问题可以有几种方式，避免使用 @Query 是一种方式，在需要时显式清理 EntityManager 的缓存也是一种方式。Spring Data JPA 提供了另外一种方式则是 @Modifying(clearAutomatically = true)，@Modifying 的 clearAutomatically 属性为 true 时，执行完 modifying query 之后就会清理缓存，从而在下次 find 时就可以读取到数据库中的最新值。</p>
-<p>自动清理之后还会带来一个新的问题，clear 操作清理的缓存中，还包括提交后未 flush 的数据，例如调用 save 而不是 saveAndFlush 就有可能不会立即将修改内容更新到数据库中，在 save 之后 flush 之前调用 @Modifying(clearAutomatically = true) 修饰的方法就有可能导致修改丢失。如果再要解决这个问题，还可以再加上另外一个属性 @Modifying(clearAutomatically = true, flushAutomatically = true)，**@Modifying 的 flushAutomatically 属性为 true 时，执行 modifying query 之前会先调用 flush 操作，从而避免数据丢失问题。**</p>
-<p>在实际运行中，clear 和 flush 操作都可能需要消耗一定的时间，要根据系统实际情况可以选择使用其中的一个或两个属性，以保证系统的正确性。</p>
-<p>参考: flushAutomatically 属性是在 <a target="_blank" rel="noopener" href="https://jira.spring.io/browse/DATAJPA-806">https://jira.spring.io/browse/DATAJPA-806</a> 提出并被采纳的。</p>
-<p><strong>参考地址：</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://my.oschina.net/u/1762727/blog/2960653">@Modifying注解详解</a></li>
-</ul>
-<h1 id="Entity中常用的注解"><a href="#Entity中常用的注解" class="headerlink" title="Entity中常用的注解"></a>Entity中常用的注解</h1><p>实体类中有很多可以使用的注解，下面是常用的一些注解：</p>
-<h2 id="Basic-fetch-FetchType-optional-true"><a href="#Basic-fetch-FetchType-optional-true" class="headerlink" title="@Basic(fetch=FetchType,optional=true)"></a>@Basic(fetch=FetchType,optional=true)</h2><p>　　@Basic表示一个简单的属性到数据库表的字段的映射,对于没有任何标注的getXxxx()方法,默认 即为 @Basic</p>
-<p>　　fetch: 表示该属性的读取策略,有EAGER和LAZY两种,分别表示主支抓取和延迟加载,默认为EAGER.</p>
-<ul>
-<li>FetchType.LAZY：懒加载，加载一个实体时，定义懒加载的属性不会马上从数据库中加载。</li>
-<li>FetchType.EAGER：急加载，加载一个实体时，定义急加载的属性会立即从数据库中加载。</li>
-</ul>
-<p>比方User类有两个属性，name跟address，就像百度知道，登录后用户名是需要显示出来的，此属性用到的几率极大，要马上到数据库查，用急加载;而用户地址大多数情况下不需要显示出来，只有在查看用户资料是才需要显示，需要用了才查数据库，用懒加载就好了。所以，并不是一登录就把用户的所有资料都加载到对象中，于是有了这两种加载模式。 optional:表示该属性是否允许为null,默认为true</p>
-<pre><code class="java">@Basic(optional=false)
-
-　　public String getAddress() &#123; return address; &#125;
-</code></pre>
-<h2 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h2><p>@Transient表示该属性并非一个到数据库表的字段的映射，表示<br>非持久化属性，与@Basic作用相反。JPA映射数据库的时候忽略它。如果一个属性并非数据库表的字段映射,就务必将其标示为 @Transient ,否则,ORM框架默认其注解为 @Basic</p>
-<h2 id="Temporal-TemporalType"><a href="#Temporal-TemporalType" class="headerlink" title="@Temporal(TemporalType)"></a>@Temporal(TemporalType)</h2><p>@Temporal用来设置Date类型的属性映射到对应精度的字段。</p>
-<ul>
-<li>@Temporal(TemporalType.DATE)映射为日期date（只有<br>日期）。</li>
-<li>@Temporal(TemporalType.TIME)映射为时间time（只有<br>时间）。</li>
-<li>@Temporal(TemporalType.TIMESTAMP)映射为日期date+<br>time（日期+时间）。</li>
-</ul>
-<h2 id="Lob"><a href="#Lob" class="headerlink" title="@Lob"></a>@Lob</h2><p>@Lob 将属性映射成数据库支持的大对象类型，支持以下两种数<br>据库类型的字段。</p>
-<ul>
-<li>Clob（Character Large Ojects）类型是长字符串类型，<br>java.sql.Clob、Character[]、char[]和String将被映射为Clob类 型。</li>
-<li>Blob（Binary Large Objects）类型是字节类型，<br>java.sql.Blob、Byte[]、byte[]和实现了Serializable接口的类型 将被映射为Blob类型。</li>
-<li>Clob、Blob占用内存空间较大，一般配合<br>@Basic(fetch=FetchType.LAZY)将其设置为延迟加载。</li>
-</ul>
-<h2 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h2><p>在数据库中创建字段时，可以创建枚举类型的字段，例如在User表中，GENDER字段为枚举类型ENUM(‘MALE’,FEMALE)。那么在Entity实体类中需要在字段上使用使用@Enumerated注解，并创建相应的枚举类：</p>
-<p>创建Enum：</p>
-<pre><code class="java">public enum Gender &#123;
-    //男性
-    MALE(&quot;男性&quot;),
-    //女性
-    FEMALE(&quot;女性&quot;);
-
-    private String value;
-    Gender(String str)&#123;
-        value=str;
-    &#125;
-&#125;
-</code></pre>
-<p>然后在实体类中使用@Enumerated注解：</p>
-<pre><code class="java">@Entity
-@Data
-@Table(name = &quot;USER&quot;)
-public class User &#123;
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(name = &quot;NAME&quot;)
-    private String name;
-
-    @Column(name = &quot;EMAIL&quot;)
-    private String email;
-
-    @Column(name = &quot;ADDRESS&quot;)
-    private String address;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = &quot;GENDER&quot;)
-    private Gender gender;
-&#125;
-</code></pre>
-<p>这样就可以在实体类中使用枚举类型啦。</p>
-<p>值得注意的是，这时插入两条数据，数据库里面的值是MAIL/FMAIL，而不是“男<br>性”/“女性”。<strong>如果我们用@Enumerated(EnumType.ORDINAL)，那么 这时数据库里面的值是0、1。但是实际工作中，不建议用数字下标，因为枚举里面的属性值是会不断新增的，如果新增一个，位置变化了就惨了。</strong></p>
-<h2 id="CreatedDate"><a href="#CreatedDate" class="headerlink" title="@CreatedDate"></a>@CreatedDate</h2><p>用来指定当前的时间字段的数据为数据插入时的时间。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2996,24 +2805,29 @@ public class User &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -3042,7 +2856,7 @@ public class User &#123;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -3068,10 +2882,12 @@ public class User &#123;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -3081,6 +2897,8 @@ public class User &#123;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -3091,6 +2909,10 @@ public class User &#123;
 
 
 
+
+
+
+  
 
   
 

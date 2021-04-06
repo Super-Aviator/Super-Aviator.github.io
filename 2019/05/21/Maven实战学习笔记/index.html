@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="参考地址：并发编程网-maven文档翻译     实习结束后从上海到武汉已经休息了大半个月了，是时候学习点东西了，首先想学习一下关于Maven的知识，回想起来貌似还没有系统的学过Maven，平时最多的也就用到过Maven的依赖管理，公司项目的POM文件很多标签都不知道什么意思,所以系统学习一下Maven还是很有必要的，网上找了一本扫描版的Maven实战的电子书凑活看一下。等Maven学完之后再将公">
@@ -107,6 +107,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -123,12 +124,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -141,11 +142,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -155,7 +183,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -562,8 +590,9 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Maven/" rel="tag"># Maven</a>
+              <a href="/tags/Maven/" rel="tag"><i class="fa fa-tag"></i> Maven</a>
           </div>
 
         
@@ -638,7 +667,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Maven%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">Maven的安装与配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-idea-maven-%E6%9C%89jar%E5%8C%85%EF%BC%8C%E5%B0%B1%E6%98%AF%E6%8A%A5%E9%94%99%E6%95%B4%E4%B8%AA%E9%A1%B9%E7%9B%AE%E6%89%BE%E4%B8%8D%E5%88%B0jar"><span class="nav-number">2.</span> <span class="nav-text">[问题]idea maven 有jar包，就是报错整个项目找不到jar</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pom-xml%E4%B8%AD%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%A0%87%E7%AD%BE"><span class="nav-number">3.</span> <span class="nav-text">pom.xml中最基本的标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%BC%95%E5%85%A5%EF%BC%88dependencies%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">依赖引入（dependencies）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">仓库配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%81%9A%E5%90%88%EF%BC%88Aggregator%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">项目的聚合（Aggregator）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%A7%E6%89%BF%EF%BC%88Extend%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">项目的继承（Extend）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8dependencyManagement%E5%92%8CpluginManagement"><span class="nav-number">8.</span> <span class="nav-text">使用dependencyManagement和pluginManagement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E5%8F%8D%E5%BA%94%E5%A0%86%E6%9E%84%E5%BB%BA%E9%A1%BA%E5%BA%8F"><span class="nav-number">9.</span> <span class="nav-text">maven反应堆构建顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">10.</span> <span class="nav-text">maven中的变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-number">10.1.</span> <span class="nav-text">自定义变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E5%8F%98%E9%87%8F"><span class="nav-number">10.2.</span> <span class="nav-text">工程变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="nav-number">10.2.1.</span> <span class="nav-text">特殊变量</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Maven%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-text">Maven的安装与配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-idea-maven-%E6%9C%89jar%E5%8C%85%EF%BC%8C%E5%B0%B1%E6%98%AF%E6%8A%A5%E9%94%99%E6%95%B4%E4%B8%AA%E9%A1%B9%E7%9B%AE%E6%89%BE%E4%B8%8D%E5%88%B0jar"><span class="nav-text">[问题]idea maven 有jar包，就是报错整个项目找不到jar</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pom-xml%E4%B8%AD%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%A0%87%E7%AD%BE"><span class="nav-text">pom.xml中最基本的标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%BC%95%E5%85%A5%EF%BC%88dependencies%EF%BC%89"><span class="nav-text">依赖引入（dependencies）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="nav-text">仓库配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%81%9A%E5%90%88%EF%BC%88Aggregator%EF%BC%89"><span class="nav-text">项目的聚合（Aggregator）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%A7%E6%89%BF%EF%BC%88Extend%EF%BC%89"><span class="nav-text">项目的继承（Extend）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8dependencyManagement%E5%92%8CpluginManagement"><span class="nav-text">使用dependencyManagement和pluginManagement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E5%8F%8D%E5%BA%94%E5%A0%86%E6%9E%84%E5%BB%BA%E9%A1%BA%E5%BA%8F"><span class="nav-text">maven反应堆构建顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-text">maven中的变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-text">自定义变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E5%8F%98%E9%87%8F"><span class="nav-text">工程变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="nav-text">特殊变量</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -654,24 +683,29 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -700,7 +734,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -726,10 +760,12 @@
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -739,6 +775,8 @@
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -749,6 +787,10 @@
 
 
 
+
+
+
+  
 
   
 

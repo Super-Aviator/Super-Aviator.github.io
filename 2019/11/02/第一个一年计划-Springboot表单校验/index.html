@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="在几个月的工作中，发现表单校验是非常重要并且是必不可少的，但是对于Spring提供的几个表单校验的使用方法总是没有好好系统的学习一下，今天来看一看Spring中的几个表单校验的直接的详细使用方法： 常用注解@Null此注解表示VO类中的字段必须为null,和@NotNull字段是相反的。 @NotNull这个注解是最常用的，在VO类中使用的话，标识这个字段前端必须传递，如果该字段没有传值，则Spr">
@@ -109,6 +109,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -125,12 +126,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -143,11 +144,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -157,7 +185,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -305,8 +333,9 @@ public class FormValidController &#123;
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Spring/" rel="tag"># Spring</a>
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
           </div>
 
         
@@ -381,7 +410,7 @@ public class FormValidController &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Null"><span class="nav-number">1.1.</span> <span class="nav-text">@Null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotNull"><span class="nav-number">1.2.</span> <span class="nav-text">@NotNull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotBlank"><span class="nav-number">1.3.</span> <span class="nav-text">@NotBlank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotEmpty"><span class="nav-number">1.4.</span> <span class="nav-text">@NotEmpty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Size"><span class="nav-number">1.5.</span> <span class="nav-text">@Size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PositiveOrZero"><span class="nav-number">1.6.</span> <span class="nav-text">@PositiveOrZero</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NegativeOrZero"><span class="nav-number">1.7.</span> <span class="nav-text">@NegativeOrZero</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Negative"><span class="nav-number">1.8.</span> <span class="nav-text">Negative</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Positive"><span class="nav-number">1.9.</span> <span class="nav-text">Positive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Digit"><span class="nav-number">1.10.</span> <span class="nav-text">@Digit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C"><span class="nav-number">2.</span> <span class="nav-text">分组校验</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-text">常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Null"><span class="nav-text">@Null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotNull"><span class="nav-text">@NotNull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotBlank"><span class="nav-text">@NotBlank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotEmpty"><span class="nav-text">@NotEmpty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Size"><span class="nav-text">@Size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PositiveOrZero"><span class="nav-text">@PositiveOrZero</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NegativeOrZero"><span class="nav-text">@NegativeOrZero</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Negative"><span class="nav-text">Negative</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Positive"><span class="nav-text">Positive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Digit"><span class="nav-text">@Digit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C"><span class="nav-text">分组校验</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -397,24 +426,29 @@ public class FormValidController &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -443,7 +477,7 @@ public class FormValidController &#123;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -469,10 +503,12 @@ public class FormValidController &#123;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -482,6 +518,8 @@ public class FormValidController &#123;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -492,6 +530,10 @@ public class FormValidController &#123;
 
 
 
+
+
+
+  
 
   
 

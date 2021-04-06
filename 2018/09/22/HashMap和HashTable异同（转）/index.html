@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="原文地址 概要学完了Map的全部内容，我们再回头开开Map的框架图。这里写图片描述 第1部分 Map概括(01) Map 是“键值对”映射的抽象接口。(02) AbstractMap 实现了Map中的绝大部分函数接口。它减少了“Map的实现类”的重复编码。(03) SortedMap 有序的“键值对”映射接口。(04) NavigableMap 是继承于SortedMap的，支持导航函数的接口。(">
@@ -104,6 +104,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -120,12 +121,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -138,11 +139,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -152,7 +180,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -860,8 +888,9 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"><i class="fa fa-tag"></i> 面试</a>
           </div>
 
         
@@ -936,7 +965,7 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC2%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E5%BC%82%E5%90%8C"><span class="nav-number">2.</span> <span class="nav-text">第2部分 HashMap和Hashtable异同</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">1部分 HashMap和Hashtable的相同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC2-2%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">第2.2部分 HashMap和Hashtable的不同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BB%A7%E6%89%BF%E5%92%8C%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 继承和实现方式不同</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-HashMap%E5%92%8CHashtable%E9%83%BD%E5%AE%9E%E7%8E%B0%E4%BA%86Map%E3%80%81Cloneable%E3%80%81java-io-Serializable%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">1.1 HashMap和Hashtable都实现了Map、Cloneable、java.io.Serializable接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-HashMap%E7%BB%A7%E6%89%BF%E4%BA%8EAbstractMap%EF%BC%8C%E8%80%8CHashtable%E7%BB%A7%E6%89%BF%E4%BA%8EDictionary"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">1.2 HashMap继承于AbstractMap，而Hashtable继承于Dictionary</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 线程安全不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AF%B9null%E5%80%BC%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.3.</span> <span class="nav-text">3 对null值的处理不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E6%94%AF%E6%8C%81%E7%9A%84%E9%81%8D%E5%8E%86%E7%A7%8D%E7%B1%BB%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.4.</span> <span class="nav-text">4 支持的遍历种类不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E9%80%9A%E8%BF%87Iterator%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%81%8D%E5%8E%86%E6%97%B6%EF%BC%8C%E9%81%8D%E5%8E%86%E7%9A%84%E9%A1%BA%E5%BA%8F%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.5.</span> <span class="nav-text">5 通过Iterator迭代器遍历时，遍历的顺序不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E6%B7%BB%E5%8A%A0key-value%E6%97%B6%E7%9A%84hash%E5%80%BC%E7%AE%97%E6%B3%95%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.6.</span> <span class="nav-text">7 添加key-value时的hash值算法不同</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC3%E9%83%A8%E5%88%86-HashMap%E5%92%8CWeakHashMap%E5%BC%82%E5%90%8C"><span class="nav-number">2.3.</span> <span class="nav-text">第3部分 HashMap和WeakHashMap异同</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-number">2.3.1.</span> <span class="nav-text">3.1 HashMap和WeakHashMap的相同点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-number">2.3.2.</span> <span class="nav-text">3.2 HashMap和WeakHashMap的不同点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E6%AF%94%E8%BE%83%E6%B5%8B%E8%AF%95%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.3 HashMap和WeakHashMap的比较测试程序</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A6%81"><span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC2%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E5%BC%82%E5%90%8C"><span class="nav-text">第2部分 HashMap和Hashtable异同</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-text">1部分 HashMap和Hashtable的相同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC2-2%E9%83%A8%E5%88%86-HashMap%E5%92%8CHashtable%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-text">第2.2部分 HashMap和Hashtable的不同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BB%A7%E6%89%BF%E5%92%8C%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="nav-text">1 继承和实现方式不同</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-HashMap%E5%92%8CHashtable%E9%83%BD%E5%AE%9E%E7%8E%B0%E4%BA%86Map%E3%80%81Cloneable%E3%80%81java-io-Serializable%E6%8E%A5%E5%8F%A3"><span class="nav-text">1.1 HashMap和Hashtable都实现了Map、Cloneable、java.io.Serializable接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-HashMap%E7%BB%A7%E6%89%BF%E4%BA%8EAbstractMap%EF%BC%8C%E8%80%8CHashtable%E7%BB%A7%E6%89%BF%E4%BA%8EDictionary"><span class="nav-text">1.2 HashMap继承于AbstractMap，而Hashtable继承于Dictionary</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%B8%8D%E5%90%8C"><span class="nav-text">2 线程安全不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AF%B9null%E5%80%BC%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8D%E5%90%8C"><span class="nav-text">3 对null值的处理不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E6%94%AF%E6%8C%81%E7%9A%84%E9%81%8D%E5%8E%86%E7%A7%8D%E7%B1%BB%E4%B8%8D%E5%90%8C"><span class="nav-text">4 支持的遍历种类不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E9%80%9A%E8%BF%87Iterator%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%81%8D%E5%8E%86%E6%97%B6%EF%BC%8C%E9%81%8D%E5%8E%86%E7%9A%84%E9%A1%BA%E5%BA%8F%E4%B8%8D%E5%90%8C"><span class="nav-text">5 通过Iterator迭代器遍历时，遍历的顺序不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E6%B7%BB%E5%8A%A0key-value%E6%97%B6%E7%9A%84hash%E5%80%BC%E7%AE%97%E6%B3%95%E4%B8%8D%E5%90%8C"><span class="nav-text">7 添加key-value时的hash值算法不同</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC3%E9%83%A8%E5%88%86-HashMap%E5%92%8CWeakHashMap%E5%BC%82%E5%90%8C"><span class="nav-text">第3部分 HashMap和WeakHashMap异同</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-text">3.1 HashMap和WeakHashMap的相同点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-text">3.2 HashMap和WeakHashMap的不同点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-HashMap%E5%92%8CWeakHashMap%E7%9A%84%E6%AF%94%E8%BE%83%E6%B5%8B%E8%AF%95%E7%A8%8B%E5%BA%8F"><span class="nav-text">3.3 HashMap和WeakHashMap的比较测试程序</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -952,24 +981,29 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -998,7 +1032,7 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -1024,10 +1058,12 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -1037,6 +1073,8 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -1047,6 +1085,10 @@ map entry : CompareHashmapAndWeakhashmap$Self@59de3f2d - s2
 
 
 
+
+
+
+  
 
   
 

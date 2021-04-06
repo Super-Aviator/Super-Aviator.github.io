@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="上周项目上线之后，遭受了无数次空指针异常的狂扁之后，这周新增的需求中又被类型转换错误狠狠的教训了一顿。（这可能就是上天对菜逼的惩罚），感觉组长已经对我的代码中这种异常产生了强大的免疫力了。。。 刚刚改完bug之后，决定开个坑，记录一下工作中踩过的坑，有点绕口惹。。。主要的目的是要保证犯过的错误不能再犯第二次。 NullPointerException基本类型的包装类的类型转换org.springf">
@@ -105,6 +105,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -121,12 +122,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -139,11 +140,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -153,7 +181,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -433,7 +461,7 @@ public class LearnApplication &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NullPointerException"><span class="nav-number">1.</span> <span class="nav-text">NullPointerException</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">基本类型的包装类的类型转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#org-springframework-web-HttpMediaTypeNotAcceptableException-Could-not-find-acceptable-representation%E5%BC%82%E5%B8%B8"><span class="nav-number">3.</span> <span class="nav-text">org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acceptable representation异常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-ComponentScan%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">使用@ComponentScan排除指定的包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E4%B8%8B%E8%BD%BD%E5%8C%85%E8%B6%85%E6%97%B6"><span class="nav-number">5.</span> <span class="nav-text">maven下载包超时</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E6%97%B6%E9%93%BE%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%97%B6%EF%BC%8C%E5%87%BA%E7%8E%B0%E7%9A%84Public-Key-Retrieval-is-not-allowed%E9%94%99%E8%AF%AF"><span class="nav-number">6.</span> <span class="nav-text">项目启动时链接数据库时，出现的Public Key Retrieval is not allowed错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#springboot%E5%90%AF%E5%8A%A8%E5%87%BA%E7%8E%B0Access-to-DialectResolutionInfo-cannot-be-null-when-%E2%80%98hibernate-dialect%E2%80%99-not-set"><span class="nav-number">7.</span> <span class="nav-text">springboot启动出现Access to DialectResolutionInfo cannot be null when ‘hibernate.dialect’ not set</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5common-server%E5%8C%85%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%8A%A5elasticsearch%E5%8C%85%E4%B8%8D%E5%85%BC%E5%AE%B9"><span class="nav-number">8.</span> <span class="nav-text">项目引入common-server包之后，报elasticsearch包不兼容</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NullPointerException"><span class="nav-text">NullPointerException</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-text">基本类型的包装类的类型转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#org-springframework-web-HttpMediaTypeNotAcceptableException-Could-not-find-acceptable-representation%E5%BC%82%E5%B8%B8"><span class="nav-text">org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acceptable representation异常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-ComponentScan%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E5%8C%85"><span class="nav-text">使用@ComponentScan排除指定的包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven%E4%B8%8B%E8%BD%BD%E5%8C%85%E8%B6%85%E6%97%B6"><span class="nav-text">maven下载包超时</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E6%97%B6%E9%93%BE%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%97%B6%EF%BC%8C%E5%87%BA%E7%8E%B0%E7%9A%84Public-Key-Retrieval-is-not-allowed%E9%94%99%E8%AF%AF"><span class="nav-text">项目启动时链接数据库时，出现的Public Key Retrieval is not allowed错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#springboot%E5%90%AF%E5%8A%A8%E5%87%BA%E7%8E%B0Access-to-DialectResolutionInfo-cannot-be-null-when-%E2%80%98hibernate-dialect%E2%80%99-not-set"><span class="nav-text">springboot启动出现Access to DialectResolutionInfo cannot be null when ‘hibernate.dialect’ not set</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5common-server%E5%8C%85%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%8A%A5elasticsearch%E5%8C%85%E4%B8%8D%E5%85%BC%E5%AE%B9"><span class="nav-text">项目引入common-server包之后，报elasticsearch包不兼容</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -449,24 +477,29 @@ public class LearnApplication &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -495,7 +528,7 @@ public class LearnApplication &#123;
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -521,10 +554,12 @@ public class LearnApplication &#123;
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -534,6 +569,8 @@ public class LearnApplication &#123;
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -544,6 +581,10 @@ public class LearnApplication &#123;
 
 
 
+
+
+
+  
 
   
 

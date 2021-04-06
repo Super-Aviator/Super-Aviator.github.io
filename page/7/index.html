@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="熊乾坤的博客">
@@ -101,6 +101,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -117,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -135,11 +136,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -149,7 +177,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -159,6 +187,316 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">Spring-装配bean</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-31 14:23:00" itemprop="dateCreated datePublished" datetime="2018-08-31T14:23:00+08:00">2018-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/08/31/JAVA-WEB%E5%9F%BA%E7%A1%80-%E5%88%9D%E5%AD%A6Spring%E6%A1%86%E6%9E%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在前几天，通过学习《Spring in action》这本书的前7章，我学习了Spring框架的基础以及SpringMVC部分的知识，对Spring框架有了比较浅显的认识，接下来的几天，我准备将所学习到的知识记录一下，方便以后查询，因为Spring配置算是比较繁琐的过程，记录下来方便以后查询。Spring其他部分暂时不做研究，等以后用的时候在去折腾。</p>
+<hr>
+<h1 id="Spring核心概念的理解"><a href="#Spring核心概念的理解" class="headerlink" title="Spring核心概念的理解"></a>Spring核心概念的理解</h1><p>Spring有两个核心，第一个就是IOC(Inverse Of Control)控制反转，也叫作做DI(dependency Injection),《Spring in action》书中作者叫DI比较多,第二个就是AOP(Aspect Oriented Programming)面向切面编程。我从网上copy了他们的通俗的解释。</p>
+<ul>
+<li><p>IOC(DI) 所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。那么必然的我们需要创建一个容器，同时需要一种描述来让容器知道需要创建的对象与对象的关系。这个描述最具体表现就是我们可配置的文件或者注解。即通过DI来管理对象之间的依赖。</p>
+</li>
+<li><p>AOP 它利用一种称为”横切”的技术，剖解开封装的对象内部，并将那些影响了多个类的公共行为封装到一个可重用模块，并将其命名为”Aspect”，即切面。所谓”切面”，简单说就是那些与业务无关，却为业务模块所共同调用的逻辑或责任封装起来，便于减少系统的重复代码，降低模块之间的耦合度，并有利于未来的可操作性和可维护性。</p>
+</li>
+</ul>
+<h1 id="Spring容器"><a href="#Spring容器" class="headerlink" title="Spring容器"></a>Spring容器</h1><p>Spring容器是Spring基础，是所有bean存放的地方,也负责创建、配置和组装bean，Spring中有多种容器的实现，可以归为两种不同的类型，第一种是bean工厂（org.springframework.beans.factory.BeanFactory） ,第二种是应用上下文ApplicationContext(org.springframework.context.ApplicationContext)，前者拥有非常基础的bean支持，提供基本的DI支持，后者基于BeanFactory构建，并提供应用框架级别的服务，我们常用的是后者。对容器的深入的研究等以后再进行。</p>
+<hr>
+<h1 id="Spring三种配置方式"><a href="#Spring三种配置方式" class="headerlink" title="Spring三种配置方式"></a>Spring三种配置方式</h1><p>在接下来我将记录Spring中最基本也最重要的环节—装配bean，通过对三种装配方式的学习，来熟悉Spring装配bean的步骤。这也是Spring学习的基础知识。</p>
+<h2 id="自动装配"><a href="#自动装配" class="headerlink" title="自动装配"></a>自动装配</h2><p>自动装配顾名思义，就是让Spring自动去查找需要的bean，《Spring in action》作者建议优先使用此方式，它分为两个步骤：</p>
+<ul>
+<li>组件扫描—Spring会自动发现应用上下文中所创建的bean。</li>
+<li>自动装配—Spring自动会满足bean之间的依赖关系。</li>
+</ul>
+<p>我们来看一下配置自动扫描的一般步骤：<br>1.在类上使用@Component或者@Name注解，告诉Spring要为这个类创建bean。例如：</p>
+<pre><code class="java">@Component(&quot;favorite&quot;)
+//@Named(&quot;favorite&quot;)
+public class Mayday implements CompactDisc &#123;
+    String artist=&quot;Mayday&quot;;
+    String title=&quot;Tender - Love is Elsewhere&quot;;
+    @Override
+    public void play() &#123;
+        System.out.println(&quot;Playing &quot;+title+&quot; by &quot;+artist);
+    &#125;
+&#125;
+</code></pre>
+<p>  在创建bean时，Spring会为bean自动设置ID为类名的首字母小写，在上面的Mayday的类中，bean的ID为mayday,可以传入自定义的ID名称。同时@Name和@Component注解功能相同，推荐使用后者，因为更符合语义。</p>
+<p>2.在配置类或者xml文件中开启自动扫描,并设置组件扫描的基础包或者类：<br>首先需要使用@Configuration注解将一个类申明为配置类，Spring将自动扫描到该配置类，然后在配置类中开启自动扫描。</p>
+<ul>
+<li>在配置类中申明的方式如下：<pre><code class="java">@Configuration  //申明此类为配置类
+@ComponentScan(&quot;chapter2&quot;)//指明想要扫描的包
+//@ComponentScan(basePackages = &#123;&quot;chapter2&quot;&#125;)//指明想要扫描的包
+//@ComponentScan(basePackageClasses=&#123;CompactDisc.class&#125;)//指明想要扫描的类或接口
+@Import(&#123;JavaConfig.class，otherConfig.class&#125;)//引入其他的配置类
+public class CDPlayConfig &#123;&#125;
+</code></pre>
+在上面的配置类中，使用@ComponentScan注解开启扫描，并可以指定要扫描的类或者包，默认为该配置类所在的包及其子包。注意，当指定需要扫描的类时，类所在的包会被当成基础包扫描。其中还可以使用import导入其他的配置类。    </li>
+<li>在xml文件中申明方式如下：    <pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+     xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+     xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+</code></pre>
+</li>
+</ul>
+<!--开启自动扫描-->
+<p>&lt;context:component-scan base-package=”chapter2” /&gt;<br></beans></p>
+<pre><code>
+3.使用@Autowiring自动装配bean.
+```java
+@Component
+public class CDPlayer implements MediaPlayer &#123;
+    private CompactDisc cd;
+    
+    //setter方法注入
+    @Autowired(required=false)//进行自动装配，当没有匹配的bean时，不抛出异常
+    @Autowired//进行自动装配，当没有匹配的bean时，抛出异常
+    public void setCompactDisc(CompactDisc cd) &#123;
+        this.cd = cd;
+    &#125;
+    
+    //构造器注入
+    @Autowired
+    public CDPlayer(CompactDisc cd)&#123;this.cd=cd;&#125;
+
+    public void play() &#123;
+        cd.play();
+    &#125;
+&#125;
+</code></pre>
+<p>  上面的方法中，CDPlayer需要一个CompactDisc接口的对象，我们只需要在setter方法或者构造器上使用@Autowired注解（其实在任何方法都可以使用@Autowired注解进行注入），Spring将在运行时为我们自动注入一个Compact对象，需要注意的是@Autowired注解中如果属性required值设置为false，那么在Spring找不到对应的bean时，将不会抛异常，因此会有NullPointerException异常。不传入时默认为找不到bean时抛出异常。</p>
+<p>  @Inject注解可以替代@Autowired注解，两者功能有一些细微的差别，但大多数场景下可以互相替换。</p>
+<h2 id="基于Java代码的配置"><a href="#基于Java代码的配置" class="headerlink" title="基于Java代码的配置"></a>基于Java代码的配置</h2><p>自动装配bean的方式非常的简单，仅仅需要几个注解就可以装配大量的bean，但是在无法获得源代码的情况下，无法对源代码添加注解，自动装配bean这种方式也就不能够使用，这时候就可以使用java代码的方式配置bean,它只需要一个配置类，然后在配置类中使用方法来生成相应的bean，具体方式如下：</p>
+<pre><code class="java">@Component
+public class CDPlayConfig &#123;
+    //使用JavaConfig的方式进行装配bean
+    
+    @Bean(name=&quot;Mayday&quot;)
+    public Mayday getMayday()&#123;
+        return new Mayday();
+    &#125;
+
+&#125;
+</code></pre>
+<p>如上所示，在配置类中，我们使用getMayday方法,来产生bean，在此方法上，需要使用@Bean注解，如果想要为此bean自定义一个ID，则可以在Bean的name属性中设置自己指定的ID。</p>
+<p>如果一个bean的产生需要另外一个bean,那该怎么办呢，解决方法很简单，有两种方式实现：</p>
+<pre><code class="java">@Component
+public class CDPlayConfig &#123;
+    //使用JavaConfig的方式进行装配bean
+    
+    @Bean(name=&quot;MayDay&quot;)
+    public Mayday getMayday()&#123;
+        return new Mayday();
+    &#125;
+    
+    //方式一
+    @Bean(name=&quot;CDPlayer&quot;)
+    public CDPlayer getCDPlayer()&#123;
+        return  new CDPlayer(getMayday());
+    &#125;
+    
+    //方式二
+    @Bean(name=&quot;CDPlayer&quot;)
+    public CDPlayer getCDPlayer(CompactDisc compactDisc)&#123;
+        //构造器注入
+        return  new CDPlayer(compactDisc);
+        //setter方法注入
+        CDplayer player=new CDPlayer();
+        player.setCd(compactDisc);
+        return player;
+    &#125;
+&#125;
+</code></pre>
+<p>在上面的配置类中，CDPlayer类需要一个CompactDisc类作为参数，有两种方式解决其依赖：<br>第一种方式直接调用产生CompactDisc实例的方法getMayday(),因为bean默认都是单例的，Spring会拦截getMayday()的调用并返回Spring所创建的bean。并且调用任意次getMayday()得到的都是同一个bean。<br>第二种方式中getCDPlayer请求一个CompactDisc作为参数，当调用此方法时，Spring会自动装配一个CompactDisc类型的bean。而且产生此CompactDisc类型的bean的方式没有任何限制，可以以三种配置方式中的任意一种来产生CompactDisc，而第一种方式则限定需要使用java的方式来产生CompactDisc，所以推荐使用第二种方式。</p>
+<h2 id="基于XML的配置"><a href="#基于XML的配置" class="headerlink" title="基于XML的配置"></a>基于XML的配置</h2><p>xml作为一种最古老的配置方式，也是每一个人必须掌握的，不过作者并不推荐我们开发时使用XML进行装配，而学习xml配置只是为了维护旧项目。</p>
+<p>和其他两种方式一样，基于xml的配置也需要一个配置类，只不过它不是@Configuration注解的类，而是一个xml文件，并且以<code>&lt;beans&gt;</code>为根元素。最简单的Spring XML如下：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+&lt;/beans&gt;
+</code></pre>
+<p>想要声明一个bean，只需要在<code>&lt;beans&gt;</code>元素中使用<code>&lt;bean&gt;</code>元素即可：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+    &lt;bean id=&quot;mayday&quot; class=&quot;chapter2.ditest.Mayday&quot; /&gt;
+    
+&lt;/ beans&gt;
+</code></pre>
+<p>其中id为自定义bean的ID,class为class位置，需要使用包全限定名称。默认的ID为<code>全限定名#序号</code>,序号为相同bean的个数，第一个为0，第二个为1…<br>如果想要使用构造器注入一个其他的bean或者值，则需要使用<code>&lt;constructor-arg&gt;</code>元素：</p>
+<pre><code class="xml">&lt;bean id=&quot;mayday&quot; class=&quot;chapter2.ditest.Mayday&quot; &gt;
+
+    &lt;!--注入其他的bean--&gt;
+    &lt;constructor-arg ref=&quot;beanID&quot; /&gt;
+    
+    &lt;!--注入其他类型的值--&gt;
+    &lt;constructor-arg value=&quot;this is a String&quot; /&gt;
+    
+    &lt;!--注入null值--&gt;
+    &lt;constructor-arg&gt;&lt;null/&gt;&lt;/ constructor-arg&gt;
+    
+    &lt;!--装配值的List集合--&gt;
+    &lt;constructor-arg&gt;
+        &lt;list&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;/ list&gt;
+    &lt;/ constructor-arg&gt;
+    
+    &lt;!--装配bean的List集合--&gt;
+    &lt;constructor-arg&gt;
+        &lt;list&gt;
+        &lt;ref bean=&quot;beanID&quot;&gt;
+        &lt;ref bean=&quot;beanID&quot;&gt;
+        &lt;ref bean=&quot;beanID&quot;&gt;
+        &lt;/ list&gt;
+    &lt;/ constructor-arg&gt;
+    
+    &lt;!--装配Set集合--&gt;
+    &lt;constructor-arg&gt;
+        &lt;set&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;value&gt;this si a String&lt;/ value&gt;
+        &lt;/ set&gt;
+    &lt;/ constructor-arg&gt;
+&lt;/ bean&gt;
+</code></pre>
+<p>如果不是使用构造器注入而是属性注入，则需要使用<code>&lt;property元素&gt;</code>：</p>
+<pre><code class="xml">&lt;bean id=&quot;cdPlayer&quot; class=&quot;chapter2.ditest.CDPlayer&quot; &gt;
+        &lt;!--注入其他的bean--&gt;
+        &lt;property name=&quot;compactDisc&quot; ref=&quot;blankDisc&quot;/&gt;
+        &lt;!--注入值--&gt;
+        &lt;property name=&quot;compactDisc&quot; value=&quot; hello&quot; /&gt;
+&lt;/bean&gt;
+</code></pre>
+<p>构造器注入和属性注入都有对应的替代方案，分别为c-命名空间和p-命名空间。需要在xml文件顶部中声明其模式：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       &lt;!--声明p-命名空间--&gt;
+       xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+       &lt;!--声明c-命名空间--&gt;
+       xmlns:c=&quot;http://www.springframework.org/schema/c&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+&lt;/bean&gt;
+</code></pre>
+<p>然后其使用方式分为几种，具体的使用方式如下：</p>
+<pre><code class="xml">&lt;!--注入其他的bean，paraName为参数名--&gt;
+&lt;bean id=&quot;cdPlayer&quot; class=&quot;chapter2.ditest.CDPlayer&quot;     
+ c:paraName-ref=&quot;beanID&quot; 
+ p:paraName-ref=&quot;beanID&quot;
+/&gt;
+
+&lt;!--通过参数名来注入,paraName为参数名,前者加下划线，后者不加--&gt;
+&lt;bean id=&quot;cdPlayer&quot; class=&quot;chapter2.ditest.CDPlayer&quot; 
+ c:_paraName=&quot;this is a String&quot;
+ p:paraName=&quot;this is a String&quot;
+/&gt;
+
+&lt;!--通过参数顺序来,0,1为参数的顺序,p-命名空间貌似不支持--&gt;
+&lt;bean id=&quot;cdPlayer&quot; class=&quot;chapter2.ditest.CDPlayer&quot;     
+ c:_0=&quot;this is a String&quot; 
+ c:_0-ref=&quot;beanID&quot;
+ /&gt;
+
+&lt;!--参数只有一个时--&gt;
+&lt;bean id=&quot;cdPlayer&quot; class=&quot;chapter2.ditest.CDPlayer&quot;     
+ c:_=&quot;this is a String&quot;
+ c:_-ref=&quot;beanID&quot;
+ /&gt;
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -2913,185 +3251,6 @@ list.remove(list.size()-1);
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">Linux系统普通权限和高级权限</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-06-03 19:44:00" itemprop="dateCreated datePublished" datetime="2018-06-03T19:44:00+08:00">2018-06-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:10" itemprop="dateModified" datetime="2021-02-23T21:00:10+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OperationSystem/" itemprop="url" rel="index"><span itemprop="name">OperationSystem</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/06/03/Linux%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>linux系统中权限的简单总结</p>
-<h2 id="Linux普通权限"><a href="#Linux普通权限" class="headerlink" title="Linux普通权限"></a>Linux普通权限</h2><h3 id="权限定义"><a href="#权限定义" class="headerlink" title="权限定义"></a>权限定义</h3><p>&emsp;&emsp;重所周知，linux拥有一套完整的权限机制，那么linux系统的权限机制到底是怎么一回事？在linux系统中如何对文件或者文件夹进行操作呢?<br>&emsp;&emsp;在linux系统中，文件或者文件夹普通权限一共有三组，如下所示：</p>
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>所属用户</th>
-<th>所属组</th>
-<th>其他用户</th>
-<th>所有用户</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>代表字符</td>
-<td>u</td>
-<td>g</td>
-<td>o</td>
-<td>a</td>
-</tr>
-<tr>
-<td>所占位数</td>
-<td>3</td>
-<td>3</td>
-<td>3</td>
-<td>-</td>
-</tr>
-<tr>
-<td>&emsp;&emsp;在使用ls-l命令查看文件属性各列属性如下：</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>drwxrwxrwx</th>
-<th>2</th>
-<th>aviator</th>
-<th>aviator</th>
-<th>512</th>
-<th>apr 23 09:37</th>
-<th>name</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>文件权限/第一位代表文件属性</td>
-<td>文件的链接个数</td>
-<td>所属用户</td>
-<td>所属组</td>
-<td>文件大小</td>
-<td>修改日期</td>
-<td>文件名</td>
-</tr>
-</tbody></table>
-<h3 id="权限修改"><a href="#权限修改" class="headerlink" title="权限修改"></a>权限修改</h3><p>&emsp;&emsp;linux中使用命令chmod、chown、chgrp、来修改文件/文件夹的权限。  其中chmod修改文件有两种方式。     </p>
-<p>方式一：<br>chmod命令将文件rwx权限使用二进制表示，例如：rw对应二进制位为110,故表示为4+2=6，同样，rwx二进制表为111，表示为4+2+1=7.chmod使用例子如下：<br>1: <code>chmod 567 filename</code>将文件权限修改为r-xrw—x权限。<br>2: <code> chmod 123 filename</code>将文件权限修改为–x-w–wx权限。</p>
-<p>方式二：<br>chmod命令可以直接使用u,g,o + 权限 的方式来修改文件属性，使用例子如下：<br>1: <code>chmod u+r filename</code>将文件所属用户加上读权限。<br>2: <code>chmod a+r filename</code>将文件所有属性都加上读权限。</p>
-<p>chown命令修改文件所属用户，用法为<code>chown username filename</code> 将filename所属用户为username.<br>chgrp命令修改文件所属组，用法为<code>chgrp username filename</code>将filename所属组修改为username.</p>
-<blockquote>
-<p>对于文件夹，如果没有x权限，那么此文件夹将不能够进入</p>
-</blockquote>
-<h2 id="Linux高级权限"><a href="#Linux高级权限" class="headerlink" title="Linux高级权限"></a>Linux高级权限</h2><h3 id="高级权限定义"><a href="#高级权限定义" class="headerlink" title="高级权限定义"></a>高级权限定义</h3><p>&emsp;&emsp;linux中有三种特殊权限，suid、sgid、sticky。其作用如下：</p>
-<table>
-<thead>
-<tr>
-<th>作用</th>
-<th>对于文件</th>
-<th>对于文件夹</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>suid</td>
-<td>以文件所属用户执行此文件而非执行用户来执行文件</td>
-<td>无</td>
-</tr>
-<tr>
-<td>sgid</td>
-<td>以文件所属用户组执行此文件而非执行用户</td>
-<td>在此文件夹下新建的所有文件默认所属组都是此文件所属组</td>
-</tr>
-<tr>
-<td>sticky</td>
-<td>无</td>
-<td>此文件夹下的文件中，一个用户只能够删除该用户所拥有的文件，而非此用户拥有的文件则不能够删除。</td>
-</tr>
-</tbody></table>
-<h3 id="修改高级权限"><a href="#修改高级权限" class="headerlink" title="修改高级权限"></a>修改高级权限</h3><p>linux高级权限同样使用chmod进行修改。如下所示：<br>1: 给文件添加suid 属性：<code>chmod u+s filename</code><br>2: 给文件夹加上sgid属性：<code>chmod g+s directoryname</code><br>3: 给文件夹加上sticky属性：<code>chmod o+t directoryname</code>    </p>
-<p>同样chmod也可以使用数字的方式进行权限的控制。其中suid,sgid,sticky同样对应着4,2,1三位数字。例子如下：</p>
-<p>1: 给文件添加suid 属性：<code>chmod 4777 filename</code><br>2: 给文件夹加上sgid属性：<code>chmod 2777 directoryname</code><br>3: 给文件夹加上sticky属性：<code>chmod 1777 directoryname</code>       </p>
-<h2 id="默认权限的修改"><a href="#默认权限的修改" class="headerlink" title="默认权限的修改"></a>默认权限的修改</h2><p>&emsp;&emsp;在linux系统中，没创建一个文件或者文件夹，都会赋予一个默认的权限。那么这个权限是如何得到的呢，其实linux系统是使用umask值实现的。使用<code>umask</code>命令可以查看系统umask值。<br>&emsp;&emsp;一般系统默认umask值为0002，那么文件默认权限就是666-002=664，文件夹默认权限就是777-002=775。使用<code>umask number </code>可以将umask修改为想要的值。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -3163,24 +3322,29 @@ list.remove(list.size()-1);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -3209,7 +3373,7 @@ list.remove(list.size()-1);
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -3235,10 +3399,12 @@ list.remove(list.size()-1);
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -3248,6 +3414,8 @@ list.remove(list.size()-1);
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -3258,6 +3426,10 @@ list.remove(list.size()-1);
 
 
 
+
+
+
+  
 
   
 

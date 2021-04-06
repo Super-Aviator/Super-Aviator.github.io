@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=UbuntuMono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="序言&amp;emsp;&amp;emsp;6月22号左右所有的考试终于完成了，我也终于有时间静下心来弄自己的事了，花了两天时间看了《深入理解计算机系统》CSAPP这本书的第二章，受益匪浅，以前不太理解的位级运算现在有了清晰的定义，对于补码和浮点数的表示和运算也了解了一些。按照惯例，总结一下。方便以后回来瞅一瞅。 整数表示与运算&amp;emsp;&amp;emsp;在c语言中整数有两种形式，即有符号和无符号整数，而在java中">
@@ -104,6 +104,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -120,12 +121,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tag/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/category/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -138,11 +139,38 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -152,7 +180,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
-  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -426,8 +454,9 @@ i%2^16=54919其二进制表示为：1101011010000111
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag"># 深入理解计算机系统</a>
+              <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 深入理解计算机系统</a>
           </div>
 
         
@@ -502,7 +531,7 @@ i%2^16=54919其二进制表示为：1101011010000111
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E8%A1%A8%E7%A4%BA%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">整数表示与运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%EF%BC%88hexadecimal%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">十六进制（hexadecimal）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E9%A1%BA%E5%BA%8F%E4%B9%8B%E5%A4%A7%E5%B0%8F%E7%AB%AF%E4%B9%8B%E4%BA%89%EF%BC%88big-endian-little-endian%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">字节顺序之大小端之争（big endian&#x2F;little endian）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E4%BB%A3%E6%95%B0%E7%AE%80%E4%BB%8B"><span class="nav-number">2.3.</span> <span class="nav-text">布尔代数简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AE%80%E4%BB%8B"><span class="nav-number">2.4.</span> <span class="nav-text">移位运算简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B0%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-number">2.5.</span> <span class="nav-text">无符号数与有符号数的编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.6.</span> <span class="nav-text">无符号数与补码之间的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E8%BD%AC%E6%8D%A2%E4%B8%BA%E8%A1%A5%E7%A0%81"><span class="nav-number">2.6.1.</span> <span class="nav-text">无符号数转换为补码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0"><span class="nav-number">2.6.2.</span> <span class="nav-text">补码转换为无符号数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%AA%E5%8F%96%E4%B8%8E%E6%89%A9%E5%85%85"><span class="nav-number">2.7.</span> <span class="nav-text">截取与扩充</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E6%95%B0%E7%9A%84%E6%89%A9%E5%85%85"><span class="nav-number">2.7.1.</span> <span class="nav-text">无符号数与补码数的扩充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E6%88%AA%E6%96%AD"><span class="nav-number">2.7.2.</span> <span class="nav-text">无符号数与补码的截断</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E5%8A%A0%E6%B3%95%E4%B8%8E%E8%A1%A5%E7%A0%81%E5%8A%A0%E6%B3%95"><span class="nav-number">2.8.</span> <span class="nav-text">无符号数加法与补码加法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B9%98%E6%B3%95%E4%B8%8E%E8%A1%A5%E7%A0%81%E4%B9%98%E6%B3%95"><span class="nav-number">2.9.</span> <span class="nav-text">无符号数乘法与补码乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E6%BA%A2%E5%87%BA%E5%88%A4%E6%96%AD"><span class="nav-number">2.10.</span> <span class="nav-text">无符号数与补码的溢出判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E4%B9%982%E7%9A%84%E5%B9%82"><span class="nav-number">2.11.</span> <span class="nav-text">无符号数与补码的乘2的幂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E9%99%A42%E7%9A%84%E5%B9%82"><span class="nav-number">2.12.</span> <span class="nav-text">无符号数与补码的除2的幂</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E8%A1%A8%E7%A4%BA%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">浮点数表示与运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">浮点数表示方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E7%9A%84%E8%AE%A1%E7%AE%97%E6%95%B0%E5%80%BC%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">四种类型的不同的计算数值的方法：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E8%A8%80"><span class="nav-text">序言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E8%A1%A8%E7%A4%BA%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="nav-text">整数表示与运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%EF%BC%88hexadecimal%EF%BC%89"><span class="nav-text">十六进制（hexadecimal）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E9%A1%BA%E5%BA%8F%E4%B9%8B%E5%A4%A7%E5%B0%8F%E7%AB%AF%E4%B9%8B%E4%BA%89%EF%BC%88big-endian-little-endian%EF%BC%89"><span class="nav-text">字节顺序之大小端之争（big endian&#x2F;little endian）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E4%BB%A3%E6%95%B0%E7%AE%80%E4%BB%8B"><span class="nav-text">布尔代数简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AE%80%E4%BB%8B"><span class="nav-text">移位运算简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B0%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-text">无符号数与有符号数的编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-text">无符号数与补码之间的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E8%BD%AC%E6%8D%A2%E4%B8%BA%E8%A1%A5%E7%A0%81"><span class="nav-text">无符号数转换为补码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0"><span class="nav-text">补码转换为无符号数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%AA%E5%8F%96%E4%B8%8E%E6%89%A9%E5%85%85"><span class="nav-text">截取与扩充</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E6%95%B0%E7%9A%84%E6%89%A9%E5%85%85"><span class="nav-text">无符号数与补码数的扩充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E6%88%AA%E6%96%AD"><span class="nav-text">无符号数与补码的截断</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E5%8A%A0%E6%B3%95%E4%B8%8E%E8%A1%A5%E7%A0%81%E5%8A%A0%E6%B3%95"><span class="nav-text">无符号数加法与补码加法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B9%98%E6%B3%95%E4%B8%8E%E8%A1%A5%E7%A0%81%E4%B9%98%E6%B3%95"><span class="nav-text">无符号数乘法与补码乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E6%BA%A2%E5%87%BA%E5%88%A4%E6%96%AD"><span class="nav-text">无符号数与补码的溢出判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E4%B9%982%E7%9A%84%E5%B9%82"><span class="nav-text">无符号数与补码的乘2的幂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E7%9A%84%E9%99%A42%E7%9A%84%E5%B9%82"><span class="nav-text">无符号数与补码的除2的幂</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E8%A1%A8%E7%A4%BA%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="nav-text">浮点数表示与运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-text">浮点数表示方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E7%9A%84%E8%AE%A1%E7%AE%97%E6%95%B0%E5%80%BC%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-text">四种类型的不同的计算数值的方法：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -518,24 +547,29 @@ i%2^16=54919其二进制表示为：1101011010000111
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/category/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tag/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -564,7 +598,7 @@ i%2^16=54919其二进制表示为：1101011010000111
   </span>
   <span class="author" itemprop="copyrightHolder">熊乾坤</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -590,10 +624,12 @@ i%2^16=54919其二进制表示为：1101011010000111
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
 
 
 
@@ -603,6 +639,8 @@ i%2^16=54919其二进制表示为：1101011010000111
 
 
 
+  
+<script src="/js/local-search.js"></script>
 
 
 
@@ -613,6 +651,10 @@ i%2^16=54919其二进制表示为：1101011010000111
 
 
 
+
+
+
+  
 
   
 
