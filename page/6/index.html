@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="熊乾坤的博客">
@@ -187,6 +187,188 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">常见的SQL优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-10-01 20:14:00" itemprop="dateCreated datePublished" datetime="2018-10-01T20:14:00+08:00">2018-10-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:04" itemprop="dateModified" datetime="2021-02-23T21:00:04+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/10/01/%E5%B8%B8%E8%A7%81%E7%9A%84SQL%E4%BC%98%E5%8C%96/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在使用sql语句对数据库中的数据进行操作时，相同功能的sql语句，采用不同的编写方式，执行的性能是不同的，既达性能不同的语句所达到的功能相同，那么就需要对性能差的sql语句进行优化了，优化分为两种重要的方式，即关于数据库索引的优化和sql语句的优化。</p>
+<p><strong>注意：</strong> 很多时候索引并不是最好的解决方案，对于数据量小的表，大部分情况下使用全局扫描更高效；对于中大型的表，索引就非常有效；对于特大型的表，建立和使用索引的代价将随之增长，这种情况情况下使用分区技术是最好的解决方案.</p>
+<h2 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h2><p>优化sql语句的非常重要的方式就是使用索引，索引是专门加快检索方式而建立的。创建语句为：<br><code>CREATE [UNIQUE|FULLTEXT|SPATIAL] INDEX index_name [USING index_type] ON table_name(index_col_name1[(pre_num)],...)</code>;</p>
+<h3 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h3><p>mysql中有以下几种索引类型：</p>
+<ul>
+<li><p>普通索引<br>是最基本的索引，它没有任何限制</p>
+</li>
+<li><p>主键索引<br>是一种特殊的唯一索引，一个表只能有一个主键，不允许有空值。一般是在建表的时候同时创建主键索引</p>
+</li>
+<li><p>唯一索引<br>与前面的普通索引类似，不同的就是：索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一</p>
+</li>
+<li><p>组合索引<br>指多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用组合索引时遵循最左前缀集合</p>
+</li>
+<li><p>全文本索引<br>主要用来查找文本中的关键字，而不是直接与索引中的值相比较。fulltext索引跟其它索引大不相同，它更像是一个搜索引擎，而不是简单的where语句的参数匹配。fulltext索引配合match against操作使用 <code>MATCH (columnName) AGAINST (&#39;string&#39;)</code> ，而不是一般的where语句加like。它可以在create table，alter table ，create index使用，不过目前只有char、varchar，text 列上可以创建全文索引。值得一提的是，在数据量较大时候，现将数据放入一个没有全局索引的表中，然后再用CREATE index创建fulltext索引，要比先为一张表建立fulltext然后再将数据写入的速度快很多</p>
+</li>
+<li><p>前缀索引<br>对索引字段的前N个字符创建索引</p>
+</li>
+</ul>
+<h3 id="索引的数据结构（存储方式）"><a href="#索引的数据结构（存储方式）" class="headerlink" title="索引的数据结构（存储方式）"></a>索引的数据结构（存储方式）</h3><p>索引是单独存储的，不同结构的索引使用的方式也不相同，mysql中有以下几种索引的存储方式</p>
+<ul>
+<li><p>B-Tree索引<br>常见的索引类型，大多数数据引擎都支持，使用B+树存储</p>
+</li>
+<li><p>HASH索引<br>Memory/Heap引擎支持，使用hash表存储 使用=，&lt;=&gt;才会使用此索引</p>
+</li>
+<li><p>R-Tree（空间索引）<br>MyISAM索引支持，很少使用</p>
+</li>
+<li><p>Full-text（全文本索引）<br>MyISAM和高版本MySQL的InnoDB引擎支持</p>
+</li>
+</ul>
+<p>不同常用引擎支持的索引类型如下表：</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>MyISAM引擎</th>
+<th>InnoDB引擎</th>
+<th>Memory引擎</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B-Tree索引</td>
+<td>支持（默认）</td>
+<td>支持（默认）</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>HASH索引</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持（默认）</td>
+</tr>
+<tr>
+<td>R-Tree索引</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>Full-text索引</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h3 id="SQL语句中使用到索引的典型场景"><a href="#SQL语句中使用到索引的典型场景" class="headerlink" title="SQL语句中使用到索引的典型场景"></a>SQL语句中使用到索引的典型场景</h3><p>使用<code>explain SLQ语句</code>命令，查看结果中的key字段可以直到查询使用了哪个索引。</p>
+<ul>
+<li><p>匹配全值<br>在组合索引<code>composite\_index(col1,col2,col3)</code>中，SQL语句中的where关键字后的条件对col1,col2,col3都进行精确匹配时，会使用到复合索引composite_index。例如<code>SELECT * FROM table_name WHERE col1=1 AND col2=2 AND col3=3;’</code>.</p>
+</li>
+<li><p>匹配值的范围查询<br>在查询时，如果索引列中值进行范围查找，可以使用到索引，例如<code>SELECT * FROM table_name WHERE col1&lt;10 AND col1&gt;20;</code></p>
+</li>
+<li><p>匹配最左前缀<br>在组合索引<code>composite\_index(col1,col2,col3)</code>中，where关键字后的列必须涉及到组合索引中最左边的列，例如：col1，col1+col2,col1+col3…;最左匹配原则是B-Tree索引最重要的使用原则。</p>
+</li>
+<li><p>仅仅对索引进行查询<br>当select语句想要查询的列都是索引列时，查询的效率非常高，因为只需要扫描索引表而不用回表查询。</p>
+</li>
+<li><p>匹配列前缀<br>对于前缀索引，使用索引列的前一部分进行查找也可以使用到索引，例如<code>SELECT * FROMM table_name WHERE col1 LIKE &#39;name%&#39;</code>;会使用到索引col1上的前缀索引。</p>
+</li>
+<li><p>能够实现索引匹配部分精确而其他部分进行范围匹配<br>可以对索引列进行精确查询而非索引列进行范围查询来加快查询速度，例如<code>SELECT * FROM table_name WHERE col1=1 AND col2&gt;100;</code>使用到了col1上的索引。</p>
+</li>
+<li><p>如果列名是索引，那么使用column_name is null 就会使用索引<br>对于索引列，使用<code>IS NULL</code>关键字也可以使用到索引，例如<code>SELECT * FROM table_name WHERE col1 IS NULL;</code></p>
+</li>
+</ul>
+<h3 id="SQL语句中不会使用到索引的典型场景"><a href="#SQL语句中不会使用到索引的典型场景" class="headerlink" title="SQL语句中不会使用到索引的典型场景"></a>SQL语句中不会使用到索引的典型场景</h3><ul>
+<li><p>以’%’开头的LIKE查询不会使用到B-Tree索引<br>语句<code>SELECT * FROM table_name WHERE col1 LIKE &#39;%ame%&#39;</code>不会使用到col1上的B-Tree索引，因为使用了%开头。可以使用全文本索引（FullText）来解决。</p>
+</li>
+<li><p>数据类型出现隐式转换时不会使用到索引<br>当数据类型在比较是发生隐式类型转换，也不会使用到索引，特别是字符串类型和其他类型的比较。例如<code>SELECT * FROM table_name col1=1</code>,由于col1是字符串类型，而1是整型，会发生隐式转换，不会使用到col1上的索引，而修改为<code>SELECT * FROM table_name col1=&#39;1&#39;</code>;</p>
+</li>
+<li><p>不满足最左匹配原则是不会使用到索引<br>复合索引中不包含最左边的列，不会使用到索引。</p>
+</li>
+<li><p>如果MySQL预计到使用索引比全表扫描更慢则不会使用到索引<br>例如语句<code>SELECT * FROM table_name WHERE col1 LIKE &#39;N%&#39;</code>查找所有N开头的行，MySQL判定使用索引比全表扫描更慢，则不使用索引。</p>
+</li>
+<li><p>使用or语句中，or前的列有索引而后面的列没有索引页不会用到索引<br>对于WHERE中使用OR连接的查询条件，如果前面的列含有索引而后面的列没有索引，则不会使用到任何索引，因为后面的查询肯定要使用到全表扫描，所以依旧会使用全表扫描。</p>
+</li>
+</ul>
+<h2 id="SQL语句的优化"><a href="#SQL语句的优化" class="headerlink" title="SQL语句的优化"></a>SQL语句的优化</h2><p>在mysql中，可以使用<code>explain extended SQL语句</code>命令然后执行<code>show warning</code>命令，来迅速获取一个更加清晰易读的sql语句，这是MySql优化过后的语句：</p>
+<p>同时可以使用<code>explain SQL语句</code>查看key字段明确查询使用的索引类型等详细信息。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -3921,415 +4103,6 @@ public class NewCurrentConditionsDisplay implements Observer &#123;
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/09/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式-策略(Strategy)模式（转）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-01 09:20:00" itemprop="dateCreated datePublished" datetime="2018-09-01T09:20:00+08:00">2018-09-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:02" itemprop="dateModified" datetime="2021-02-23T21:00:02+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DesignPattern/" itemprop="url" rel="index"><span itemprop="name">DesignPattern</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/09/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/09/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/java-my-life/archive/2012/05/10/2491891.html">博客原地址</a><br>今天学习了《Head First 设计模式》中的策略设计模式，同时在网上发现了一篇写的非常好的<a target="_blank" rel="noopener" href="https://www.cnblogs.com/java-my-life/archive/2012/05/10/2491891.html">博客</a>,搬运了过来，里面的注解部分暂时看不懂，等以后学习了注解再来看一看。</p>
-<p>正如《Head First 设计模式》书中所说，策略模式的设计原则就是将应用中需要变化的部分独立出来，同时还要注意多使用组合(composition)少使用继承(succeed)。</p>
-<hr>
-<p>写代码时总会出很多的if…else，或者case。如果在一个条件语句中又包含了多个条件语句就会使得代码变得臃肿，维护的成本也会加大，而策略模式就能较好的解决这个问题，本篇博客就带你详细了解策略模式。</p>
-<h2 id="策略模式的定义和使用场景"><a href="#策略模式的定义和使用场景" class="headerlink" title="策略模式的定义和使用场景"></a>策略模式的定义和使用场景</h2><h4 id="定义：策略模式定义了一系列的算法，并将每一个算法封装起来，而且使他们可以相互替换，让算法独立于使用它的客户而独立变化。"><a href="#定义：策略模式定义了一系列的算法，并将每一个算法封装起来，而且使他们可以相互替换，让算法独立于使用它的客户而独立变化。" class="headerlink" title="定义：策略模式定义了一系列的算法，并将每一个算法封装起来，而且使他们可以相互替换，让算法独立于使用它的客户而独立变化。"></a>定义：策略模式定义了一系列的算法，并将每一个算法封装起来，而且使他们可以相互替换，让算法独立于使用它的客户而独立变化。</h4><p>分析下定义，策略模式定义和封装了一系列的算法，它们是可以相互替换的，也就是说它们具有共性，而它们的共性就体现在策略接口的行为上，另外为了达到最后一句话的目的，也就是说让算法独立于使用它的客户而独立变化，我们需要让客户端依赖于策略接口。</p>
-<h4 id="策略模式的使用场景："><a href="#策略模式的使用场景：" class="headerlink" title="策略模式的使用场景："></a>策略模式的使用场景：</h4><p>1.针对同一类型问题的多种处理方式，仅仅是具体行为有差别时；<br>2.需要安全地封装多种同一类型的操作时；<br>3.出现同一抽象类有多个子类，而又需要使用 if-else 或者 switch-case 来选择具体子类时。</p>
-<h4 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h4><p><a target="_blank" rel="noopener" href="https://imgchr.com/i/iJEjnP"><img src="https://s1.ax1x.com/2018/10/08/iJEjnP.md.png" alt="iJEjnP.md.png"></a></p>
-<p>这个模式涉及到三个角色：</p>
-<ul>
-<li>环境(Context)角色：持有一个Strategy的引用。</li>
-<li>抽象策略(Strategy)角色：这是一个抽象角色，通常由一个接口或抽象类实现。此角色给出所有的具体策略类所需的接口。</li>
-<li>具体策略(ConcreteStrategy)角色：包装了相关的算法或行为。</li>
-</ul>
-<p>策略模式的典型代码如下：</p>
-<h5 id="抽象策略类-策略接口"><a href="#抽象策略类-策略接口" class="headerlink" title="抽象策略类(策略接口)"></a>抽象策略类(策略接口)</h5><pre><code class="java">public interface Strategy &#123;
-    /**
-     * 策略方法
-     */
-    public void strategyInterface();
-&#125;
-</code></pre>
-<h5 id="具体策略类"><a href="#具体策略类" class="headerlink" title="具体策略类"></a>具体策略类</h5><pre><code class="java">public class ConcreteStrategyA implements Strategy &#123;
-
-    @Override
-    public void strategyInterface() &#123;
-        //相关的业务
-    &#125;
-
-&#125;
-</code></pre>
-<pre><code class="java">public class ConcreteStrategyB implements Strategy &#123;
-
-    @Override
-    public void strategyInterface() &#123;
-        //相关的业务
-    &#125;
-
-&#125;
-</code></pre>
-<h5 id="环境角色类"><a href="#环境角色类" class="headerlink" title="环境角色类"></a>环境角色类</h5><pre><code class="java">public class Context &#123;
-    //持有一个具体策略的对象
-    private Strategy strategy;
-    /**
-     * 构造函数，传入一个具体策略对象
-     * @param strategy    具体策略对象
-     */
-    public Context(Strategy strategy)&#123;
-        this.strategy = strategy;
-    &#125;
-    /**
-     * 策略方法
-     */
-    public void contextInterface()&#123;
-
-        strategy.strategyInterface();
-    &#125;
-&#125;
-</code></pre>
-<h2 id="策略模式例子"><a href="#策略模式例子" class="headerlink" title="策略模式例子"></a>策略模式例子</h2><p>假设鹅厂推出了3种会员，分别为会员，超级会员以及金牌会员，还有就是普通玩家，针对不同类别的玩家，购买《王者农药》皮肤有不同的打折方式，并且一个顾客每消费10000就增加一个级别，那么我们就可以使用策略模式，因为策略模式描述的就是算法的不同，这里我们举例就采用最简单的，以上四种玩家分别采用原价（普通玩家），九折，八折和七价的收钱方式。</p>
-<p>那么我们首先要有一个计算价格的策略接口:</p>
-<pre><code class="java">public interface CalPrice &#123;
-    //根据原价返回一个最终的价格
-    Double calPrice(Double orgnicPrice);
-&#125;
-</code></pre>
-<p>下面是4种玩家的计算方式的实现:</p>
-<pre><code class="java">public class Orgnic implements CalPrice &#123;
-
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">public class Vip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.9;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">public class SuperVip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.8;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">public class GoldVip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.7;
-    &#125;
-&#125;
-</code></pre>
-<p>我们看客户类，我们需要客户类帮我们完成玩家升级的功能。</p>
-<pre><code class="java">public class Player &#123;
-    private Double totalAmount = 0D;//客户在鹅厂消费的总额
-    private Double amount = 0D;//客户单次消费金额
-    private CalPrice calPrice = new Orgnic();
-    //每个客户都有一个计算价格的策略，初始都是普通计算，即原价
-
-    //客户购买皮肤，就会增加它的总额
-    public void buy(Double amount) &#123;
-        this.amount = amount;
-        totalAmount += amount;
-        if (totalAmount &gt; 30000) &#123;//30000则改为金牌会员计算方式
-            calPrice = new GoldVip();
-        &#125; else if (totalAmount &gt; 20000) &#123;//类似
-            calPrice = new SuperVip();
-        &#125; else if (totalAmount &gt; 10000) &#123;//类似
-            calPrice = new Vip();
-        &#125;
-    &#125;
-
-    //计算客户最终要付的钱
-    public Double calLastAmount() &#123;
-        return calPrice.calPrice(amount);
-    &#125;
-&#125;
-</code></pre>
-<p>接下来是客户端调用，系统会帮我们自动调整收费策略。</p>
-<pre><code class="java">public class Client &#123;
-    public static void main(String[] args) &#123;
-        Player player = new Player();
-        player.buy(5000D);
-        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
-        player.buy(12000D);
-        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
-        player.buy(12000D);
-        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
-        player.buy(12000D);
-        System.out.println(&quot;玩家需要付钱：&quot; + player.calLastAmount());
-    &#125;
-&#125;
-</code></pre>
-<p>运行以后会发现，第一次是原价，第二次是九折，第三次是八折，最后一次则是七价。这样设计的好处是，客户不再依赖于具体的收费策略，依赖于抽象永远是正确的。</p>
-<p>在上面的基础上，我们可以使用简单工厂来稍微进行优化</p>
-<pre><code class="java">//定义工厂类
-public class CalPriceFactory &#123;
-    private CalPriceFactory()&#123;&#125;
-    //根据客户的总金额产生相应的策略
-    public static CalPrice createCalPrice(Player customer)&#123;
-        if (customer.getTotalAmount() &gt; 30000) &#123;//3000则改为金牌会员计算方式
-            return new GoldVip();
-        &#125;else if (customer.getTotalAmount() &gt; 20000) &#123;//类似
-            return new SuperVip();
-        &#125;else if (customer.getTotalAmount() &gt; 10000) &#123;//类似
-            return new Vip();
-        &#125;else &#123;
-            return new Orgnic();
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<p>这样就将制定策略的功能从客户类分离了出来，我们的客户类可以变成这样。</p>
-<pre><code class="java">public class Player &#123;
-    private Double totalAmount = 0D;//客户在鹅厂消费的总额
-    private Double amount = 0D;//客户单次消费金额
-    private CalPrice calPrice = new Orgnic();
-    //每个客户都有一个计算价格的策略，初始都是普通计算，即原价
-
-    //客户购买皮肤，就会增加它的总额
-    public void buy(Double amount) &#123;
-        this.amount = amount;
-        totalAmount += amount;
-        /* 变化点，我们将策略的制定转移给了策略工厂，将这部分责任分离出去 */
-        calPrice = CalPriceFactory.createCalPrice(this);
-    &#125;
-
-    //计算客户最终要付的钱
-    public Double calLastAmount() &#123;
-        return calPrice.calPrice(amount);
-    &#125;
-
-    public Double getTotalAmount() &#123;
-        return totalAmount;
-    &#125;
-&#125;
-</code></pre>
-<h2 id="使用注解简化策略设计模式"><a href="#使用注解简化策略设计模式" class="headerlink" title="使用注解简化策略设计模式"></a>使用注解简化策略设计模式</h2><p>虽然结合简单工厂模式，我们的策略模式灵活了一些，但不免发现在工厂中多了if-else判断，也就是如果增加一个会员类别，我又得增加一个else-if语句，这是简单工厂的缺点，对修改开放。</p>
-<p>那有什么方法，可以较好的解决这个问题呢？那就是使用注解， 所以我们需要给注解加入属性上限和下限，用来表示策略生效的区间，用来解决总金额判断的问题。</p>
-<p>1.首先我们做一个注解，这个注解是用来给策略添加的，当中可以设置它的上下限</p>
-<pre><code class="java">//这是有效价格区间注解，可以给策略添加有效区间的设置
-@Target(ElementType.TYPE)//表示只能给类添加该注解
-@Retention(RetentionPolicy.RUNTIME)//这个必须要将注解保留在运行时
-public @interface PriceRegion &#123;
-    int max() default Integer.MAX_VALUE;
-    int min() default Integer.MIN_VALUE;
-&#125;
-</code></pre>
-<p>可以看到，我们只是使用这个注解来声明每一个策略的生效区间，于是对策略进行修改</p>
-<pre><code class="java">@PriceRegion(max = 10000)
-public class Orgnic implements CalPrice &#123;
-
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">@PriceRegion(max=20000)
-public class Vip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.9;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">@PriceRegion(min=20000,max=30000)
-public class SuperVip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.8;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">@PriceRegion(min=3000)
-public class GoldVip implements CalPrice &#123;
-    @Override
-    public Double calPrice(Double orgnicPrice) &#123;
-        return orgnicPrice * 0.7;
-    &#125;
-&#125;
-</code></pre>
-<p>接下来就是在策略工厂中去处理注解</p>
-<pre><code class="java">public class CalPriceFactory &#123;
-    private static final String CAL_PRICE_PACKAGE = &quot;com.example.stragedemo&quot;;//这里是一个常量，表示我们扫描策略的包
-
-    private ClassLoader classLoader = getClass().getClassLoader();
-
-    private List&lt;Class&lt;? extends CalPrice&gt;&gt; calPriceList;//策略列表
-
-    //根据玩家的总金额产生相应的策略
-    public CalPrice createCalPrice(Player player) &#123;
-        //在策略列表查找策略
-        for (Class&lt;? extends CalPrice&gt; clazz : calPriceList) &#123;
-            PriceRegion validRegion = handleAnnotation(clazz);//获取该策略的注解
-            //判断金额是否在注解的区间
-            if (player.getTotalAmount() &gt; validRegion.min() &amp;&amp; player.getTotalAmount() &lt; validRegion.max()) &#123;
-                try &#123;
-                    //是的话我们返回一个当前策略的实例
-                    return clazz.newInstance();
-                &#125; catch (Exception e) &#123;
-                    throw new RuntimeException(&quot;策略获得失败&quot;);
-                &#125;
-            &#125;
-        &#125;
-        throw new RuntimeException(&quot;策略获得失败&quot;);
-    &#125;
-
-    //处理注解，我们传入一个策略类，返回它的注解
-    private PriceRegion handleAnnotation(Class&lt;? extends CalPrice&gt; clazz) &#123;
-        Annotation[] annotations = clazz.getDeclaredAnnotations();
-        if (annotations == null || annotations.length == 0) &#123;
-            return null;
-        &#125;
-        for (int i = 0; i &lt; annotations.length; i++) &#123;
-            if (annotations[i] instanceof PriceRegion) &#123;
-                return (PriceRegion) annotations[i];
-            &#125;
-        &#125;
-        return null;
-    &#125;
-
-    //单例
-    private CalPriceFactory() &#123;
-        init();
-    &#125;
-
-    //在工厂初始化时要初始化策略列表
-    private void init() &#123;
-        calPriceList = new ArrayList&lt;Class&lt;? extends CalPrice&gt;&gt;();
-        File[] resources = getResources();//获取到包下所有的class文件
-        Class&lt;CalPrice&gt; calPriceClazz = null;
-        try &#123;
-            calPriceClazz = (Class&lt;CalPrice&gt;) classLoader.loadClass(CalPrice.class.getName());//使用相同的加载器加载策略接口
-        &#125; catch (ClassNotFoundException e1) &#123;
-            throw new RuntimeException(&quot;未找到策略接口&quot;);
-        &#125;
-        for (int i = 0; i &lt; resources.length; i++) &#123;
-            try &#123;
-                //载入包下的类
-                Class&lt;?&gt; clazz = classLoader.loadClass(CAL_PRICE_PACKAGE + &quot;.&quot; + resources[i].getName().replace(&quot;.class&quot;, &quot;&quot;));
-                //判断是否是CalPrice的实现类并且不是CalPrice它本身，满足的话加入到策略列表
-                if (CalPrice.class.isAssignableFrom(clazz) &amp;&amp; clazz != calPriceClazz) &#123;
-                    calPriceList.add((Class&lt;? extends CalPrice&gt;) clazz);
-                &#125;
-            &#125; catch (ClassNotFoundException e) &#123;
-                e.printStackTrace();
-            &#125;
-        &#125;
-    &#125;
-
-    //获取扫描的包下面所有的class文件
-    private File[] getResources() &#123;
-        try &#123;
-            File file = new File(classLoader.getResource(CAL_PRICE_PACKAGE.replace(&quot;.&quot;, &quot;/&quot;)).toURI());
-            return file.listFiles(new FileFilter() &#123;
-                public boolean accept(File pathname) &#123;
-                    if (pathname.getName().endsWith(&quot;.class&quot;)) &#123;//我们只扫描class文件
-                        return true;
-                    &#125;
-                    return false;
-                &#125;
-            &#125;);
-        &#125; catch (URISyntaxException e) &#123;
-            throw new RuntimeException(&quot;未找到策略资源&quot;);
-        &#125;
-    &#125;
-
-    public static CalPriceFactory getInstance() &#123;
-        return CalPriceFactoryInstance.instance;
-    &#125;
-
-    private static class CalPriceFactoryInstance &#123;
-
-        private static CalPriceFactory instance = new CalPriceFactory();
-    &#125;
-&#125;
-</code></pre>
-<p>虽然工厂里的逻辑增加了，但是解耦的效果达到了，现在我们随便加入一个策略，并设置好它的生效区间，策略工厂就可以帮我们自动找到适应的策略。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -4401,7 +4174,7 @@ public class GoldVip implements CalPrice &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

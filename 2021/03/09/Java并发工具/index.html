@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="Future、CompletableFutureThreadLocal-线程本地变量本质： 在Thread类中，会自带一个ThreadLocalMap（定制化的一种HashMap）类型的threadLocals和InheritableThreadLocals属性，在ThreadLocal中set进去的值并不是放在ThreadLocal中，而是保存在Thread类自己的threadLocals中，同">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="Future、CompletableFutureThreadLocal-线程本地变量本质： 在Thread类中，会自带一个ThreadLocalMap（定制化的一种HashMap）类型的threadLocals和InheritableThreadLocals属性，在ThreadLocal中set进去的值并不是放在ThreadLocal中，而是保存在Thread类自己的threadLocals中，同">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-09T14:30:04.000Z">
-<meta property="article:modified_time" content="2021-04-07T11:35:38.875Z">
+<meta property="article:modified_time" content="2021-04-08T15:08:01.450Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-07 19:35:38" itemprop="dateModified" datetime="2021-04-07T19:35:38+08:00">2021-04-07</time>
+                <time title="修改时间：2021-04-08 23:08:01" itemprop="dateModified" datetime="2021-04-08T23:08:01+08:00">2021-04-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,7 +263,7 @@
 
       
         <h1 id="Future、CompletableFuture"><a href="#Future、CompletableFuture" class="headerlink" title="Future、CompletableFuture"></a>Future、CompletableFuture</h1><h1 id="ThreadLocal-线程本地变量"><a href="#ThreadLocal-线程本地变量" class="headerlink" title="ThreadLocal-线程本地变量"></a>ThreadLocal-线程本地变量</h1><p><strong>本质：</strong> 在Thread类中，会自带一个ThreadLocalMap（定制化的一种HashMap）类型的threadLocals和InheritableThreadLocals属性，在ThreadLocal中set进去的值并不是放在ThreadLocal中，而是保存在Thread类自己的threadLocals中，同样get获取的值也只是从调用的线程中的threadLocals中去取值，而ThreadLocal只是一个工具壳。</p>
-<p>ThreadLocal被设计成map结构，表示一个线程可以关联多个ThreadLocal变量，因ThreadLocalMap中的key是ThreadLocal的this指针。 </p>
+<p>ThreadLocal被设计成map结构，表示一个线程可以关联多个ThreadLocal变量，因ThreadLocalMap中的key是ThreadLocal的this指针。</p>
 <span id="more"></span>
 
 <h2 id="方法源码"><a href="#方法源码" class="headerlink" title="方法源码"></a>方法源码</h2><ul>
@@ -477,7 +477,7 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
 </ol>
 <h1 id="LongAdder"><a href="#LongAdder" class="headerlink" title="LongAdder"></a>LongAdder</h1><p>在高并发场景下，同时有多个线程对AtomicLong对象进行自增时，只会有一个线程能够成功，势必就会造成其他线程的自旋CAS操作，浪费CPU资源，针对这种情况，JDK1.8新增了专门用于高并发场景的自增工具LongAdder。</p>
 <p>在LongAdder实现中，将一个数拆分为多个Cell，使得原本对单个变量的自增操作变成对多个变量的操作，降低资源竞争的并发量，同时如果对当前Cell的CAS失败后，会转换为对其他Cell的CAS操作，这个改变增加了当前线程重试 CAS 成功的可能性。最后，在获取 LongAdder 当前值时，是把所有 Cell 变量的 value 值累加后再加上 base 返回的。</p>
-
+<h1 id="AQS-AbstractQueuedSynchronizer-抽象同步队列"><a href="#AQS-AbstractQueuedSynchronizer-抽象同步队列" class="headerlink" title="AQS(AbstractQueuedSynchronizer)-抽象同步队列"></a>AQS(AbstractQueuedSynchronizer)-抽象同步队列</h1>
     </div>
 
     
@@ -562,7 +562,7 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Future%E3%80%81CompletableFuture"><span class="nav-text">Future、CompletableFuture</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal-%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%8F%98%E9%87%8F"><span class="nav-text">ThreadLocal-线程本地变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E6%BA%90%E7%A0%81"><span class="nav-text">方法源码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF%E7%9A%84InheritableThreadLocal"><span class="nav-text">支持继承的InheritableThreadLocal</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReentrantLock-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81"><span class="nav-text">ReentrantLock-可重入锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E5%93%8D%E5%BA%94"><span class="nav-text">中断响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%81%E7%94%B3%E8%AF%B7%E7%AD%89%E5%BE%85%E9%99%90%E6%97%B6-java"><span class="nav-text">锁申请等待限时 {java}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81"><span class="nav-text">公平锁</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Condition"><span class="nav-text">Condition</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Semaphore-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-text">Semaphore-信号量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReadWriteLock-%E8%AF%BB%E5%86%99%E9%94%81"><span class="nav-text">ReadWriteLock-读写锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CountDownLatch-%E5%80%92%E8%AE%A1%E6%97%B6%E5%99%A8"><span class="nav-text">CountDownLatch-倒计时器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LongAdder"><span class="nav-text">LongAdder</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Future%E3%80%81CompletableFuture"><span class="nav-text">Future、CompletableFuture</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal-%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%8F%98%E9%87%8F"><span class="nav-text">ThreadLocal-线程本地变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E6%BA%90%E7%A0%81"><span class="nav-text">方法源码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF%E7%9A%84InheritableThreadLocal"><span class="nav-text">支持继承的InheritableThreadLocal</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReentrantLock-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81"><span class="nav-text">ReentrantLock-可重入锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E5%93%8D%E5%BA%94"><span class="nav-text">中断响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%81%E7%94%B3%E8%AF%B7%E7%AD%89%E5%BE%85%E9%99%90%E6%97%B6-java"><span class="nav-text">锁申请等待限时 {java}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81"><span class="nav-text">公平锁</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Condition"><span class="nav-text">Condition</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Semaphore-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-text">Semaphore-信号量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReadWriteLock-%E8%AF%BB%E5%86%99%E9%94%81"><span class="nav-text">ReadWriteLock-读写锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CountDownLatch-%E5%80%92%E8%AE%A1%E6%97%B6%E5%99%A8"><span class="nav-text">CountDownLatch-倒计时器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LongAdder"><span class="nav-text">LongAdder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AQS-AbstractQueuedSynchronizer-%E6%8A%BD%E8%B1%A1%E5%90%8C%E6%AD%A5%E9%98%9F%E5%88%97"><span class="nav-text">AQS(AbstractQueuedSynchronizer)-抽象同步队列</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -578,7 +578,7 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="熊乾坤的博客">
@@ -187,6 +187,125 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/02/28/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Java并发基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-28 17:11:58" itemprop="dateCreated datePublished" datetime="2021-02-28T17:11:58+08:00">2021-02-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-08 23:07:12" itemprop="dateModified" datetime="2021-04-08T23:07:12+08:00">2021-04-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="线程创建的三种方式"><a href="#线程创建的三种方式" class="headerlink" title="线程创建的三种方式"></a>线程创建的三种方式</h1><ol>
+<li><p>实现Runnable接口</p>
+</li>
+<li><p>继承Thread类并重写run方法</p>
+</li>
+<li><p>使用FutureTask方式</p>
+<pre><code class="java">/**
+ * @author 熊乾坤
+ * @since 2021-03-13 12:34
+ */
+public class FutureTaskTest implements Callable&lt;String&gt; &#123;
+    @Override
+    public String call() throws Exception &#123;
+        return &quot;hello&quot;;
+    &#125;
+
+    public static void main(String[] args) &#123;
+        FutureTask&lt;String&gt; futureTask=new FutureTask&lt;&gt;(new FutureTaskTest());
+        Thread thread=new Thread(futureTask);
+        thread.start();
+        try &#123;
+            System.out.println(futureTask.get());
+        &#125; catch (InterruptedException | ExecutionException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+</li>
+</ol>
+          <!--noindex-->
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -414,7 +533,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-11 08:54:18" itemprop="dateModified" datetime="2021-03-11T08:54:18+08:00">2021-03-11</time>
+                <time title="修改时间：2021-04-10 17:48:21" itemprop="dateModified" datetime="2021-04-10T17:48:21+08:00">2021-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -458,22 +577,81 @@
 <li>隔离性<br>在某些隔离级别下，事务所做的修改在事务最终提交前，对其他事务是不可见的</li>
 <li>持久性<br>一旦事务提交，事务所做的修改就会永久保存到数据库中，此时即使系统崩溃，修改的数据也不会丢失</li>
 </ul>
-<h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><h4 id="更新丢失"><a href="#更新丢失" class="headerlink" title="更新丢失"></a>更新丢失</h4><h4 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h4><h4 id="不可重复读（针对UPDATE和DELETE的行）"><a href="#不可重复读（针对UPDATE和DELETE的行）" class="headerlink" title="不可重复读（针对UPDATE和DELETE的行）"></a>不可重复读（针对UPDATE和DELETE的行）</h4><h4 id="幻读（针对INSERT的行）"><a href="#幻读（针对INSERT的行）" class="headerlink" title="幻读（针对INSERT的行）"></a>幻读（针对INSERT的行）</h4><h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><h2 id="READ-UNCOMMITED-未提交读"><a href="#READ-UNCOMMITED-未提交读" class="headerlink" title="READ UNCOMMITED(未提交读)"></a>READ UNCOMMITED(未提交读)</h2><p>一个事务所做的修改即使未提交，对于另一个事务来说都是可见的。事务可以读取到未提交的行，这种也被成为脏读（Dirty Read）。</p>
-<h2 id="READ-COMMITED-已提交度、不可重复读"><a href="#READ-COMMITED-已提交度、不可重复读" class="headerlink" title="READ COMMITED(已提交度、不可重复读)"></a>READ COMMITED(已提交度、不可重复读)</h2><p>大多数数据库默认的隔离级别；事务只能看到已提交的事务所做的修改，一个事务所做的修改对另外一个事务是不可见的。但是在<strong>一个事务中</strong>执行两次同样的查询，可能会得到不一样的结果。</p>
-<h2 id="REPEATABLE-READ-可重复读"><a href="#REPEATABLE-READ-可重复读" class="headerlink" title="REPEATABLE READ(可重复读)"></a>REPEATABLE READ(可重复读)</h2><p>MySQL默认的隔离级别；该级别解决了脏读的问题，保证了在<strong>一个事务中</strong>多次读取同样的记录的结果是一致的。但是在在理论上还是存在幻读的问题。InnoDB和XtraDB使用MVCC多版本并发控制解决了幻读的问题。</p>
-<h2 id="SERIALIZABLE-序列化"><a href="#SERIALIZABLE-序列化" class="headerlink" title="SERIALIZABLE(序列化)"></a>SERIALIZABLE(序列化)</h2><p>最高的隔离级别，他通过强制事务串行化执行，避免了前面提到的幻读问题。简单来说，SERIALIZABLE会在读取到的每一行数据上都加锁，所以可能导致大量超时和锁争用问题。</p>
-<p><strong>注意：</strong>MySQL可以动态更改事务隔离级别：</p>
-<pre><code class="sql">#修改当前事务隔离级别为可重复读
+<h1 id="并发事务带来的问题"><a href="#并发事务带来的问题" class="headerlink" title="并发事务带来的问题"></a>并发事务带来的问题</h1><h2 id="更新丢失"><a href="#更新丢失" class="headerlink" title="更新丢失"></a>更新丢失</h2><h2 id="脏读（Dirty-Read）"><a href="#脏读（Dirty-Read）" class="headerlink" title="脏读（Dirty Read）"></a>脏读（Dirty Read）</h2><p>一个事务能够看到其他未提交的事务对数据行所做的修改。</p>
+<h2 id="不可重复读（针对UPDATE和DELETE的行）"><a href="#不可重复读（针对UPDATE和DELETE的行）" class="headerlink" title="不可重复读（针对UPDATE和DELETE的行）"></a>不可重复读（针对UPDATE和DELETE的行）</h2><p>一个事务的两次查询，第二次查询能够看到其他事务对已存在行的<strong>修改</strong>或者<strong>删除</strong>。</p>
+<h2 id="幻读（针对INSERT的行）"><a href="#幻读（针对INSERT的行）" class="headerlink" title="幻读（针对INSERT的行）"></a>幻读（针对INSERT的行）</h2><p>一个事务的两次范围查询，第二次查询能够看到该范围内其他事务<strong>新增</strong>的行，新增的行就是<strong>幻行</strong>。</p>
+<h1 id="事务的四种隔离级别"><a href="#事务的四种隔离级别" class="headerlink" title="事务的四种隔离级别"></a>事务的四种隔离级别</h1><ul>
+<li><code>READ UNCOMMITED</code>(未提交读)：一个事务所做的修改即使未提交，对于另一个事务来说都是可见的。事务可以读取到未提交的行，这种也被成为脏读（Dirty Read）。</li>
+<li><code>READ COMMITED</code>(已提交度、不可重复读)：大多数数据库默认的隔离级别；事务只能看到已提交的事务所做的修改，一个事务所做的修改对另外一个事务是不可见的。但是在<strong>一个事务中</strong>执行两次同样的查询，可能会得到不一样的结果。</li>
+<li><code>REPEATABLE READ</code>(可重复读)：MySQL默认的隔离级别；该级别解决了脏读的问题，保证了在<strong>一个事务中</strong>多次读取同样的记录的结果是一致的。但是在在理论上还是存在幻读的问题。InnoDB和XtraDB使用MVCC多版本并发控制解决了幻读的问题。</li>
+<li><code>SERIALIZABLE</code>(序列化)：最高的隔离级别，他通过强制事务串行化执行，避免了前面提到的幻读问题。简单来说，SERIALIZABLE会在读取到的每一行数据上都加锁，所以可能导致大量超时和锁争用问题。</li>
+</ul>
+<h1 id="事务的使用"><a href="#事务的使用" class="headerlink" title="事务的使用"></a>事务的使用</h1><pre><code class="sql">START TRANSACTION;
+SELECT * FROM TABLE_NAME;
+COMMIT;   //提交事务
+ROLLBACK; //回滚事务
+</code></pre>
+<h2 id="动态更改事务隔离级别"><a href="#动态更改事务隔离级别" class="headerlink" title="动态更改事务隔离级别"></a>动态更改事务隔离级别</h2><pre><code class="sql"># 查看当前事务的隔离界别
+SELECT @@SESSION.tx_isolation;
+# 查看全局事务的隔离界别
+SELECT @@GLOBAL.tx_isolation;
+# 修改当前事务隔离级别为可重复读
 SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 #修改当前事务隔离界别为序列化
 SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 </code></pre>
-<h1 id="MVCC（Molti-Version-Concurrency-Control）"><a href="#MVCC（Molti-Version-Concurrency-Control）" class="headerlink" title="MVCC（Molti Version Concurrency Control）"></a>MVCC（Molti Version Concurrency Control）</h1><p>MVCC只在<strong>READ COMMITED</strong>和<strong>REPEATABLE READ</strong>级别下工作，另外两种隔离级别并不兼容MVCC，READ UNCOMMITED每次都读取最新的行，SERIALIZABLE则对每次读取都加锁；在InnoDB引擎下，简单描述其工作原理如下：</p>
-<p><strong>前提条件：</strong> 为每一行数据都增加两个隐藏列，一列保存行的创建系统版本号，一列保存行的删除系统版本号。没开始一个事务，系统版本号都会自增，事务开始是的系统版本号作为事务的版本号，和查询到记录的版本号做比较，例如在REPEATABLE READ隔离级别下,具体行为如下：</p>
-<p><strong>INSERT:</strong></p>
-<p><strong>DELETE:</strong></p>
-<p><strong>UPDATE:</strong></p>
-<p><strong>SELECT:</strong></p>
+<h1 id="MVCC（Molti-Version-Concurrency-Control）"><a href="#MVCC（Molti-Version-Concurrency-Control）" class="headerlink" title="MVCC（Molti Version Concurrency Control）"></a>MVCC（Molti Version Concurrency Control）</h1><p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/52977862">数据库基础（四）Innodb MVCC实现原理</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/40208895">MySQL InnoDB MVCC实现</a></p>
+<p><a target="_blank" rel="noopener" href="http://mysql.taobao.org/monthly/2017/12/01/">MySQL · 引擎特性 · InnoDB 事务系统 (taobao.org)</a></p>
+<p>MVCC只在 <code>READ COMMITED</code>和 <code>REPEATABLE READ</code>级别下工作，另外两种隔离级别并不兼容MVCC，<code>READ UNCOMMITED</code>每次都读取最新的行，<code>SERIALIZABLE</code>则对每次读取都加锁；以下是InnoDB实现MVCC的方式：</p>
+<h2 id="核心知识"><a href="#核心知识" class="headerlink" title="核心知识"></a>核心知识</h2><p>MVCC的实现中主要包含如下几个核心概念：</p>
+<h3 id="事务版本号"><a href="#事务版本号" class="headerlink" title="事务版本号"></a><strong>事务版本号</strong></h3><p>每次事务开启前都会从数据库获得一个自增长的事务ID，可以从事务ID判断事务的执行先后顺序。</p>
+<h3 id="undolog"><a href="#undolog" class="headerlink" title="undolog"></a>undolog</h3><p>undolog 主要用于记录数据被修改之前的日志，在表信息修改之前先会把数据拷贝到undolog 里，当事务进行回滚时可以通过undolog 里的日志进行数据还原。</p>
+<h3 id="隐藏列"><a href="#隐藏列" class="headerlink" title="隐藏列"></a>隐藏列</h3><p>在分析MVCC原理之前，先看下InnoDB中数据行的结构：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/10/82a96709-7f4b-4aa2-a99d-3e98e5f4e40f.png" alt="v2-e1844f5816a332018183559d1573d80e_1440w.png"></p>
+<p>在InnoDB中，每一行都有三个隐藏列<code>TRX_ID</code>、<code>ROLL_PTR</code>和<code>ROW_ID</code></p>
+<ol>
+<li><strong>TRX_ID</strong>：表示最近修改该行数据的事务ID。</li>
+<li><strong>ROLL_PTR</strong>：则表示指向该行回滚段的指针，该行上所有旧的版本，在undo log中都通过链表的形式组织，而该值，正是指向undo中该行的历史记录链表。</li>
+<li><strong>ROW_ID</strong>：隐藏ID ，当创建表没有合适的索引作为聚集索引时，会用该隐藏ID创建聚集索</li>
+</ol>
+<p>整个MVCC的关键就是通过<code>TRX_ID</code>和<code>ROLL_PTR</code>这两个隐藏列来实现的。</p>
+<h3 id="事务链表"><a href="#事务链表" class="headerlink" title="事务链表"></a>事务链表</h3><p>MySQL中的事务在开始到提交这段过程中，都会被保存到一个叫trx_sys的事务链表中，这是一个基本的链表结构：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/10/15c7b607-22be-4d53-a30c-c4fb0e28a5a7.jpg" alt="v2-d750223af8b18e8c9eb65cc4a9856ec1_1440w.jpg"></p>
+<p>事务链表中保存的都是还未提交的事务，事务id递增，事务一旦被提交，则会被从事务链表中摘除。</p>
+<h3 id="readview"><a href="#readview" class="headerlink" title="readview"></a>readview</h3><p>在innodb中每个SQL语句执行前都会得到一个readview，相当于trx_sys中的<strong>快照</strong>。主要保存了当前数据库系统中正处于活跃（没有commit）的事务的ID号，其实简单的说这个副本中保存的是系统中当前不应该被本事务看到的其他事务id列表，它包含如下几个重要属性：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/10/b482e63f-5564-4c38-987f-1385fa73d525.jpg" alt="v2-7b3dc9ba4be387f086fc63f114031574_1440w.jpg"></p>
+<ul>
+<li><strong>trx_ids</strong>：创建当前readview时，当前系统活跃(未提交)事务版本号集合。</li>
+<li><strong>low_limit_id</strong>：创建当前readview时 <strong>“当前系统最大事务版本号+1”</strong>，即<code>trx_ids</code>中最大的事务ID+1。</li>
+<li><strong>up_limit_id</strong>：创建当前readview时 <strong>“系统正处于活跃事务</strong>最小版本号”，即<code>trx_ids</code>中最小的事务ID。</li>
+<li><strong>creator_trx_id</strong>：创建当前readview的事务版本号。</li>
+</ul>
+<p><strong>注意</strong>：由于readview的创建涉及到拷贝全局活跃读写事务id，所以需要加上<code>trx_sys-&gt;mutex</code>这把大锁，为了减少其对性能的影响，关于readview有很多优化。例如，如果前后两个查询之间，没有产生新的读写事务，那么前一个查询创建的readview是可以被后一个查询复用的。</p>
+<h3 id="ReadView匹配条件"><a href="#ReadView匹配条件" class="headerlink" title="ReadView匹配条件"></a>ReadView匹配条件</h3><h4 id="数据事务ID-lt-up-limit-id"><a href="#数据事务ID-lt-up-limit-id" class="headerlink" title="数据事务ID&lt;up_limit_id"></a>数据事务ID&lt;up_limit_id</h4><p>如果数据事务ID小于readview中的最小活跃事务ID，则可以肯定该数据是在当前事务启之前就已经存在了的,所以<strong>可以显示</strong>。</p>
+<h4 id="数据事务ID-gt-low-limit-id显示"><a href="#数据事务ID-gt-low-limit-id显示" class="headerlink" title="数据事务ID&gt;=low_limit_id显示"></a>数据事务ID&gt;=low_limit_id显示</h4><p>如果数据事务ID大于readview中的当前系统的最大事务ID，则说明该数据是在当前readview创建之后才产生的，所以<strong>数据不予显示</strong>。需要注意的是此<strong>low_limit_id是最大事务ID+1</strong>，所以需要判断等于的情况。</p>
+<h4 id="up-limit-id-lt-数据事务ID-lt-low-limit-id"><a href="#up-limit-id-lt-数据事务ID-lt-low-limit-id" class="headerlink" title="up_limit_id&lt;数据事务ID&lt;low_limit_id"></a>up_limit_id&lt;数据事务ID&lt;low_limit_id</h4><p>如果数据的事务ID大于最小的活跃事务ID,同时又小于等于系统最大的事务ID，这种情况就说明这个数据有可能是在当前事务开始的时候还没有提交的或者是事务执行过程中已经提交的。</p>
+<p>所以这时候我们需要把数据的事务ID与当前readview中的<strong>活跃事务集合trx_ids匹配，并更具并发级别做相应处理</strong>:</p>
+<ul>
+<li>情况1: 如果事务ID不存在于trx_ids集合（则说明readview产生的时候事务已经commit了），<strong>这种情况在RC隔离级别中可以显示，而在RR隔离级别中不能显示</strong>。</li>
+<li>情况2：如果事务ID存在trx_ids则说明readview产生的时候数据还没有提交，但是如果数据的事务ID等于creator_trx_id，那么说明这个数据就是当前事务自己生成的，自己生成的数据自己当然能看见，所以这种情况下此数据也是可以显示的。</li>
+<li>情况3：如果事务ID既存在trx_ids而且又不等于creator_trx_id那就说明readview产生的时候数据还没有提交，又不是自己生成的，所以这种情况下无论是RC还是RR隔离级别此数据不能显示。</li>
+</ul>
+<h3 id="不满足ReadView条件时候"><a href="#不满足ReadView条件时候" class="headerlink" title="不满足ReadView条件时候"></a>不满足ReadView条件时候</h3><p>当数据的事务ID不满足readview条件时候，<strong>从undolog里面获取数据的历史版本</strong>，然后数据历史版本事务号回头再来和readview条件匹配 ，直到找到一条满足条件的历史数据，或者找不到则返回空结果。</p>
+<h3 id="两种隔离级别下的readview读取方式"><a href="#两种隔离级别下的readview读取方式" class="headerlink" title="两种隔离级别下的readview读取方式"></a>两种隔离级别下的readview读取方式</h3><h4 id="READ-COMMIT隔离级别"><a href="#READ-COMMIT隔离级别" class="headerlink" title="READ COMMIT隔离级别"></a>READ COMMIT隔离级别</h4><p>RC(read commit) 级别下同一个事务里面的每一次查询都会获得一个新的readview副本。这样就可能造成同一个事务里前后读取数据可能不一致的问题（重复读）：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/10/d613e5e7-6c10-4cf3-86aa-65405b7d3a19.jpg" alt="v2-0c77f30980dc7e45f5aaac8a574e8672_1440w.jpg"></p>
+<h4 id="REPEATABLE-READ隔离级别"><a href="#REPEATABLE-READ隔离级别" class="headerlink" title="REPEATABLE READ隔离级别"></a>REPEATABLE READ隔离级别</h4><p>RR(重复读)级别下的一个事务里只会获取一次readview副本，从而保证每次查询的数据都是一样的：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/10/e4cf0306-5247-447c-9694-73097423996f.jpg" alt="v2-82eeabba61c97def5d19aeb3cb77182c_1440w.jpg"></p>
+<h4 id="其他级别"><a href="#其他级别" class="headerlink" title="其他级别"></a>其他级别</h4><p><code>READ_UNCOMMITTED</code>级别的事务不会检查可见性，所以不会获取readview副本。而<code>SERIALIZABLE</code>隔离级别，InnoDB是通过锁机制来实现的，而不是通过多版本控制的机制，所以性能很差。</p>
+<h2 id="MVCC的当前读、快照读的区别"><a href="#MVCC的当前读、快照读的区别" class="headerlink" title="MVCC的当前读、快照读的区别"></a>MVCC的当前读、快照读的区别</h2><h3 id="快照读"><a href="#快照读" class="headerlink" title="快照读"></a>快照读</h3><p>是指读取数据时不是读取最新版本的数据，而是基于历史版本读取的一个快照信息（mysql读取undo log历史版本) ，<strong>快照读可以使普通的SELECT 读取数据时不用对表数据进行加锁</strong>，从而解决了因为对数据库表的加锁而导致的两个如下问题：</p>
+<ol>
+<li>解决了因加锁导致的修改数据时无法对数据读取问题；</li>
+<li>解决了因加锁导致读取数据时无法对数据进行修改的问题；（即快照读可以允许并发事务插入或修改数据，因为未对数据加锁）</li>
+</ol>
+<p>如果事务中查询时不显示的加锁，使用的就是快照读，MVCC的快照读是可以避免读取到幻行的。可以根据上面的MVCC实现方式自己去模拟下，新增的行会因为<strong>大于等于low_limit_id而不显示</strong>。</p>
+<h3 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h3><p>当前读是读取的数据库最新的数据，当前读和快照读不同，因为要读取最新的数据而且要保证事务的隔离性，所以当前读是需要对数据进行加锁的，例如使用下面这些语句都会对数据加锁：<code>UPDATE</code>、<code>DELTE</code>、<code>INSERT</code>、<code>SELECT...LOCK IN SHARE MODE</code>、 <code>SELECT...FOR UPDATE</code>，上面这些语句都是当前读。</p>
+<p>因为当前读总是读取最新的数据，所以如果不加锁的话肯定会读取到幻行，所以在RR级别时，需要对数据加间隙锁（<code>GAP LOCK</code>）来防止其他事务插入新的数据。</p>
 <h1 id="MyISAM表锁"><a href="#MyISAM表锁" class="headerlink" title="MyISAM表锁"></a>MyISAM表锁</h1><pre><code class="sql">LOCK TABLE table_name WRITE;  #获取表的写锁
 LOCK TABLE table_name READ;   #获取表的读锁
 LOCK TABLE table_name READ LOCAL;  #获取表的读锁，并且允许并发插入（CONCURRENT_INSERT）
@@ -1678,93 +1856,6 @@ public class MySTOMPWebSocketConfigurer implements WebSocketMessageBrokerConfigu
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2020/02/05/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Java%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E3%80%81%E5%8A%A8%E6%80%81%E3%80%81cglib%E4%BB%A3%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/05/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Java%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E3%80%81%E5%8A%A8%E6%80%81%E3%80%81cglib%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">第一个一年计划-Java中的静态、JDK动态、CGLIB代理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-05 11:51:00" itemprop="dateCreated datePublished" datetime="2020-02-05T11:51:00+08:00">2020-02-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/02/05/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Java%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E3%80%81%E5%8A%A8%E6%80%81%E3%80%81cglib%E4%BB%A3%E7%90%86/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/05/%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%B8%80%E5%B9%B4%E8%AE%A1%E5%88%92-Java%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E3%80%81%E5%8A%A8%E6%80%81%E3%80%81cglib%E4%BB%A3%E7%90%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1836,7 +1927,7 @@ public class MySTOMPWebSocketConfigurer implements WebSocketMessageBrokerConfigu
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

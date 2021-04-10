@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="线程创建的三种方式 实现Runnable接口  继承Thread类并重写run方法  使用FutureTask方式 &#x2F;**  * @author 熊乾坤  * @since 2021-03-13 12:34  *&#x2F; public class FutureTaskTest implements Callable&lt;String&gt; &amp;#123;     @Override     publi">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="线程创建的三种方式 实现Runnable接口  继承Thread类并重写run方法  使用FutureTask方式 &#x2F;**  * @author 熊乾坤  * @since 2021-03-13 12:34  *&#x2F; public class FutureTaskTest implements Callable&lt;String&gt; &amp;#123;     @Override     publi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-28T09:11:58.000Z">
-<meta property="article:modified_time" content="2021-04-05T11:53:55.413Z">
+<meta property="article:modified_time" content="2021-04-08T15:07:12.187Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-05 19:53:55" itemprop="dateModified" datetime="2021-04-05T19:53:55+08:00">2021-04-05</time>
+                <time title="修改时间：2021-04-08 23:07:12" itemprop="dateModified" datetime="2021-04-08T23:07:12+08:00">2021-04-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -341,7 +341,7 @@ public class FutureTaskTest implements Callable&lt;String&gt; &#123;
 <li><strong>写入变量不依赖变量的当前值。</strong> 因为如果依赖当前值，将是获取-计算-写入三步操作，而这三部操作不是原子性的，volatile不保证原子性。</li>
 <li><strong>读写变量值时没有加锁。</strong> 因为加锁已经保证了可见性，不需要再申明为volatile。</li>
 </ul>
-<h1 id="CAS（Compare-And-Swap）"><a href="#CAS（Compare-And-Swap）" class="headerlink" title="CAS（Compare And Swap）"></a>CAS（Compare And Swap）</h1><p>CAS是JDK提供的非阻塞原子性操作,他通过硬件保证了比较更新操作的原子性。JDK里面的Unsafe类提供了一系列的compareAndSwap＊方法，下面以 <code>compareAndSwapLong</code>方法为例进行简单介绍。</p>
+<h1 id="TODO-volatile声明的对应引用"><a href="#TODO-volatile声明的对应引用" class="headerlink" title="TODO volatile声明的对应引用"></a>TODO volatile声明的对应引用</h1><h1 id="CAS（Compare-And-Swap）"><a href="#CAS（Compare-And-Swap）" class="headerlink" title="CAS（Compare And Swap）"></a>CAS（Compare And Swap）</h1><p>CAS是JDK提供的非阻塞原子性操作,他通过硬件保证了比较更新操作的原子性。JDK里面的Unsafe类提供了一系列的compareAndSwap＊方法，下面以 <code>compareAndSwapLong</code>方法为例进行简单介绍。</p>
 <ul>
 <li><strong>boolean compareAndSwapLong(Object obj,long valueOffset,long expect,long update）</strong>CAS有四个操作数，分别为：<strong>对象内存位置</strong>、<strong>对象中的变量的偏移量</strong>、<strong>变量预期值</strong>、<strong>新的值</strong>。其操作含义是，如果对象obj中内存偏移量为valueOffset的变量值为expect，则使用新的值update替换旧的值expect。这是处理器提供的一个原子性指令。</li>
 </ul>
@@ -371,7 +371,102 @@ public class UnsafeUse &#123;
     &#125;
 &#125;
 </code></pre>
-<h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a><a href="">伪共享</a></h1>
+<h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a><a href="">伪共享</a></h1><h1 id="虚假唤醒"><a href="#虚假唤醒" class="headerlink" title="虚假唤醒"></a>虚假唤醒</h1><p>一个线程可以从挂起状态变为可以运行状态（也就是被唤醒），即使该线程没有被其他线程调用notify()、notifyAll()方法进行通知，或者被中断，或者等待超时，这就是所谓的虚假唤醒。</p>
+<p>为了防解决虚假唤醒锁带来的问题，做法就是不停地去测试该线程被唤醒的条件是否满足，不满足则继续等待，也就是说在循环中调用wait方法进行防范。退出循环的条件是满足该线程被唤醒的条件：</p>
+<pre><code class="java">synchronized(obj)&#123;
+    while(条件不满足)&#123;
+        ojb.wait();
+    &#125;
+&#125;
+</code></pre>
+<h1 id="实现一个简单的生产者消费者"><a href="#实现一个简单的生产者消费者" class="headerlink" title="实现一个简单的生产者消费者"></a>实现一个简单的生产者消费者</h1><pre><code class="java">/**
+ * @author 熊乾坤
+ * @date 2020-11-15 16:32
+ */
+public class ProducerConsumer &#123;
+    /** 消息队列 */
+    public static final Queue&lt;Long&gt; QUEUE = new LinkedBlockingQueue&lt;&gt;();
+    /** 计数器 */
+    public static volatile AtomicLong COUNTER = new AtomicLong(0L);
+
+    public static void main(String[] args) &#123;
+        Producer producer = new Producer(1);
+        Consumer consumer1 = new Consumer(1);
+        Consumer consumer2 = new Consumer(2);
+        producer.start();
+        consumer1.start();
+        consumer2.start();
+    &#125;
+
+    /**
+     * 生产者线程
+     */
+    private static class Producer extends Thread &#123;
+        private final int id;
+
+        public Producer(int id) &#123;
+            this.id = id;
+        &#125;
+
+        @Override
+        public void run() &#123;
+            while (true) &#123;
+                //获取QUEUE上的监视器锁
+                synchronized (ProducerConsumer.QUEUE) &#123;
+                    try &#123;
+                        //这里使用while为了防止虚假唤醒
+                        while (ProducerConsumer.QUEUE.size() &gt;= 1) &#123;
+                            //调用wait方法，会挂起当前线程，同时释放QUEUE上的锁（需要先获取到监视器锁）
+                            ProducerConsumer.QUEUE.wait();
+                        &#125;
+                    &#125; catch (InterruptedException e) &#123;
+                        //如果QUEUE的interrupt方法被调用，则wait调用被中断，方法返回
+                        e.printStackTrace();
+                    &#125;
+                    System.out.println(&quot;生产者[&quot; + id + &quot;]生产了一条消息&quot; + ProducerConsumer.COUNTER.addAndGet(1));
+                    ProducerConsumer.QUEUE.add(ProducerConsumer.COUNTER.get());
+                    //通知其他线程（需要获取到监视器锁）
+                    ProducerConsumer.QUEUE.notifyAll();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    /**
+     * 消费者线程
+     */
+    private static class Consumer extends Thread &#123;
+        private final int id;
+  
+        public Consumer(int id) &#123;
+            this.id = id;
+        &#125;
+
+        @Override
+        public void run() &#123;
+            while (true) &#123;
+                //获取QUEUE上的监视器锁
+                synchronized (ProducerConsumer.QUEUE) &#123;
+                    try &#123;
+                        //这里使用while为了防止虚假唤醒
+                        while (ProducerConsumer.QUEUE.size() &lt; 1) &#123;
+                            //调用wait方法，会挂起当前线程，同时释放QUEUE上的锁
+                            ProducerConsumer.QUEUE.wait();
+                        &#125;
+                    &#125; catch (InterruptedException e) &#123;
+                        //如果QUEUE的interrupt方法被调用，则wait调用被中断，方法返回
+                        e.printStackTrace();
+                    &#125;
+                    System.out.println(&quot;消费者[&quot; + id + &quot;]消费到一条数据&quot; + ProducerConsumer.QUEUE.poll());
+                    //通知其他线程（需要获取到监视器锁）
+                    ProducerConsumer.QUEUE.notifyAll();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+
     </div>
 
     
@@ -456,7 +551,7 @@ public class UnsafeUse &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-text">线程创建的三种方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD"><span class="nav-text">线程中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%AD%E6%96%AD%E4%BD%BF%E7%BA%BF%E7%A8%8B%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA"><span class="nav-text">使用中断使线程优雅退出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JMM-Java-Memory-Model"><span class="nav-text">JMM(Java Memory Model)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-text">可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="nav-text">有序性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#synchronize"><span class="nav-text">synchronize</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#volatile"><span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAS%EF%BC%88Compare-And-Swap%EF%BC%89"><span class="nav-text">CAS（Compare And Swap）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E4%BD%BF%E7%94%A8Unsafe%E7%B1%BB"><span class="nav-text">通过反射使用Unsafe类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%AA%E5%85%B1%E4%BA%AB"><span class="nav-text">伪共享</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-text">线程创建的三种方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD"><span class="nav-text">线程中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%AD%E6%96%AD%E4%BD%BF%E7%BA%BF%E7%A8%8B%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA"><span class="nav-text">使用中断使线程优雅退出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JMM-Java-Memory-Model"><span class="nav-text">JMM(Java Memory Model)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-text">可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="nav-text">有序性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#synchronize"><span class="nav-text">synchronize</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#volatile"><span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TODO-volatile%E5%A3%B0%E6%98%8E%E7%9A%84%E5%AF%B9%E5%BA%94%E5%BC%95%E7%94%A8"><span class="nav-text">TODO volatile声明的对应引用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAS%EF%BC%88Compare-And-Swap%EF%BC%89"><span class="nav-text">CAS（Compare And Swap）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E4%BD%BF%E7%94%A8Unsafe%E7%B1%BB"><span class="nav-text">通过反射使用Unsafe类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%AA%E5%85%B1%E4%BA%AB"><span class="nav-text">伪共享</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E5%81%87%E5%94%A4%E9%86%92"><span class="nav-text">虚假唤醒</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-text">实现一个简单的生产者消费者</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -472,7 +567,7 @@ public class UnsafeUse &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="finally-catch语句中return的先后顺序 catch块或者try块中有return，而finally块中也有return，这时都是会走finllay块中的return。。 catch中或者try中有return，而finally中没有return，这种情况需要分两种情况： 如果finally块对try块或者catch块中的基本类型变量有修改，这时不会影响try块或者catch块中的返">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="finally-catch语句中return的先后顺序 catch块或者try块中有return，而finally块中也有return，这时都是会走finllay块中的return。。 catch中或者try中有return，而finally中没有return，这种情况需要分两种情况： 如果finally块对try块或者catch块中的基本类型变量有修改，这时不会影响try块或者catch块中的返">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-06T12:52:59.000Z">
-<meta property="article:modified_time" content="2021-04-07T11:53:13.934Z">
+<meta property="article:modified_time" content="2021-04-08T16:13:33.217Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="Java疑惑解答">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-07 19:53:13" itemprop="dateModified" datetime="2021-04-07T19:53:13+08:00">2021-04-07</time>
+                <time title="修改时间：2021-04-09 00:13:33" itemprop="dateModified" datetime="2021-04-09T00:13:33+08:00">2021-04-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,7 +273,15 @@
 </li>
 </ol>
 <h1 id="finally块一定会执行吗？"><a href="#finally块一定会执行吗？" class="headerlink" title="finally块一定会执行吗？"></a>finally块一定会执行吗？</h1><p>finally块一般一定会执行，唯一一个例外是遇到<code>System.exit()</code>,程序会直接退出，不能运行finally块也情有可原。</p>
-<h1 id="常规的equals实现"><a href="#常规的equals实现" class="headerlink" title="常规的equals实现"></a>常规的equals实现</h1><pre><code>@Getter
+<h1 id="equals、hashCode方法"><a href="#equals、hashCode方法" class="headerlink" title="equals、hashCode方法"></a>equals、hashCode方法</h1><p>equals需要满足的五种特性：</p>
+<ul>
+<li><strong>自反性</strong>：任何非null的值，x.equals(x)必须返回true。</li>
+<li><strong>对称性</strong>：对于任何非null的引用值x和y，当且仅当y.equals(x)返回true 时，x.equals(y)必须返回true。</li>
+<li><strong>传递性</strong>：对于任何非 null的引用值x 、y 和z，如果x.equals(y)返回true，并且y.equals(z)也返回true，那么x.equals(z)也必须返回true。</li>
+<li><strong>一致性</strong>：对于任何非null的引用值x和 y，只要 equals 的比较操作在对象中所用的信息没有被修改，多次调用 x.equals(y)就会一致地返回true, 或者一致地返回false。</li>
+<li>对于任何非null的引用值x，x.equals(null)必须返回 false。</li>
+</ul>
+<pre><code>@Getter
 public class ClassEquals &#123;
     private int val;
     @Override
@@ -311,7 +319,10 @@ public class ClassEquals &#123;
     <a href="/2021/04/05/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%AD%E6%97%A0%E6%B3%95%E6%9B%B4%E6%94%B9%E5%A4%96%E9%83%A8%E5%80%BC%E7%9A%84%E5%8E%9F%E5%9B%A0/" rel="prev" title="Lambda表达式和匿名内部类中无法更改外部值的原因">
       <i class="fa fa-chevron-left"></i> Lambda表达式和匿名内部类中无法更改外部值的原因
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/10/MySQL%E5%9F%BA%E7%A1%80/" rel="next" title="MySQL基础">
+      MySQL基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -371,7 +382,7 @@ public class ClassEquals &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%84%E7%9A%84equals%E5%AE%9E%E7%8E%B0"><span class="nav-text">常规的equals实现</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#equals%E3%80%81hashCode%E6%96%B9%E6%B3%95"><span class="nav-text">equals、hashCode方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -387,7 +398,7 @@ public class ClassEquals &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
