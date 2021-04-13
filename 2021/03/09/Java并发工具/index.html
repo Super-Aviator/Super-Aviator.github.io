@@ -28,7 +28,7 @@
 <meta property="og:description" content="Future、CompletableFutureThreadLocal-线程本地变量本质： 在Thread类中，会自带一个ThreadLocalMap（定制化的一种HashMap）类型的threadLocals和InheritableThreadLocals属性，在ThreadLocal中set进去的值并不是放在ThreadLocal中，而是保存在Thread类自己的threadLocals中，同">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-09T14:30:04.000Z">
-<meta property="article:modified_time" content="2021-04-08T15:08:01.450Z">
+<meta property="article:modified_time" content="2021-04-12T13:36:01.629Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-08 23:08:01" itemprop="dateModified" datetime="2021-04-08T23:08:01+08:00">2021-04-08</time>
+                <time title="修改时间：2021-04-12 21:36:01" itemprop="dateModified" datetime="2021-04-12T21:36:01+08:00">2021-04-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -443,8 +443,8 @@ try&#123;
 <li><code>sigal()</code>：唤醒一个等待中的线程</li>
 <li><code>sigleAll()</code>：唤醒所有等待的线程</li>
 </ul>
-<p><strong>注意：</strong> 此方法和那啥wait、notify方法一样，当前线程也必须首先获取可重入锁，然后才能调用相应的await和singal方法。</p>
-<p>同时，再signal或者signalAll方法调用后，行线程需要重新获取锁才能运行，否则依旧无法匀巡（所以在调用signal方法之后，需要立即调用unlock方法将锁释放，让唤醒的线程获得锁才能执行）</p>
+<p><strong>注意：</strong> 此方法和那啥wait、notify方法一样，当前线程也必须首先获取可重入锁，然后才能调用相应的await和singal方法，否则会方法则会抛出<code>java.lang.IllegalMonitorStateException</code>异常。</p>
+<p>同时，在signal或者signalAll方法调用后，被唤醒的线程需要重新获取锁才能运行，否则依旧无法匀巡（所以在调用signal方法之后，需要立即调用unlock方法将锁释放，让唤醒的线程获得锁才能执行）</p>
 <h1 id="Semaphore-信号量"><a href="#Semaphore-信号量" class="headerlink" title="Semaphore-信号量"></a>Semaphore-信号量</h1><p>Semaphore是更加高级的工具，在重入锁ReentrantLock或者synchronized中，一次只允许一个线程进入临界区，但是Semaphore则允许一次有多个线程进入临界区。构造函数如下：</p>
 <pre><code class="java">public Semaphore(int permits);
 public Semaphore(int permits, boolean fair);
@@ -578,20 +578,20 @@ Lock writeLock=reentrantReadWriteLock.writeLock();
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

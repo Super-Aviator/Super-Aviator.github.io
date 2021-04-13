@@ -191,6 +191,519 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="post-title-link" itemprop="url">MySQL常用的数据类型与表设计要点</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-23 22:12:00" itemprop="dateCreated datePublished" datetime="2019-07-23T22:12:00+08:00">2019-07-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/07/23/ySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>写这篇东西的起因是今天在公司的接口评审会时，组里的成员提了一个问，她看见组里开发人员设计的表中，有的主键使用的数据类型是INT(11)，而有的使用的是INT(15),有的使用的是BIGINT(16)啥的，所以她问可不可能存在数值溢出的情况，这是我想起来以前看的一篇博客，说括号里的数字并不是代表能够存储的范围，而是为了填充零，所以我和她说表示的数据范围是不变的，都是INT都是四字节，但是组里的大佬们一致认为INT（11）表示的是能够存储的最大数字位数为11位，能够满足业务需求，在大佬们的一再强调下我他喵的动摇了。。。开始自闭。</p>
+<p>所以只知识不能是一知半解滴，so，结合《深入浅出MySQL》这本书，来了解一下MySQL的数据类型吧，同时因为最近在写的接口需要自己设计表结构，所以结合前几天看的<code>孤独烟</code>的关于表设计要点的博客，总结一下设计表的一些要点。</p>
+<h1 id="MySQL常见的数据类型"><a href="#MySQL常见的数据类型" class="headerlink" title="MySQL常见的数据类型"></a>MySQL常见的数据类型</h1><h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><p>MySQL中的整型包括TINYINT,SMALLINT,MEDIUMINT,INT,BIGINT。他们各自表示的范围如下:<br><img src="https://s2.ax1x.com/2019/07/28/eQONan.png" alt="eQONan.png"><br>需要注意的是，<strong>整型也可以后面加上数据，例如int(10)，表示存储的数值小于多少10位时，在数值的左侧使用零填充，需要配合ZEROFILL和UNSIGNED关键字使用(ZEROFILL域自动是UNSIGNED的)，而不是表示能存储多少位的数字。</strong></p>
+<h2 id="小数类型"><a href="#小数类型" class="headerlink" title="小数类型"></a>小数类型</h2><p>MySQL中的小数类型包括浮点数和定点数，浮点数包括FLOAT（单精度浮点数）,DOUBLE（双精度浮点数），定点数包括DECIMAL(也叫作NUMERIC),他们对应的长度如下：<br><img src="https://s2.ax1x.com/2019/07/28/el8Z9A.png" alt="el8Z9A.png"><br>浮点数和定点数都可以使用非标准用法：<code>[FLOAT|DOUBLE|DECIMAL]（M,D）</code>的方式使用，M称为<strong>精度</strong>，D称为<strong>标度</strong>，表示的是可以存储M为数字，其中包括D位小数，所以在创建小数类型的字段时需要保证M&gt;=D（当M==D时，只能存储D位小数，数值大小不能大于1），值得注意的是，不使用精度和标度时，FLOAT和DOUBLE按存储的位数进行保存，而DECIMAL默认整数为10位，小数为0位，即（10,0）,同时非标准用法可移植性差，在需要迁移的数据库中不应该使用，当存入的数的小数部分的位数多于指定的标度D时，数据库会对数据进行自动四舍五入。</p>
+<p><strong>FLOAT和DOUBLE由于计算机存储方式的原因，精度会有损失，而DECIMAL不会，所以在存储货币等精度要求高的数据时需要使用DECIMAL类型</strong></p>
+<h2 id="时间类型"><a href="#时间类型" class="headerlink" title="时间类型"></a>时间类型</h2><p>MySQL中有以下四种时间类型，使用时需要根据业务区决定：<br><img src="https://s2.ax1x.com/2019/07/28/el25Of.png" alt="el25Of.png"></p>
+<p>当插入的时间超出给定的范围时，插入的数据会变成零值。</p>
+<p>其中，值得注意的是TIMESTAMP类型会跟着数据库的时区进行变化，所以不同时区多对应的TIMESTAMP类型的数据是不一样的。还需要注意的是，一张表中，最多可以有一列数据可以为CURRENT_TIMESTAMP类型，即如果该列插入null值，则数据库会自动将其设置为当前时间，<strong>注意，每个数据库最多只能有一列拥有CURRENT_TIMESTAMP属性。</strong></p>
+<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><h2 id="JSON类型"><a href="#JSON类型" class="headerlink" title="JSON类型"></a>JSON类型</h2><p>Mysql5.7中新增了JSON数据格式，专门用于保存JSON字符串，结合<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/json.html">官方文档</a>，来看一下这种数据格式相对于TEXT有什么优势以及几个常用的用于处理JSON字符串的JSON函数吧：</p>
+<p>上面的文字表名JSON格式存储的大小和LONGBOB、LONGTEXT格式的大小差不多，同时长度的最大保存大小为系统变量max_allowed_packet的值，当在内存操作时，可能会大于这个值。同时，<strong>JSON格式的数据不能是NOT-NULL的，经过我的测试证实了这一点，即JSON格式的数据默认是NULL的。</strong>，MySQL内部使用utf8mb4字符集和utf8mb4_bin排序规则处理JSON上下文中使用的字符串。 其他字符集中的字符串将根据需要转换为utf8mb4。（对于ascii或utf8字符集中的字符串，不需要转换，因为ascii和utf8是utf8mb4的子集。）</p>
+<p><strong>注意：</strong>当插入的JSON对象字符串的键重复时，只会保留最后一个该键的键值对，例如：</p>
+<pre><code class="sql">CREATE TABLE t1 (c1 JSON);
+
+INSERT INTO t1 VALUES(&#39;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;&#125;&#39;),(&#39;&#123;&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;, &quot;x&quot;: [3, 5, 7]&#125;&#39;);
+
+SELECT c1 FROM t1;
+&gt;+-----------+
+ | c1        |
+ +-----------+
+ | &#123;&quot;x&quot;: 17&#125; |
+ | &#123;&quot;x&quot;: 17&#125; |
+ +-----------+
+</code></pre>
+<h3 id="Mysql中常用的JSON函数"><a href="#Mysql中常用的JSON函数" class="headerlink" title="Mysql中常用的JSON函数"></a>Mysql中常用的JSON函数</h3><ul>
+<li><p>JSON_VALID<br>JSON_VALID用于判断参数中的JSON字符串是否是合法的，如果合法返回1，如果非法，返回0，如果参数为空，则报错。</p>
+<pre><code class="sql">SELECT JSON_VALID(&#39;[&quot;KEY&quot;:1]&#39;);
+&gt; 1
+
+SELECT JSON_VALID(&#39;[&quot;KEY&quot;:1&#39;);
+&gt; 0
+</code></pre>
+</li>
+</ul>
+<p>SELECT JSON_VALID();</p>
+<blockquote>
+<p>error</p>
+</blockquote>
+<pre><code>
+- JSON_TYPE
+JSON_TYPE()函数返回参数中JSON字符串的类型，如果参数为空或者不是JSON类型的字符串，则报错：
+```sql
+SELECT JSON_TYPE(&quot;[1,2,3]&quot;);
+&gt; ARRRAY
+
+SELECT JSON_TYPE(&#39;&#123;&quot;k1&quot;:23&#125;&#39;);
+&gt; OBJECT
+
+SELECT JSON_TYPE();
+&gt; Error Code: 1582. Incorrect parameter count in the call to native function &#39;JSON_TYPE&#39;    0.000 sec
+
+SELECT JSON_TYPE(&quot;[1,2,3]&quot;)=&#39;ARRAY&#39;;
+&gt; 1
+</code></pre>
+<ul>
+<li>JSON_ARRAY<br>JSON_ARRAY会返回包含所有参数的JSON数组字符串，当参数为空时返回空JSON数组，当参数不为JSON字符串格式时报错。<pre><code class="sql">SELECT JSON_ARRAY(&#39;A&#39;,23,45.3);
+&gt; [&quot;A&quot;, 23, 45.3]
+</code></pre>
+</li>
+</ul>
+<p>SELECT JSON_ARRAY();</p>
+<blockquote>
+<p>[]</p>
+</blockquote>
+<pre><code>
+- JSON_OBJECT
+JSON_OBJECT函数和JSON_ARRAY函数类似，返回参数对构成的JSON对象，**JSON要求键必须是字符串类型。**
+```sql
+SELECT JSON_OBJECT(&#39;key1&#39;,1,&#39;key2&#39;,&#39;hello&#39;);
+&gt; &#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;
+
+SELECT JSON_OBJECT();
+&gt; &#123;&#125;
+</code></pre>
+<ul>
+<li>JSON_MERGE<br>JSON_MERGE函数返回两个或多个JSON字符串拼接之后的字符串,当参数都是JSON对象时，拼接之后结果的JSON_TYPE为OBJECT,当参数含有JSON数组时，返回结果的JSON_TYPE为JSON数组。<strong>当拼接的JSON对象中包含有相同的键时，该键对应的值会以数组的形式保存。</strong>，<strong>当拼接的参数是单个数值而非JSON字符串或者单个字母时，该函数的结果相当于JSON_ARRAY。首先会将单个的数字用[]包围，然后对其进行合并</strong>    <pre><code class="sql">SELECT JSON_MERGE(&#39;&#123;&quot;key1&quot;:1,&quot;key2&quot;:&quot;hello&quot;&#125;&#39;,&#39;[1,2,3]&#39;);
+&gt; [&#123;&quot;key1&quot;: 1, &quot;key2&quot;: &quot;hello&quot;&#125;, 1, 2, 3]
+</code></pre>
+</li>
+</ul>
+<p>SELECT JSON_MERGE(‘{“key1”:1,”key2”:”hello”}’,’{“key3”:123}’);</p>
+<blockquote>
+<p>{“key1”: 1, “key2”: “hello”, “key3”: 123}</p>
+</blockquote>
+<p>SELECT JSON_MERGE(‘{“a”:1}’,’{“a”:2}’,’[“A”]’);</p>
+<blockquote>
+<p>[{“a”: [1, 2]}, “A”]</p>
+</blockquote>
+<pre><code>
+所有的JSON函数的返回结果都可以使用变量进行保存，方便以后使用，例如：
+```sql
+SET @J = JSON_MERGE(&#39;1&#39;,&#39;2&#39;);
+SELECT @J;
+&gt; [1, 2]
+</code></pre>
+<h1 id="MySQL表设计的要点"><a href="#MySQL表设计的要点" class="headerlink" title="MySQL表设计的要点"></a>MySQL表设计的要点</h1><p>日常的开发过程中需要自己设计表，但是自己太菜了，设计的时候毫不隐晦的说，都是瞎鸡儿设计的。。。（如果组长看到了，会不会过来捶我，哈哈哈）；今天下班比较早，根据知乎上的文章，学习一下MySQL表的设计要点，后面如果有新的知识点继续补充。</p>
+<h2 id="问题1-为什么一定要设一个主键？"><a href="#问题1-为什么一定要设一个主键？" class="headerlink" title="问题1:为什么一定要设一个主键？"></a>问题1:为什么一定要设一个主键？</h2><p><strong>回答:</strong><br>因为你不设主键的情况下，innodb也会帮你生成一个隐藏列，作为自增主键。所以啦，反正都要生成一个主键，那你还不如自己指定一个主键，在有些情况下，就能显式的用上主键索引，提高查询效率！</p>
+<h2 id="问题2-主键是用自增还是UUID"><a href="#问题2-主键是用自增还是UUID" class="headerlink" title="问题2:主键是用自增还是UUID?"></a>问题2:主键是用自增还是UUID?</h2><p><strong>回答:</strong><br>肯定答自增啊。innodb 中的主键是聚簇索引。如果主键是自增的，那么每次插入新的记录，记录就会顺序添加到当前索引节点的后续位置，当一页写满，就会自动开辟一个新的页。如果不是自增主键，那么可能会在中间插入，就会引发页的分裂，产生很多表碎片！。</p>
+<p>上面那句话看不懂没事，大白话一句就是:用自增插入性能好！<br>另外，附一个测试表给你们，表名带uuid的就是用uuid作为主键。大家看一下就知道性能差距了:<br><img src="/images/uuid.png" alt="upload successful"><br>如上图所示，当主键是UUID的时候，插入时间更长，而且占用空间更大！<br>额，大家千万不要忘了，当你回答自增主键后，想一下<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwMDgzMjc3NA==&mid=2247484464&idx=1&sn=f783fc5f7fe3d7714247c3c21d0a93f6&chksm=96f66659a181ef4fa02303b4974031b3f40bc1bdd76bad31a60fbaa54f2e63e62fcede88e4cd&token=1510096404&lang=zh_CN#rd">自增主键用完该怎么办？</a>        </p>
+<p>ps：这个问题，你要是能把UUID讲出合理的理由也行。</p>
+<h2 id="问题3-主键为什么不推荐有业务含义"><a href="#问题3-主键为什么不推荐有业务含义" class="headerlink" title="问题3:主键为什么不推荐有业务含义?"></a>问题3:主键为什么不推荐有业务含义?</h2><p><strong>回答:</strong><br>有如下两个原因<br>(1)因为任何有业务含义的列都有改变的可能性,主键一旦带上了业务含义，那么主键就有可能发生变更。主键一旦发生变更，该数据在磁盘上的存储位置就会发生变更，有可能会引发页分裂，产生空间碎片。<br>(2)带有业务含义的主键，不一定是顺序自增的。那么就会导致数据的插入顺序，并不能保证后面插入数据的主键一定比前面的数据大。如果出现了，后面插入数据的主键比前面的小，就有可能引发页分裂，产生空间碎片。</p>
+<h2 id="问题4-表示枚举的字段为什么不用enum类型？"><a href="#问题4-表示枚举的字段为什么不用enum类型？" class="headerlink" title="问题4:表示枚举的字段为什么不用enum类型？"></a>问题4:表示枚举的字段为什么不用enum类型？</h2><p>回答:在工作中表示枚举的字段，一般用tinyint类型。</p>
+<p>那为什么不用enum类型呢？下面两个原因</p>
+<ol>
+<li>ENUM类型的ORDER BY操作效率低，需要额外操作</li>
+<li>语法中，查询枚举值应该是字符串类型，所以需要格外注意</li>
+</ol>
+<h2 id="问题5-货币字段用什么类型"><a href="#问题5-货币字段用什么类型" class="headerlink" title="问题5:货币字段用什么类型?"></a>问题5:货币字段用什么类型?</h2><p>回答:如果货币单位是分，可以用Int类型。如果坚持用元，用Decimal。</p>
+<p>千万不要答float和double，因为float和double是以二进制存储的，所以有一定的误差。 打个比方，你建一个列如下</p>
+<pre><code class="sql">CREATE TABLE `t` (
+  `price` float(10,2) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre>
+<p>然后insert给price列一个数据为1234567.23，你会发现显示出来的数据变为1234567.25，精度失准！</p>
+<h2 id="问题6-时间字段用什么类型"><a href="#问题6-时间字段用什么类型" class="headerlink" title="问题6:时间字段用什么类型?"></a>问题6:时间字段用什么类型?</h2><p>回答:此题无固定答案，应结合自己项目背景来答！把理由讲清楚就行！</p>
+<ol>
+<li><p>varchar，如果用varchar类型来存时间，优点在于显示直观。但是坑的地方也是挺多的。比如，插入的数据没有校验，你可能某天就发现一条数据为2013111的数据，请问这是代表2013年1月11日，还是2013年11月1日？ 其次，做时间比较运算，你需要用STR_TO_DATE等函数将其转化为时间类型，你会发现这么写是无法命中索引的。数据量一大，是个坑！</p>
+</li>
+<li><p>timestamp，该类型是四个字节的整数，它能表示的时间范围为1970-01-01 08:00:01到2038-01-19 11:14:07。2038年以后的时间，是无法用timestamp类型存储的。 但是它有一个优势，timestamp类型是带有时区信息的。一旦你系统中的时区发生改变，例如你修改了时区</p>
+<pre><code class="sql">SET TIME_ZONE = &quot;america/new_york&quot;;
+</code></pre>
+<p> 你会发现，项目中的该字段的值自己会发生变更。这个特性用来做一些国际化大项目，跨时区的应用时，特别注意！</p>
+</li>
+<li><p>datetime，datetime储存占用8个字节，它存储的时间范围为1000-01-01 00:00:00 ~ 9999-12-31 23:59:59。显然，存储时间范围更大。但是它坑的地方在于，他存储的是时间绝对值，不带有时区信息。如果你改变数据库的时区，该项的值不会自己发生变更！</p>
+</li>
+<li><p>bigint，也是8个字节，自己维护一个时间戳，表示范围比timestamp大多了，就是要自己维护，不大方便。</p>
+</li>
+</ol>
+<h2 id="问题7-为什么不直接存储图片、音频、视频等大容量内容"><a href="#问题7-为什么不直接存储图片、音频、视频等大容量内容" class="headerlink" title="问题7:为什么不直接存储图片、音频、视频等大容量内容?"></a>问题7:为什么不直接存储图片、音频、视频等大容量内容?</h2><p>回答:我们在实际应用中，都是用HDFS来存储文件。然后mysql中，只存文件的存放路径。mysql中有两个字段类型被用来设计存放大容量文件，也就是text和blob类型。但是，我们在生产中，基本不用这两个类型！</p>
+<p>主要原因有如下两点</p>
+<ol>
+<li><p>Mysql内存临时表不支持TEXT、BLOB这样的大数据类型，如果查询中包含这样的数据，在排序等操作时，就不能使用内存临时表，必须使用磁盘临时表进行。导致查询效率缓慢</p>
+</li>
+<li><p>binlog内容太多。因为你数据内容比较大，就会造成binlog内容比较多。大家也知道，主从同步是靠binlog进行同步，binlog太大了，就会导致主从同步效率问题！</p>
+</li>
+</ol>
+<p>因此，不推荐使用text和blob类型！</p>
+<h2 id="问题8-字段为什么要定义为NOT-NULL"><a href="#问题8-字段为什么要定义为NOT-NULL" class="headerlink" title="问题8:字段为什么要定义为NOT NULL?"></a>问题8:字段为什么要定义为NOT NULL?</h2><p>回答:OK，这问题从两个角度来答</p>
+<p>(1)索引性能不好</p>
+<blockquote>
+<p>Mysql难以优化引用可空列查询，它会使索引、索引统计和值更加复杂。可空列需要更多的存储空间，还需要mysql内部进行特殊处理。可空列被索引后，每条记录都需要一个额外的字节，还能导致MYisam 中固定大小的索引变成可变大小的索引。 —— 出自《高性能mysql第二版》</p>
+</blockquote>
+<p>(2)查询会出现一些不可预料的结果 这里举一个例子，大家就懂了。假设，表结构如下</p>
+<pre><code class="sql">create table table_2 (
+     `id` INT (11) NOT NULL,
+    name varchar(20) NULL
+)
+</code></pre>
+<p>表数据是这样的<br><img src="/images/demo1.png" alt="upload successful"><br>你执行语句<code>select count(name) from table_2;</code><br>你会发现结果为2，但是实际上是有四条数据的！</p>
+<p>类似的查询问题，其实有很多，不一一列举。 记住，因为null列的存在，会出现很多出人意料的结果，从而浪费开发时间去排查Bug.</p>
+<h1 id="COUNT-1-、COUNT-、COUNT-FILE-的区别"><a href="#COUNT-1-、COUNT-、COUNT-FILE-的区别" class="headerlink" title="COUNT(1)、COUNT(*)、COUNT(FILE)的区别"></a>COUNT(1)、COUNT(*)、COUNT(FILE)的区别</h1><p>COUNT(1)与COUNT(*)的执行效果、性能是一样的，会统计数据库表中所有数据的函数（<strong>包括NULL的情况</strong>），而COUNT(FILE)则只会统计该字段的非NULL的数据的行数，执行效率上也会比前两者慢很多倍。</p>
+<p>参考地址：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73260510">MySQL表设计要点</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/07/08/%E6%9C%AC%E5%9C%B0Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8ESpringBoot%E4%B8%ADJedis%E9%9B%86%E7%BE%A4%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/08/%E6%9C%AC%E5%9C%B0Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8ESpringBoot%E4%B8%ADJedis%E9%9B%86%E7%BE%A4%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">本地Redis集群的搭建与SpringBoot中JedisCluster客户端的使用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-08 22:30:00" itemprop="dateCreated datePublished" datetime="2019-07-08T22:30:00+08:00">2019-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:04" itemprop="dateModified" datetime="2021-02-23T21:00:04+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/07/08/%E6%9C%AC%E5%9C%B0Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8ESpringBoot%E4%B8%ADJedis%E9%9B%86%E7%BE%A4%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/07/08/%E6%9C%AC%E5%9C%B0Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8ESpringBoot%E4%B8%ADJedis%E9%9B%86%E7%BE%A4%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近在学习《Redis开发与运维》这本书，没有很仔细的看，主要讲解的运维，也包含有开发的部分，重点看了开发的部分，感觉这本书写的是真的好，整本书没有一点废话（Thinking In Java退出群聊QAQ ），全部是干货，昨天跟着书本在电脑上搭建了一个Redis集群，公司的Redis也是集群的方式，所以学习一下集群中的Redis和单机的区别，同时熟悉一下Redis集群的搭建的步骤和SpringBoot中对Redis Cluster的整合，不过我是在Windows下搭建的，命令都是一样的，没什么区别。</p>
+<h1 id="Redis集群搭建的步骤和槽的概念"><a href="#Redis集群搭建的步骤和槽的概念" class="headerlink" title="Redis集群搭建的步骤和槽的概念"></a>Redis集群搭建的步骤和槽的概念</h1><p>Redis集群搭建主要分为一下几个步骤：</p>
+<ol>
+<li>准备节点(启动Redis服务)</li>
+<li>节点握手</li>
+<li>分配槽</li>
+<li>为主节点分配从结点</li>
+</ol>
+<p>在开始搭建之前复习一下Redis的槽的知识：</p>
+<blockquote>
+<p>Redis Cluser采用虚拟槽分区，所有的键根据哈希函数映射到0~16383整<br>数槽内，计算公式：slot=CRC16（key）&amp;16383。每一个节点负责维护一部 分槽以及槽所映射的键值数据，如图10-5所示。</p>
+</blockquote>
+<h1 id="Redis集群的限制"><a href="#Redis集群的限制" class="headerlink" title="Redis集群的限制"></a>Redis集群的限制</h1><p>需要注意的是，集群的Redis和单节点的Redis相比，有很多的局限：</p>
+<ul>
+<li><p>key批量操作支持有限。如mset、mget，目前只支持具有相同slot值的key执行批量操作。对于映射为不同slot值的key由于执行mget、mget等操可 能存在于多个节点上因此不被支持。</p>
+</li>
+<li><p>key事务操作支持有限。同理只支持多key在同一节点上的事务操作，当多个key分布在不同的节点上时无法使用事务功能。 </p>
+</li>
+<li><p>key作为数据分区的最小粒度，因此不能将一个大的键值对象如hash、list等映射到不同的节点。 </p>
+</li>
+<li><p>不支持多数据库空间。单机下的Redis可以支持16个数据库，集群模式下只能使用一个数据库空间，即db0。</p>
+</li>
+<li><p>复制结构只支持一层，从节点只能复制主节点，不支持嵌套树状复制结构。</p>
+</li>
+</ul>
+<h1 id="开始搭建"><a href="#开始搭建" class="headerlink" title="开始搭建"></a>开始搭建</h1><p>Redis集群一般由多个节点组成，节点数量至少为6个才能保证组成完整<br>高可用的集群。在windows下将redis文件夹拷贝6份，如图所示：<br><img src="https://s2.ax1x.com/2019/07/08/ZsYKKO.png" alt="ZsYKKO.png"></p>
+<h2 id="运行服务"><a href="#运行服务" class="headerlink" title="运行服务"></a>运行服务</h2><p>然后为每个redis服务，都要使用如下的配置，根据端口号的不同进行区分。每个节点需要开启配置cluster-enabled yes，让Redis运行在集群模式下。建议为集群内所有节点统一目录，一般划分三个目录：conf、 data、log，分别存放配置、数据和日志相关文件。把6个节点配置统一放在 conf目录下，集群相关配置如下：</p>
+<pre><code class="yml">#节点端口 
+port 7000 
+# 开启集群模式 
+cluster-enabled yes 
+# 节点超时时间，单位毫秒 
+cluster-node-timeout 15000 
+# 集群内部配置文件 
+cluster-config-file &quot;nodes-7000.conf&quot;
+</code></pre>
+<p>然后使用下面的命令开启Redis服务：</p>
+<pre><code class="yml">redis-server conf/redis-&#123;port&#125;.conf # port为该端口对应的配置文件
+</code></pre>
+<p>集群中每一个节点都有一个配置文件，保存了集群信息，集群配置文件由服务自动生成，不需要手动去修改，以免出现错误。</p>
+<h2 id="节点间握手"><a href="#节点间握手" class="headerlink" title="节点间握手"></a>节点间握手</h2><p>现在开启了六个Redis服务，但是他们是彼此分离的，还没有组合成一个集群，所以需要使用命令让他们握手，形成一个能够互相感知的集群。</p>
+<p>登录某一个结点，然后分别使用下面的命令去和每一个节点握手：</p>
+<pre><code class="yml">cluster meet&#123;ip&#125;&#123;port&#125;
+</code></pre>
+<p>也可以使用Redis Shell命令去执行，例如</p>
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1:7001
+redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1:7002
+...
+</code></pre>
+<p>需要注意的是，只需要在一个结点上执行握手命令，握手信息会在集群中自动传播。这样其他节点会自动发现新节点并发起握手流程。最后执行<code>cluster nodes</code>命令确认6个节点都彼此感知并组成集群。</p>
+<p>可以使用<code>cluster nodes</code>查看集群结点的状态：</p>
+<pre><code class="yml">089f76372aa3f9373f72850ebb5909c978665c3b 127.0.0.1:7001 master - 0 1562679329399 1 connected 5462-10922    
+605773c926b468fb079cfacf021bdeea2ecc1747 127.0.0.1:7002 myself,master - 0 0 5 connected 10923-16383    
+c8f0ae93b339311acb74807bdaead7cbf6eb5738 127.0.0.1:7004 slave 089f76372aa3f9373f72850ebb5909c978665c3b 0 1562679330363 1 connected    
+551693dbe8904405e925ec1fab859051597905d4 127.0.0.1:7003 slave 53613c8c8c7e0f060de44a36c94e0abf35d8cee0 0 1562679329297 3 connected    
+c8317c12ddb83e22c3b0244d21e1ea53c7a56e00 127.0.0.1:7005 slave 605773c926b468fb079cfacf021bdeea2ecc1747 0 1562679327174 5 connected    
+53613c8c8c7e0f060de44a36c94e0abf35d8cee0 127.0.0.1:7000 master - 0 1562679331423 2 connected 0-5461    
+</code></pre>
+<p>上面是槽点分配完成的结点。<br>可以使用<code>cluster info</code>查看集群状态：</p>
+<pre><code class="yml">cluster_state:down
+cluster_slots_assigned:o
+cluster_slots_ok:0
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:5
+cluster_my_epoch:5
+cluster_stats_messages_sent:82521
+cluster_stats_messages_received:82273
+</code></pre>
+<p>从中可以看出集群中共有六个节点，并已近互相感知了对方的存在。此时集群状态为down,表示不可用。</p>
+<h2 id="分配槽点"><a href="#分配槽点" class="headerlink" title="分配槽点"></a>分配槽点</h2><p>Redis集群中，数据保存的位置是通过key的映射的槽点来决定的，Redis集群把所有的数据映射到16384个槽中（0-16383）。每个key会映射为一个固定的槽，只有当节点分配了槽，才能响应和这些槽关联的键命令。通过 <code>cluster addslots</code>命令为节点分配槽。这里利用bash特性批量设置槽（slots）， 命令如下：</p>
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 6379 cluster addslots &#123;0...5461&#125;     
+redis-cli -h 127.0.0.1 -p 6380 cluster addslots &#123;5462...10922&#125;     
+redis-cli -h 127.0.0.1 -p 6381 cluster addslots &#123;10923...16383&#125;
+</code></pre>
+<p>不过windows下不支持节点批量操作，只能手动去添加，可以手动写一个脚本去自动添加结点，windows平台下，可以新建一个bat脚本，然后复制如下代码（<strong>脚本是网上照着别人的100求和的脚本改的，执行的慢的很。。。</strong>）：</p>
+<ul>
+<li>7000节点 addslots.bat</li>
+</ul>
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (0,1,5461) do (
+    redis-cli -h 127.0.0.1 -p 7000 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
+<ul>
+<li>7001节点 addslots.bat</li>
+</ul>
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (5462,1,10922) do (
+    redis-cli -h 127.0.0.1 -p 7001 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
+<ul>
+<li>7002结点 addslots.bat</li>
+</ul>
+<pre><code class="bat">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+for /l %%i in (10923,1,16383) do (
+    redis-cli -h 127.0.0.1 -p 7002 cluster addslots %%i
+    REM echo %%i
+)
+pause
+</code></pre>
+<p>在等待脚本执行完成之后，所有的槽点都均匀的分配给了三个主节点，集群的状态也从不可用变为可用状态，可以使用<code>cluster info</code>查看集群状态，使用<code>cluster nodes</code>查看槽点的分配。</p>
+<h2 id="设置从结点"><a href="#设置从结点" class="headerlink" title="设置从结点"></a>设置从结点</h2><p>首次启动的节点和被分配槽的 节点都是主节点，从节点负责复制主节点槽信息和相关的数据。使用cluster replicate {nodeId}命令让一个节点成为从节点。其中命令执行必须在对应的 从节点上执行，nodeId是要复制主节点的节点ID，命令如下：</p>
+<pre><code class="yml">127.0.0.1:7003&gt;cluster replicate cfb28ef1deee4e0fa78da86abe5d24566744411e OK 
+127.0.0.1:7004&gt;cluster replicate 8e41673d59c9568aa9d29fb174ce733345b3e8f1 OK 
+127.0.0.1:7005&gt;cluster replicate 40b8d09d44294d2e23c7c768efc8fcd153446746 OK
+</code></pre>
+<p>同样也可以编写脚本添加从结点，例如如下代码将7003节点设置为7000的从结点：</p>
+<ul>
+<li>7003 replicate.bat</li>
+</ul>
+<pre><code class="yml">@echo off
+setlocal ENABLEDELAYEDEXPANSION
+
+redis-cli -h 127.0.0.1 -p 7003 cluster replicate 53613c8c8c7e0f060de44a36c94e0abf35d8cee0
+
+pause
+</code></pre>
+<p>目前为止，我们依照Redis协议手动建立一个集群。它由6个节点构成，3个主节点负责处理槽和相关数据，3个从节点负责故障转移。Redis官方推荐使用Ruby的工具Redis-trib.rb来搭建Redis集群，不过这就是运维的事情了。（我主要还是嫌安装Ruby啥的太麻烦了QAQ，懒得弄。）</p>
+<h1 id="SpringBoot中JedisCluster客户端的使用"><a href="#SpringBoot中JedisCluster客户端的使用" class="headerlink" title="SpringBoot中JedisCluster客户端的使用"></a>SpringBoot中JedisCluster客户端的使用</h1><p>SpringBoot中，可以会用Spring-Data-Redis对Redis进行操作，所有的Redis操作都被封装在Template模板中。</p>
+<p>在application.yml配置文件中，需要指定集群的各个节点的IP、端口号。并且需要指定redis第一次连接到的结点信息。在yml中，配置如下：</p>
+<pre><code class="yml">spring:
+  redis:
+    host: 127.0.0.1
+    database: 0
+    ssl: false
+    port: 7000
+    cluster:
+      # redis集群的ip和端口
+      nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,
+               127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
+      max-redirects: 1 #集群最大跳转次数
+    jedis:
+      pool:
+        max-active: 8 #线程池中最大线程数
+        min-idle: 2 #最大空闲线程数
+    timeout: 5000ms #连接超时时间
+</code></pre>
+<p>在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复 MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重 定向</p>
+<p>redis-cli可以使用-c参数自动帮我们连接到正确的节点执行命令，这个过程是在redis-cli内部维护，实质上是client端接到MOVED信息之后再次发起请求，并不在 Redis节点中完成请求转发</p>
+<pre><code class="yml">redis-cli -h 127.0.0.1 -p 7000 -c
+</code></pre>
+<p>redis客户端执行命令的方式如下：</p>
+<ol>
+<li>计算slot并根据slots缓存获取目标节点连接，发送命令。         </li>
+<li>如果出现连接错误，使用随机连接重新执行键命令，每次命令重试<br>对redi-rections参数减1。    </li>
+<li>捕获到MOVED重定向错误，使用cluster slots命令更新slots缓存<br>（renewSlotCache方法）。 </li>
+<li>重复执行1）~3）步，直到命令执行成功，或者当redirections&lt;=0时<br>抛出Jedis ClusterMaxRedirectionsException异常。</li>
+</ol>
+<p>上面的配置中，max-redirects指定了集群中的最大跳转次数，如果查找键时跳转的次数超过阈值，就会抛出异常。</p>
+<p>SpringDataRedis封装了Redis的操作，所有操作通过RedisTemplate提供相同的模板,使用方式为：</p>
+<pre><code class="java">@Autowired
+private RedisTemplate&lt;String,String&gt; StringRedisTemplate;
+</code></pre>
+<p>对于String类型的键和值，RedisTemplat提供了StringRedisTemplate可以直接注入使用。</p>
+<pre><code class="java">@Autowired
+private StringRedisTemplate stringRedisTemplate;
+</code></pre>
+<p>对于所有的非String类型，不能直接使用上面的方式，直接注入指定泛型类型的RedisTemplate，而需要使用下面的方式，配置特定类型的RedisTemplate的键和值的序列化器，才能够注入并使用：</p>
+<pre><code class="java">    /**
+     * 特定类型的RedisTemplate需要自己创建相应的bean才行。
+     *
+     * @param redisConnectionFactory redis连接池
+     * @return 指定泛型类型的RedisTemplate
+     */
+    @Bean
+    public RedisTemplate&lt;String, User&gt; getRedisTemplate(RedisConnectionFactory redisConnectionFactory) &#123;
+        RedisTemplate&lt;String, User&gt; redisTemplate = new RedisTemplate&lt;&gt;();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        //设置key的序列化器，非常重要
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        //设置value的序列化器
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer&lt;&gt;(User.class));
+        return redisTemplate;
+    &#125;
+</code></pre>
+<p><strong>值得注意的是，如果不指定键的序列化器，可能会导致redis中存入的键因为编码的方式不同，在RedisTemplate中存入的键，使用命令行的方式查找失败。</strong></p>
+<p>上面的值的序列化器有多种选择，最常规的是序列化为JSON字符串进行保存。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/06/22/Spring-Data-JPA%E4%B8%AD%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%EF%BC%8C%E4%B8%80%E5%AF%B9%E5%A4%9A%EF%BC%8C%E5%A4%9A%E5%AF%B9%E5%A4%9A%E6%9F%A5%E8%AF%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3380,219 +3893,6 @@ packet_user_info(分组中保存的好友)：
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="post-title-link" itemprop="url">Intellij IDEA中添加JUnit单元测试</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-01-17 14:01:00" itemprop="dateCreated datePublished" datetime="2019-01-17T14:01:00+08:00">2019-01-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:02" itemprop="dateModified" datetime="2021-02-23T21:00:02+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>JUnit是一个很出名的单元测试测试框架，在非常多的项目中被使用，这几天想学习一下JUnit 4。目前广泛使用的是 JUnit 4 版本，同时JUnit 5也可以使用，JUnit 5 在增加了很多的新特性的同时，又保持了对 JUnit 4 的向后兼容性。等具体学习的时候再来看，首先学习在IDEA中添加JUint。</p>
-<h1 id="下载jar包"><a href="#下载jar包" class="headerlink" title="下载jar包"></a>下载jar包</h1><p>首先需要去下载JUnit的jar包以及一个依赖包hamcrest.core，他们的下载地址如下：<br><a target="_blank" rel="noopener" href="https://search.maven.org/artifact/junit/junit/4.13-beta-1/jar">junit:junit:4.13-beta-1</a><br><a target="_blank" rel="noopener" href="https://search.maven.org/artifact/org.ops4j.pax.tipi/org.ops4j.pax.tipi.hamcrest.core/1.3.0.1/bundle">hamcrest.core:1.3.0.1</a><br>需要注意的是hamcrest.core包不能使用2.1版本的，因为4.13版本的JUnit和它不兼容，会抛出<code>ClassNotFoundException</code>异常。</p>
-<h1 id="在Intellij-IDEA项目中添加jar包"><a href="#在Intellij-IDEA项目中添加jar包" class="headerlink" title="在Intellij IDEA项目中添加jar包"></a>在Intellij IDEA项目中添加jar包</h1><p>首先需要在IDEA中添加刚才下载好的包：<br><img src="https://s2.ax1x.com/2019/01/18/k99r3F.png" alt="k99r3F.png"></p>
-<p>记得勾选Export选项。</p>
-<h1 id="下载插件并进行设置"><a href="#下载插件并进行设置" class="headerlink" title="下载插件并进行设置"></a>下载插件并进行设置</h1><p>然后需要下载一个名为JUnitGeneratorV2.0的插件：<br><img src="https://s2.ax1x.com/2019/01/18/k99sc4.png" alt="k99sc4.png"></p>
-<p>然后对其进行设置：<br><img src="https://s2.ax1x.com/2019/01/18/k99yjJ.png" alt="k99yjJ.png"></p>
-<p>输出路径可以更改为想要的路径</p>
-<p><img src="https://s2.ax1x.com/2019/01/18/k99cu9.png" alt="k99cu9.png"></p>
-<p>将图片中的<code>$data</code>改为<code>$today</code>是为了防止生成的测试类产生乱码。</p>
-<h1 id="使用JUnit"><a href="#使用JUnit" class="headerlink" title="使用JUnit"></a>使用JUnit</h1><p>当想要为当前类添加测试代码，只需要在当前类中使用Alt+inset（或者导航栏中点击Code-Generator）快捷键，选择JUnit-JUnit4，就会自动生成当前类的测试类：<br><img src="https://s2.ax1x.com/2019/01/18/k992H1.png" alt="k992H1.png"></p>
-<p>插件默认会测试所有方法，使用快捷键<code>Ctrl+Shift+T</code>可以选择性的测试部分方法，非常的方便：<br><img src="https://s2.ax1x.com/2019/01/18/k99WAx.png" alt="k99WAx.png"></p>
-<p>在输出路径中就可以看到自动生成的测试类，含有需要测试的方法，接下来就可以编写代码对类进行测试啦 QAQ.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/" class="post-title-link" itemprop="url">Ubuntu17系统环境下配置JDK</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-12-28 14:59:00" itemprop="dateCreated datePublished" datetime="2018-12-28T14:59:00+08:00">2018-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:00" itemprop="dateModified" datetime="2021-02-23T21:00:00+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OperationSystem/" itemprop="url" rel="index"><span itemprop="name">OperationSystem</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/12/28/Ubuntu17%E7%B3%BB%E7%BB%9F%E4%B8%8B%E9%85%8D%E7%BD%AEJDK/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="下载jdk文件"><a href="#下载jdk文件" class="headerlink" title="下载jdk文件"></a>下载jdk文件</h1><p>在oracle官网上下载JDK1.8 linux的安装包，地址如下：<br><a target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK下载地址</a></p>
-<h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>将下载好的.tar.gz文件解压到指定文件夹:<br><code>tar -zxvf jdk-8u191-linux-x64.tar.gz /usr/lib/jdk1.8</code><br>将其解压到文件夹/usr/lib/jdk1.8中。</p>
-<blockquote>
-<p>/usr/lib用于存放目标库文件，包括动态连接库加上一些通常不是直接调用的可执行文件的存放位置。这个目录功能类似/lib目录，理说，这里存放的文件应该是/bin目录下程序所需要的库文件的存放地，也不排除一些例外的情况。</p>
-</blockquote>
-<h1 id="bashrc文件和-etc-profile文件区别"><a href="#bashrc文件和-etc-profile文件区别" class="headerlink" title=".bashrc文件和/etc/profile文件区别"></a>.bashrc文件和/etc/profile文件区别</h1><p>在linux系统普通用户目录（cd/home/xxx）或root用户目录（cd /root）下，用指令ls -al可以看到4个隐藏文件，</p>
-<ul>
-<li>.bash_history 记录之前输入的命令</li>
-<li>.bash_logout 当你退出时执行的命令</li>
-<li>.profile 当你登入shell时执行</li>
-<li>.bashrc 当你登入shell时执行</li>
-</ul>
-<p>请注意后两个的区别：<code>.profile</code>只在会话开始时被读取一次，而<code>.bashrc</code>则每次打开新的终端时，都要被读取。</p>
-<p>这些文件是每一位用户对终端功能和属性设置，修改.bashrc可以改变环境变量PATH、别名alias和提示符。</p>
-<p>除了可以修改用户目录下的.bashrc文件外，还可以修改如“/etc/profile”文件、“/etc/bashrc”文件及目录“/etc/profile.d”下的文件。但是修改/etc路径下的配置文件将会应用到整个系统，属于系统级的配置，而修改用户目录下的.bashrc则只是限制在用户应用上，属于用户级设置。两者在应用范围上有所区别，建议如需修改的话，修改用户目录下的.bashrc，既无需root权限，也不会影响其他用户。</p>
-<h1 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h1><p>linux中需要在配置文件中修改环境变量PATH，有两个配置文件中写入，在.bashrc文件中写入或者/etc/profile文件中写入如下代码：</p>
-<pre><code class="shell">export JAVA_HOME=/usr/lib/jdk1.8  #此路径为存放jdk的文件夹
-export JRE_HOME=$&#123;JAVA_HOME&#125;/jre 
-export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib
-export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH
-</code></pre>
-<p>方法一：<br>修改用户目录下的.bashrc文件，在文件最后一行添加如上代码：<br><code>sudo vi ~/.bashrc</code><br>此方法只对当前用户有效。</p>
-<p>方法二：<br>修改/etc/profile文件，在文件最后一行添加如上代码：<br><code>sudo vi /etc/profile</code><br>此方法对所有用户有效。</p>
-<h1 id="使配置文件生效并进行测试"><a href="#使配置文件生效并进行测试" class="headerlink" title="使配置文件生效并进行测试"></a>使配置文件生效并进行测试</h1><blockquote>
-<p>source filepath 语句会使当前shell读入路径为filepath的shell文件并依次执行文件中的所有语句，通常用于重新执行刚修改的初始化文件，使之立即生效，而不必注销并重新登录。例如，当我们修改了/etc/profile文件，并想让它立刻生效，而不用重新登录，就可以使用source命令，如source /etc/profile。</p>
-</blockquote>
-<p>使用<code>source /etc/profile</code>或者<code>source ~/.bashrc</code>使修改生效。<br>使用<code>java -version</code>来测试是否完成配置。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -3664,20 +3964,20 @@ export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

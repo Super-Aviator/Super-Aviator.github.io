@@ -191,6 +191,194 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/03/08/Kafka-Consumer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/08/Kafka-Consumer/" class="post-title-link" itemprop="url">Kafka-Consumer</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-08 20:08:04" itemprop="dateCreated datePublished" datetime="2021-03-08T20:08:04+08:00">2021-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-10 12:10:20" itemprop="dateModified" datetime="2021-04-10T12:10:20+08:00">2021-04-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Middleware/" itemprop="url" rel="index"><span itemprop="name">Middleware</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/08/Kafka-Consumer/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/08/Kafka-Consumer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="seek"><a href="#seek" class="headerlink" title="seek"></a>seek</h2><p>调用seek方法前必须要调用poll方法使消费者获取到分区，否则将抛出异常，同时如果调用poll方法超时时间为0或者过小，同样会获取不到分区导致seek方法因为还未获取到分区而报错。</p>
+<h2 id="weakup"><a href="#weakup" class="headerlink" title="weakup"></a>weakup</h2><p>唯一一个线程安全方法，用于的其他线程跳出consumer的poll方法。正确的使用姿势如下：</p>
+<pre><code class="java">try &#123;
+    while (isRunning) &#123;
+        consumer.poll();
+    &#125;
+&#125;catch(WakeupException wakeupException)&#123;
+    log.error(wakeupException);
+&#125;finally&#123;
+    consumer.commitSync();
+&#125;
+</code></pre>
+          <!--noindex-->
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/02/28/Java%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88/" class="post-title-link" itemprop="url">Java并发集合</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-28 17:16:30" itemprop="dateCreated datePublished" datetime="2021-02-28T17:16:30+08:00">2021-02-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-24 17:21:32" itemprop="dateModified" datetime="2021-03-24T17:21:32+08:00">2021-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/28/Java%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="并发操作ArrayList"><a href="#并发操作ArrayList" class="headerlink" title="并发操作ArrayList"></a>并发操作ArrayList</h1><h1 id="并发操作HashMap"><a href="#并发操作HashMap" class="headerlink" title="并发操作HashMap"></a>并发操作HashMap</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/02/28/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -533,7 +721,7 @@ public class FutureTaskTest implements Callable&lt;String&gt; &#123;
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-10 17:48:21" itemprop="dateModified" datetime="2021-04-10T17:48:21+08:00">2021-04-10</time>
+                <time title="修改时间：2021-04-10 20:32:16" itemprop="dateModified" datetime="2021-04-10T20:32:16+08:00">2021-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -634,9 +822,9 @@ SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 <h4 id="up-limit-id-lt-数据事务ID-lt-low-limit-id"><a href="#up-limit-id-lt-数据事务ID-lt-low-limit-id" class="headerlink" title="up_limit_id&lt;数据事务ID&lt;low_limit_id"></a>up_limit_id&lt;数据事务ID&lt;low_limit_id</h4><p>如果数据的事务ID大于最小的活跃事务ID,同时又小于等于系统最大的事务ID，这种情况就说明这个数据有可能是在当前事务开始的时候还没有提交的或者是事务执行过程中已经提交的。</p>
 <p>所以这时候我们需要把数据的事务ID与当前readview中的<strong>活跃事务集合trx_ids匹配，并更具并发级别做相应处理</strong>:</p>
 <ul>
-<li>情况1: 如果事务ID不存在于trx_ids集合（则说明readview产生的时候事务已经commit了），<strong>这种情况在RC隔离级别中可以显示，而在RR隔离级别中不能显示</strong>。</li>
+<li>情况1: 如果事务ID不存在于trx_ids集合（则说明readview产生的时候事务已经commit了），<strong>这种情况则表示这条记录的最后修改在readview创建之前，所以可以看到</strong>。</li>
 <li>情况2：如果事务ID存在trx_ids则说明readview产生的时候数据还没有提交，但是如果数据的事务ID等于creator_trx_id，那么说明这个数据就是当前事务自己生成的，自己生成的数据自己当然能看见，所以这种情况下此数据也是可以显示的。</li>
-<li>情况3：如果事务ID既存在trx_ids而且又不等于creator_trx_id那就说明readview产生的时候数据还没有提交，又不是自己生成的，所以这种情况下无论是RC还是RR隔离级别此数据不能显示。</li>
+<li>情况3：如果事务ID既存在trx_ids而且又不等于creator_trx_id，<strong>说明readview产生的时候数据还没有提交，又不是自己生成的，所以这种情况下此数据不能显示</strong>。</li>
 </ul>
 <h3 id="不满足ReadView条件时候"><a href="#不满足ReadView条件时候" class="headerlink" title="不满足ReadView条件时候"></a>不满足ReadView条件时候</h3><p>当数据的事务ID不满足readview条件时候，<strong>从undolog里面获取数据的历史版本</strong>，然后数据历史版本事务号回头再来和readview条件匹配 ，直到找到一条满足条件的历史数据，或者找不到则返回空结果。</p>
 <h3 id="两种隔离级别下的readview读取方式"><a href="#两种隔离级别下的readview读取方式" class="headerlink" title="两种隔离级别下的readview读取方式"></a>两种隔离级别下的readview读取方式</h3><h4 id="READ-COMMIT隔离级别"><a href="#READ-COMMIT隔离级别" class="headerlink" title="READ COMMIT隔离级别"></a>READ COMMIT隔离级别</h4><p>RC(read commit) 级别下同一个事务里面的每一次查询都会获得一个新的readview副本。这样就可能造成同一个事务里前后读取数据可能不一致的问题（重复读）：</p>
@@ -1689,173 +1877,6 @@ public class MySTOMPWebSocketConfigurer implements WebSocketMessageBrokerConfigu
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2020/04/30/Docker%E4%B8%AD%E6%90%AD%E5%BB%BARedis%E7%8E%AF%E5%A2%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/30/Docker%E4%B8%AD%E6%90%AD%E5%BB%BARedis%E7%8E%AF%E5%A2%83/" class="post-title-link" itemprop="url">Docker中搭建Redis环境</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-30 16:14:00" itemprop="dateCreated datePublished" datetime="2020-04-30T16:14:00+08:00">2020-04-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/04/30/Docker%E4%B8%AD%E6%90%AD%E5%BB%BARedis%E7%8E%AF%E5%A2%83/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/30/Docker%E4%B8%AD%E6%90%AD%E5%BB%BARedis%E7%8E%AF%E5%A2%83/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://www.notion.so/xqk/Docker-Redis-b70b63e1572b49329cb55ec490b0dee8">Docker中搭建Redis环境</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2020/04/25/Spring%E4%B8%AD-Async%E5%92%8C-Scheduled%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/25/Spring%E4%B8%AD-Async%E5%92%8C-Scheduled%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="post-title-link" itemprop="url">Spring中@Async和@Scheduled注解自定义线程池</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-25 15:56:29" itemprop="dateCreated datePublished" datetime="2020-04-25T15:56:29+08:00">2020-04-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:02" itemprop="dateModified" datetime="2021-02-23T21:00:02+08:00">2021-02-23</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/04/25/Spring%E4%B8%AD-Async%E5%92%8C-Scheduled%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BA%BF%E7%A8%8B%E6%B1%A0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/25/Spring%E4%B8%AD-Async%E5%92%8C-Scheduled%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BA%BF%E7%A8%8B%E6%B1%A0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://www.notion.so/xqk/Spring-Async-Scheduled-4c2e12a91a8d4e92b8a478b7a4c63c00">Spring中@Async和@Scheduled注解自定义线程池</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1927,20 +1948,20 @@ public class MySTOMPWebSocketConfigurer implements WebSocketMessageBrokerConfigu
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

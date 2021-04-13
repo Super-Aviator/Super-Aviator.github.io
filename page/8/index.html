@@ -191,6 +191,295 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%90%9C%E7%B4%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%90%9C%E7%B4%A2/" class="post-title-link" itemprop="url">Linux中的文本查看与文件搜索</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-10 15:50:00" itemprop="dateCreated datePublished" datetime="2018-06-10T15:50:00+08:00">2018-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OperationSystem/" itemprop="url" rel="index"><span itemprop="name">OperationSystem</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%90%9C%E7%B4%A2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%9F%A5%E7%9C%8B%E4%B8%8E%E6%90%9C%E7%B4%A2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Linxu中常用的文件查看与搜索命令</p>
+<h2 id="文本的查看"><a href="#文本的查看" class="headerlink" title="文本的查看"></a>文本的查看</h2><ul>
+<li><p><code>echo &quot;文本&quot;</code><br>echo将后面的文本显示在终端中。</p>
+</li>
+<li><p><code>cat 文件路径</code><br>cat命令用于查看文件内容</p>
+</li>
+<li><p><code>head 文件路径</code><br>选项：<br>  -n 行数：查看文件开头的几行</p>
+</li>
+<li><p><code>tail 文件路径</code><br>选项：<br>  -n 行数：查看文件最后的几行<br> -f 动态显示文件的更新</p>
+</li>
+<li><p><code>more 文件路径</code><br>查看文件内容，只能够向下翻页</p>
+</li>
+<li><p><code>less 文件路径</code><br>查看文件内容，可以上下翻页</p>
+</li>
+<li><p><code>vi 文件路径</code><br>编辑文件，如果文件不存在就创建之</p>
+</li>
+</ul>
+<h2 id="搜索命令"><a href="#搜索命令" class="headerlink" title="搜索命令"></a>搜索命令</h2><ul>
+<li><p><code>lcoate</code><br>locate从系统数据库中搜寻想要搜索的文件的路径，如果文件是新添加的，那么由于数据库还没有添加此文件，所以会查找失败，所以需要在root下使用<code>updatedb</code>命令更新数据库</p>
+</li>
+<li><p><code>find 搜索范围 搜索类型 想要搜索的类型</code><br>搜索类型：<br>  -user 用户名： 搜索与该用户相关的文件<br> -perm 权限数组组合：搜索权限<br> -name 名字：根据名字搜索<br> -type 类型：根据类型搜索<br> -group 组名：根据所属组来查找<br> -size 大下：根据文件大小来查找<br> -ctime 时间：根据修改时间查找</p>
+</li>
+<li><p><code>grep 字符 本文路径</code><br>grep命令不能够搜索文件夹，而只能用来所搜文本，其中字符可以加单引号或者不加都可以。<br>选项：<br>  -i 搜索时忽略大小写<br> -n 显示搜索到的结果在文件中的行数<br> -v 输出结果以外的行<br> -Ax 输出关键字所在行以及其前x行<br> -Bx 输出关键字所在行以及其后x行</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E7%AE%A1%E9%81%93%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E7%AE%A1%E9%81%93%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91/" class="post-title-link" itemprop="url">Linux中的管道和重定向</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-10 11:43:00" itemprop="dateCreated datePublished" datetime="2018-06-10T11:43:00+08:00">2018-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:12" itemprop="dateModified" datetime="2021-02-23T21:00:12+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OperationSystem/" itemprop="url" rel="index"><span itemprop="name">OperationSystem</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E7%AE%A1%E9%81%93%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/06/10/Linux%E4%B8%AD%E7%9A%84%E7%AE%A1%E9%81%93%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>简单介绍Linux中管道和重定向</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h3><p>&emsp;&emsp;linux系统中一共有三种标准的输入输出，分别为STDIN,STDOUT,STDERR，可以使用重定向将命令行输入或者输出的文本重定向到文件。<br>&emsp;&emsp;三种标准输入输出流：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>标号</th>
+<th>说明</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>STUIN</td>
+<td>0</td>
+<td>标准输入</td>
+<td>键盘</td>
+</tr>
+<tr>
+<td>STDOUT</td>
+<td>1</td>
+<td>标准输出</td>
+<td>终端</td>
+</tr>
+<tr>
+<td>STDERR</td>
+<td>2</td>
+<td>标准错误</td>
+<td>终端</td>
+</tr>
+</tbody></table>
+<p>通过STDIN来接受数据或参数，通过STDOUT或STDERR来输出结果或者错误。</p>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p>&emsp;&emsp;由于linux系统中命令行的输入或者输出都是纯文本的，这就使多命令协作成为可能 ，所以linux中可以使用管道将前一个命令的输出作为后一个命令的输入，从而完成单条命令所不能完成的功能。</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>关键字</th>
+<th>定义</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>&gt;</td>
+<td>将STDOUT重定向到文件（覆盖）</td>
+<td>ls -l &gt; xqk.txt;  echo “hello world” &gt; xqk.txt</td>
+</tr>
+<tr>
+<td></td>
+<td>&gt;&gt;</td>
+<td>将STDOUT重定向到文件（追加）</td>
+<td>ls -l &gt;&gt; xqk.txt;  echo “hello world” &gt; xqk.txt</td>
+</tr>
+<tr>
+<td></td>
+<td>2&gt;</td>
+<td>将STDERR重定向到文件 (覆盖)</td>
+<td>ls -l xqk.err 2 &gt; xqk.txt</td>
+</tr>
+<tr>
+<td>重定向</td>
+<td>2&gt;&gt;</td>
+<td>将STDERR重定向到文件 (追加)</td>
+<td>ls -l xqk.err 2 &gt;&gt; xqk.txt</td>
+</tr>
+<tr>
+<td></td>
+<td>2&gt;&amp;1</td>
+<td>将STDOUT和STDERR重定向到文件</td>
+<td>ls -l 2&gt;&amp;1 xqk.txt</td>
+</tr>
+<tr>
+<td></td>
+<td>&lt;</td>
+<td>将&lt;后的文件重定向到STDIN命令的输入</td>
+<td>ls &lt;/etc/passwd</td>
+</tr>
+<tr>
+<td>管道</td>
+<td>l</td>
+<td>前一个命令的输出作为后一个命令的输入</td>
+<td>ls -l l grep aviator</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>值得注意的是，使用输出重定向&gt;或者&gt;&gt;时，不能够重定向错误信息，而需要使用2&gt;、2&gt;&gt;、2&gt;&amp;1来重定向。</p>
+</li>
+<li><p>如果将命令重定向到/dev/null，那么输出将被丢弃掉。相当于垃圾箱的功能。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/06/07/ArrayList%E4%B8%AD%E5%88%A0%E9%99%A4%E7%9A%84%E7%96%91%E6%83%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2669,186 +2958,6 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/" class="post-title-link" itemprop="url">吸血鬼数字的两种解法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-09 17:45:00" itemprop="dateCreated datePublished" datetime="2018-04-09T17:45:00+08:00">2018-04-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:02" itemprop="dateModified" datetime="2021-02-23T21:00:02+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/09/%E5%90%B8%E8%A1%80%E9%AC%BC%E6%95%B0%E5%AD%97%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A7%A3%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>吸血鬼数字的解法</p>
-          <!--noindex-->
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/04/09/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/09/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/" class="post-title-link" itemprop="url">快速排序（java实现）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-09 16:16:00" itemprop="dateCreated datePublished" datetime="2018-04-09T16:16:00+08:00">2018-04-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/04/09/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/09/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88java%E5%AE%9E%E7%8E%B0%EF%BC%89/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>快速排序是二十一世纪十大重大算法之一</p>
-          <!--noindex-->
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2920,20 +3029,20 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

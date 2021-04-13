@@ -27,11 +27,13 @@
 <meta property="og:site_name" content="孤独飞行员">
 <meta property="og:description" content="finally-catch语句中return的先后顺序 catch块或者try块中有return，而finally块中也有return，这时都是会走finllay块中的return。。 catch中或者try中有return，而finally中没有return，这种情况需要分两种情况： 如果finally块对try块或者catch块中的基本类型变量有修改，这时不会影响try块或者catch块中的返">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/13/4fa042b9-7cc5-46da-8d9d-64e93693507e.jpg">
 <meta property="article:published_time" content="2021-04-06T12:52:59.000Z">
-<meta property="article:modified_time" content="2021-04-08T16:13:33.217Z">
+<meta property="article:modified_time" content="2021-04-13T16:37:51.147Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="Java疑惑解答">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/13/4fa042b9-7cc5-46da-8d9d-64e93693507e.jpg">
 
 <link rel="canonical" href="https://super-aviator.github.io/2021/04/06/JavaSE/">
 
@@ -225,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-09 00:13:33" itemprop="dateModified" datetime="2021-04-09T00:13:33+08:00">2021-04-09</time>
+                <time title="修改时间：2021-04-14 00:37:51" itemprop="dateModified" datetime="2021-04-14T00:37:51+08:00">2021-04-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,12 +268,12 @@
 <li>catch块或者try块中有return，而finally块中也有return，这时都是会走finllay块中的return。。</li>
 <li>catch中或者try中有return，而finally中没有return，这种情况需要分两种情况：<ol>
 <li>如果finally块对try块或者catch块中的<code>基本类型</code>变量有修改，这时不会影响try块或者catch块中的返回结果；</li>
-<li>如果finally块对try块或者catch块中的<code>引用类型</code>变量有改动，会影响try块或者catch块中的返回结果；<span id="more"></span>
+<li>如果finally块对try块或者catch块中的<code>引用类型</code>变量有改动，会影响try块或者catch块中的返回结果；</li>
+</ol>
+</li>
+</ol>
+<span id="more"></span>
 
-</li>
-</ol>
-</li>
-</ol>
 <h1 id="finally块一定会执行吗？"><a href="#finally块一定会执行吗？" class="headerlink" title="finally块一定会执行吗？"></a>finally块一定会执行吗？</h1><p>finally块一般一定会执行，唯一一个例外是遇到<code>System.exit()</code>,程序会直接退出，不能运行finally块也情有可原。</p>
 <h1 id="equals、hashCode方法"><a href="#equals、hashCode方法" class="headerlink" title="equals、hashCode方法"></a>equals、hashCode方法</h1><p>equals需要满足的五种特性：</p>
 <ul>
@@ -281,6 +283,7 @@
 <li><strong>一致性</strong>：对于任何非null的引用值x和 y，只要 equals 的比较操作在对象中所用的信息没有被修改，多次调用 x.equals(y)就会一致地返回true, 或者一致地返回false。</li>
 <li>对于任何非null的引用值x，x.equals(null)必须返回 false。</li>
 </ul>
+<p>常规的equals方法实现如下：</p>
 <pre><code>@Getter
 public class ClassEquals &#123;
     private int val;
@@ -297,7 +300,119 @@ public class ClassEquals &#123;
     &#125;
 &#125;
 </code></pre>
+<p>常规的hashCode实现步骤如下：</p>
+<ol>
+<li>声明一个<strong>int变量</strong>并命名为result ，将它初始化为对象中第一个关键域的散列码c，如步骤 2.a 中计算所示（如第 10 条所述，关键域是指影响巳quals 比较的域） 。</li>
+<li>对象中剩下的每一个关键域 f 都完成以下步骤：<ol>
+<li>为该域计算 int 类型的散列码 C:<ol>
+<li>如果该域是基本类型，则计算Type. hashCode(f)，这里的Type是装箱基本类型的类，与f的类型相对应。</li>
+<li>如果该域是一个对象引用，并且该类的equals方法通过递归地调用equals的方式来比较这个域，则同样为这个域递归地调用hashCode。如果需要更复杂的比较，则为这个域计算一个“范式”（ canonical representation），然后针对这个范式调用hashCode。如果这个域的值为null，则返回0（或者其他某个常数，但通常是0）。</li>
+<li>如果该域是一个数组，则要把每一个元素当作单独的域来处理。 也就是说，递归地应用上述规则，对每个重要的元素计算一个散列码，然后根据步骤2. 2中的做法把这些散列值组合起来。 如果数组域中没有重要的元素，可以使用 一个常量，但最好不要用0。 如果数组域中的所有元素都很重要，可以使用 Arrays.hashCode()方法。</li>
+</ol>
+</li>
+<li>按照下面的公式，把步骤 2.1中计算得到的散列码c合并到result中：result=31*result+c。</li>
+</ol>
+</li>
+<li>返回result 。</li>
+</ol>
+<p>上面的实现中，取之所以选择 31，有如下原因：</p>
+<ol>
+<li>31是一个奇素数，奇素数哈希分布较为均匀。偶数的冲突率基本都很高。</li>
+<li>31很小，不容易产生溢出。但是较小的乘数，冲突率也比较高，如1~20的数。</li>
+<li>如果乘数是偶数，并且乘法溢出的话，信息就会丢失，因为与2相乘等价于移位运算。</li>
+<li>使用素数的好处并不很明显，但是习惯上都使用素数来计算散列结果。31有个很好的特性，即用移位和减法来代替乘法，可以得到更好的性能：31* i==(i&lt;&lt;5)-i。现代的虚拟机可以自动完成这种优化。</li>
+</ol>
+<p>如果计算hashCode比较复杂，而且对象是不可变的，则可以对hash值进行懒加载，并缓存到字段中。</p>
+<h1 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h1><p>Java<strong>中</strong>有 8 种基本数据类型，分别为：</p>
+<ol>
+<li>6 种数字类型 ：byte、short、int、long、float、double</li>
+<li>1 种字符类型：char</li>
+<li>1 种布尔型：boolean。</li>
+</ol>
+<p>这八种基本类型都有对应的包装类分别为：Byte、Short、Integer、Long、Float、Double、Character、Boolean</p>
+<h1 id="种基本类型的包装类和常量池"><a href="#种基本类型的包装类和常量池" class="headerlink" title="种基本类型的包装类和常量池"></a>种基本类型的包装类和常量池</h1><p><strong>Java 基本类型的包装类的大部分都实现了常量池技术，即 Byte,Short,Integer,Long,Character,Boolean；前面 4 种包装类默认创建了数值[-128，127] 的相应类型的缓存数据，Character 创建了数值在[0,127]范围的缓存数据，Boolean 直接返回 True Or False。如果超出对应范围仍然会去创建新的对象。</strong> 为啥把缓存设置为[-128，127]区间？（<a target="_blank" rel="noopener" href="https://github.com/Snailclimb/JavaGuide/issues/461">参见 issue/461</a>）性能和资源之间的权衡。</p>
+<pre><code class="java">public static Boolean valueOf(boolean b) &#123;
+    return (b ? TRUE : FALSE);
+&#125;
+</code></pre>
+<pre><code class="java">private static class CharacterCache &#123;
+    private CharacterCache()&#123;&#125;
 
+    static final Character cache[] = new Character[127 + 1];
+    static &#123;
+        for (int i = 0; i &lt; cache.length; i++)
+            cache[i] = new Character((char)i);
+    &#125;
+&#125;
+</code></pre>
+<p><strong>两种浮点数类型的包装类 Float,Double 并没有实现常量池技术。</strong></p>
+<pre><code class="java">Integer i1 = 33;
+        Integer i2 = 33;
+        System.out.println(i1 == i2);// 输出 true
+        Integer i11 = 333;
+        Integer i22 = 333;
+        System.out.println(i11 == i22);// 输出 false
+        Double i3 = 1.2;
+        Double i4 = 1.2;
+        System.out.println(i3 == i4);// 输出 false
+</code></pre>
+<p><strong>Integer 缓存源代码：</strong></p>
+<pre><code class="java">/**
+*此方法将始终缓存-128 到 127（包括端点）范围内的值，并可以缓存此范围之外的其他值。
+*/
+    public static Integer valueOf(int i) &#123;
+        if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)
+            return IntegerCache.cache[i + (-IntegerCache.low)];
+        return new Integer(i);
+    &#125;
+</code></pre>
+<p><strong>应用场景：</strong></p>
+<ol>
+<li>Integer i1=40；Java 在编译的时候会直接将代码封装成 Integer i1=Integer.valueOf(40);，从而使用常量池中的对象。</li>
+<li>Integer i1 = new Integer(40);这种情况下会创建新的对象。</li>
+</ol>
+<pre><code class="java">Integer i1 = 40;
+  Integer i2 = new Integer(40);
+  System.out.println(i1 == i2);//输出 false
+</code></pre>
+<p><strong>Integer 比较更丰富的一个例子:</strong></p>
+<pre><code class="java">Integer i1 = 40;
+  Integer i2 = 40;
+  Integer i3 = 0;
+  Integer i4 = new Integer(40);
+  Integer i5 = new Integer(40);
+  Integer i6 = new Integer(0);
+
+  System.out.println(&quot;i1=i2   &quot; + (i1 == i2));
+  System.out.println(&quot;i1=i2+i3   &quot; + (i1 == i2 + i3));
+  System.out.println(&quot;i1=i4   &quot; + (i1 == i4));
+  System.out.println(&quot;i4=i5   &quot; + (i4 == i5));
+  System.out.println(&quot;i4=i5+i6   &quot; + (i4 == i5 + i6));
+  System.out.println(&quot;40=i5+i6   &quot; + (40 == i5 + i6));
+</code></pre>
+<p>结果：</p>
+<pre><code>i1=i2   true
+i1=i2+i3   true
+i1=i4   false
+i4=i5   false
+i4=i5+i6   true
+40=i5+i6   true
+</code></pre>
+<p>解释：</p>
+<p>语句 i4 == i5 + i6，因为+这个操作符不适用于 Integer 对象，首先 i5 和 i6 进行自动拆箱操作，进行数值相加，即 i4 == 40。<strong>然后 Integer 对象无法与数值进行直接比较，所以 i4 自动拆箱转为 int 值 40</strong>，最终这条语句转为 40 == 40 进行数值比较。</p>
+<h1 id="transint关键字"><a href="#transint关键字" class="headerlink" title="transint关键字"></a>transint关键字</h1><h1 id="TODO-创建对象的方式"><a href="#TODO-创建对象的方式" class="headerlink" title="TODO 创建对象的方式"></a>TODO 创建对象的方式</h1><h1 id="String-为什么是不可变的"><a href="#String-为什么是不可变的" class="headerlink" title="String 为什么是不可变的"></a>String 为什么是不可变的</h1><p>String中的char数组是使用final声明的，初始化之后不能只想其他数组。</p>
+<p>String类是final修饰的，无法被继承，也就无法重写其方法。</p>
+<p>String类中所有修改char数据的方法都会重新生成一个新的String对象。</p>
+<h1 id="Java异常的层级"><a href="#Java异常的层级" class="headerlink" title="Java异常的层级"></a>Java异常的层级</h1><p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/13/4fa042b9-7cc5-46da-8d9d-64e93693507e.jpg" alt="1618321839(1).jpg"></p>
+<h1 id="IO流"><a href="#IO流" class="headerlink" title="IO流"></a>IO流</h1><h1 id="NIO、BIO、AIO"><a href="#NIO、BIO、AIO" class="headerlink" title="NIO、BIO、AIO"></a>NIO、BIO、AIO</h1><h2 id="同步和异步（针对IO操作）"><a href="#同步和异步（针对IO操作）" class="headerlink" title="同步和异步（针对IO操作）"></a>同步和异步（针对IO操作）</h2><p>指的是用户进程触发 IO 操作并等待或者轮询的去查看 IO 操作是否就绪。</p>
+<p>异步是指用户进程触发IO操作以后便开始做自己的事情，而当 IO 操作已经完成的时候会得到 IO 完成的通知（异步的特点就是通知）。</p>
+<h2 id="阻塞和非阻塞（针对执行任务的线程）"><a href="#阻塞和非阻塞（针对执行任务的线程）" class="headerlink" title="阻塞和非阻塞（针对执行任务的线程）"></a>阻塞和非阻塞（针对执行任务的线程）</h2><p>阻塞指的是遇到同步等待后，一直在原地等待同步方法处理完成。</p>
+<p>非阻塞指的是遇到同步等待，不在原地等待，先去做其他的操作，隔断时间再来观察同步方法是否完成。</p>
+<h2 id="BIO（同步阻塞）"><a href="#BIO（同步阻塞）" class="headerlink" title="BIO（同步阻塞）"></a>BIO（同步阻塞）</h2><p>BIO全称是Blocking IO，是JDK1.4之前的传统IO模型，本身是<code>同步阻塞IO</code>模式。<br>线程发起IO请求后，一直阻塞IO，直到缓冲区数据就绪后，再进入下一步操作。针对网络通信都是一请求一应答的方式，虽然简化了上层的应用开发，但在性能和可靠性方面存在着巨大瓶颈，试想一下如果每个请求都需要新建一个线程来专门处理，那么在高并发的场景下，机器资源很快就会被耗尽。</p>
+<h2 id="NIO（同步非阻塞）"><a href="#NIO（同步非阻塞）" class="headerlink" title="NIO（同步非阻塞）"></a>NIO（同步非阻塞）</h2><p>NIO也叫Non-Blocking IO 是<code>同步非阻塞的IO</code>模型。线程发起io请求后，立即返回（非阻塞io）。同步指的是必须等待IO缓冲区内的数据就绪，而非阻塞指的是，用户线程不原地等待IO缓冲区，可以先做一些其他操作，但是要定时轮询检查IO缓冲区数据是否就绪。Java中的NIO 是new IO的意思。其实是NIO加上IO多路复用技术。普通的NIO是线程轮询查看一个IO缓冲区是否就绪，而Java中的new IO指的是线程轮询地去查看一堆IO缓冲区中哪些就绪，这是一种IO多路复用的思想。IO多路复用模型中，将检查IO数据是否就绪的任务，交给系统级别的select或epoll模型，由系统进行监控，减轻用户线程负担。</p>
+<p>NIO主要有<code>Buffer</code>、<code>Channel</code>、<code>Selector</code>三种技术的整合，通过零拷贝的buffer取得数据，每一个客户端通过channel在selector（多路复用器）上进行注册。服务端不断轮询channel来获取客户端的信息。channel上有connect、accept（阻塞）、read（可读）、write(可写)四种状态标识。根据标识来进行后续操作。所以一个服务端可接收无限多的channel。不需要新开一个线程。大大提升了性能。</p>
+<h2 id="AIO（异步非阻塞）"><a href="#AIO（异步非阻塞）" class="headerlink" title="AIO（异步非阻塞）"></a>AIO（异步非阻塞）</h2><p>AIO是真正意义上的<code>异步非阻塞IO</code>模型。<br>上述NIO实现中，需要用户线程定时轮询，去检查IO缓冲区数据是否就绪，占用应用程序线程资源，其实轮询相当于还是阻塞的，并非真正解放当前线程，因为它还是需要去查询哪些IO就绪。而真正的理想的异步非阻塞IO应该让内核系统完成，用户线程只需要告诉内核，当缓冲区就绪后，通知我或者执行我交给你的回调函数。</p>
+<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1>
     </div>
 
     
@@ -382,7 +497,7 @@ public class ClassEquals &#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#equals%E3%80%81hashCode%E6%96%B9%E6%B3%95"><span class="nav-text">equals、hashCode方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#equals%E3%80%81hashCode%E6%96%B9%E6%B3%95"><span class="nav-text">equals、hashCode方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85%E7%B1%BB%E5%92%8C%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">种基本类型的包装类和常量池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transint%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-text">transint关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TODO-%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-text">TODO 创建对象的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84"><span class="nav-text">String 为什么是不可变的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E5%BC%82%E5%B8%B8%E7%9A%84%E5%B1%82%E7%BA%A7"><span class="nav-text">Java异常的层级</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO%E6%B5%81"><span class="nav-text">IO流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO%E3%80%81BIO%E3%80%81AIO"><span class="nav-text">NIO、BIO、AIO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%EF%BC%88%E9%92%88%E5%AF%B9IO%E6%93%8D%E4%BD%9C%EF%BC%89"><span class="nav-text">同步和异步（针对IO操作）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%88%E9%92%88%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%BA%BF%E7%A8%8B%EF%BC%89"><span class="nav-text">阻塞和非阻塞（针对执行任务的线程）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">BIO（同步阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">NIO（同步非阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO%EF%BC%88%E5%BC%82%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">AIO（异步非阻塞）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-text">容器</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -398,20 +513,20 @@ public class ClassEquals &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
