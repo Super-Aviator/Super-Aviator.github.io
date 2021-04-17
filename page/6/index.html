@@ -191,6 +191,519 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/" class="post-title-link" itemprop="url">工作总结-第一周</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-16 20:53:00" itemprop="dateCreated datePublished" datetime="2019-03-16T20:53:00+08:00">2019-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:04" itemprop="dateModified" datetime="2021-02-23T21:00:04+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Career/" itemprop="url" rel="index"><span itemprop="name">Career</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/03/16/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93-%E7%AC%AC%E4%B8%80%E5%91%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在军训结束之后，我顺利的度过了实习的第一周，这一周总的来说很寂寞，很空虚，也很慌，一方面是人际关系的慌，一方面是能力不足引起的恐慌，但是我觉得人的成长总是需要时间的，一切都会慢慢好起来，第一周的收货还是有很多滴，我决定工作的接下来每一周都把上一周遇到的不会的、不熟悉的技术总结一下，犯过的错误坚决不能犯第二次，还有一些比较重要的需要单独总结一下比较好,写到一起也没有关系，因为可以使用博客的搜索功能。废话不多说，开始吧。</p>
+<h1 id="MySQL中JOIN的用法"><a href="#MySQL中JOIN的用法" class="headerlink" title="MySQL中JOIN的用法"></a>MySQL中JOIN的用法</h1><p>在弄毕业实际的时候，使用到了Mybatis，其中含有一对多的映射关系，其实做好只有回想起来也没有很复杂，但是我却零零散散想了有个把星期，其中的关键就是JOIN的用法以及<collection>标签的用法。首先记录一下JOIN的用法，<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join">StackOverflow</a>上有非常详细的解答，我就直接总结一下吧（偷一下懒先）：<br><img src="https://s2.ax1x.com/2019/03/16/AZYGKf.png" alt="AZYGKf.png"></p>
+<p><img src="https://s2.ax1x.com/2019/03/16/AZY6qU.png" alt="AZY6qU.png"></p>
+<ul>
+<li><p>INNER JOIN:返回两个表都的部分。如图所示：<img src="https://s2.ax1x.com/2019/03/16/AZJyAH.png" alt="AZJyAH.png"></p>
+</li>
+<li><p>OUTER JOIN:返回两个表中都有的部分，然后加上左边和右边特有的部分<br><img src="https://s2.ax1x.com/2019/03/16/AZY7qO.png" alt="AZY7qO.png"></p>
+</li>
+<li><p>LEFT OUTER JOIN ：返回两个表中都有的部分，然后加上左边特有的部分。<br><img src="https://s2.ax1x.com/2019/03/16/AZYjJA.png" alt="AZYjJA.png"></p>
+</li>
+<li><p>RIGHT OUTER JOIN ：返回两个表中都有的部分，然后加上右边特有的部分。</p>
+</li>
+</ul>
+<p>JOIN还有很多特殊的用法，上面图中已经涉及到了，这里就不一一写了，脑阔有点疼。</p>
+<h1 id="FastJSON中的-JSONFiled注解"><a href="#FastJSON中的-JSONFiled注解" class="headerlink" title="FastJSON中的@JSONFiled注解"></a>FastJSON中的@JSONFiled注解</h1><p>FastJSON库的功能十分强大，导师说以后使用的时间也会非常多，那就先看一下非常常用的一个注解@JSONField的部分功能吧，更多的用法可以看看<a href="(https://www.w3cschool.cn/fastjson/fastjson-jsonfield.html)">文档</a></p>
+<h2 id="自定义属性序列化的顺序"><a href="#自定义属性序列化的顺序" class="headerlink" title="自定义属性序列化的顺序"></a>自定义属性序列化的顺序</h2><p>有时候前台的JSON字符串的格式是固定的，所以后台就需要对POJO序列化的顺序进行控制，可以在成员变量上使用@JSONField(ordinal = 1)来对属性的序列化进行控制。</p>
+<h2 id="将数值类型序列化为字符类型"><a href="#将数值类型序列化为字符类型" class="headerlink" title="将数值类型序列化为字符类型"></a>将数值类型序列化为字符类型</h2><p>数字类型在传递到前台时可能会出现溢出，导致出错，所以一般可以把数值类型序列化为字符类型，可以在数值类型的成员变量上使用@JSONField(serializeUsing = ToStringSerializer.class)来控制</p>
+<blockquote>
+<p>serializeUsing 这个属性是在fastjson 1.2.16后才有的。要检查下fastJson的版本</p>
+</blockquote>
+<h2 id="将对象属性序列化为指定的名称"><a href="#将对象属性序列化为指定的名称" class="headerlink" title="将对象属性序列化为指定的名称"></a>将对象属性序列化为指定的名称</h2><p>有时对象的属性并不能序列化为指定的名字，此时就需要使用注解来指定序列化之后的名字，可以使用@JSONField(name=”name”),同样此注解可以使用在geter或者seter方法上，也可以使用在成员变量上，对序列化进行不同控制。</p>
+<h2 id="对时间进行格式化"><a href="#对时间进行格式化" class="headerlink" title="对时间进行格式化"></a>对时间进行格式化</h2><p>对于Data时间格式，可以使用@JSONField(format=”yyyyMMdd”)来格式化时间</p>
+<p>##使用serialize/deserialize指定字段不序列化</p>
+<pre><code class="java">public class A &#123;
+      @JSONField(serialize=false)
+      public Date date;
+ &#125;
+
+ public class A &#123;
+      @JSONField(deserialize=false)
+      public Date date;
+ &#125;
+</code></pre>
+<p>更多的用法可以<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/fastjson/fastjson-jsonfield.html">查看文档</a></p>
+<h1 id="Mybatis中JavaType和JDBCType的对应"><a href="#Mybatis中JavaType和JDBCType的对应" class="headerlink" title="Mybatis中JavaType和JDBCType的对应"></a>Mybatis中JavaType和JDBCType的对应</h1><p>在弄毕设的时候，数据库中的BIGINT会被映射为Java的Long类型，但是在今天做映射的时候，BIGINT且被映射为Integer类型，具体的原因我还没弄清除，可能是BIGINT（20）由于数字太小进行了自动转换，等下次遇到的时候再去研究一下，先记录下JDBCType和JavaType数据类型的对应关系：</p>
+<pre><code class="JAVA">  JDBCType            JavaType
+    CHAR                String
+    VARCHAR             String
+    LONGVARCHAR         String
+    NUMERIC             java.math.BigDecimal
+    DECIMAL             java.math.BigDecimal
+    BIT                 boolean
+    BOOLEAN             boolean
+    TINYINT             byte
+    SMALLINT            short
+    INTEGER             int
+    BIGINT              long
+    REAL                float
+    FLOAT               double
+    DOUBLE              double
+    BINARY              byte[]
+    VARBINARY           byte[]
+    LONGVARBINARY       byte[]
+    DATE                java.sql.Date
+    TIME                java.sql.Time
+    TIMESTAMP           java.sql.Timestamp
+    CLOB                Clob
+    BLOB                Blob
+    ARRAY               Array
+    DISTINCT            mapping of underlying type
+    STRUCT              Struct
+    REF                 Ref
+    DATALINK            java.net.URL[color=red][/color]
+    ```
+    
+# Mybatis中&lt; collection &gt;标签的使用
+在做课设处理映射时，使用到了一对多的映射，先还原场景，然后看一看&lt; collection &gt;标签的用法。
+
+## 表结构：
+user_info(用户信息表)：
+![AeUPfJ.png](https://s2.ax1x.com/2019/03/17/AeUPfJ.png)
+packet_info(用户分组信息，每个分组保存了用户的好友)：
+![AeUMfH.png](https://s2.ax1x.com/2019/03/17/AeUMfH.png)
+user_packet_info(用户所建的分组)：
+![AeUt78.png](https://s2.ax1x.com/2019/03/17/AeUt78.png)
+packet_user_info(分组中保存的好友)：
+![AeUdhQ.png](https://s2.ax1x.com/2019/03/17/AeUdhQ.png)
+
+## 所要是实现的功能
+项目中所要实现的功能是查询某一个user_id的所有分组下的好友，返回的主要部分JSON格式需要如下：
+
+```text
+&#123;    //好友列表
+    &quot;friend&quot;: [&#123;
+      &quot;groupname&quot;: &quot;前端码屌&quot; //好友分组名
+      ,&quot;id&quot;: 1 //分组ID
+      ,&quot;list&quot;: [&#123; //分组下的好友列表
+        &quot;username&quot;: &quot;贤心&quot; //好友昵称
+        ,&quot;id&quot;: &quot;100001&quot; //好友ID
+        ,&quot;avatar&quot;: &quot;a.jpg&quot; //好友头像
+        ,&quot;sign&quot;: &quot;这些都是测试数据，实际使用请严格按照该格式返回&quot; //好友签名
+        ,&quot;status&quot;: &quot;online&quot; //若值为offline代表离线，online或者不填为在线
+      &#125;, …… ]
+    &#125;, …… ]
+    
+&#125;
+</code></pre>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>ResultMap:</p>
+<pre><code class="xml">&lt;select id=&quot;SelectFriendInfo&quot; resultMap=&quot;FriendInfoResultMap&quot;&gt;
+        SELECT packet_name  ,C.packet_id
+        FROM user_packet_info AS A
+        INNER JOIN packet_info AS C ON A.packet_id=C.packet_id
+        WHERE A.user_id=#&#123;id&#125;;
+    &lt;/select&gt;
+
+    &lt;select id=&quot;SelectUserFriend&quot; resultType=&quot;FriendInfo&quot;&gt;
+        SELECT E.user_id AS id,username,sign,avatar,status
+        FROM user_packet_info AS A
+        INNER JOIN packet_user_info AS E ON A.packet_id=E.packet_id
+        INNER JOIN user_info AS B ON E.user_id=B.user_id AND B.user_id!=A.user_id
+        WHERE E.packet_id=#&#123;id&#125;;
+    &lt;/select&gt;
+
+    &lt;resultMap id=&quot;FriendInfoResultMap&quot; type=&quot;PacketInfo&quot;&gt;
+        &lt;constructor&gt;
+            &lt;idArg column=&quot;packet_id&quot; javaType=&quot;Long&quot;/&gt;
+            &lt;arg column=&quot;packet_name&quot; javaType=&quot;String&quot;/&gt;
+        &lt;/constructor&gt;
+        &lt;collection property=&quot;list&quot; ofType=&quot;FriendInfo&quot; javaType=&quot;ArrayList&quot; column=&quot;packet_id&quot; select=&quot;SelectUserFriend&quot;&gt;
+            &lt;id column=&quot;id&quot; javaType=&quot;Long&quot;/&gt;
+            &lt;result  column=&quot;username&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;sign&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;status&quot; javaType=&quot;String&quot;/&gt;
+            &lt;result  column=&quot;avatar&quot; javaType=&quot;String&quot;/&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;
+</code></pre>
+<p>其中的&lt; collection &gt;中，需要使用一个column属性，将上层的packet_id传递给下层的查询语句作为参数，association同样也需要。而且不能将两个SELECT合并为一个查询语句。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">JUnit基础用法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-01 16:05:00" itemprop="dateCreated datePublished" datetime="2019-02-01T16:05:00+08:00">2019-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-23 21:00:06" itemprop="dateModified" datetime="2021-02-23T21:00:06+08:00">2021-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/01/JUnit%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="JUnit4和JUnit5常用注解-Annotations"><a href="#JUnit4和JUnit5常用注解-Annotations" class="headerlink" title="JUnit4和JUnit5常用注解(Annotations)"></a>JUnit4和JUnit5常用注解(Annotations)</h1><ul>
+<li><p>@BeforeClass(等价于JUnit5中的@BeforeAll)<br>该注解作用于方法之上，含有此注解的方法在<strong>所有方法执行之前</strong>执行，方法必须使用<code>public static void</code>修饰，不能有参数，通常用来加载资源或配置文件。</p>
+</li>
+<li><p>@BeforeClass(等价于JUnit5中的@AfterAll)<br>该注解作用于方法之上，含有此注解的方法在<strong>所有方法执行之后</strong>执行，方法必须使用<code>public static void</code>修饰，不能有参数，通常用来释放资源。</p>
+</li>
+<li><p>@Before(等价于JUnit5中的@BeforeEach)<br>该注解作用于方法之上，含有此注解的方法在**每个测试方法(@Test注解的方法)**执行之后执行，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@After(等价于JUnit5中的@AfterEach)<br>该注解作用于方法之上，含有此注解的方法在**每个测试方法(@Test注解的方法)**执行之后执行，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@Test<br>该注解作用于方法之上，表示该方法是一个<strong>测试方法</strong>，方法必须使用<code>public void</code>修饰，不能有参数。</p>
+</li>
+<li><p>@Ignore(等价于JUnit5中的@Disable)<br>该注解作用于@Test注解的测试方法之上，表示忽略此测试方法，此测试方法不会被执行，此注解不能作用在类上。</p>
+</li>
+</ul>
+<ul>
+<li>@DisplayName（JUnit5新增）<br>该注解可作用于类或者方法上，可以更改测试类的显示名称，例如使用<code>@DisplayName(&quot;Aviator&quot;)</code>则测试类名显示为Aviator，通过@DisplayName，开发人员可以为每个测试用例添加更具体的名字，更容易传达用例所要测试的内容。</li>
+</ul>
+<hr>
+<p>常用注释表(<a target="_blank" rel="noopener" href="https://blog.csdn.net/winteroak/article/details/80591598">CSDN博客原表格地址</a>)：</p>
+<table>
+<thead>
+<tr>
+<th>JUnit4</th>
+<th>JUnit5</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Test</td>
+<td>@Test</td>
+<td>表示该方法是一个测试方法。JUnit5与JUnit 4的@Test注解不同的是，它没有声明任何属性，因为JUnit Jupiter中的测试扩展是基于它们自己的专用注解来完成的。这样的方法会被继承，除非它们被覆盖；</td>
+</tr>
+<tr>
+<td>@BeforeClass</td>
+<td>@BeforeAll</td>
+<td>表示使用了该注解的方法应该在当前类中所有使用了@Test @RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之前 执行；</td>
+</tr>
+<tr>
+<td>@AfterClass</td>
+<td>@AfterAll</td>
+<td>表示使用了该注解的方法应该在当前类中所有使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之后执行；</td>
+</tr>
+<tr>
+<td>@Before</td>
+<td>@BeforeEach</td>
+<td>表示使用了该注解的方法应该在当前类中每一个使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之前 执行</td>
+</tr>
+<tr>
+<td>@After</td>
+<td>@AfterEach</td>
+<td>表示使用了该注解的方法应该在当前类中每一个使用了@Test、@RepeatedTest、@ParameterizedTest或者@TestFactory注解的方法之后 执行</td>
+</tr>
+<tr>
+<td>@Ignore</td>
+<td>@Disabled</td>
+<td>用于禁用一个测试类或测试方法</td>
+</tr>
+<tr>
+<td>@Category</td>
+<td>@Tag</td>
+<td>用于声明过滤测试的tags，该注解可以用在方法或类上；类似于TesgNG的测试组或JUnit 4的分类。</td>
+</tr>
+<tr>
+<td>@Parameters</td>
+<td>@ParameterizedTest</td>
+<td>表示该方法是一个参数化测试</td>
+</tr>
+<tr>
+<td>@RunWith</td>
+<td>@ExtendWith</td>
+<td>@Runwith就是放在测试类名之前，用来确定这个类怎么运行的</td>
+</tr>
+<tr>
+<td>@Rule</td>
+<td>@ExtendWith</td>
+<td>Rule是一组实现了TestRule接口的共享类，提供了验证、监视TestCase和外部资源管理等能力</td>
+</tr>
+<tr>
+<td>@ClassRule</td>
+<td>@ExtendWith</td>
+<td>@ClassRule用于测试类中的静态变量，必须是TestRule接口的实例，且访问修饰符必须为public。</td>
+</tr>
+</tbody></table>
+<h1 id="JUnit4和5中的断言（Assertion）"><a href="#JUnit4和5中的断言（Assertion）" class="headerlink" title="JUnit4和5中的断言（Assertion）"></a>JUnit4和5中的断言（Assertion）</h1><p><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-junit5/">点击查看原文地址</a><br>断言（assertions）是测试方法中的核心部分，用来对测试需要满足的条件进行验证。这些断言方法都是 <code>org.junit.jupiter.api.Assertions</code> 的静态方法。JUnit 5 内置的断言可以分成如下几个类别：</p>
+<hr>
+<p>第一类是简单断言，用来对单个值进行简单的验证，常用的方法见表：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>assertEquals</td>
+<td>判断两个对象或两个原始类型是否相等</td>
+</tr>
+<tr>
+<td>assertNotEquals</td>
+<td>判断两个对象或两个原始类型是否不相等</td>
+</tr>
+<tr>
+<td>assertSame</td>
+<td>判断两个对象引用是否指向同一个对象</td>
+</tr>
+<tr>
+<td>assertNotSame</td>
+<td>判断两个对象引用是否指向不同的对象</td>
+</tr>
+<tr>
+<td>assertTrue</td>
+<td>判断给定的布尔值是否为 true</td>
+</tr>
+<tr>
+<td>assertFalse</td>
+<td>判断给定的布尔值是否为 false</td>
+</tr>
+<tr>
+<td>assertNull</td>
+<td>判断给定的对象引用是否为 null</td>
+</tr>
+<tr>
+<td>assertNotNull</td>
+<td>判断给定的对象引用是否不为 null</td>
+</tr>
+</tbody></table>
+<p>在<strong>JUnit5</strong>中这些方法都有多个重载方法(JUnit4不支持)，可以提供额外的消息来作为断言不满足时的提示消息(Message)，还可以接受 Java 8 中的函数式编程接口 Supplier来获取要判断的值和显示的消息。下面代码给出了简单断言的使用示例:</p>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;simple assertion&quot;)
+    public void simple() &#123;
+        assertEquals(3, 1 + 2, &quot;simple math&quot;);//接受String作为提示
+        assertEquals(1,2-1,()-&gt;&quot;simple math&quot;);//接受Java8的Supplier接口作为提示
+        assertNotEquals(3, 1 + 1);
+
+        assertNotSame(new Object(), new Object());
+        Object obj = new Object();
+        assertSame(obj, obj);
+        assertSame(obj, obj,&quot;not same new Object()&quot;);//接受String作为提示
+        assertSame(obj, obj,()-&gt;&quot;not same new Object()&quot;);//接受Java8的Supplier接口
+
+        assertFalse(1 &gt; 2);
+        assertTrue(1 &lt; 2);
+
+        assertNull(null);
+        assertNotNull(new Object());
+ 
+ ...
+    &#125;
+</code></pre>
+<hr>
+<p>第二类是通过 assertArrayEquals 方法来判断两个对象或原始类型的<strong>数组</strong>是否相等,或者通过assertIterableEquals方法来判断两个<strong>可迭代对象</strong>是否相等，如下所示：</p>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;array assertion&quot;)
+    public void array() &#123;
+        assertArrayEquals(new int[]&#123;1, 2&#125;, new int[] &#123;1, 2&#125;);//同样也可以指定消息或者使用Supplier接口。
+    &#125;
+    
+    
+    @Test
+    @DisplayName(&quot;iterable assertion&quot;)
+    public void iterable() &#123;
+        assertIterableEquals(Arrays.asList(1,2,3),Arrays.asList(1,2,3),&quot;Iterable Not Equal&quot;);
+    &#125;
+</code></pre>
+<hr>
+<p>第三类是通过assertAll方法来判断一组断言是否满足。assertAll 方法接受多个<code>org.junit.jupiter.api.Executable（方法签名为void-&gt;void）</code>函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言，assertAll的第一个参数是标题（heading），表示一组Executtable共有的属性，如下代码所示：</p>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;assert all&quot;)
+    public void all() &#123;
+        assertAll(&quot;Math&quot;,
+                () -&gt; assertEquals(2, 1 + 1),
+                () -&gt; assertTrue(1 &gt; 0)
+        );
+    &#125;
+</code></pre>
+<hr>
+<p>第四类是通过 assertThrows 或 expectThrows 来判断是否抛出期望的异常类型。两个方法的参数都是所期望的异常类型和对应的 Executable 接口的实现对象，区别在于 expectThrows 方法会<strong>返回抛出的异常对象</strong>。在下面代码中，1/0 会抛出 ArithmeticException 异常，下面代码使用assertThrows 用来验证这一点。</p>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;throws exception&quot;)
+    public void exception() &#123;
+        assertThrows(ArithmeticException.class, () -&gt; System.out.println(1 / 0));
+    &#125;
+</code></pre>
+<hr>
+<p>第五类是fail方法，用来直接使一个测试方法失败，如下代码所示：</p>
+<pre><code class="java">    @Test
+    @DisplayName(&quot;fail&quot;)
+    public void shouldFail() &#123;
+        fail(&quot;This should fail&quot;);
+    &#125;
+</code></pre>
+<h1 id="JUnit中测试异常-Exception-和超时-Timeout"><a href="#JUnit中测试异常-Exception-和超时-Timeout" class="headerlink" title="JUnit中测试异常(Exception)和超时(Timeout)"></a>JUnit中测试异常(Exception)和超时(Timeout)</h1><p>在<strong>JUnit4</strong>中（JUnit5不支持），可以对@Test注解进行扩展，使用expected和timeout属性，以便支持测试方法是否抛出特定异常和检测方法的运行时间。</p>
+<ul>
+<li><p>@Test(expected=xx.class)：xx.class表示想要抛出的异常类，表示测试的方法抛出此异常时，认为是正常的测试通过的，如果没有抛出特定异常，则测试不通过。</p>
+</li>
+<li><p>@Test(timeout=毫秒数)：测试方法执行时间是否符合预期，如果方法运行时间超过给定的毫秒数，则测试不通过，否则测试通过，一般用来测试方法的性能。</p>
+</li>
+</ul>
+<p>JUnit5中可以使用断言来测试异常和超时,,以下方法都有一个参数为<code>org.junit.jupiter.api.Executable（方法签名为void-&gt;void）</code>，同时可以指定一个String类型的message或者使用函数式接口Supplier来提供message,如下所示：</p>
+<ul>
+<li><p>assertThrows：断言所提供的可执行代码块的执行会引发expectedType的异常并返回异常。如果没有抛出异常，或者抛出了不同类型的异常，则此方法将失败。如果不想对异常实例执行其他检查，只需忽略返回值。</p>
+</li>
+<li><p>assertDoesNotThrow：断言所提供的可执行代码块的执行不会引发expectedType的异常并返回异常。如果抛出异常，则此方法将失败。</p>
+</li>
+<li><p>expectThrows：和assertThrows功能相同，区别在于 expectThrows 方法会返回抛出的异常对象。</p>
+</li>
+<li><p>assertTimeout：断言在超出给定超时之前，所提供的可执行代码块的执行完成。注意：可执行代码块将在与调用代码相同的线程中执行。因此，如果超过超时，则不会抢先中止执行可执行代码块，<strong>即如果发生超时方法不会立即结束</strong>。</p>
+</li>
+<li><p>assertTimeoutPreemptively：断言在超出给定超时之前，所提供的可执行代码块的执行完成。注意：可执行代码块将在与调用代码不同的线程中执行。此外，如果超时，则可抢占地执行可执行代码块，<strong>即如果超时方法会立即结束</strong>。</p>
+</li>
+</ul>
+<h1 id="参数化测试（Parameters）"><a href="#参数化测试（Parameters）" class="headerlink" title="参数化测试（Parameters）"></a>参数化测试（Parameters）</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2019/01/17/Intellij-IDEA%E4%B8%AD%E6%B7%BB%E5%8A%A0JUnit%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3154,644 +3667,6 @@ public class RootConfig &#123;
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B-Singleton-%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B-Singleton-%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式-单例(Singleton)模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-05 19:57:00" itemprop="dateCreated datePublished" datetime="2018-09-05T19:57:00+08:00">2018-09-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:10" itemprop="dateModified" datetime="2021-02-23T21:00:10+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DesignPattern/" itemprop="url" rel="index"><span itemprop="name">DesignPattern</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B-Singleton-%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B-Singleton-%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在编程时，对于一些敏感的资源，我们需要限制类的对象的个数为一个，例如电视机的遥控器，Mybatis中的SqlSessionFactory对象等，此时就需要使用单例设计模式，虽然不是常常使用单例模式，但是依旧值得我们深入研究。</p>
-<p>值得一提的是，可能有人会觉得使用静态全局变量可以替换单例模式，其实使用静态全局变量的这种方式是有缺点的，例如，全局变量需要在程序一开始就创建好对象，万一这个对象非常消耗资源，而程序在执行过程中又一直没有用到它，这就形成资源的浪费。</p>
-<h2 id="单例模式定义"><a href="#单例模式定义" class="headerlink" title="单例模式定义"></a>单例模式定义</h2><p>单例模式定义如下：</p>
-<blockquote>
-<p>确保一个类只有一个实例，并提供一个全局访问点。</p>
-</blockquote>
-<h2 id="常用的单例模式模板"><a href="#常用的单例模式模板" class="headerlink" title="常用的单例模式模板"></a>常用的单例模式模板</h2><p>常见的单例模式如下，此方式也叫作<strong>懒汉模式</strong>，是指在getInstance()方法运行时才会创建我们的单例对象：</p>
-<pre><code class="java">public class Singleton &#123;
-    private static Singleton instance;
-
-    private Singleton() &#123;
-    &#125;
-
-    public Singleton getInstance() &#123;
-        if (instance == null)
-            instance = new Singleton();
-        return instance;
-    &#125;
-&#125;
-</code></pre>
-<p>如上的代码中，我们有一个静态的全局变量instance,并将构造器设置为private修饰的，然后提供一个访问instance的唯一方法getInstance()，在getInstance()中，首次判断instance为空，则会创建一个唯一的对象，第二次调用getInstance()方法时，则直接返回已经创建的instance。</p>
-<p>注意，当处于多线程时，上面的方法可能会得到多个Singleton实例，例如，线程一调用getInstance()方法并进行判断，在此时线程二同样调用getInstance()方法并进行判断，由于这时都没有创建Singleton实例，所以instance都判断为空，两个线程会同时创建Singleton对象，此时也就是拥有了两个Singleton实例。</p>
-<h2 id="使用同步方法解决多线程问题"><a href="#使用同步方法解决多线程问题" class="headerlink" title="使用同步方法解决多线程问题"></a>使用同步方法解决多线程问题</h2><p>可以对getInstance()方法进行同步来解决多线程问题，对方法使用synchronized关键字修饰可以防止两个线程同时执行同一个方法，从而解决线程中的同步问题：</p>
-<pre><code class="java">public class Singleton &#123;
-    private Singleton instance;
-
-    private Singleton() &#123;
-    &#125;
-
-    public synchronized Singleton getInstance() &#123;
-        if (instance == null)
-            instance = new Singleton();
-        return instance;
-    &#125;
-&#125;
-</code></pre>
-<p>但是对方法进行同步的解决方案也是有缺陷的，因为同步一个方法会使程序执行效率下降100倍，而且我们只需要在第一次运行getInstance()方法时才需要同步，以后调用getInstance()不需要进行同步，但是上面的代码中每次调用都会进行同步，势必会造成性能损失。</p>
-<h2 id="使用急切实例化解决多线程问题"><a href="#使用急切实例化解决多线程问题" class="headerlink" title="使用急切实例化解决多线程问题"></a>使用急切实例化解决多线程问题</h2><p>急切实例化也叫作饿汉模式，其实现方式和懒汉模式类似，只是将创建单例对象的时间提前到类加载的时候，而省去getInstance()方法中的对引用为null的判断。</p>
-<pre><code class="java">public class Singleton &#123;
-    private Singleton instance=new Singleton();
-
-    private Singleton() &#123;
-    &#125;
-
-    public Singleton getInstance() &#123;
-        return instance;
-    &#125;
-&#125;
-</code></pre>
-<p>因为在类加载时就创建了单例对象，所以就不存在线程同步的问题。但是在单例对象创建非常消耗资源，而程序在执行过程中又一直没有用到它时，这就形成资源的浪费。</p>
-<h2 id="使用双重检查加锁解决多线程问题"><a href="#使用双重检查加锁解决多线程问题" class="headerlink" title="使用双重检查加锁解决多线程问题"></a>使用双重检查加锁解决多线程问题</h2><p>还可以使用一种更加高级的方式解决多线程中的同步问题，这就是<strong>双重检查加锁</strong>的方式，其实现如下:</p>
-<pre><code class="java">public class Singleton &#123;
-    private volatile Singleton instance;
-
-    private Singleton() &#123;
-    &#125;
-
-    public Singleton getInstance() &#123;
-        if (instance == null)&#123;
-            synchronized(Singleton.class)&#123;
-                if(instance==null)
-                instance=new Singleton();
-            &#125;
-        &#125;
-        return instance;
-    &#125;
-&#125;
-</code></pre>
-<p>上面的代码中，首先将instance引用设置为volatile，这是为了解决可视性问题，然后在getInstance()方法中，首先对instance引用进行判空，如果为空，则进入同步快中，再次判空，如果此时依旧为空，则创建单例对象，在第二次调用时，就不会再次进入同步块中，也就解决了性能的问题。</p>
-<p>上面的代码中，使用volatile关键字的原因是，当两个方法同时准备进入同步块时，会有一个进程阻塞，另外一个进程进入，然后进入的同步块的线程将会创建单例对象，然后退出进程同步块，然后另外一个线程进入同步块，如果不将其设置为volatile，后进入的线程会看不到已经被创建的单例对象，就会再次创建一个对象，也就无法达到单例的效果，并获得两个单例对象。</p>
-<h2 id="使用静态内部类"><a href="#使用静态内部类" class="headerlink" title="使用静态内部类"></a>使用静态内部类</h2><p>可以使用静态内部类来实现单例模式，静态内部类在初次调用时才会进行初始化，可以避免饿汉模式资源浪费问题，而且由于是静态成员，所以可以防止并发的同步问题：</p>
-<pre><code class="java">public class Singleton&#123;
-    private Singleton()&#123;&#125;
-    
-    private static class SingletonInnerClass&#123;
-        private static Singleton instance=new Singleton();
-    &#125;
-    
-    public static Singleton getInstance()&#123;
-        return SingletonInnerClass.instance;
-    &#125;
-&#125;
-</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2018/09/02/Spring-bean%E9%AB%98%E7%BA%A7%E8%A3%85%E9%85%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="熊乾坤">
-      <meta itemprop="description" content="熊乾坤的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孤独飞行员">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/02/Spring-bean%E9%AB%98%E7%BA%A7%E8%A3%85%E9%85%8D/" class="post-title-link" itemprop="url">Spring-bean高级装配</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-02 20:45:00" itemprop="dateCreated datePublished" datetime="2018-09-02T20:45:00+08:00">2018-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:00" itemprop="dateModified" datetime="2021-02-23T21:00:00+08:00">2021-02-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/09/02/Spring-bean%E9%AB%98%E7%BA%A7%E8%A3%85%E9%85%8D/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/09/02/Spring-bean%E9%AB%98%E7%BA%A7%E8%A3%85%E9%85%8D/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在学习了基本的装配bean的方式之后，接下来就是bean高级装配的知识了，包括了Spring profile,条件化创建bean,自动装配与歧义性，bean作用域，SpringEL表达式等。</p>
-<h2 id="Spring-Profile"><a href="#Spring-Profile" class="headerlink" title="Spring Profile"></a>Spring Profile</h2><p>在项目的开发，测试，生产环境中，相同类型的bean的创建方式有时并不相同，我们必须要有一种方法来在不同的环境下创建不相同的bean。这就是Spring Profile所应用的地方，可以在自动装配，java类配置以及xml中使用Spring Profile条件化配置bean的产生方式，只需要加上@Profile注解即可，需要注意的是，<strong>没有任何@Profile注解的bean始终都会被创建，不管激活那个Profile</strong> 如下所示：</p>
-<h4 id="使用-Profile注解"><a href="#使用-Profile注解" class="headerlink" title="使用@Profile注解"></a>使用@Profile注解</h4><ul>
-<li><p>自动装配方式使用Profile注解</p>
-<pre><code class="java">@Component
-@Profile(&quot;dev&quot;)//设置此bean的对应的Profile为开发环境
-public class PrintWorldProfileBean implements ProfileBean &#123;
-   private String title;
-
-  public PrintWorldProfileBean(String title)&#123;
-      title=title;
-  &#125;
-
-  @Override
-  public void doWork() &#123;
-      System.out.println(&quot;World&quot;);
-  &#125;
-&#125;
-</code></pre>
-</li>
-<li><p>在java类配置方式中使用Profile</p>
-<pre><code class="java">@Configuration
-@ComponentScan(basePackageClasses = &#123;PrintWorldProfileBean.class&#125;)
-@Profile(&quot;dev&quot;)//类级别的注解
-public class ProfileBeanConfig &#123;
-
-  @Bean
-  @Profile(&#123;&quot;beta  &quot;,&quot;dev&quot;&#125;) //配置在测试和开发环境中都有效
-  @Profile(&quot;beta&quot;)//测试环境
-  public PrintHelloProfileBean getPrintHelloProfileBean()&#123;
-      return new PrintHelloProfileBean();
-  &#125;
-
-  @Bean
-  @Profile(&quot;dev&quot;)//生产环境
-  public PrintWorldProfileBean getPrintWorldProfileBean()&#123;
-      return new PrintWorldProfileBean();
-  &#125;
-&#125;
-</code></pre>
-<p>基于java类配置的方式可以使用类级别或者方法级别的Profile注解。</p>
-</li>
-<li><p>基于xml文件的配置方式使用Profile</p>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-     xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-     xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
-     xmlns:c=&quot;http://www.springframework.org/schema/c&quot;
-     xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-     
-     xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans 
-     http://www.springframework.org/schema/beans/springbeans.xsd 
-     http://www.springframework.org/schema/context 
-     http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
-
-  &lt;!--开发环境的Profile--&gt;
-  &lt;beans profile=&quot;dev&quot;&gt;
-      &lt;bean id=&quot;printHelloProfileBean&quot; 
-      class=&quot;chapter3.profile.PrintHelloProfileBean&quot; /&gt;
-  &lt;/beans&gt;
-  
-  &lt;!--生产环境的Profile--&gt;
-  &lt;beans profile=&quot;beta&quot;&gt;
-      &lt;bean id=&quot;printWorldProfileBean&quot; 
-      class=&quot;chapter3.profile.PrintWorldProfileBean&quot; /&gt;
-  &lt;/beans&gt;
-&lt;/beans&gt;
-</code></pre>
-</li>
-</ul>
-<p>xml中使用Profile必须在<code>&lt;beans&gt;</code>元素的profile属性中使用。</p>
-<h4 id="激活Profile"><a href="#激活Profile" class="headerlink" title="激活Profile"></a>激活Profile</h4><p>Spring中要确定那个profile处于激活状态，依赖于两个独立的属性，<code>spring.profiles.active</code>和<code>spring.profiles.default</code>,首先查找<code>spring.profiles.active</code>，如果没有设置，则查找<code>spring.profiles.default</code>，如果都没有设置，则没有激活profile。</p>
-<p>激活有几种方法，《Spring in action》作者推荐了一种激活profile的方式，如下所示：</p>
-<ul>
-<li><p>在DispatcherServlet中配置激活的Profile</p>
-<pre><code class="xml">&lt;servlet&gt;
-      &lt;servlet-name&gt;scdp-dispatcher&lt;/servlet-name&gt;
-      &lt;servlet-class&gt;
-      org.springframework.web.servlet.DispatcherServlet
-      &lt;/servlet-class&gt;
-      &lt;init-param&gt;
-          &lt;param-name&gt;spring.profiles.default&lt;/param-name&gt;
-          &lt;param-value&gt;dev&lt;/param-value&gt;
-      &lt;/init-param&gt;
-      &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
-&lt;/servlet&gt;
-</code></pre>
-</li>
-<li><p>在ContextLoaderListener中激活Profile</p>
-<pre><code class="xml">&lt;context-param&gt;
-      &lt;param-name&gt;spring.profiles.default&lt;/param-name&gt;
-      &lt;param-value&gt;dev&lt;/param-value&gt;
-&lt;/context-param&gt;
-</code></pre>
-</li>
-</ul>
-<p>如果使用javaConfig配置的话，则在AbstractAnnotationConfigDispatcherServletInitializer的子类里 重写onStartup方法，如下：</p>
-<pre><code class="java">@Override
-    public void onStartup(ServletContext servletContext) throws ServletException &#123;
-        super.onStartup(servletContext);
-        servletContext.setInitParameter(&quot;spring.profiles.active&quot;, &quot;live&quot;);
- 
-    //Set multiple active profile
-    //servletContext.setInitParameter(&quot;spring.profiles.active&quot;, &quot;dev, testdb&quot;);
-    &#125;
-</code></pre>
-<p>亦或是重写createRootApplicationContext方法，在context创建时将环境变量传入：</p>
-<pre><code class="java">      //如果RootApplicationContext需要加载带有@Profile的bean时，
-      例如spring的ApplicationContext配置类
-    @Override
-    protected WebApplicationContext createRootApplicationContext() &#123;
- 
-        WebApplicationContext context =
-                     (WebApplicationContext)super.createRootApplicationContext();
-            ((ConfigurableEnvironment)context.getEnvironment()).setActiveProfiles(&quot;live&quot;);
- 
-        //Set multiple active profiles
-        //((ConfigurableEnvironment)context.getEnvironment())
-                //          .setActiveProfiles(new String[]&#123;&quot;live&quot;, &quot;testdb&quot;&#125;);
- 
-            return context;
- 
-    &#125;
- 
-    //如果ServletApplicationContext需要加载带有@Profile的bean时，例如springMVC的配置类
-    /*
-    @Override
-    protected WebApplicationContext createServletApplicationContext() &#123;
-        WebApplicationContext context =
-                     (WebApplicationContext)super.createServletApplicationContext();
-            ((ConfigurableEnvironment)context.getEnvironment()).setActiveProfiles(&quot;dev&quot;);
-            return context;
-    &#125;*/
-</code></pre>
-<h2 id="Conditional-条件化的bean"><a href="#Conditional-条件化的bean" class="headerlink" title="Conditional 条件化的bean"></a>Conditional 条件化的bean</h2><p>有时需要通过确认某一个环境变量存在时才创建特定的bean，此时需要使用@Conditional注解来实现，他可以用到@Bean注解的方法上，如果给定的条件计算结果为ture,则创建这个bean,为false则不创建这个bean。<br>使用方法如下：</p>
-<pre><code class="java">import org.springframework.context.annotation.*;
-
-@Configuration
-
-public class ProfileBeanConfig &#123;
-
-    @Bean
-    @Conditional(MagicExistsCondition.class)//条件化的bean
-    public PrintHelloProfileBean getPrintHelloProfileBean()&#123;
-        return new PrintHelloProfileBean();
-    &#125;
-
-    @Bean
-    public PrintWorldProfileBean getPrintWorldProfileBean()&#123;
-        return new PrintWorldProfileBean();
-    &#125;
-&#125;
-</code></pre>
-<p>设置给@Conditional的类需要实现Condition接口，并通过接口中matches方法返回值来决定是否创建此bean了，如果为true则创建bean,为false则不创建</p>
-<pre><code class="java">import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.type.AnnotatedTypeMetadata;
-
-public class MagicExistsCondition implements Condition &#123;
-    @Override
-    public boolean matches(ConditionContext conditionContext,
-    AnnotatedTypeMetadata annotatedTypeMetadata) &#123;
-        return true;
-    &#125;
-&#125;
-</code></pre>
-<p>当然也可以通过ConditionContext 和AnnotatedTypeMetadata 参数进行更加详细的判断。</p>
-<h2 id="处理自动装配的歧义性"><a href="#处理自动装配的歧义性" class="headerlink" title="处理自动装配的歧义性"></a>处理自动装配的歧义性</h2><p>在一个接口对应有多个相同的bean时，使用自动装配将产生歧义，Spring并不知道我们是否需要装配哪个bean,就是抛出异常<code>NoUniqueBeanDefinitionException</code>,例如：</p>
-<pre><code class="java">@Component 
-public class Cake implements Dessert&#123;&#125;
-
-@Component 
-public class Cookie implements Dessert&#123;&#125;
-
-@Component 
-public class IceCream implements Dessert&#123;&#125;
-</code></pre>
-<p>如果在装配时，如下的代码会产生歧义：</p>
-<pre><code class="java">@Autowired
-public void setDessert(Dessert dessert)&#123;
-    this.dessert=dessert;
-&#125;
-</code></pre>
-<p>当产生歧义时，就需要明确告诉Spring当装配遇到歧义时需要首选某个bean或者使用限定符将可选范围缩小到只有一个bean。</p>
-<h3 id="使用-Primary解决装配歧义"><a href="#使用-Primary解决装配歧义" class="headerlink" title="使用@Primary解决装配歧义"></a>使用@Primary解决装配歧义</h3><p>@Primary注解可以和@Component或者@Bean一起使用,或者xml中<code>&lt;bean&gt;</code>元素的primary属性也可以达到相同的效果，它告诉Spring当遇到装配歧义时首选此bean.</p>
-<pre><code class="java">@@Component 
-@Primary
-public class Cake implements Dessert&#123;&#125;
-
-@Bean 
-@Primary
-public Dessert getDessert()&#123;
-return new Cake();
-&#125;
-</code></pre>
-<p>xml中使用primary属性：</p>
-<pre><code class="xml">&lt;beans &gt;
-        &lt;bean id=&quot;cake&quot; class=&quot;chapter3.qualifier.Cake&quot; primary=&quot;true&quot; /&gt;
-&lt;/beans&gt;
-</code></pre>
-<h3 id="使用限定符-Qualifier解决装配歧义"><a href="#使用限定符-Qualifier解决装配歧义" class="headerlink" title="使用限定符@Qualifier解决装配歧义"></a>使用限定符@Qualifier解决装配歧义</h3><p>Spring中还可以使用@Qualifier注解来使用限定符解决装配歧义。，它比@Primary功能更加强大。<br>在@Component注解或者@Bean注解中，可以使用@Qualifier给bean设定限定符，注意，如果不显式的为bean设定限定符，则Spring会自动赋予bean一个与ID相同的限定符，如下所示：</p>
-<p>与@Component配合使用</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import chapter3.interfaces.Dessert;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-@Component
-@Qualifier(&quot;HappyBirthday&quot;)//设置Bean的限定符
-public class Cookies implements Dessert &#123;
-&#125;
-</code></pre>
-<p>与@Bean配合使用</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class QualifierConfig &#123;
-
-    @Bean
-    @Qualifier(&quot;iceCream&quot;)
-    public IceCream getIceCream()&#123;
-        return new IceCream();
-   &#125;
-&#125;
-</code></pre>
-<p>在为bean设置限定符之后，在装配时就需要使用@Qualifier注解指明想要装配的bean的限定符:</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import chapter3.interfaces.Dessert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=QualifierConfig.class)
-public class QualifierTest &#123;
-    @Autowired //@Inject
-    @Qualifier(&quot;HappyBirthday&quot;)//使用限定符来装配指定的Bean
-    private Dessert d;
-
-    @Test
-    public void test()&#123;
-        System.out.println(d.getClass().getName());
-    &#125;
-&#125;
-</code></pre>
-<h2 id="bean作用域"><a href="#bean作用域" class="headerlink" title="bean作用域"></a>bean作用域</h2><p>Spring 中bean有四种作用域：</p>
-<ul>
-<li>单例(singleton) 在整个web应用的生命周期中，只创建一个bean的实例 (默认作用域)</li>
-<li>原型(prototype) 没次注入或者通过Spring应用上下文获取时，都创建一个实例</li>
-<li>会话(session)web应用中每个会话创建一次</li>
-<li>请求(request)web应用中每一请求创建一次</li>
-</ul>
-<p>要指定一个bean的作用域，可以在@Bean或者@Component注解下使用@Scope来指定bean作用域，可以使用常量或者字符串两种方式：</p>
-<p>自动装配</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import chapter3.interfaces.Dessert;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-
-
-@Component
-@Scope(&quot;prototype&quot;)
-@Scope(configurableBeanFactory.SCOPE_PROTOTYPE)
-public class Cake implements Dessert &#123;
-&#125;
-</code></pre>
-<p>javaConfig类</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.web.context.WebApplicationContext;
-
-@Configuration
-public class QualifierConfig &#123;
-
-    @Bean
-    @Scope(&quot;prototype&quot;)
-    @Scope(configurableBeanFactory.SCOPE_PROTOTYPE)
-    public Cake getCake()&#123;
-        return new Cake();
-    &#125;
-&#125;
-</code></pre>
-<p>在xml配置的方式中，可以使用<code>&lt;bean&gt;</code>元素的scope属性进行设置：</p>
-<pre><code class="xml">&lt;bean id=&quot;cake&quot; 
-      class=&quot;chapter3.qualifier.Cake&quot;
-    scope=&quot;session&quot; /&gt;
-</code></pre>
-<h3 id="会话和请求两个特殊的作用域"><a href="#会话和请求两个特殊的作用域" class="headerlink" title="会话和请求两个特殊的作用域"></a>会话和请求两个特殊的作用域</h3><p>如果要将一个会话或者请求作用域的bean注入到一个单例模式的bean中，就会出现问题，比如说，ShoppingCart为商城中的购物车，为会话作用域，而StorageService为保存购物车的内容，为单例模式，我们需要将一个ShoppingCart的bean注入到StorageService中去，如下所示：</p>
-<pre><code class="java">@Component
-public class StoreService&#123;
-    ShoppingCart cart;
-    
-    @AutoWired
-    public viod setShoppingCart(ShoppingCart cart)&#123;
-        this.cart=cart;
-    &#125;
-&#125;
-</code></pre>
-<p>上面的代码中，由于ShoppingCart是会话或者请求作用域，在某些时刻，由于没有请求到来，也就没有对应的ShoppingCart来注入到StoreService中去，并且每一个请求所对应的ShoppingCart都是不同的，所以Spring会在StoreService中注入一个代理，如果想要调用 ShoppingCart的方法，就会通过代理来进行访问。</p>
-<p>代理分为两种，如果ShoppingCart是一个类，Spring就需要生成一个基于类的代理，如果ShoppingCart是一个接口，Spring就需要生成一个基于接口的代理。其两种设置方式如下：</p>
-<pre><code class="java">package chapter3.qualifier;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.web.context.WebApplicationContext;
-
-@Configuration
-public class QualifierConfig &#123;
-
-    @Bean
-    //基于类的代理
-    @Scope(
-            value = WebApplicationContext.SCOPE_SESSION,
-            proxyMode = ScopedProxyMode.TARGET_CLASS
-    )
-    public Cake getCake()&#123;
-        return new Cake();
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">package chapter3.qualifier;
-
-import chapter3.interfaces.Dessert;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-
-@Component
-//基于接口的代理
-@Scope(
-        value = &quot;session&quot;,
-        proxyMode = ScopedProxyMode.INTERFACES
-)
-public class Cookies implements Dessert &#123;
-&#125;
-</code></pre>
-<p>同样在xml配置方式中，使用aop命名空间可以完成相同的功能：</p>
-<p>基于类的代理（默认）：</p>
-<pre><code>&lt;!--xml中定义scope以及proxyMode--&gt;
-    &lt;bean id=&quot;cake&quot; class=&quot;chapter4.qualifier.Cake&quot; scope=&quot;session&quot;&gt;
-        &lt;aop:scoped-proxy/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<p>基于接口的代理：</p>
-<pre><code class="xml">    &lt;!--xml中定义scope以及proxyMode--&gt;
-    &lt;bean id=&quot;cake&quot; class=&quot;chapter4.qualifier.Cake&quot; scope=&quot;session&quot;&gt;
-        &lt;aop:scoped-proxy proxy-target-class=&quot;false&quot;/&gt;
-    &lt;/bean&gt;
-</code></pre>
-<p>为了使用aop命名空间，需要在xml头部声明aop命名空间：</p>
-<pre><code class="xml">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
-       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans.xsd 
-       http://www.springframework.org/schema/context 
-       http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
-&lt;beans/&gt;
-</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -3863,7 +3738,7 @@ public class Cookies implements Dessert &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">131</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -3876,7 +3751,7 @@ public class Cookies implements Dessert &#123;
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -3973,6 +3848,61 @@ public class Cookies implements Dessert &#123;
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

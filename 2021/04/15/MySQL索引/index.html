@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"super-aviator.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="索引分类 从存储结构上来划分：BTree索引（B-Tree或B+Tree索引），Hash索引，full-index全文索引，R-Tree索引。 从应用层次来分：普通索引，唯一索引，复合索引。 根据中数据的物理顺序与键值的逻辑（索引）顺序关系：聚集索引，非聚集索引。  1中所描述的是索引存储时保存的形式，2是索引使用过程中进行的分类，两者是不同层次上的划分。不过平时讲的索引类型一般是指在应用层次的划">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL索引">
+<meta property="og:url" content="https://super-aviator.github.io/2021/04/15/MySQL%E7%B4%A2%E5%BC%95/index.html">
+<meta property="og:site_name" content="孤独飞行员">
+<meta property="og:description" content="索引分类 从存储结构上来划分：BTree索引（B-Tree或B+Tree索引），Hash索引，full-index全文索引，R-Tree索引。 从应用层次来分：普通索引，唯一索引，复合索引。 根据中数据的物理顺序与键值的逻辑（索引）顺序关系：聚集索引，非聚集索引。  1中所描述的是索引存储时保存的形式，2是索引使用过程中进行的分类，两者是不同层次上的划分。不过平时讲的索引类型一般是指在应用层次的划">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/8783d884-f264-47c7-997f-27df7ef88e0c.gif">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/d57aa23f-52c4-4079-84e8-34c5ec32b12f.gif">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/d3e88a68-0101-4e40-a16c-753cea0facdc.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/60964ea6-56dc-4c5b-8f7b-514483ee63b9.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/21f0f1f5-4089-49f2-9682-807399fe309e.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/b6ba45b8-d9d5-481a-927a-8621efca0028.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/f04fb3b6-679f-47fe-9206-fffb8573971c.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/a207c85f-b223-4d94-a9e6-204b7cd1b2ae.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/44cd8ad2-9f79-4e5f-91f1-c32c86f50a3b.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/f2ffc53f-6a81-442f-8c9a-9bba54f564cb.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/09acf9d8-8101-4591-abca-6cfd563f390e.jpeg">
+<meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/c7181e38-39a6-48b0-aec3-60eeeaeede05.jpeg">
+<meta property="article:published_time" content="2021-04-15T14:01:36.000Z">
+<meta property="article:modified_time" content="2021-04-17T06:10:54.443Z">
+<meta property="article:author" content="熊乾坤">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="索引">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/8783d884-f264-47c7-997f-27df7ef88e0c.gif">
+
+<link rel="canonical" href="https://super-aviator.github.io/2021/04/15/MySQL%E7%B4%A2%E5%BC%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MySQL索引 | 孤独飞行员</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孤独飞行员</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://super-aviator.github.io/2021/04/15/MySQL%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="熊乾坤">
+      <meta itemprop="description" content="熊乾坤的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孤独飞行员">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySQL索引
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-15 22:01:36" itemprop="dateCreated datePublished" datetime="2021-04-15T22:01:36+08:00">2021-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-17 14:10:54" itemprop="dateModified" datetime="2021-04-17T14:10:54+08:00">2021-04-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/15/MySQL%E7%B4%A2%E5%BC%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/15/MySQL%E7%B4%A2%E5%BC%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h1><ol>
+<li>从存储结构上来划分：BTree索引（B-Tree或B+Tree索引），Hash索引，full-index全文索引，R-Tree索引。</li>
+<li>从应用层次来分：普通索引，唯一索引，复合索引。</li>
+<li>根据中数据的物理顺序与键值的逻辑（索引）顺序关系：聚集索引，非聚集索引。</li>
+</ol>
+<p>1中所描述的是索引存储时保存的形式，2是索引使用过程中进行的分类，两者是不同层次上的划分。不过平时讲的索引类型一般是指在应用层次的划分。</p>
+<span id="more"></span>
+
+<ul>
+<li>普通索引：即一个索引只包含单个列，一个表可以有多个单列索引</li>
+<li>唯一索引：索引列的值必须唯一，但允许有空值</li>
+<li>复合索引：即一个索引包含多个列</li>
+<li>聚簇索引(聚集索引)：并不是一种单独的索引类型，而是一种数据存储方式。具体细节取决于不同的实现，InnoDB的聚簇索引其实就是在同一个结构中保存了B-Tree索引(技术上来说是B+Tree)和数据行。</li>
+<li>非聚簇索引：不是聚簇索引，就是非聚簇索引，在MySQL中就是二级索引。</li>
+</ul>
+<h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h1><p>我们知道Mysql中使用$B^+$树作为索引的存储结构，为什么Mysql使用$B^+$树而非hash、二叉树或者平衡二叉树（AVL树/红黑树），在《数据结构与算法分析》书中进行了总结：</p>
+<p>如果存储的数据量为一千万，这些数据不能一次性装入内存中：</p>
+<p>对于hahs而言，虽然查找速度快，但是数据是无序的，IO复杂度高；</p>
+<p>对于二叉树而言，如果存储数据是连续的，二叉树就会退化成链表，不平衡的二叉树最坏情况下具有线性的访问时间，可能需要一千万次磁盘访问，平均来看，二叉树的时间复杂度为$1.38log_2^N$，大约需要32次访问次数；</p>
+<p>而对于平衡二叉树，要求<strong>每个节点的左右子树的高度差不能超过1</strong>，最坏的情况$1.44log_2^N$不可能发生，典型的情况是接近于$log_2^N$，大约需要24次磁盘访问次数。</p>
+<p>这时如果想要将查询次数降低到常数以内，使用二叉树时不可行的，无法将访问次数降低到常数以内，这时就应该使用每个节点有M个子节点的M叉树来实现。随着M的增大，树的深度在减少，一个完全二叉树的高度大约为$ log_2^N$，而一个完全M叉树的深度为$log_M^N$，在具体实现时，需要保证树不退化成二叉树。</p>
+<p>一个阶为M的数具有以下特性：</p>
+<ul>
+<li>数据都在叶节点上。</li>
+<li>非叶节点上存储<code>M-1</code>个关键字以指示搜索方向。</li>
+<li>树的根节点或者是一片树叶，或者其儿子树在<code>2~M</code>之间。</li>
+<li>除根节点意外，所有非树节点的儿子数在<code>(M/2)+1</code>~`M`之间。</li>
+<li>所有树叶都在相同的高度，并且都有<code>(L/2)+1</code>~`L`之间个数据项，L为叶节点的数据项个数。</li>
+</ul>
+<p><strong>为什么官方建议使用自增长主键作为索引？</strong></p>
+<p>结合B+Tree的特点，自增主键是连续的，在插入过程中尽量减少页分裂，即使要进行页分裂，也只会分裂很少一部分。并且能减少数据的移动，每次插入都是插入到最后。总之就是减少分裂和移动的频率。</p>
+<p>连续插入：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/8783d884-f264-47c7-997f-27df7ef88e0c.gif" alt="029c8fbb92a04e8e983597c89f53b11d.gif"></p>
+<p>非连续插入：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/d57aa23f-52c4-4079-84e8-34c5ec32b12f.gif" alt="590f4f4afe30443f8e1977e0fddcdf7b.gif"></p>
+<h1 id="MySQL中的索引结构"><a href="#MySQL中的索引结构" class="headerlink" title="MySQL中的索引结构"></a>MySQL中的索引结构</h1><p>参考地址：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1543335">一篇文章讲透MySQL为什么要用B+树实现索引 - 云+社区 - 腾讯云 (tencent.com)</a></p>
+<p>要介绍B+树索引，就不得不提二叉查找树，平衡二叉树和B树这三种数据结构。B+树就是从他们仨演化来的。</p>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>首先，让我们先看一张图</p>
+<p>￼<img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/d3e88a68-0101-4e40-a16c-753cea0facdc.jpeg" alt="e3u2tgp31r.jpeg"></p>
+<p>从图中可以看到，我们为user表（用户信息表）建立了一个二叉查找树的索引。图中的圆为二叉查找树的节点，节点中存储了键(key)和数据(data)。</p>
+<p>趣谈编程注：在编程中我们使用下面的语句来创建索引：</p>
+<pre><code class="sql">CREATE INDEX index_name ON table_name (column_name)
+</code></pre>
+<p>键对应user表中的id，数据对应user表中的行数据。二叉查找树的特点就是<strong>任何节点的左子节点的键值都小于当前节点的键值，右子节点的键值都大于当前节点的键值。</strong> 顶端的节点我们称为根节点，没有子节点的节点我们称之为叶节点。</p>
+<p>如果我们需要查找id=12的用户信息，利用我们创建的二叉查找树索引，查找流程如下：</p>
+<ul>
+<li><ol>
+<li>将根节点作为当前节点，把12与当前节点的键值10比较，12大于10，接下来我们把当前节点&gt;的右子节点作为当前节点。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>继续把12和当前节点的键值13比较，发现12小于13，把当前节点的左子节点作为当前节点。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>把12和当前节点的键值12对比，12等于12，满足条件，我们从当前节点中取出data，即id=12,name=xm。</li>
+</ol>
+</li>
+</ul>
+<p>利用二叉查找树我们只需要3次即可找到匹配的数据。如果在表中一条条的查找的话，我们需要6次才能找到。</p>
+<h2 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h2><p>上面我们讲解了利用二叉查找树可以快速的找到数据。但是，如果上面的二叉查找树是这样的构造：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/60964ea6-56dc-4c5b-8f7b-514483ee63b9.jpeg" alt="vh2n3bb8qf.jpeg"></p>
+<p>这个时候可以看到我们的二叉查找树变成了一个链表。</p>
+<p>如果我们需要查找id=17的用户信息，我们需要查找7次，也就相当于全表扫描了。</p>
+<p>导致这个现象的原因其实是<strong>二叉查找树变得不平衡了，也就是高度太高了，从而导致查找效率的不稳定。</strong></p>
+<p>为了解决这个问题，我们需要<strong>保证二叉查找树一直保持平衡</strong>，就需要用到平衡二叉树了。</p>
+<p>趣谈编程注：平衡的意思是指树的叶子节点都差不多深，有平衡之意。</p>
+<p>平衡二叉树又称AVL树，在满足二叉查找树特性的基础上，要求<strong>每个节点的左右子树的高度差不能超过1。</strong></p>
+<p>下面是平衡二叉树和非平衡二叉树的对比：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/21f0f1f5-4089-49f2-9682-807399fe309e.jpeg" alt="dn023lz68g.jpeg"></p>
+<p>由平衡二叉树的构造我们可以发现第一张图中的二叉树其实就是一棵平衡二叉树。</p>
+<p>平衡二叉树保证了树的构造是平衡的，当我们插入或删除数据导致不满足平衡二叉树不平衡时，平衡二叉树会进行调整树上的节点来保持平衡。</p>
+<p>平衡二叉树相比于二叉查找树来说，查找效率更稳定，总体的查找速度也更快。</p>
+<h2 id="B树（二叉树）"><a href="#B树（二叉树）" class="headerlink" title="B树（二叉树）"></a>B树（二叉树）</h2><p>因为内存的易失性。一般情况下，我们都会选择将user表中的数据和索引存储在磁盘这种外围设备中。</p>
+<p>但是和内存相比，从磁盘中读取数据的速度会慢上百倍千倍甚至万倍，所以，我们应当尽量<strong>减少从磁盘中读取数据的次数。</strong> <strong>另外，从磁盘中读取数据时，都是按照磁盘块来读取的，并不是一条一条的读。</strong></p>
+<p>如果我们能把尽量多的数据放进磁盘块中，那一次磁盘读取操作就会读取更多数据，那我们查找数据的时间也会大幅度降低。</p>
+<p>如果我们用树这种数据结构作为索引的数据结构，那我们每查找一次数据就需要从磁盘中读取一个节点，也就是我们说的一个磁盘块，我们都知道平衡二叉树可是每个节点只存储一个键值和数据的。</p>
+<p>说明每个磁盘块仅仅存储一个键值和数据！当我们要存储海量的数据时可以想象到二叉树的节点将会非常多，高度也会及其高，我们查找数据时也会进行很多次磁盘IO，我们查找数据的效率将会极低！</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/b6ba45b8-d9d5-481a-927a-8621efca0028.jpeg" alt="n1qlzm4p4c.jpeg"></p>
+<p>为了解决平衡二叉树的这个弊端，我们应该寻找一种单个节点可以存储多个键值和数据的平衡树。也就是我们接下来要说的B树。</p>
+<p>B树（Balance Tree）即为平衡树的意思，下图即是一颗B树。</p>
+<p>￼<img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/f04fb3b6-679f-47fe-9206-fffb8573971c.jpeg" alt="9vzl8hb7jq.jpeg"></p>
+<p>图中的p节点为指向子节点的指针，二叉查找树和平衡二叉树其实也有，因为图的美观性，被省略了。- 图中的每个节点称为页，页就是我们上面说的磁盘块，在mysql中数据读取的基本单位都是页，所以我们这里叫做页更符合mysql中索引的底层数据结构。</p>
+<p>从上图可以看出，<strong>B树相对于平衡二叉树，每个节点存储了更多的键值(key)和数据(data)，并且每个节点拥有更多的子节点，子节点的个数一般称为阶，上述图中的B树为3阶B树，高度也会很低。</strong></p>
+<p>基于这个特性，B树查找数据读取磁盘的次数将会很少，数据的查找效率也会比平衡二叉树高很多。</p>
+<p>假如我们要查找id=28的用户信息，那么我们在上图B树中查找的流程如下：</p>
+<ul>
+<li><ol>
+<li>先找到根节点也就是页1，判断28在键值17和35之间，我们那么我们根据页1中的指针p2找到页3。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>将28和页3中的键值相比较，28在26和30之间，我们根据页3中的指针p2找到页8。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>将28和页8中的键值相比较，发现有匹配的键值28，键值28对应的用户信息为(28,bv)。</li>
+</ol>
+</li>
+</ul>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><p>B+树是对B树的进一步优化。让我们先来看下B+树的结构图：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/a207c85f-b223-4d94-a9e6-204b7cd1b2ae.jpeg" alt="xgvagflxmk.jpeg"></p>
+<p>￼根据上图我们来看下B+树和B树有什么不同。</p>
+<ol>
+<li>B+树非叶子节点上是不存储数据的，仅存储键值，而B树节点中不仅存储键值，也会存储数据。之所以这么做是因为在数据库中页的大小是固定的，innodb中页的默认大小是16KB。如果不存储数据，那么就会存储更多的键值，相应的树的阶数（节点的子节点树）就会更大，树就会更矮更胖，如此一来我们查找数据进行磁盘的IO次数有会再次减少，数据查询的效率也会更快。</li>
+</ol>
+<p>另外，B+树的阶数是等于键值的数量的，如果我们的B+树一个节点可以存储1000个键值，那么3层B+树可以存储1000×1000×1000=10亿个数据。<strong>一般根节点是常驻内存的</strong>，所以一般我们查找10亿数据，只需要2次磁？</p>
+<p>盘IO。</p>
+<ol start="2">
+<li>因为B+树索引的所有数据均存储在叶子节点，而且数据是按照顺序排列的。那么B+树使得范围查找，排序查找，分组查找以及去重查找变得异常简单。而B树因为数据分散在各个节点，要实现这一点是很不容易的。</li>
+</ol>
+<p>有心的读者可能还发现上图B+树中各个页之间是通过双向链表连接的，叶子节点中的数据是通过单向链表连接的。</p>
+<p>其实上面的B树我们也可以对各个节点加上链表。其实这些不是它们之前的区别，是因为在mysql的innodb存储引擎中，索引就是这样存储的。也就是<strong>说上图中的B+树索引就是innodb中B+树索引真正的实现方式，准确的说应该是聚集索引（聚集索引和非聚集索引下面会讲到）。</strong></p>
+<p>通过上图可以看到，在innodb中，我们通过数据页之间通过双向链表连接以及叶子节点中数据之间通过单向链表连接的方式可以找到表中所有的数据。</p>
+<p>MyISAM中的B+树索引实现与innodb中的略有不同。在MyISAM中，B+树索引的叶子节点并不存储数据，而是存储数据的文件地址。</p>
+<h2 id="聚簇索引-VS-非聚簇索引"><a href="#聚簇索引-VS-非聚簇索引" class="headerlink" title="聚簇索引 VS 非聚簇索引"></a>聚簇索引 VS 非聚簇索引</h2><p>在上节介绍B+树索引的时候，我们提到了图中的索引其实是聚集索引的实现方式。那什么是聚集索引呢？</p>
+<p>在MySQL中，B+树索引按照存储方式的不同分为<strong>聚集索引</strong>和<strong>非聚集索引</strong>。</p>
+<p>这里我们着重介绍innodb中的聚集索引和非聚集索引。</p>
+<ol>
+<li>聚集索引（聚簇索引）：以innodb作为存储引擎的表，表中的数据都会有一个主键，即使你不创建主键，系统也会帮你创建一个隐式的主键。这是因为<strong>innodb是把数据存放在B+树中的</strong>，而B+树的键值就是主键，在B+树的叶子节点中，存储了表中所有的数据。这种<strong>以主键作为B+树索引的键值而构建的B+树索引，我们称之为聚集索引</strong>。</li>
+</ol>
+<p>趣谈编程注：换言之，在B+树中，叶子节点存储整条记录的数据，这样的索引为聚集索引。</p>
+<ol start="2">
+<li>非聚集索引（非聚簇索引）：以主键以外的列值作为键值构建的B+树索引，我们称之为非聚集索引。非聚集索引与聚集索引的区别在于非聚集索引的叶子节点不存储表中的数据，而是存储该列对应的主键，想要查找数据我们还需要根据主键再去聚集索引中进行查找，这个再根据聚集索引查找数据的过程，我们称为<strong>回表</strong>。<br>明白了聚集索引和非聚集索引的定义，我们应该明白这样一句话：<strong>数据即索引，索引即数据</strong>。</li>
+</ol>
+<h2 id="利用聚集索引和非聚集索引查找数据"><a href="#利用聚集索引和非聚集索引查找数据" class="headerlink" title="利用聚集索引和非聚集索引查找数据"></a>利用聚集索引和非聚集索引查找数据</h2><p>前面我们讲解B+树索引的时候并没有去说怎么在B+树中进行数据的查找，主要就是因为还没有引出聚集索引和非聚集索引的概念。下面我们通过讲解如何通过聚集索引以及非聚集索引查找数据表中数据的方式介绍一下B+树索引查找数据方法。</p>
+<h3 id="利用聚集索引查找数据"><a href="#利用聚集索引查找数据" class="headerlink" title="利用聚集索引查找数据"></a>利用聚集索引查找数据</h3><p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/44cd8ad2-9f79-4e5f-91f1-c32c86f50a3b.jpeg" alt="xgvagflxmk (1).jpeg"></p>
+<p>还是这张B+树索引图，现在我们应该知道这就是聚集索引，表中的数据存储在其中。现在假设我们要查找id&gt;=18并且id&lt;40的用户数据。对应的sql语句为select * from user where id&gt;=18 and id &lt;40，其中id为主键。具体的查找过程如下：</p>
+<ul>
+<li><ol>
+<li>一般根节点都是常驻内存的，也就是说页1已经在内存中了，此时不需要到磁盘中读取数据，直接从内存中读取即可。<br>从内存中读取到页1，要查找这个id&gt;=18 and id &lt;40或者范围值，我们首先需要找到id=18的键值。<br>从页1中我们可以找到键值18，此时我们需要根据指针p2，定位到页3。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>要从页3中查找数据，我们就需要拿着p2指针去磁盘中进行读取页3。<br>从磁盘中读取页3后将页3放入内存中，然后进行查找，我们可以找到键值18，然后再拿到页3中的指针p1，定位到页8。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>同样的页8页不在内存中，我们需要再去磁盘中将页8读取到内存中。<br>将页8读取到内存中后。<br>因为页中的数据是链表进行连接的，而且键值是按照顺序存放的，此时可以根据二分查找法定位到键值18。<br>此时因为已经到数据页了，此时我们已经找到一条满足条件的数据了，就是键值18对应的数据。<br>因为是范围查找，而且此时所有的数据又都存在叶子节点，并且是有序排列的，那么我们就可以对页8中的键值依次进行遍历查找并匹配满足条件的数据。<br>我们可以一直找到键值为22的数据，然后页8中就没有数据了，此时我们需要拿着页8中的p指针去读取页9中的数据。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>因为页9不在内存中，就又会加载页9到内存中，并通过和页8中一样的方式进行数据的查找，直到将页12加载到内存中，发现41大于40，此时不满足条件。<br>那么查找到此终止。<br>最终我们找到满足条件的所有数据为：<br>(18,kl),(19,kl),(22,hj),(24,io),(25,vg),(29,jk),(31,jk),(33,rt),(34,ty),(35,yu),(37,rt),(39,rt)。<br>总共12条记录。</li>
+</ol>
+</li>
+</ul>
+<p>下面看下具体的查找流程图：</p>
+<p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/f2ffc53f-6a81-442f-8c9a-9bba54f564cb.jpeg" alt="x6v4xwr86x.jpeg"></p>
+<h3 id="利用非聚集索引查找数据"><a href="#利用非聚集索引查找数据" class="headerlink" title="利用非聚集索引查找数据"></a>利用非聚集索引查找数据</h3><p><img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/09acf9d8-8101-4591-abca-6cfd563f390e.jpeg" alt="b7onlarfmo.jpeg"></p>
+<p>读者看到这张图的时候可能会蒙，这是啥东西啊？怎么都是数字。</p>
+<p>如果有这种感觉，请仔细看下图中红字的解释。什么？还看不懂？那我再来解释下吧。首先，这个非聚集索引表示的是用户幸运数字的索引（为什么是幸运数字？一时兴起想起来的:-)），此时表结构是这样的。</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>luckyNum</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>zs</td>
+<td>23</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ls</td>
+<td>7</td>
+</tr>
+</tbody></table>
+<p>在叶子节点中，不在存储所有的数据了，存储的是键值和主键。</p>
+<p>对于叶子节点中的x-y，比如1-1。左边的1表示的是索引的键值，右边的1表示的是主键值。如果我们要找到幸运数字为33的用户信息，对应的sql语句为select * from user where luckNum=33。</p>
+<p>查找的流程跟聚集索引一样，这里就不详细介绍了。我们最终会找到主键值47，找到主键后我们需要再到聚集索引中查找具体对应的数据信息，此时又回到了聚集索引的查找流程。</p>
+<p>下面看下具体的查找流程图：</p>
+<p>￼<img src="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/17/c7181e38-39a6-48b0-aec3-60eeeaeede05.jpeg" alt="jc8kevc687.jpeg"></p>
+<p>在MyISAM中，聚集索引和非聚集索引的叶子节点都会存储数据的文件地址。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
+              <a href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag"><i class="fa fa-tag"></i> 索引</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/15/Java-%E5%AE%B9%E5%99%A8/" rel="prev" title="Java-容器">
+      <i class="fa fa-chevron-left"></i> Java-容器
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB"><span class="nav-text">索引分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-Tree"><span class="nav-text">B-Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E7%BB%93%E6%9E%84"><span class="nav-text">MySQL中的索引结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91"><span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-text">平衡二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B%E6%A0%91%EF%BC%88%E4%BA%8C%E5%8F%89%E6%A0%91%EF%BC%89"><span class="nav-text">B树（二叉树）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91"><span class="nav-text">B+树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95-VS-%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="nav-text">聚簇索引 VS 非聚簇索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E5%92%8C%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E6%9F%A5%E6%89%BE%E6%95%B0%E6%8D%AE"><span class="nav-text">利用聚集索引和非聚集索引查找数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E6%9F%A5%E6%89%BE%E6%95%B0%E6%8D%AE"><span class="nav-text">利用聚集索引查找数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E6%9F%A5%E6%89%BE%E6%95%B0%E6%8D%AE"><span class="nav-text">利用非聚集索引查找数据</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="熊乾坤"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">熊乾坤</p>
+  <div class="site-description" itemprop="description">熊乾坤的博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">131</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/super-aviator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;super-aviator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">熊乾坤</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o6g891hxXze8WG1xu174Bxc4-MdYXbMMI',
+      appKey     : 'HSOYHT8PzTeNo7stIuLIuYvO',
+      placeholder: "快来评论吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

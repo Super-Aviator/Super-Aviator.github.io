@@ -28,7 +28,7 @@
 <meta property="og:description" content="二叉查找树的具体实现 二叉查找树的定义&amp;emsp;&amp;emsp;二叉查找树中的结点有五个字段值，left字段指向其左子树，right指向其右子树，key保存其键,为了保持键有序，规定所有的键都继承自Comparable接口，value保存其值，N保存的是该结点左子树和其右子树以及自身的键的个数。&amp;emsp;&amp;emsp;在二叉查找树中，其左子数结点中的键Key都小于根结点，右子树中的键都大于跟结点。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-04-21T04:42:00.000Z">
-<meta property="article:modified_time" content="2021-02-23T13:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-17T03:40:14.661Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="符号表">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-23 21:00:00" itemprop="dateModified" datetime="2021-02-23T21:00:00+08:00">2021-02-23</time>
+                <time title="修改时间：2021-04-17 11:40:14" itemprop="dateModified" datetime="2021-04-17T11:40:14+08:00">2021-04-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -293,37 +293,33 @@ Iterable&lt;Key&gt; keys()                返回所有key的迭代器
 <h2 id="几个重要的操作的实现"><a href="#几个重要的操作的实现" class="headerlink" title="几个重要的操作的实现"></a>几个重要的操作的实现</h2><p>二叉查找树还支持键的有序的操作，需要实现一些有序性操作的API。</p>
 <h3 id="删除操作-delete"><a href="#删除操作-delete" class="headerlink" title="删除操作(delete)"></a>删除操作(delete)</h3><p>在二叉查找树中删除一个结点的处理方式如下：</p>
 <ul>
-<li><p>如果被删除结点不存在，则不进行任何操作</p>
-</li>
-<li><p>如果被删除结点存在，但是没有左右子结点，则可以将此节点直接删除</p>
-</li>
-<li><p>如果被删除结点只有左子结点或者只有右子结点，则直接返回此结点的子结点。</p>
-</li>
-<li><p>如果被删除结点既有左子结点，又有右子结点，则首先找到此结点右子树中最小的那个结点，然后将最小结点放到被删除结点的位置。<br>代码实现如下：</p>
-<pre><code class="java">public void delete(Key key)&#123;//删除键值key所对应的键值对
-      if(root==null)  return;
-      root= delete(root,key);
-  &#125;
-
-  private Node delete(Node x,Key key)&#123;
-      if(x==null) return null;
-      int t=key.compareTo(x.key);
-      if(t&lt;0) x.left=delete(x.left,key);
-      else    if(t&gt;0) x.right=delete(x.right,key);
-      else&#123;
-          if(x.left==null)    return x.right;//当x为叶结点时特殊考虑!!
-          if(x.right==null)   return x.left;//!!
-          Node k=x;
-          x=min(k.right);
-          x.right=deleteMin(k.right);
-          x.left=k.left;
-      &#125;
-      x.N=size(x.left)+size(x.right)+1;
-      return x;
-  &#125;
-</code></pre>
-</li>
+<li>如果被删除结点不存在，则不进行任何操作</li>
+<li>如果被删除结点存在，但是没有左右子结点，则可以将此节点直接删除</li>
+<li>如果被删除结点只有左子结点或者只有右子结点，则直接返回此结点的子结点。</li>
+<li>如果被删除结点既有左子结点，又有右子结点，则首先找到此结点右子树中最小的那个结点，然后将最小结点放到被删除结点的位置。<br>代码实现如下：</li>
 </ul>
+<pre><code class="java">public void delete(Key key)&#123;//删除键值key所对应的键值对
+        if(root==null)  return;
+        root= delete(root,key);
+    &#125;
+
+    private Node delete(Node x,Key key)&#123;
+        if(x==null) return null;
+        int t=key.compareTo(x.key);
+        if(t&lt;0) x.left=delete(x.left,key);
+        else    if(t&gt;0) x.right=delete(x.right,key);
+        else&#123;
+            if(x.left==null)    return x.right;//当x为叶结点时特殊考虑!!
+            if(x.right==null)   return x.left;//!!
+            Node k=x;
+            x=min(k.right);
+            x.right=deleteMin(k.right);
+            x.left=k.left;
+        &#125;
+        x.N=size(x.left)+size(x.right)+1;
+        return x;
+    &#125;
+</code></pre>
 <h3 id="向下取整-floor-和向上取整-ceiling"><a href="#向下取整-floor-和向上取整-ceiling" class="headerlink" title="向下取整(floor)和向上取整(ceiling)"></a>向下取整(floor)和向上取整(ceiling)</h3><p>在有序符号表中，常常需要对键进行向下取整和向上取整，即小于等于和大于等于。其实现如下所示：</p>
 <pre><code class="java">public Key floor(Key key)&#123;
 //返回小于等于key的元素的键值
@@ -360,7 +356,7 @@ Iterable&lt;Key&gt; keys()                返回所有key的迭代器
         &#125;
     &#125;
 </code></pre>
-<h4 id="选择-select-和排名操作-rank"><a href="#选择-select-和排名操作-rank" class="headerlink" title="选择(select)和排名操作(rank)"></a>选择(select)和排名操作(rank)</h4><p> select(i)用于查找二叉查找树中位置大小为i的键，或者通过rank(K key)查找小于键key的键的数量。<br> 在select中，如果当前结点的N的值大于i,则递归的在结点的左子树中选择位置大小为i的结点，如果N小于i，则递归的在右子树中查找位置大小为i-size(x.left)-1的键：<br> select方法</p>
+<h4 id="选择-select-和排名操作-rank"><a href="#选择-select-和排名操作-rank" class="headerlink" title="选择(select)和排名操作(rank)"></a>选择(select)和排名操作(rank)</h4><p>select(i)用于查找二叉查找树中位置大小为i的键，或者通过rank(K key)查找小于键key的键的数量。<br>在select中，如果当前结点的N的值大于i,则递归的在结点的左子树中选择位置大小为i的结点，如果N小于i，则递归的在右子树中查找位置大小为i-size(x.left)-1的键：<br>select方法</p>
 <pre><code class="java">public Key select(int i)&#123;
        Node x=select(root,i);
        return x==null?null:x.key;
@@ -374,8 +370,8 @@ Iterable&lt;Key&gt; keys()                返回所有key的迭代器
        return select(x.right,i-t-1);
    &#125;
 </code></pre>
-<p> rank方法</p>
-<pre><code class="java"> public int rank(Key key)&#123;//返回小于key的键的数量
+<p>rank方法</p>
+<pre><code class="java">public int rank(Key key)&#123;//返回小于key的键的数量
        return rank(root,key);
    &#125;
 
@@ -387,7 +383,7 @@ Iterable&lt;Key&gt; keys()                返回所有key的迭代器
        return size(x.left);
    &#125;
 </code></pre>
-<h3 id="范围查找"><a href="#范围查找" class="headerlink" title="范围查找"></a>范围查找</h3><p> 范围查找能够查找位于键lo和hi之间的元素，其具体实现如下所示：</p>
+<h3 id="范围查找"><a href="#范围查找" class="headerlink" title="范围查找"></a>范围查找</h3><p>范围查找能够查找位于键lo和hi之间的元素，其具体实现如下所示：</p>
 <pre><code class="java">public Iterable&lt;Key&gt; keys()&#123;
        Queue&lt;Key&gt; queue=new LinkedList&lt;&gt;();
        keys(root,min(),max(),queue);
@@ -716,7 +712,7 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
     &#125;
 &#125;
 </code></pre>
-<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>二叉查找树的实现不是非常困难，而正常情况下的查找和插入的时间复杂度能够达到对数级别$1.39lgN$,但是当插入键的顺序为有序时，则二叉查找树会退化为链表，从而查找和插入操作的时间复杂度变为N，在大规模数据中这是不可接受的。<br>二叉查找树的替代方案是使用平衡二叉树。平衡二叉树能够将相邻结点的到达根节点的差保持在一定的范围内。从而避免二叉树由于不平衡而带来的性能损失。</p>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>二叉查找树的实现不是非常困难，而正常情况下的查找和插入的时间复杂度能够达到对数级别 $1.39log_2^N$,但是当插入键的顺序为有序时，则二叉查找树会退化为链表，从而查找和插入操作的时间复杂度变为N，在大规模数据中这是不可接受的。<br>二叉查找树的替代方案是使用平衡二叉树。平衡二叉树能够将相邻结点的到达根节点的差保持在一定的范围内。从而避免二叉树由于不平衡而带来的性能损失。</p>
 
     </div>
 
@@ -818,7 +814,7 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">131</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -831,7 +827,7 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -928,6 +924,61 @@ public class BSTT&lt;Key extends Comparable&lt;Key&gt;,Value&gt; &#123;
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

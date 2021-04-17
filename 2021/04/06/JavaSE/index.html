@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://resource-1259322763.cos.ap-guangzhou.myqcloud.com/hexo-client/2021/04/13/4fa042b9-7cc5-46da-8d9d-64e93693507e.jpg">
 <meta property="article:published_time" content="2021-04-06T12:52:59.000Z">
-<meta property="article:modified_time" content="2021-04-13T16:37:51.147Z">
+<meta property="article:modified_time" content="2021-04-14T16:44:52.040Z">
 <meta property="article:author" content="熊乾坤">
 <meta property="article:tag" content="Java疑惑解答">
 <meta name="twitter:card" content="summary">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-14 00:37:51" itemprop="dateModified" datetime="2021-04-14T00:37:51+08:00">2021-04-14</time>
+                <time title="修改时间：2021-04-15 00:44:52" itemprop="dateModified" datetime="2021-04-15T00:44:52+08:00">2021-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -412,7 +412,7 @@ i4=i5+i6   true
 <h2 id="NIO（同步非阻塞）"><a href="#NIO（同步非阻塞）" class="headerlink" title="NIO（同步非阻塞）"></a>NIO（同步非阻塞）</h2><p>NIO也叫Non-Blocking IO 是<code>同步非阻塞的IO</code>模型。线程发起io请求后，立即返回（非阻塞io）。同步指的是必须等待IO缓冲区内的数据就绪，而非阻塞指的是，用户线程不原地等待IO缓冲区，可以先做一些其他操作，但是要定时轮询检查IO缓冲区数据是否就绪。Java中的NIO 是new IO的意思。其实是NIO加上IO多路复用技术。普通的NIO是线程轮询查看一个IO缓冲区是否就绪，而Java中的new IO指的是线程轮询地去查看一堆IO缓冲区中哪些就绪，这是一种IO多路复用的思想。IO多路复用模型中，将检查IO数据是否就绪的任务，交给系统级别的select或epoll模型，由系统进行监控，减轻用户线程负担。</p>
 <p>NIO主要有<code>Buffer</code>、<code>Channel</code>、<code>Selector</code>三种技术的整合，通过零拷贝的buffer取得数据，每一个客户端通过channel在selector（多路复用器）上进行注册。服务端不断轮询channel来获取客户端的信息。channel上有connect、accept（阻塞）、read（可读）、write(可写)四种状态标识。根据标识来进行后续操作。所以一个服务端可接收无限多的channel。不需要新开一个线程。大大提升了性能。</p>
 <h2 id="AIO（异步非阻塞）"><a href="#AIO（异步非阻塞）" class="headerlink" title="AIO（异步非阻塞）"></a>AIO（异步非阻塞）</h2><p>AIO是真正意义上的<code>异步非阻塞IO</code>模型。<br>上述NIO实现中，需要用户线程定时轮询，去检查IO缓冲区数据是否就绪，占用应用程序线程资源，其实轮询相当于还是阻塞的，并非真正解放当前线程，因为它还是需要去查询哪些IO就绪。而真正的理想的异步非阻塞IO应该让内核系统完成，用户线程只需要告诉内核，当缓冲区就绪后，通知我或者执行我交给你的回调函数。</p>
-<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1>
+<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1><h1 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h1>
     </div>
 
     
@@ -497,7 +497,7 @@ i4=i5+i6   true
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#equals%E3%80%81hashCode%E6%96%B9%E6%B3%95"><span class="nav-text">equals、hashCode方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85%E7%B1%BB%E5%92%8C%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">种基本类型的包装类和常量池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transint%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-text">transint关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TODO-%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-text">TODO 创建对象的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84"><span class="nav-text">String 为什么是不可变的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E5%BC%82%E5%B8%B8%E7%9A%84%E5%B1%82%E7%BA%A7"><span class="nav-text">Java异常的层级</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO%E6%B5%81"><span class="nav-text">IO流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO%E3%80%81BIO%E3%80%81AIO"><span class="nav-text">NIO、BIO、AIO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%EF%BC%88%E9%92%88%E5%AF%B9IO%E6%93%8D%E4%BD%9C%EF%BC%89"><span class="nav-text">同步和异步（针对IO操作）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%88%E9%92%88%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%BA%BF%E7%A8%8B%EF%BC%89"><span class="nav-text">阻塞和非阻塞（针对执行任务的线程）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">BIO（同步阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">NIO（同步非阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO%EF%BC%88%E5%BC%82%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">AIO（异步非阻塞）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-text">容器</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#finally-catch%E8%AF%AD%E5%8F%A5%E4%B8%ADreturn%E7%9A%84%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-text">finally-catch语句中return的先后顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#finally%E5%9D%97%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="nav-text">finally块一定会执行吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#equals%E3%80%81hashCode%E6%96%B9%E6%B3%95"><span class="nav-text">equals、hashCode方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%85%E8%A3%85%E7%B1%BB%E5%92%8C%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">种基本类型的包装类和常量池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transint%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-text">transint关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TODO-%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-text">TODO 创建对象的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84"><span class="nav-text">String 为什么是不可变的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E5%BC%82%E5%B8%B8%E7%9A%84%E5%B1%82%E7%BA%A7"><span class="nav-text">Java异常的层级</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO%E6%B5%81"><span class="nav-text">IO流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO%E3%80%81BIO%E3%80%81AIO"><span class="nav-text">NIO、BIO、AIO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%EF%BC%88%E9%92%88%E5%AF%B9IO%E6%93%8D%E4%BD%9C%EF%BC%89"><span class="nav-text">同步和异步（针对IO操作）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%88%E9%92%88%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%BA%BF%E7%A8%8B%EF%BC%89"><span class="nav-text">阻塞和非阻塞（针对执行任务的线程）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">BIO（同步阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%EF%BC%88%E5%90%8C%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">NIO（同步非阻塞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO%EF%BC%88%E5%BC%82%E6%AD%A5%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%89"><span class="nav-text">AIO（异步非阻塞）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-text">容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-text">类加载器</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -513,7 +513,7 @@ i4=i5+i6   true
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">131</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -526,7 +526,7 @@ i4=i5+i6   true
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -623,6 +623,61 @@ i4=i5+i6   true
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
